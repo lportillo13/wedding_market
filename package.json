@@ -1,0 +1,40 @@
+{
+  "name": "wedding-market",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@stripe/stripe-js": "^8.0.0",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/supabase-js": "^2.75.0",
+    "bootstrap": "^5.3.8",
+    "cloudinary": "^2.7.0",
+    "clsx": "^2.1.1",
+    "next": "15.5.4",
+    "next-translate": "^2.6.2",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-hook-form": "^7.64.0",
+    "stripe": "^19.1.0",
+    "uuid": "^13.0.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/google.maps": "^3.58.1",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.4",
+    "sass": "^1.93.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
