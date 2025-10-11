@@ -1,0 +1,24 @@
+@import 'bootstrap-theme.scss';
+
+/* Remove Next template’s color variables and defer to Bootstrap */
+:root,
+html[data-bs-theme="light"] {
+  color-scheme: light;
+}
+
+/* Use Bootstrap tokens for body colors */
+html[data-bs-theme="light"] body {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+}
+
+/* OPTIONAL: if anything still forces dark, keep these hard overrides */
+html[data-bs-theme="light"] {
+  --bs-body-bg: #ffffff;
+  --bs-body-color: #212529;
+}
+
+html[data-bs-theme="light"] body {
+  background-color: var(--bs-body-bg) !important;
+  color: var(--bs-body-color) !important;
+}

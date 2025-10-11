@@ -1,0 +1,64 @@
+/* Force data-attribute color mode (ignore OS dark mode) */
+$color-mode-type: data;   // ← key line
+$enable-dark-mode: true;  // keep dark tokens available (optional)
+
+/* 1) Bootstrap core functions */
+@import "bootstrap/scss/functions";
+
+/* 2) Your variable overrides (define BEFORE bootstrap variables) */
+@import "./custom-variables";                  // ← if missing, comment this out
+@import "./artemis-extension/artemis-variables"; // ← if present; otherwise comment out
+
+/* 3) Bootstrap defaults */
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";  // optional but safe
+@import "bootstrap/scss/maps";
+
+/* 4) Mixins & utilities */
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
+
+/* 5) Layout & components */
+@import "bootstrap/scss/root";
+@import "bootstrap/scss/reboot";
+@import "bootstrap/scss/type";
+@import "bootstrap/scss/images";
+@import "bootstrap/scss/containers";
+@import "bootstrap/scss/grid";
+@import "bootstrap/scss/tables";
+@import "bootstrap/scss/forms";
+@import "bootstrap/scss/buttons";
+@import "bootstrap/scss/transitions";
+@import "bootstrap/scss/dropdown";
+@import "bootstrap/scss/button-group";
+@import "bootstrap/scss/nav";
+@import "bootstrap/scss/navbar";
+@import "bootstrap/scss/card";
+@import "bootstrap/scss/accordion";
+@import "bootstrap/scss/breadcrumb";
+@import "bootstrap/scss/pagination";
+@import "bootstrap/scss/badge";
+@import "bootstrap/scss/alert";
+@import "bootstrap/scss/progress";
+@import "bootstrap/scss/list-group";
+@import "bootstrap/scss/close";
+@import "bootstrap/scss/toasts";
+@import "bootstrap/scss/modal";
+@import "bootstrap/scss/tooltip";
+@import "bootstrap/scss/popover";
+@import "bootstrap/scss/carousel";
+@import "bootstrap/scss/spinners";
+@import "bootstrap/scss/offcanvas";
+
+/* 6) Helpers */
+@import "bootstrap/scss/helpers";
+
+/* 7) Utilities API (must come after all components) */
+@import "bootstrap/scss/utilities/api";
+
+/* 8) Your extensions that depend on Bootstrap */
+@import "./maxmaxmax/extension-max-width";     // ← if present
+@import "./artemis-extension/shuffle-extension"; // ← if present
+
+/* 9) Your custom styles last */
+@import "./custom-styles";
