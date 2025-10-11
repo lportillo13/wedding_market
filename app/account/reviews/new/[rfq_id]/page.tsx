@@ -1,4 +1,6 @@
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+
 import { createReview } from "../../actions";
 
 export default async function NewReviewPage({ params }: { params: Promise<{ rfq_id: string }> }) {
@@ -45,12 +47,13 @@ export default async function NewReviewPage({ params }: { params: Promise<{ rfq_
     );
   }
 
-  async function actionWrapper(fd: FormData) {
+  async function actionWrapper(fd: FormData): Promise<void> {
     const res = await createReview(fd);
-    if (res.ok) {
-      // invalidate vendor public page later if needed
+    if (!res.ok) {
+      throw new Error(res.message ?? "Failed to submit review.");
     }
-    return res;
+
+    redirect("/account/reviews");
   }
 
   return (
