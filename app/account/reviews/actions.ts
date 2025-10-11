@@ -3,7 +3,7 @@ import { getSupabaseServer } from "@/lib/supabase/server";
 
 export type ReviewState = { ok: boolean; message?: string };
 
-export async function createReview(_: ReviewState, formData: FormData): Promise<ReviewState> {
+export async function createReview(formData: FormData): Promise<ReviewState> {
   const supabase = await getSupabaseServer();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { ok: false, message: "Please log in." };
@@ -25,7 +25,7 @@ export async function createReview(_: ReviewState, formData: FormData): Promise<
   return { ok: true };
 }
 
-export async function updateReview(_: ReviewState, formData: FormData): Promise<ReviewState> {
+export async function updateReview(formData: FormData): Promise<ReviewState> {
   const supabase = await getSupabaseServer();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { ok: false, message: "Please log in." };
