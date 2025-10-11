@@ -16,6 +16,11 @@ export default async function AccountLayout({ children }: { children: ReactNode 
         <h1 className="mb-3">My account</h1>
         <ul className="nav nav-tabs mb-4">
           <li className="nav-item">
+            <Link className="nav-link" href="/account/profile">
+              Profile
+            </Link>
+          </li>
+          <li className="nav-item">
             <Link className="nav-link" href="/account/rfqs">My RFQs</Link>
           </li>
           <li className="nav-item">
