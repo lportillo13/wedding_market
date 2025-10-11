@@ -6,16 +6,17 @@ import { usePathname } from "next/navigation";
 import { getShortlistCount } from "@/lib/shortlist";
 
 export default function NavBar() {
-  const [count, setCount] = useState<number>(0);
-  const [mounted, setMounted] = useState(false);
+  const [count, setCount] = useState(() => (typeof window !== "undefined" ? getShortlistCount() : 0));
+  const mounted = typeof window !== "undefined";
   const [isOpen, setIsOpen] = useState(false);
   const [isLargeScreen, setIsLargeScreen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return undefined;
+    }
     const sync = () => setCount(getShortlistCount());
-    sync();
-    setMounted(true);
     window.addEventListener("wm-shortlist-changed", sync);
     return () => window.removeEventListener("wm-shortlist-changed", sync);
   }, []);
@@ -40,6 +41,7 @@ export default function NavBar() {
 
   useEffect(() => {
     if (!isLargeScreen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsOpen(false);
     }
   }, [pathname, isLargeScreen]);

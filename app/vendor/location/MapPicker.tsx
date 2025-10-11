@@ -161,8 +161,9 @@ export default function MapPicker({ apiKey, lat, lng, radiusKm, onChange }: Prop
 
   return (
     <div>
-      <label className="form-label">Search address</label>
+      <label className="form-label" htmlFor="map-picker-search">Search address</label>
       <input
+        id="map-picker-search"
         ref={inputRef}
         className="form-control mb-2"
         placeholder="Type an address…"

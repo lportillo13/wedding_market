@@ -1,16 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useActionState } from "react";
 import Link from "next/link";
 import { getShortlist, clearShortlist, removeFromShortlist } from "@/lib/shortlist";
 import { createRfqAndInvites, type CreateRfqState } from "./actions";
 
 export default function NewRfqPage() {
-  const [ids, setIds] = useState<string[]>([]);
+  const [ids, setIds] = useState<string[]>(() => (typeof window !== "undefined" ? getShortlist() : []));
   const [state, action, pending] = useActionState<CreateRfqState, FormData>(createRfqAndInvites, { ok: false });
-
-  useEffect(() => setIds(getShortlist()), []);
   const vendorIdsJson = useMemo(() => JSON.stringify(ids), [ids]);
 
   return (
@@ -24,7 +22,7 @@ export default function NewRfqPage() {
       ) : (
         <>
           <div className="mb-3">
-            <label className="form-label">Vendors selected</label>
+            <p className="form-label">Vendors selected</p>
             <div className="d-flex flex-wrap gap-2">
               {ids.map((id) => (
                 <span key={id} className="badge text-bg-secondary d-inline-flex align-items-center gap-2">
@@ -50,42 +48,42 @@ export default function NewRfqPage() {
 
             <div className="row">
               <div className="col-md-6 mb-3">
-                <label className="form-label">Event date</label>
-                <input className="form-control" type="date" name="event_date" />
+                <label className="form-label" htmlFor="rfq-event-date">Event date</label>
+                <input id="rfq-event-date" className="form-control" type="date" name="event_date" />
               </div>
               <div className="col-md-6 mb-3">
-                <label className="form-label">Guest count</label>
-                <input className="form-control" type="number" name="guest_count" min={1} />
+                <label className="form-label" htmlFor="rfq-guest-count">Guest count</label>
+                <input id="rfq-guest-count" className="form-control" type="number" name="guest_count" min={1} />
               </div>
             </div>
 
             <div className="row">
               <div className="col-md-4 mb-3">
-                <label className="form-label">City</label>
-                <input className="form-control" name="city" />
+                <label className="form-label" htmlFor="rfq-city">City</label>
+                <input id="rfq-city" className="form-control" name="city" />
               </div>
               <div className="col-md-4 mb-3">
-                <label className="form-label">State/Region</label>
-                <input className="form-control" name="state" />
+                <label className="form-label" htmlFor="rfq-state">State/Region</label>
+                <input id="rfq-state" className="form-control" name="state" />
               </div>
               <div className="col-md-4 mb-3">
-                <label className="form-label">Country</label>
-                <input className="form-control" name="country" />
+                <label className="form-label" htmlFor="rfq-country">Country</label>
+                <input id="rfq-country" className="form-control" name="country" />
               </div>
             </div>
 
             <div className="row">
               <div className="col-md-4 mb-3">
-                <label className="form-label">Budget min (USD)</label>
-                <input className="form-control" type="number" name="budget_min" min={0} />
+                <label className="form-label" htmlFor="rfq-budget-min">Budget min (USD)</label>
+                <input id="rfq-budget-min" className="form-control" type="number" name="budget_min" min={0} />
               </div>
               <div className="col-md-4 mb-3">
-                <label className="form-label">Budget max (USD)</label>
-                <input className="form-control" type="number" name="budget_max" min={0} />
+                <label className="form-label" htmlFor="rfq-budget-max">Budget max (USD)</label>
+                <input id="rfq-budget-max" className="form-control" type="number" name="budget_max" min={0} />
               </div>
               <div className="col-md-4 mb-3">
-                <label className="form-label">Language</label>
-                <select className="form-select" name="language" defaultValue="en">
+                <label className="form-label" htmlFor="rfq-language">Language</label>
+                <select id="rfq-language" className="form-select" name="language" defaultValue="en">
                   <option value="en">English</option>
                   <option value="es">Español</option>
                   <option value="de">Deutsch</option>
@@ -95,8 +93,8 @@ export default function NewRfqPage() {
             </div>
 
             <div className="mb-3">
-              <label className="form-label">Theme (optional)</label>
-              <select className="form-select" name="theme" defaultValue="">
+              <label className="form-label" htmlFor="rfq-theme">Theme (optional)</label>
+              <select id="rfq-theme" className="form-select" name="theme" defaultValue="">
                 <option value="">—</option>
                 <option value="classic">Classic</option>
                 <option value="boho">Boho</option>
@@ -109,8 +107,8 @@ export default function NewRfqPage() {
             </div>
 
             <div className="mb-3">
-              <label className="form-label">Notes for vendors</label>
-              <textarea className="form-control" name="notes" rows={4} />
+              <label className="form-label" htmlFor="rfq-notes">Notes for vendors</label>
+              <textarea id="rfq-notes" className="form-control" name="notes" rows={4} />
             </div>
 
             {!state.ok && state.message && <div className="alert alert-danger">{state.message}</div>}
