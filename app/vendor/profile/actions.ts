@@ -34,6 +34,15 @@ export async function saveProfile(
       return { ok: false, message: "Not authenticated." };
     }
 
+    const uidArg = { _uid: user.id } satisfies { _uid: string };
+    const { data: isVendor, error: roleErr } = await supabase.rpc("is_vendor", uidArg);
+    if (roleErr) {
+      return { ok: false, message: roleErr.message };
+    }
+    if (!isVendor) {
+      return { ok: false, message: "Vendor access required." };
+    }
+
     const business_name = String(formData.get("business_name") || "").trim();
     const slugRaw = String(formData.get("slug") || "").trim();
     const bio_en = String(formData.get("bio_en") || "");

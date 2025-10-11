@@ -1,11 +1,10 @@
-// app/vendor/profile/page.tsx
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import { redirect } from "next/navigation";
-import { getUserAndRole } from "@/lib/auth/guards";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import ProfileForm from "./profileForm";
+import { redirect } from 'next/navigation';
+import { getRoles } from '@/lib/auth/roles';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import ProfileForm from './profileForm';
 
 type VendorRow = {
   slug: string | null;
@@ -14,30 +13,28 @@ type VendorRow = {
 };
 
 export default async function ProfilePage() {
-  const { user } = await getUserAndRole();
-  if (!user) redirect(`/login?next=${encodeURIComponent("/vendor/profile")}`);
+  const { user, isVendor } = await getRoles();
+  if (!user || !isVendor) redirect('/signup/vendor');
 
-  const supabase = await getSupabaseServer();
+  const supabase = await createSupabaseServerClient();
 
-  // ✅ Only select columns that actually exist in your table
   let { data: vendor } = await supabase
-    .from("vendors")
-    .select("id, slug, business_name, bio")
-    .eq("owner_id", user.id)
+    .from('vendors')
+    .select('id, slug, business_name, bio')
+    .eq('owner_id', user.id)
     .maybeSingle();
 
-  // Optional: auto-create a vendor row for first-time users
   if (!vendor) {
     const inserted = await supabase
-      .from("vendors")
+      .from('vendors')
       .insert({
         owner_id: user.id,
         slug: `vendor-${user.id.slice(0, 8)}`,
-        business_name: "Untitled Vendor",
-        bio: { en: "", es: "" }, // JSONB shape your table uses
+        business_name: 'Untitled Vendor',
+        bio: { en: '', es: '' },
         is_published: false,
       })
-      .select("id, slug, business_name, bio")
+      .select('id, slug, business_name, bio')
       .single();
 
     if (inserted.error) {
@@ -47,14 +44,13 @@ export default async function ProfilePage() {
     vendor = inserted.data ?? null;
   }
 
-  // Normalize to the form shape
   const v = vendor as VendorRow | null;
   const bio = v?.bio ?? null;
   const initial = {
-    slug: v?.slug ?? "",
-    business_name: v?.business_name ?? "",
-    bio_en: bio?.en ?? "",
-    bio_es: bio?.es ?? "",
+    slug: v?.slug ?? '',
+    business_name: v?.business_name ?? '',
+    bio_en: bio?.en ?? '',
+    bio_es: bio?.es ?? '',
   };
 
   return (

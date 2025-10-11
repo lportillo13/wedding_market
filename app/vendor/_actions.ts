@@ -6,15 +6,21 @@ import { slugify } from "@/lib/slugify";
 
 type SupabaseServerClient = Awaited<ReturnType<typeof getSupabaseServer>>;
 
-async function getUser() {
+async function getVendorContext() {
   const supabase: SupabaseServerClient = await getSupabaseServer();
   const { data: { user }, error } = await supabase.auth.getUser();
   if (error || !user) throw new Error("Not authenticated");
+
+  const uidArg = { _uid: user.id } satisfies { _uid: string };
+  const { data: isVendor, error: roleErr } = await supabase.rpc("is_vendor", uidArg);
+  if (roleErr) throw new Error(roleErr.message);
+  if (!isVendor) throw new Error("Vendor access required");
+
   return { supabase, user };
 }
 
 async function ensureVendorId() {
-  const { supabase, user } = await getUser();
+  const { supabase, user } = await getVendorContext();
   // find existing
   const { data: existing } = await supabase
     .from("vendors")
@@ -40,9 +46,6 @@ async function ensureVendorId() {
 
   if (error) throw new Error(error.message);
 
-  // Optional: mark profile as vendor role
-  await supabase.from("profiles").update({ role: "vendor" }).eq("id", user.id);
-
   return data.id as string;
 }
 
@@ -54,7 +57,7 @@ export async function saveProfile(formData: FormData) {
   const bio_en = (formData.get("bio_en") as string) ?? "";
   const bio_es = (formData.get("bio_es") as string) ?? "";
 
-  const { supabase } = await getUser();
+  const { supabase } = await getVendorContext();
 
   // Enforce unique slug (simple check)
   const { data: other } = await supabase
@@ -85,7 +88,7 @@ export async function saveLocation(formData: FormData) {
   const lat = formData.get("lat") ? Number(formData.get("lat")) : null;
   const lng = formData.get("lng") ? Number(formData.get("lng")) : null;
 
-  const { supabase } = await getUser();
+  const { supabase } = await getVendorContext();
 
   const { error } = await supabase
     .from("vendor_locations")
@@ -101,7 +104,7 @@ export async function saveCategories(formData: FormData) {
   const id = await ensureVendorId();
   const keys = formData.getAll("categories") as string[];
 
-  const { supabase } = await getUser();
+  const { supabase } = await getVendorContext();
 
   // Look up category ids
   const { data: cats, error: catErr } = await supabase
@@ -131,7 +134,7 @@ export async function saveCategories(formData: FormData) {
 
 export async function setPublish(publish: boolean) {
   const id = await ensureVendorId();
-  const { supabase } = await getUser();
+  const { supabase } = await getVendorContext();
 
   const { error } = await supabase
     .from("vendors")

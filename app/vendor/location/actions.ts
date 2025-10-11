@@ -13,6 +13,11 @@ export async function saveLocation(
   const { data: { user }, error: uerr } = await supabase.auth.getUser();
   if (uerr || !user) return { ok: false, message: "Not authenticated." };
 
+  const uidArg = { _uid: user.id } satisfies { _uid: string };
+  const { data: isVendor, error: roleErr } = await supabase.rpc("is_vendor", uidArg);
+  if (roleErr) return { ok: false, message: roleErr.message };
+  if (!isVendor) return { ok: false, message: "Vendor access required." };
+
   // ensure the user has a vendor
   const { data: vendor, error: verr } = await supabase
     .from("vendors")

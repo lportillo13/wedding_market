@@ -1,10 +1,14 @@
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getUserAndRole } from "@/lib/auth/guards";
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import type { ReactNode } from 'react';
+import { getRoles } from '@/lib/auth/roles';
 
-export default async function VendorLayout({ children }: { children: React.ReactNode }) {
-  const { user } = await getUserAndRole();
-  if (!user) redirect(`/login?next=${encodeURIComponent("/vendor/profile")}`);
+export default async function VendorLayout({ children }: { children: ReactNode }) {
+  const { user, isVendor } = await getRoles();
+
+  if (!user || !isVendor) {
+    redirect('/signup/vendor');
+  }
 
   return (
     <div className="container py-4">

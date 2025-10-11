@@ -1,21 +1,21 @@
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-import { redirect } from "next/navigation";
-import { getUserAndRole } from "@/lib/auth/guards";
-import { getSupabaseServer } from "@/lib/supabase/server";
-import PublishForm from "./publishForm";
+import { redirect } from 'next/navigation';
+import { getRoles } from '@/lib/auth/roles';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import PublishForm from './publishForm';
 
 export default async function PublishPage() {
-  const { user } = await getUserAndRole();
-  if (!user) redirect(`/login?next=${encodeURIComponent("/vendor/publish")}`);
+  const { user, isVendor } = await getRoles();
+  if (!user || !isVendor) redirect('/signup/vendor');
 
-  const supabase = await getSupabaseServer();
+  const supabase = await createSupabaseServerClient();
 
   const { data: vendor } = await supabase
-    .from("vendors")
-    .select("id, slug, business_name, is_published")
-    .eq("owner_id", user.id)
+    .from('vendors')
+    .select('id, slug, business_name, is_published')
+    .eq('owner_id', user.id)
     .maybeSingle();
 
   const initial = {

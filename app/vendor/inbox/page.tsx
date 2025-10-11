@@ -1,6 +1,7 @@
-// app/vendor/inbox/page.tsx
-import { getSupabaseServer } from "@/lib/supabase/server";
-import QuoteForm from "./QuoteForm";
+import { redirect } from 'next/navigation';
+import { getRoles } from '@/lib/auth/roles';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import QuoteForm from './QuoteForm';
 
 type RfqRow = {
   id: string;
@@ -15,34 +16,20 @@ type RfqRow = {
   theme: string | null;
   notes: string | null;
   created_at: string;
-  contact_email: string | null;      // ← NEW
-  contact_phone: string | null;      // ← NEW
+  contact_email: string | null;
+  contact_phone: string | null;
 };
 
 export default async function VendorInboxPage() {
-  const supabase = await getSupabaseServer();
+  const { user, isVendor } = await getRoles();
+  if (!user || !isVendor) redirect('/signup/vendor');
 
-  // who am I?
-  const {
-    data: { user },
-    error: userErr,
-  } = await supabase.auth.getUser();
-  if (userErr || !user) {
-    return (
-      <main className="container py-4" style={{ maxWidth: 960 }}>
-        <div className="alert alert-warning">Please log in to view your vendor inbox.</div>
-        <a className="btn btn-primary" href={`/login?next=${encodeURIComponent("/vendor/inbox")}`}>
-          Log in
-        </a>
-      </main>
-    );
-  }
+  const supabase = await createSupabaseServerClient();
 
-  // vendor owned by this user
   const { data: vendor, error: vErr } = await supabase
-    .from("vendors")
-    .select("id, business_name")
-    .eq("owner_id", user.id)
+    .from('vendors')
+    .select('id, business_name')
+    .eq('owner_id', user.id)
     .maybeSingle();
 
   if (vErr) throw new Error(vErr.message);
@@ -52,21 +39,20 @@ export default async function VendorInboxPage() {
       <main className="container py-4" style={{ maxWidth: 960 }}>
         <h1 className="mb-3">Vendor inbox</h1>
         <div className="alert alert-info">
-          You don’t have a vendor profile yet. Create it in{" "}
+          You don’t have a vendor profile yet. Create it in{' '}
           <a href="/vendor/profile">Vendor Profile</a>.
         </div>
       </main>
     );
   }
 
-  // invites for this vendor (include reveal flags)
   const { data: invites, error: invErr } = await supabase
-    .from("rfq_invites")
+    .from('rfq_invites')
     .select(
-      "rfq_id, vendor_id, status, expires_at, created_at, contact_revealed, reveal_email, reveal_phone"
+      'rfq_id, vendor_id, status, expires_at, created_at, contact_revealed, reveal_email, reveal_phone'
     )
-    .eq("vendor_id", vendor.id)
-    .order("created_at", { ascending: false })
+    .eq('vendor_id', vendor.id)
+    .order('created_at', { ascending: false })
     .limit(100);
 
   if (invErr) throw new Error(invErr.message);
@@ -76,7 +62,7 @@ export default async function VendorInboxPage() {
 
   if (rfqIds.length) {
     const { data: rfqs, error: rErr } = await supabase
-      .from("rfqs")
+      .from('rfqs')
       .select(
         `
         id, event_date, guest_count, budget_min, budget_max,
@@ -84,7 +70,7 @@ export default async function VendorInboxPage() {
         contact_email, contact_phone
         `
       )
-      .in("id", rfqIds);
+      .in('id', rfqIds);
 
     if (rErr) throw new Error(rErr.message);
     rfqsById = new Map((rfqs ?? []).map((r) => [r.id, r]));
@@ -109,16 +95,16 @@ export default async function VendorInboxPage() {
                   <div className="d-flex justify-content-between align-items-start">
                     <div>
                       <div className="badge text-bg-secondary mb-2">
-                        {inv.status?.toUpperCase() || "PENDING"}
+                        {inv.status?.toUpperCase() || 'PENDING'}
                       </div>
                       <h5 className="card-title mb-1">RFQ {inv.rfq_id.slice(0, 8)}…</h5>
                       <div className="text-secondary small mb-3">
-                        {rfq?.city || "-"}, {rfq?.state || "-"}, {rfq?.country || "-"} ·{" "}
-                        {rfq?.event_date ? new Date(rfq.event_date).toLocaleDateString() : "Date TBD"} ·{" "}
-                        {rfq?.guest_count ? `${rfq.guest_count} guests` : "Guest count TBD"}
+                        {rfq?.city || '-'}, {rfq?.state || '-'}, {rfq?.country || '-'} ·{' '}
+                        {rfq?.event_date ? new Date(rfq.event_date).toLocaleDateString() : 'Date TBD'} ·{' '}
+                        {rfq?.guest_count ? `${rfq.guest_count} guests` : 'Guest count TBD'}
                         {rfq?.budget_min || rfq?.budget_max
-                          ? ` · Budget: ${rfq?.budget_min ?? "?"}–${rfq?.budget_max ?? "?"}`
-                          : ""}
+                          ? ` · Budget: ${rfq?.budget_min ?? '?'}–${rfq?.budget_max ?? '?'}`
+                          : ''}
                       </div>
                       {rfq?.notes && <p className="mb-0">{rfq.notes}</p>}
                     </div>
@@ -128,7 +114,6 @@ export default async function VendorInboxPage() {
                     </div>
                   </div>
 
-                  {/* Contact reveal block */}
                   <div className="mt-3">
                     {inv.contact_revealed ? (
                       <div className="p-2 rounded border bg-success-subtle">
@@ -138,7 +123,7 @@ export default async function VendorInboxPage() {
                             <a href={`mailto:${rfq.contact_email}`}>{rfq.contact_email}</a>
                           )}
                           {inv.reveal_phone && rfq?.contact_phone && (
-                            <span className={inv.reveal_email && rfq?.contact_email ? "ms-2" : ""}>
+                            <span className={inv.reveal_email && rfq?.contact_email ? 'ms-2' : ''}>
                               · {rfq.contact_phone}
                             </span>
                           )}
@@ -157,7 +142,6 @@ export default async function VendorInboxPage() {
 
                   <hr />
 
-                  {/* Quote form (server also blocks after acceptance; UI left open for edits until then) */}
                   <QuoteForm rfq_id={inv.rfq_id} vendor_id={inv.vendor_id} />
                 </div>
               </div>
