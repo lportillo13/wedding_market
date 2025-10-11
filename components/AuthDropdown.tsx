@@ -12,6 +12,7 @@ type AuthDropdownProps = {
 export default function AuthDropdown({ user, isVendor }: AuthDropdownProps) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const profileHref = isVendor ? "/vendor/profile" : "/account/profile";
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -64,12 +65,7 @@ export default function AuthDropdown({ user, isVendor }: AuthDropdownProps) {
       </button>
       <ul className={`dropdown-menu dropdown-menu-end${open ? " show" : ""}`}>
         <li>
-          <Link className="dropdown-item" href="/account">
-            Account
-          </Link>
-        </li>
-        <li>
-          <Link className="dropdown-item" href="/account/profile">
+          <Link className="dropdown-item" href={profileHref}>
             Profile
           </Link>
         </li>
