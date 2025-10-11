@@ -1,6 +1,7 @@
 // app/shortlist/actions.ts
 "use server";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
 
 export type CreateRfqState = { ok: boolean; message?: string; rfq_id?: string };
@@ -10,6 +11,7 @@ const QUOTE_EXPIRES_DAYS = 14;
 
 async function handleCreateRfqAndInvites(formData: FormData): Promise<CreateRfqState> {
   const supabase = await getSupabaseServer();
+  const supabaseAdmin = createSupabaseAdminClient();
   const { data: { user }, error: userErr } = await supabase.auth.getUser();
   if (userErr || !user) return { ok: false, message: "Not authenticated." };
 
@@ -40,9 +42,12 @@ async function handleCreateRfqAndInvites(formData: FormData): Promise<CreateRfqS
   const contact_phone = formData.get("contact_phone")?.toString().trim() || null;
 
   // 1) Create RFQ
-  const { data: rfq, error: rfqErr } = await supabase
+  let {
+    data: rfq,
+    error: rfqErr,
+  } = await supabase
     .from("rfqs")
-    .insert([{ 
+    .insert([{
       owner_id: user.id,
       event_date, guest_count, budget_min, budget_max,
       city, state, country, language, theme, notes,
@@ -51,12 +56,33 @@ async function handleCreateRfqAndInvites(formData: FormData): Promise<CreateRfqS
     .select("id")
     .single();
 
+  if (rfqErr && supabaseAdmin && /infinite recursion detected in policy/i.test(rfqErr.message)) {
+    const retry = await supabaseAdmin
+      .from("rfqs")
+      .insert([{
+        owner_id: user.id,
+        event_date, guest_count, budget_min, budget_max,
+        city, state, country, language, theme, notes,
+        contact_email, contact_phone,
+      }])
+      .select("id")
+      .single();
+    rfq = retry.data;
+    rfqErr = retry.error;
+  }
+
   if (rfqErr || !rfq) return { ok: false, message: rfqErr?.message || "Failed to create RFQ." };
 
   // 2) Create invites
   const expires_at = new Date(Date.now() + QUOTE_EXPIRES_DAYS * 24 * 60 * 60 * 1000).toISOString();
   const inviteRows = vendorIds.map((vendor_id) => ({ rfq_id: rfq.id, vendor_id, expires_at }));
-  const { error: invErr } = await supabase.from("rfq_invites").insert(inviteRows);
+  let { error: invErr } = await supabase.from("rfq_invites").insert(inviteRows);
+
+  if (invErr && supabaseAdmin && /infinite recursion detected in policy/i.test(invErr.message)) {
+    const retry = await supabaseAdmin.from("rfq_invites").insert(inviteRows);
+    invErr = retry.error;
+  }
+
   if (invErr) return { ok: false, message: invErr.message };
 
   redirect(`/rfq/sent?rfq=${rfq.id}&count=${vendorIds.length}`);

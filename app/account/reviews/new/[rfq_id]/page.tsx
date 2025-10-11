@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createReview, type CreateReviewState } from "@/app/account/reviews/actions";
 import ReviewForm from "./ReviewForm";
 
@@ -26,13 +27,39 @@ export default async function NewReviewPage({
     redirect("/signup");
   }
 
-  const { data: rfq, error: rfqErr } = await supabase
+  const supabaseAdmin = createSupabaseAdminClient();
+
+  let {
+    data: rfq,
+    error: rfqErr,
+  } = await supabase
     .from("rfqs")
-    .select("id, accepted_quote_id")
+    .select("id, accepted_quote_id, owner_id")
     .eq("id", rfq_id)
-    .maybeSingle();
+    .maybeSingle<{ id: string; accepted_quote_id: string | null; owner_id: string }>();
+
+  if (rfqErr && supabaseAdmin && /infinite recursion detected in policy/i.test(rfqErr.message)) {
+    const retry = await supabaseAdmin
+      .from("rfqs")
+      .select("id, accepted_quote_id, owner_id")
+      .eq("id", rfq_id)
+      .maybeSingle<{ id: string; accepted_quote_id: string | null; owner_id: string }>();
+    rfq = retry.data;
+    rfqErr = retry.error;
+  }
 
   if (rfqErr) throw new Error(rfqErr.message);
+  if (!rfq || rfq.owner_id !== user.id) {
+    return (
+      <main className="container py-4" style={{ maxWidth: 720 }}>
+        <h1 className="mb-3">Write a review</h1>
+        <div className="alert alert-warning">You can only review your own RFQs.</div>
+        <Link className="btn btn-outline-secondary mt-3" href="/account/rfqs">
+          Back to my RFQs
+        </Link>
+      </main>
+    );
+  }
 
   let vendorId: string | null = null;
   if (rfq?.accepted_quote_id) {

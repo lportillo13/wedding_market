@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { getRoles } from '@/lib/auth/roles';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import QuoteForm from './QuoteForm';
 
 type RfqRow = {
@@ -25,6 +26,7 @@ export default async function VendorInboxPage() {
   if (!user || !isVendor) redirect('/signup/vendor');
 
   const supabase = await createSupabaseServerClient();
+  const supabaseAdmin = createSupabaseAdminClient();
 
   const { data: vendor, error: vErr } = await supabase
     .from('vendors')
@@ -61,7 +63,7 @@ export default async function VendorInboxPage() {
   let rfqsById = new Map<string, RfqRow>();
 
   if (rfqIds.length) {
-    const { data: rfqs, error: rErr } = await supabase
+    let { data: rfqs, error: rErr } = await supabase
       .from('rfqs')
       .select(
         `
@@ -71,6 +73,21 @@ export default async function VendorInboxPage() {
         `
       )
       .in('id', rfqIds);
+
+    if (rErr && supabaseAdmin && /infinite recursion detected in policy/i.test(rErr.message)) {
+      const retry = await supabaseAdmin
+        .from('rfqs')
+        .select(
+          `
+          id, event_date, guest_count, budget_min, budget_max,
+          city, state, country, language, theme, notes, created_at,
+          contact_email, contact_phone
+          `
+        )
+        .in('id', rfqIds);
+      rfqs = retry.data;
+      rErr = retry.error;
+    }
 
     if (rErr) throw new Error(rErr.message);
     rfqsById = new Map((rfqs ?? []).map((r) => [r.id, r]));
