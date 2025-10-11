@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { isSupportedLanguage } from "@/lib/i18n";
 import ProfileForm, { type ProfileFormInitial } from "./profileForm";
 
 export default async function AccountProfilePage() {
@@ -19,7 +20,7 @@ export default async function AccountProfilePage() {
   const { data: profile } = await supabase
     .from("profiles")
     .select(
-      "full_name, phone, country, tentative_wedding_date, guest_count, wedding_budget, wedding_theme"
+      "full_name, phone, country, tentative_wedding_date, guest_count, wedding_budget, wedding_theme, language"
     )
     .eq("id", user.id)
     .maybeSingle();
@@ -33,6 +34,7 @@ export default async function AccountProfilePage() {
     guest_count: profile?.guest_count ?? null,
     wedding_budget: profile?.wedding_budget ?? null,
     wedding_theme: profile?.wedding_theme ?? "",
+    language: isSupportedLanguage(profile?.language) ? profile.language : "en",
   };
 
   return (

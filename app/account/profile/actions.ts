@@ -33,6 +33,7 @@ const ProfileSchema = z.object({
       message: "Enter a valid budget",
     }),
   wedding_theme: z.string().trim().max(80).optional(),
+  language: z.enum(["en", "es"]).optional().default("en"),
 });
 
 export type SaveProfileState = {
@@ -65,6 +66,7 @@ export async function saveProfile(
     guest_count: formData.get("guest_count"),
     wedding_budget: formData.get("wedding_budget"),
     wedding_theme: formData.get("wedding_theme"),
+    language: formData.get("language"),
   });
 
   if (!result.success) {
@@ -83,7 +85,8 @@ export async function saveProfile(
     };
   }
 
-  const { full_name, phone, country, tentative_wedding_date, guest_count, wedding_budget, wedding_theme } = result.data;
+  const { full_name, phone, country, tentative_wedding_date, guest_count, wedding_budget, wedding_theme, language } =
+    result.data;
 
   const updatePayload = {
     full_name,
@@ -93,6 +96,7 @@ export async function saveProfile(
     guest_count,
     wedding_budget,
     wedding_theme: wedding_theme || null,
+    language,
   } satisfies Record<string, unknown>;
 
   const { error } = await supabase

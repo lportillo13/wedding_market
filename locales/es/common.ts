@@ -113,6 +113,17 @@ const common = {
       success: "Cotización enviada ✅",
     },
   },
+  vendorQuotes: {
+    title: "Cotizaciones enviadas",
+    empty: "Aún no has enviado cotizaciones.",
+    sentLabel: "Enviada",
+    status: {
+      sent: "ENVIADA",
+    },
+    contact: {
+      hiddenNote: "Los datos de contacto se desbloquean automáticamente cuando tu cotización es aceptada.",
+    },
+  },
   vendorRfqs: {
     title: "Solicitudes recibidas",
     noProfile: {

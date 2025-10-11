@@ -21,12 +21,16 @@ export function LanguageProvider({ children, initialLanguage }: { children: Reac
       return initialLanguage ?? "en";
     }
 
+    if (initialLanguage) {
+      return initialLanguage;
+    }
+
     const stored = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
     if (isSupportedLanguage(stored)) {
       return stored;
     }
 
-    return initialLanguage ?? "en";
+    return "en";
   });
 
   useEffect(() => {
