@@ -68,6 +68,13 @@ export default function AuthDropdown({ user, isVendor }: AuthDropdownProps) {
             Account
           </Link>
         </li>
+        {isVendor && (
+          <li>
+            <Link className="dropdown-item" href="/vendor/rfqs">
+              Vendor RFQs
+            </Link>
+          </li>
+        )}
         {!isVendor && (
           <li>
             <Link className="dropdown-item" href="/signup/vendor">
