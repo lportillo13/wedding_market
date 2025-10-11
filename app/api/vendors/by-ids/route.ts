@@ -22,7 +22,8 @@ export async function GET(req: Request) {
 
     if (error) return NextResponse.json({ items: [], error: error.message }, { status: 500 });
     return NextResponse.json({ items: data ?? [] });
-  } catch (e: any) {
-    return NextResponse.json({ items: [], error: String(e) }, { status: 500 });
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : String(e);
+    return NextResponse.json({ items: [], error: message }, { status: 500 });
   }
 }

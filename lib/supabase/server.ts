@@ -15,25 +15,27 @@ export async function getSupabaseServer() {
           return cookieStore.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
+          const sameSite = options?.sameSite ?? "lax";
           try {
             cookieStore.set({
               name,
               value,
               ...options,
               path: options?.path ?? "/",
-              sameSite: (options?.sameSite as any) ?? "lax",
+              sameSite,
               secure: isProd, // ⬅️ critical: false on localhost
             });
           } catch {}
         },
         remove(name: string, options: CookieOptions) {
+          const sameSite = options?.sameSite ?? "lax";
           try {
             cookieStore.set({
               name,
               value: "",
               ...options,
               path: options?.path ?? "/",
-              sameSite: (options?.sameSite as any) ?? "lax",
+              sameSite,
               secure: isProd, // ⬅️ critical
               maxAge: 0,
             });

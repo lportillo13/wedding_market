@@ -22,22 +22,24 @@ export async function GET(request: Request) {
           return cookieStore.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
+          const sameSite = options?.sameSite ?? "lax";
           res.cookies.set({
             name,
             value,
             ...options,
             path: options?.path ?? "/",
-            sameSite: (options?.sameSite as any) ?? "lax",
+            sameSite: sameSite,
             secure: isProd, // ⬅️ critical on localhost
           });
         },
         remove(name: string, options: CookieOptions) {
+          const sameSite = options?.sameSite ?? "lax";
           res.cookies.set({
             name,
             value: "",
             ...options,
             path: options?.path ?? "/",
-            sameSite: (options?.sameSite as any) ?? "lax",
+            sameSite,
             secure: isProd,
             maxAge: 0,
           });

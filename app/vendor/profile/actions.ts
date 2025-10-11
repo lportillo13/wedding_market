@@ -49,7 +49,7 @@ export async function saveProfile(
     }
 
     // Do we already have a vendor for this user?
-    const { data: existing, error: selErr } = await supabase
+    const { data: existing } = await supabase
       .from("vendors")
       .select("id, slug")
       .eq("owner_id", user.id)
@@ -100,7 +100,8 @@ export async function saveProfile(
     revalidatePath(`/vendors/${slug}`);
 
     return { ok: true, message: "Profile saved.", slug };
-  } catch (e: any) {
-    return { ok: false, message: String(e?.message || e) };
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : String(e);
+    return { ok: false, message };
   }
 }

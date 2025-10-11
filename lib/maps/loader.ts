@@ -1,9 +1,11 @@
+type GoogleWindow = typeof window & { google?: typeof google };
+
 let promise: Promise<void> | null = null;
 
 export function loadGoogleMaps(apiKey: string): Promise<void> {
   if (typeof window === "undefined") return Promise.resolve();
   // Already loaded?
-  if ((window as any).google?.maps?.places) return Promise.resolve();
+  if ((window as GoogleWindow).google?.maps?.places) return Promise.resolve();
   // Already loading?
   if (promise) return promise;
 

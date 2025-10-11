@@ -2,17 +2,6 @@
 import { getSupabaseServer } from "@/lib/supabase/server";
 import QuoteForm from "./QuoteForm";
 
-type InviteRow = {
-  rfq_id: string;
-  vendor_id: string;
-  status: string;
-  expires_at: string | null;
-  created_at: string;
-  contact_revealed: boolean | null; // ← NEW
-  reveal_email: boolean | null;      // ← NEW
-  reveal_phone: boolean | null;      // ← NEW
-};
-
 type RfqRow = {
   id: string;
   event_date: string | null;

@@ -43,7 +43,8 @@ export async function GET(req: Request) {
     }
 
     return NextResponse.json({ items: data ?? [], total: count ?? 0, page, pageSize });
-  } catch (e: any) {
-    return NextResponse.json({ items: [], total: 0, error: String(e) }, { status: 500 });
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : String(e);
+    return NextResponse.json({ items: [], total: 0, error: message }, { status: 500 });
   }
 }
