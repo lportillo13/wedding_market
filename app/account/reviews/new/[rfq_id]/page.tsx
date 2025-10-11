@@ -9,8 +9,12 @@ type RfqWithAcceptedVendor = {
   quotes: { vendor_id: string }[] | null;
 };
 
-export default async function NewReviewPage({ params }: { params: { rfq_id: string } }) {
-  const { rfq_id } = params;
+export default async function NewReviewPage({
+  params,
+}: {
+  params: Promise<{ rfq_id: string }>;
+}) {
+  const { rfq_id } = await params;
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from('rfqs')
