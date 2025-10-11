@@ -1,5 +1,6 @@
-import Link from 'next/link';
-import { getRoles } from '@/lib/auth/roles';
+import Link from "next/link";
+import { getRoles } from "@/lib/auth/roles";
+import AuthDropdown from "@/components/AuthDropdown";
 
 export default async function AuthMenu() {
   const { user, isVendor } = await getRoles();
@@ -17,37 +18,5 @@ export default async function AuthMenu() {
     );
   }
 
-  return (
-    <div className="dropdown ms-auto">
-      <button
-        className="btn btn-outline-secondary dropdown-toggle"
-        type="button"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        {user.email ?? 'Account'}
-      </button>
-      <ul className="dropdown-menu dropdown-menu-end">
-        <li>
-          <Link className="dropdown-item" href="/account">
-            Account
-          </Link>
-        </li>
-        {!isVendor && (
-          <li>
-            <Link className="dropdown-item" href="/signup/vendor">
-              Create vendor profile
-            </Link>
-          </li>
-        )}
-        <li>
-          <form action="/auth/signout" method="post">
-            <button className="dropdown-item" type="submit">
-              Log out
-            </button>
-          </form>
-        </li>
-      </ul>
-    </div>
-  );
+  return <AuthDropdown user={user} isVendor={isVendor} />;
 }
