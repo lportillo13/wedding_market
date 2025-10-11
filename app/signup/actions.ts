@@ -44,7 +44,6 @@ export async function signUp(_: SignUpState, formData: FormData): Promise<SignUp
   if (supabaseAdmin) {
     const { error: confirmErr } = await supabaseAdmin.auth.admin.updateUserById(userId, {
       email_confirm: true,
-      email_confirmed_at: new Date().toISOString(),
     });
     if (confirmErr) {
       return { ok: false, message: confirmErr.message };
