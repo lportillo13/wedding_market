@@ -21,6 +21,28 @@ const common = {
     createVendorProfile: "Create vendor profile",
     logOut: "Log out",
   },
+  shortlistButton: {
+    add: "Add to shortlist",
+    inList: "In shortlist",
+  },
+  vendorsPage: {
+    title: "Vendors",
+    searchForm: {
+      queryPlaceholder: "Search vendors (name, bio)…",
+      categoryPlaceholder: "Filter by category slug (e.g. photography)",
+      submit: "Search",
+    },
+    empty: "No vendors found.",
+    pagination: {
+      prev: "Prev",
+      next: "Next",
+      pageLabel: "Page {current} / {total}",
+    },
+  },
+  vendorProfile: {
+    writeReview: "Write a review",
+    moreComing: "More details (gallery, FAQs, coupons) coming soon.",
+  },
   home: {
     hero: {
       badge: "All-in-one wedding marketplace",
