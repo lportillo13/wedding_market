@@ -23,7 +23,15 @@ export default async function RfqsListPage() {
     .eq("owner_id", user.id)
     .order("created_at", { ascending: false });
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error("Failed to load RFQs", error);
+    return (
+      <main className="container py-4" style={{ maxWidth: 960 }}>
+        <h1 className="mb-3">My RFQs</h1>
+        <div className="alert alert-danger">We couldn’t load your RFQs right now. Please try again later.</div>
+      </main>
+    );
+  }
 
   return (
     <main className="container py-4" style={{ maxWidth: 960 }}>
