@@ -1,20 +1,11 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState } from "react";
 import { setPublishStatus, type PubState } from "./actions";
 
 export default function PublishForm({ initial }: { initial: { is_published: boolean; slug?: string } }) {
   const [state, formAction, pending] = useActionState<PubState, FormData>(setPublishStatus, { ok: false, message: "" });
-  const [checked, setChecked] = useState(initial.is_published);
-
-  const prevOk = useRef(state.ok);
-
-  useEffect(() => {
-    if (!prevOk.current && state.ok && typeof state.published === "boolean") {
-      setChecked(state.published);
-    }
-    prevOk.current = state.ok;
-  }, [state.ok, state.published]);
+  const published = typeof state.published === "boolean" ? state.published : initial.is_published;
 
   return (
     <form action={formAction} className="border rounded p-3">
@@ -24,11 +15,11 @@ export default function PublishForm({ initial }: { initial: { is_published: bool
           type="checkbox"
           id="publishSwitch"
           name="publish"
-          checked={checked}
-          onChange={(e) => setChecked(e.target.checked)}
+          checked={published}
+          onChange={() => {}}
         />
         <label className="form-check-label" htmlFor="publishSwitch">
-          {checked ? "Published (visible in catalog)" : "Unpublished (hidden from catalog)"}
+          {published ? "Published (visible in catalog)" : "Unpublished (hidden from catalog)"}
         </label>
       </div>
 
@@ -42,7 +33,7 @@ export default function PublishForm({ initial }: { initial: { is_published: bool
         {pending ? "Saving…" : "Save"}
       </button>
 
-      {checked && initial.slug && (
+      {published && initial.slug && (
         <a className="btn btn-link ms-2" href={`/vendors/${initial.slug}`} target="_blank" rel="noreferrer">
           View public page
         </a>
