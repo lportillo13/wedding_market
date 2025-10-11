@@ -56,19 +56,12 @@ export default async function VendorPage({
 
   let reviewRfqId: string | null = null;
   if (user) {
-    const { data: hired } = await supabase.rpc('user_hired_vendor', {
+    const { data: rfqId } = await supabase.rpc('first_eligible_review_rfq', {
       _uid: user.id,
       _vendor_id: vendor.id,
     });
 
-    if (hired) {
-      const { data: rfqId } = await supabase.rpc('first_eligible_review_rfq', {
-        _uid: user.id,
-        _vendor_id: vendor.id,
-      });
-
-      reviewRfqId = rfqId ?? null;
-    }
+    reviewRfqId = rfqId ?? null;
   }
 
   return (

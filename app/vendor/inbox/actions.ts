@@ -10,6 +10,11 @@ export async function sendQuote(_: SendQuoteState, form: FormData): Promise<Send
   const { data: { user }, error: userErr } = await supabase.auth.getUser();
   if (userErr || !user) return { ok: false, message: "Not authenticated." };
 
+  const uidArg = { _uid: user.id } satisfies { _uid: string };
+  const { data: isVendor, error: roleErr } = await supabase.rpc("is_vendor", uidArg);
+  if (roleErr) return { ok: false, message: roleErr.message };
+  if (!isVendor) return { ok: false, message: "Vendor access required." };
+
   const rfq_id = form.get("rfq_id")?.toString();
   const vendor_id = form.get("vendor_id")?.toString();
   const amount_usd = form.get("amount_usd")?.toString();

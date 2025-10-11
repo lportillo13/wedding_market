@@ -1,13 +1,9 @@
-import { revalidatePath } from 'next/cache';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { createReview, type CreateReviewState } from '@/app/account/reviews/actions';
-import ReviewForm from './ReviewForm';
-
-type RfqWithAcceptedVendor = {
-  id: string;
-  accepted_quote_id: string | null;
-  quotes: { vendor_id: string }[] | null;
-};
+import { revalidatePath } from "next/cache";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createReview, type CreateReviewState } from "@/app/account/reviews/actions";
+import ReviewForm from "./ReviewForm";
 
 export default async function NewReviewPage({
   params,
@@ -16,49 +12,87 @@ export default async function NewReviewPage({
 }) {
   const { rfq_id } = await params;
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from('rfqs')
-    .select('id, accepted_quote_id, quotes:quotes!rfqs_accepted_quote_id_fkey(vendor_id)')
-    .eq('id', rfq_id)
-    .maybeSingle<RfqWithAcceptedVendor>();
-
-  if (error) throw new Error(error.message);
-
-  const vendorId = data?.quotes?.[0]?.vendor_id ?? null;
-
-  if (!vendorId) {
-    return <p>You can only review vendors you hired.</p>;
-  }
 
   const {
     data: { user },
+    error: userErr,
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    return <p>You can only review vendors you hired.</p>;
+  if (userErr) {
+    throw new Error(userErr.message);
   }
 
-  const { data: allowed } = await supabase.rpc('can_user_review', {
+  if (!user) {
+    redirect("/signup");
+  }
+
+  const { data: rfq, error: rfqErr } = await supabase
+    .from("rfqs")
+    .select("id, accepted_quote_id")
+    .eq("id", rfq_id)
+    .maybeSingle();
+
+  if (rfqErr) throw new Error(rfqErr.message);
+
+  let vendorId: string | null = null;
+  if (rfq?.accepted_quote_id) {
+    const { data: quote, error: quoteErr } = await supabase
+      .from("quotes")
+      .select("vendor_id")
+      .eq("id", rfq.accepted_quote_id)
+      .maybeSingle<{ vendor_id: string }>();
+
+    if (quoteErr) throw new Error(quoteErr.message);
+    vendorId = quote?.vendor_id ?? null;
+  }
+
+  if (!vendorId) {
+    return (
+      <main className="container py-4" style={{ maxWidth: 720 }}>
+        <h1 className="mb-3">Write a review</h1>
+        <div className="alert alert-warning">You can only review vendors you hired.</div>
+        <Link className="btn btn-outline-secondary mt-3" href="/account/rfqs">
+          Back to my RFQs
+        </Link>
+      </main>
+    );
+  }
+
+  const { data: allowed, error: allowedErr } = await supabase.rpc("can_user_review", {
     _uid: user.id,
     _vendor_id: vendorId,
     _rfq_id: rfq_id,
   });
-  const { data: done } = await supabase.rpc('has_user_reviewed', {
+  if (allowedErr) throw new Error(allowedErr.message);
+
+  const { data: done, error: doneErr } = await supabase.rpc("has_user_reviewed", {
     _uid: user.id,
     _vendor_id: vendorId,
     _rfq_id: rfq_id,
   });
+  if (doneErr) throw new Error(doneErr.message);
+
   const hasReviewed = !!done;
   const canWrite = !!allowed && !hasReviewed;
 
   if (!canWrite) {
-    return <p>You can only review vendors you hired.</p>;
+    return (
+      <main className="container py-4" style={{ maxWidth: 720 }}>
+        <h1 className="mb-3">Write a review</h1>
+        <div className="alert alert-info">
+          You can only review vendors you hired and haven’t already reviewed.
+        </div>
+        <Link className="btn btn-outline-secondary mt-3" href="/account/reviews">
+          See my reviews
+        </Link>
+      </main>
+    );
   }
 
   async function action(prev: CreateReviewState, fd: FormData): Promise<CreateReviewState> {
     const res = await createReview(prev, fd);
     if (res.ok) {
-      revalidatePath('/vendors');
+      revalidatePath("/vendors");
     }
     return res;
   }

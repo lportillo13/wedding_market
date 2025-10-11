@@ -7,6 +7,11 @@ export async function GET() {
 
   if (!user) return NextResponse.json({ vendor: null }, { status: 401 });
 
+  const uidArg = { _uid: user.id } satisfies { _uid: string };
+  const { data: isVendor, error: roleErr } = await supabase.rpc("is_vendor", uidArg);
+  if (roleErr) return NextResponse.json({ vendor: null, error: roleErr.message }, { status: 500 });
+  if (!isVendor) return NextResponse.json({ vendor: null }, { status: 403 });
+
   const { data, error } = await supabase
     .from("vendors")
     .select("id, slug, business_name, bio, bio_en, bio_es")

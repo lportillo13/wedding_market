@@ -1,17 +1,19 @@
 import Link from 'next/link';
-import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { getRoles } from '@/lib/auth/roles';
 
 export default async function AuthMenu() {
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user, isVendor } = await getRoles();
 
   if (!user) {
     return (
-      <Link href="/login" className="btn btn-outline-secondary ms-auto">
-        Log in
-      </Link>
+      <div className="d-flex align-items-center gap-2 ms-auto">
+        <Link href="/signup" className="btn btn-primary">
+          Sign up
+        </Link>
+        <Link href="/login" className="btn btn-outline-secondary">
+          Log in
+        </Link>
+      </div>
     );
   }
 
@@ -31,6 +33,13 @@ export default async function AuthMenu() {
             Account
           </Link>
         </li>
+        {!isVendor && (
+          <li>
+            <Link className="dropdown-item" href="/signup/vendor">
+              Create vendor profile
+            </Link>
+          </li>
+        )}
         <li>
           <form action="/auth/signout" method="post">
             <button className="dropdown-item" type="submit">
