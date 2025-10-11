@@ -42,12 +42,12 @@ export async function createRfqAndInvites(_: CreateRfqState, formData: FormData)
   // 1) Create RFQ
   const { data: rfq, error: rfqErr } = await supabase
     .from("rfqs")
-    .insert([{
+    .insert([{ 
       owner_id: user.id,
       event_date, guest_count, budget_min, budget_max,
       city, state, country, language, theme, notes,
-      contact_email, contact_phone
-    }]])
+      contact_email, contact_phone,
+    }])
     .select("id")
     .single();
 
