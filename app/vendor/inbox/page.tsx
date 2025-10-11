@@ -48,7 +48,21 @@ export default async function VendorInboxPage() {
     );
   }
 
-  const { data: invites, error: invErr } = await supabase
+  type InviteRow = {
+    rfq_id: string;
+    vendor_id: string;
+    status: string | null;
+    expires_at: string | null;
+    created_at: string;
+    contact_revealed?: boolean | null;
+    reveal_email?: boolean | null;
+    reveal_phone?: boolean | null;
+  };
+
+  let invites: InviteRow[] | null = null;
+  let invErr: unknown = null;
+
+  const invitesResult = await supabase
     .from('rfq_invites')
     .select(
       'rfq_id, vendor_id, status, expires_at, created_at, contact_revealed, reveal_email, reveal_phone'
@@ -57,7 +71,32 @@ export default async function VendorInboxPage() {
     .order('created_at', { ascending: false })
     .limit(100);
 
-  if (invErr) throw new Error(invErr.message);
+  invErr = invitesResult.error;
+  invites = invitesResult.data as InviteRow[] | null;
+
+  if (invErr && invErr instanceof Error && /contact_revealed/.test(invErr.message)) {
+    const fallback = await supabase
+      .from('rfq_invites')
+      .select('rfq_id, vendor_id, status, expires_at, created_at')
+      .eq('vendor_id', vendor.id)
+      .order('created_at', { ascending: false })
+      .limit(100);
+
+    if (fallback.error) throw new Error(fallback.error.message);
+
+    invites = (fallback.data as InviteRow[] | null)?.map((inv) => {
+      const accepted = inv.status?.toLowerCase() === 'accepted';
+      return {
+        ...inv,
+        contact_revealed: accepted,
+        reveal_email: accepted,
+        reveal_phone: accepted,
+      } satisfies InviteRow;
+    }) ?? null;
+    invErr = null;
+  }
+
+  if (invErr instanceof Error) throw new Error(invErr.message);
 
   const rfqIds = Array.from(new Set((invites ?? []).map((i) => i.rfq_id)));
   let rfqsById = new Map<string, RfqRow>();
@@ -106,6 +145,10 @@ export default async function VendorInboxPage() {
         <div className="vstack gap-3">
           {invites.map((inv) => {
             const rfq = rfqsById.get(inv.rfq_id);
+            const contactRevealed =
+              inv.contact_revealed ?? inv.status?.toLowerCase() === 'accepted';
+            const revealEmail = inv.reveal_email ?? contactRevealed;
+            const revealPhone = inv.reveal_phone ?? contactRevealed;
             return (
               <div className="card" key={`${inv.rfq_id}-${inv.created_at}`}>
                 <div className="card-body">
@@ -132,19 +175,19 @@ export default async function VendorInboxPage() {
                   </div>
 
                   <div className="mt-3">
-                    {inv.contact_revealed ? (
+                    {contactRevealed ? (
                       <div className="p-2 rounded border bg-success-subtle">
                         <span className="badge text-bg-success me-2">Contact revealed</span>
                         <div className="small">
-                          {inv.reveal_email && rfq?.contact_email && (
+                          {revealEmail && rfq?.contact_email && (
                             <a href={`mailto:${rfq.contact_email}`}>{rfq.contact_email}</a>
                           )}
-                          {inv.reveal_phone && rfq?.contact_phone && (
-                            <span className={inv.reveal_email && rfq?.contact_email ? 'ms-2' : ''}>
+                          {revealPhone && rfq?.contact_phone && (
+                            <span className={revealEmail && rfq?.contact_email ? 'ms-2' : ''}>
                               · {rfq.contact_phone}
                             </span>
                           )}
-                          {!inv.reveal_email && !inv.reveal_phone && (
+                          {!revealEmail && !revealPhone && (
                             <span className="text-secondary">No contact fields were shared.</span>
                           )}
                         </div>

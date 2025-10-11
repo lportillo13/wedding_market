@@ -67,17 +67,45 @@ export async function acceptQuote(
   // Reveal chosen contact fields for the winning vendor
   let { error: revealErr } = await supabase
     .from("rfq_invites")
-    .update({ contact_revealed: true, reveal_email, reveal_phone })
+    .update({
+      contact_revealed: true,
+      reveal_email,
+      reveal_phone,
+      status: "accepted",
+    })
     .eq("rfq_id", rfq_id)
     .eq("vendor_id", quote.vendor_id);
 
   if (revealErr && supabaseAdmin && /infinite recursion detected in policy/i.test(revealErr.message)) {
     const retry = await supabaseAdmin
       .from("rfq_invites")
-      .update({ contact_revealed: true, reveal_email, reveal_phone })
+      .update({
+        contact_revealed: true,
+        reveal_email,
+        reveal_phone,
+        status: "accepted",
+      })
       .eq("rfq_id", rfq_id)
       .eq("vendor_id", quote.vendor_id);
     revealErr = retry.error;
+  }
+
+  if (revealErr && /contact_revealed/.test(revealErr.message)) {
+    const fallback = await supabase
+      .from("rfq_invites")
+      .update({ status: "accepted" })
+      .eq("rfq_id", rfq_id)
+      .eq("vendor_id", quote.vendor_id);
+    revealErr = fallback.error;
+
+    if (revealErr && supabaseAdmin && /infinite recursion detected in policy/i.test(revealErr.message)) {
+      const retry = await supabaseAdmin
+        .from("rfq_invites")
+        .update({ status: "accepted" })
+        .eq("rfq_id", rfq_id)
+        .eq("vendor_id", quote.vendor_id);
+      revealErr = retry.error;
+    }
   }
 
   if (revealErr) return { ok: false, message: revealErr.message };
