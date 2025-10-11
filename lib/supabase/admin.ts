@@ -1,15 +1,20 @@
 import { createClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
-export function createSupabaseAdminClient() {
+export function createSupabaseAdminClient(): SupabaseClient | null {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url) {
-    throw new Error('NEXT_PUBLIC_SUPABASE_URL is not set');
+    console.error('NEXT_PUBLIC_SUPABASE_URL is not set. Unable to create Supabase admin client.');
+    return null;
   }
 
   if (!serviceRoleKey) {
-    throw new Error('SUPABASE_SERVICE_ROLE_KEY is not set');
+    console.warn(
+      'SUPABASE_SERVICE_ROLE_KEY is not set. Falling back to the standard Supabase client for privileged operations.'
+    );
+    return null;
   }
 
   return createClient(url, serviceRoleKey, {
