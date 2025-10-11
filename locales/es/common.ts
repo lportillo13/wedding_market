@@ -43,6 +43,54 @@ const common = {
     writeReview: "Escribir una reseña",
     moreComing: "Más detalles (galería, preguntas frecuentes, cupones) muy pronto.",
   },
+  vendorDashboard: {
+    heading: "Panel del proveedor",
+    tabs: {
+      overview: "Resumen",
+      rfqs: "Solicitudes",
+      quotes: "Cotizaciones",
+      profile: "Perfil",
+      location: "Ubicación",
+      categories: "Categorías",
+      publish: "Publicar",
+    },
+    overview: {
+      welcome:
+        "¡Bienvenido! Usa las pestañas superiores para gestionar tu perfil, revisar solicitudes y seguir las cotizaciones que has enviado.",
+    },
+  },
+  vendorRfqs: {
+    title: "Solicitudes recibidas",
+    noProfile: {
+      message: "Aún no tienes un perfil de proveedor. Créalo en",
+      linkLabel: "Perfil de proveedor",
+    },
+    empty: "Aún no tienes invitaciones. Verás solicitudes aquí cuando los clientes te inviten.",
+    rfqLabel: "Solicitud",
+    eventDateTbd: "Fecha por confirmar",
+    guestCountTbd: "Número de invitados por confirmar",
+    guestsLabel: "invitados",
+    budgetLabel: "Presupuesto",
+    invitedAtLabel: "Invitado",
+    expiresAtLabel: "Expira",
+    status: {
+      accepted: "ACEPTADA",
+      responded: "RESPONDIDA",
+      pending: "PENDIENTE",
+      declined: "RECHAZADA",
+      expired: "VENCIDA",
+      unknown: "ESTADO",
+    },
+    contact: {
+      revealed: "Contacto visible",
+      hidden: "Contacto oculto",
+      hiddenNote: "Se mostrará automáticamente si tu cotización es aceptada.",
+      noneShared: "No se compartió información de contacto.",
+    },
+    latestQuote: {
+      heading: "Última cotización",
+    },
+  },
   home: {
     hero: {
       badge: "Mercado de bodas todo en uno",

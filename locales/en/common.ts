@@ -43,6 +43,54 @@ const common = {
     writeReview: "Write a review",
     moreComing: "More details (gallery, FAQs, coupons) coming soon.",
   },
+  vendorDashboard: {
+    heading: "Vendor Dashboard",
+    tabs: {
+      overview: "Overview",
+      rfqs: "RFQs",
+      quotes: "Quotes",
+      profile: "Profile",
+      location: "Location",
+      categories: "Categories",
+      publish: "Publish",
+    },
+    overview: {
+      welcome:
+        "Welcome! Use the tabs above to manage your profile, review RFQs, and track quotes you’ve sent.",
+    },
+  },
+  vendorRfqs: {
+    title: "Received RFQs",
+    noProfile: {
+      message: "You don’t have a vendor profile yet. Create it in",
+      linkLabel: "Vendor Profile",
+    },
+    empty: "No invites yet. You’ll see RFQs here when customers invite you.",
+    rfqLabel: "RFQ",
+    eventDateTbd: "Date TBD",
+    guestCountTbd: "Guest count TBD",
+    guestsLabel: "guests",
+    budgetLabel: "Budget",
+    invitedAtLabel: "Invited",
+    expiresAtLabel: "Expires",
+    status: {
+      accepted: "ACCEPTED",
+      responded: "RESPONDED",
+      pending: "PENDING",
+      declined: "DECLINED",
+      expired: "EXPIRED",
+      unknown: "STATUS",
+    },
+    contact: {
+      revealed: "Contact revealed",
+      hidden: "Contact hidden",
+      hiddenNote: "Appears automatically if your quote is accepted.",
+      noneShared: "No contact fields were shared.",
+    },
+    latestQuote: {
+      heading: "Latest quote",
+    },
+  },
   home: {
     hero: {
       badge: "All-in-one wedding marketplace",
