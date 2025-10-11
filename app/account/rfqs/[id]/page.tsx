@@ -1,16 +1,17 @@
-import { getSupabaseServer } from "@/lib/supabase/server";
+import Link from "next/link";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import AcceptButton from "./AcceptButton";
 
 export default async function RfqDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+  const { id: rfq_id } = await params;
 
-  const supabase = await getSupabaseServer();
+  const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     return (
       <main className="container py-4" style={{ maxWidth: 960 }}>
         <div className="alert alert-warning">Please log in to view this RFQ.</div>
-        <a className="btn btn-primary" href={`/login?next=${encodeURIComponent(`/account/rfqs/${id}`)}`}>
+        <a className="btn btn-primary" href={`/login?next=${encodeURIComponent(`/account/rfqs/${rfq_id}`)}`}>
           Log in
         </a>
       </main>
@@ -22,9 +23,10 @@ export default async function RfqDetailPage({ params }: { params: Promise<{ id: 
     .select(`
       id, owner_id, event_date, guest_count, budget_min, budget_max,
       city, state, country, language, theme, notes,
-      created_at, accepted_quote_id, accepted_at
+      created_at, accepted_quote_id, accepted_at,
+      quotes:quotes!rfqs_accepted_quote_id_fkey(vendor_id)
     `)
-    .eq("id", id)
+    .eq("id", rfq_id)
     .maybeSingle();
   if (rfqErr) throw new Error(rfqErr.message);
   if (!rfq) {
@@ -37,6 +39,30 @@ export default async function RfqDetailPage({ params }: { params: Promise<{ id: 
 
   const isOwner = rfq.owner_id === user.id;
   const accepted = Boolean(rfq.accepted_quote_id);
+
+  type VendorQuoteRow = { vendor_id: string | null };
+  const rfqWithQuotes = rfq as typeof rfq & { quotes?: VendorQuoteRow[] | null };
+  const vendor_id = Array.isArray(rfqWithQuotes?.quotes)
+    ? rfqWithQuotes.quotes?.[0]?.vendor_id ?? null
+    : null;
+
+  let canWrite = false;
+  if (user && vendor_id) {
+    const { data: canReview } = await supabase
+      .rpc("can_user_review", { _uid: user.id, _vendor_id: vendor_id, _rfq_id: rfq_id });
+    canWrite = Boolean(canReview);
+  }
+
+  let alreadyReviewed = false;
+  if (user && vendor_id) {
+    const { count } = await supabase
+      .from("reviews")
+      .select("id", { count: "exact", head: true })
+      .eq("rater_user_id", user.id)
+      .eq("vendor_id", vendor_id)
+      .eq("rfq_id", rfq_id);
+    alreadyReviewed = (count ?? 0) > 0;
+  }
 
   const { data: quotes, error: qErr } = await supabase
     .from("quotes")
@@ -60,6 +86,17 @@ export default async function RfqDetailPage({ params }: { params: Promise<{ id: 
     <main className="container py-4" style={{ maxWidth: 960 }}>
       <h1 className="mb-1">RFQ {rfq.id.slice(0, 8)}…</h1>
       {accepted && <div className="badge text-bg-success mb-3">Accepted</div>}
+      {canWrite && !alreadyReviewed && (
+        <div className="mb-3">
+          <Link
+            className="btn btn-primary"
+            href={`/account/reviews/new/${rfq_id}`}
+            aria-label="Write a review for this vendor"
+          >
+            Write a review
+          </Link>
+        </div>
+      )}
       {!isOwner && <div className="alert alert-info">View only — you’re not the owner of this RFQ.</div>}
 
       <div className="card mb-4">
