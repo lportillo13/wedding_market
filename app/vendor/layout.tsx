@@ -16,6 +16,7 @@ export default async function VendorLayout({ children }: { children: ReactNode }
       <ul className="nav nav-tabs mb-4">
         <li className="nav-item"><Link className="nav-link" href="/vendor">Overview</Link></li>
         <li className="nav-item"><Link className="nav-link" href="/vendor/rfqs">RFQs</Link></li>
+        <li className="nav-item"><Link className="nav-link" href="/vendor/quotes">Quotes</Link></li>
         <li className="nav-item"><Link className="nav-link" href="/vendor/profile">Profile</Link></li>
         <li className="nav-item"><Link className="nav-link" href="/vendor/location">Location</Link></li>
         <li className="nav-item"><Link className="nav-link" href="/vendor/categories">Categories</Link></li>
