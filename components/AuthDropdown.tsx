@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
+import { useTranslation } from "@/contexts/LanguageContext";
 
 type AuthDropdownProps = {
   user: User;
@@ -13,6 +14,7 @@ export default function AuthDropdown({ user, isVendor }: AuthDropdownProps) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const profileHref = isVendor ? "/vendor/profile" : "/account/profile";
+  const t = useTranslation();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -61,32 +63,32 @@ export default function AuthDropdown({ user, isVendor }: AuthDropdownProps) {
         aria-expanded={open}
         onClick={() => setOpen((prev) => !prev)}
       >
-        {user.email ?? "Account"}
+        {user.email ?? t("auth.account")}
       </button>
       <ul className={`dropdown-menu dropdown-menu-end${open ? " show" : ""}`}>
         <li>
           <Link className="dropdown-item" href={profileHref}>
-            Profile
+            {t("auth.profile")}
           </Link>
         </li>
         {isVendor && (
           <li>
             <Link className="dropdown-item" href="/vendor/rfqs">
-              Vendor RFQs
+              {t("auth.vendorRfqs")}
             </Link>
           </li>
         )}
         {!isVendor && (
           <li>
             <Link className="dropdown-item" href="/signup/vendor">
-              Create vendor profile
+              {t("auth.createVendorProfile")}
             </Link>
           </li>
         )}
         <li>
           <form action="/auth/signout" method="post">
             <button className="dropdown-item" type="submit" onClick={() => setOpen(false)}>
-              Log out
+              {t("auth.logOut")}
             </button>
           </form>
         </li>
