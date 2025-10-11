@@ -1,10 +1,10 @@
 // lib/supabase/server.ts
-import { cookies } from "next/headers";
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { cookies } from 'next/headers';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
-export async function getSupabaseServer() {
+export async function createSupabaseServerClient() {
   const cookieStore = await cookies(); // Next 15: await
-  const isProd = process.env.NODE_ENV === "production";
+  const isProd = process.env.NODE_ENV === 'production';
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,13 +15,13 @@ export async function getSupabaseServer() {
           return cookieStore.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
-          const sameSite = options?.sameSite ?? "lax";
+          const sameSite = options?.sameSite ?? 'lax';
           try {
             cookieStore.set({
               name,
               value,
               ...options,
-              path: options?.path ?? "/",
+              path: options?.path ?? '/',
               sameSite,
               secure: isProd, // ⬅️ critical: false on localhost
             });
@@ -30,13 +30,13 @@ export async function getSupabaseServer() {
           }
         },
         remove(name: string, options: CookieOptions) {
-          const sameSite = options?.sameSite ?? "lax";
+          const sameSite = options?.sameSite ?? 'lax';
           try {
             cookieStore.set({
               name,
-              value: "",
+              value: '',
               ...options,
-              path: options?.path ?? "/",
+              path: options?.path ?? '/',
               sameSite,
               secure: isProd, // ⬅️ critical
               maxAge: 0,
@@ -49,3 +49,5 @@ export async function getSupabaseServer() {
     }
   );
 }
+
+export const getSupabaseServer = createSupabaseServerClient;

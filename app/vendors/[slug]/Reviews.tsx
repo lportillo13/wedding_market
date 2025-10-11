@@ -1,32 +1,39 @@
-import { getSupabaseServer } from "@/lib/supabase/server";
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
-export default async function ReviewsList({ vendor_id }: { vendor_id: string }) {
-  const supabase = await getSupabaseServer();
-  const { data: reviews, error } = await supabase
-    .from("reviews")
-    .select("id, stars, title, body, created_at")
-    .eq("vendor_id", vendor_id)
-    .order("created_at", { ascending: false })
-    .limit(20);
-  if (error) throw new Error(error.message);
+type PublicReview = {
+  id: string;
+  rating: number;
+  title: string | null;
+  body: string | null;
+  created_at: string;
+};
 
-  if (!reviews?.length) return null;
+export default async function Reviews({ vendorId }: { vendorId: string }) {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from('reviews_public')
+    .select('id, rating, title, body, created_at')
+    .eq('vendor_id', vendorId)
+    .order('created_at', { ascending: false })
+    .limit(12)
+    .returns<PublicReview[]>();
+
+  if (error) return null;
+  if (!data?.length) return <p className="text-muted">No reviews yet.</p>;
 
   return (
-    <section className="mt-4">
-      <h5 className="mb-3">Recent reviews</h5>
-      <div className="vstack gap-3">
-        {reviews.map(r => (
-          <div className="border rounded p-3" key={r.id}>
-            <div className="d-flex justify-content-between">
-              <div className="fs-6">{'★'.repeat(r.stars)}{'☆'.repeat(5 - r.stars)}</div>
-              <div className="small text-secondary">{new Date(r.created_at!).toLocaleDateString()}</div>
-            </div>
-            {r.title && <div className="fw-semibold mt-1">{r.title}</div>}
-            {r.body && <div className="mt-1">{r.body}</div>}
+    <div className="vstack gap-3">
+      {data.map((review) => (
+        <article key={review.id} className="border rounded p-3">
+          <div className="d-flex gap-2 align-items-center mb-2">
+            <span className="badge text-bg-success">{review.rating}/5</span>
+            <time className="text-muted small">{new Date(review.created_at).toLocaleDateString()}</time>
           </div>
-        ))}
-      </div>
-    </section>
+          {review.title ? <h6 className="mb-2">{review.title}</h6> : null}
+          {review.body ? <p className="mb-0">{review.body}</p> : null}
+          <div className="text-muted small mt-2">Verified client</div>
+        </article>
+      ))}
+    </div>
   );
 }

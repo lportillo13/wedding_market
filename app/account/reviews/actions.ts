@@ -1,48 +1,55 @@
-"use server";
-import { getSupabaseServer } from "@/lib/supabase/server";
+'use server';
 
-export type ReviewState = { ok: boolean; message?: string };
+import { z } from 'zod';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
-export async function createReview(formData: FormData): Promise<ReviewState> {
-  const supabase = await getSupabaseServer();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { ok: false, message: "Please log in." };
+const ReviewSchema = z.object({
+  rfq_id: z.string().uuid(),
+  vendor_id: z.string().uuid(),
+  rating: z.coerce.number().int().min(1).max(5),
+  title: z.string().trim().max(120).optional().default(''),
+  body: z.string().trim().max(800).optional().default(''),
+});
 
-  const rfq_id = formData.get("rfq_id")?.toString();
-  const vendor_id = formData.get("vendor_id")?.toString();
-  const stars = Number(formData.get("stars"));
-  const title = formData.get("title")?.toString() || null;
-  const body = formData.get("body")?.toString() || null;
+export type CreateReviewState =
+  | { ok: true }
+  | { ok: false; error: string };
 
-  if (!rfq_id || !vendor_id) return { ok: false, message: "Missing RFQ or vendor." };
-  if (!(stars >= 1 && stars <= 5)) return { ok: false, message: "Stars must be 1–5." };
+export async function createReview(_prev: CreateReviewState, formData: FormData): Promise<CreateReviewState> {
+  const parsed = ReviewSchema.safeParse({
+    rfq_id: formData.get('rfq_id'),
+    vendor_id: formData.get('vendor_id'),
+    rating: formData.get('rating'),
+    title: formData.get('title'),
+    body: formData.get('body'),
+  });
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? 'Invalid input' };
+  }
+  const input = parsed.data;
 
-  const { error } = await supabase.from("reviews").insert([{
-    rfq_id, vendor_id, author_id: user.id, stars, title, body
-  }]);
-  if (error) return { ok: false, message: error.message };
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+    error: userErr,
+  } = await supabase.auth.getUser();
+  if (userErr || !user) return { ok: false, error: 'Not authenticated' };
 
-  return { ok: true };
-}
+  const { data: canReview, error: rpcErr } = await supabase
+    .rpc('can_user_review', { _uid: user.id, _vendor_id: input.vendor_id, _rfq_id: input.rfq_id });
 
-export async function updateReview(formData: FormData): Promise<ReviewState> {
-  const supabase = await getSupabaseServer();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { ok: false, message: "Please log in." };
+  if (rpcErr) return { ok: false, error: rpcErr.message };
+  if (!canReview) return { ok: false, error: 'You can only review vendors you hired.' };
 
-  const id = formData.get("id")?.toString();
-  const stars = Number(formData.get("stars"));
-  const title = formData.get("title")?.toString() || null;
-  const body = formData.get("body")?.toString() || null;
+  const { error } = await supabase.from('reviews').insert({
+    rfq_id: input.rfq_id,
+    vendor_id: input.vendor_id,
+    rating: input.rating,
+    title: input.title,
+    body: input.body,
+    rater_user_id: user.id,
+  });
 
-  if (!id) return { ok: false, message: "Missing review id." };
-  if (!(stars >= 1 && stars <= 5)) return { ok: false, message: "Stars must be 1–5." };
-
-  const { error } = await supabase
-    .from("reviews")
-    .update({ stars, title, body })
-    .eq("id", id);
-  if (error) return { ok: false, message: error.message };
-
+  if (error) return { ok: false, error: error.message };
   return { ok: true };
 }
