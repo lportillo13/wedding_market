@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useTranslation } from "@/contexts/LanguageContext";
 
 declare global {
   interface Window {
@@ -45,6 +46,7 @@ function waitForGoogle(timeoutMs = 10000): Promise<void> {
 export default function MapPicker({ apiKey, lat, lng, radiusKm, onChange }: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const mapRef = useRef<HTMLDivElement | null>(null);
+  const t = useTranslation();
 
   const mapInst = useRef<google.maps.Map | null>(null);
   const markerInst = useRef<google.maps.Marker | null>(null);
@@ -161,12 +163,14 @@ export default function MapPicker({ apiKey, lat, lng, radiusKm, onChange }: Prop
 
   return (
     <div>
-      <label className="form-label" htmlFor="map-picker-search">Search address</label>
+      <label className="form-label" htmlFor="map-picker-search">
+        {t("vendorDashboard.location.map.searchLabel")}
+      </label>
       <input
         id="map-picker-search"
         ref={inputRef}
         className="form-control mb-2"
-        placeholder="Type an address…"
+        placeholder={t("vendorDashboard.location.map.searchPlaceholder")}
         suppressHydrationWarning
       />
       <div ref={mapRef} style={{ width: "100%", height: 320, borderRadius: 8 }} />
