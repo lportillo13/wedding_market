@@ -21,6 +21,28 @@ const common = {
     createVendorProfile: "Crear perfil de proveedor",
     logOut: "Cerrar sesión",
   },
+  shortlistButton: {
+    add: "Agregar a favoritos",
+    inList: "En favoritos",
+  },
+  vendorsPage: {
+    title: "Proveedores",
+    searchForm: {
+      queryPlaceholder: "Busca proveedores (nombre, biografía)…",
+      categoryPlaceholder: "Filtra por slug de categoría (ej. fotografía)",
+      submit: "Buscar",
+    },
+    empty: "No se encontraron proveedores.",
+    pagination: {
+      prev: "Anterior",
+      next: "Siguiente",
+      pageLabel: "Página {current} / {total}",
+    },
+  },
+  vendorProfile: {
+    writeReview: "Escribir una reseña",
+    moreComing: "Más detalles (galería, preguntas frecuentes, cupones) muy pronto.",
+  },
   home: {
     hero: {
       badge: "Mercado de bodas todo en uno",

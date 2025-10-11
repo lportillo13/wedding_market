@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { addToShortlist, inShortlist, removeFromShortlist } from "@/lib/shortlist";
 
 export default function ShortlistButton({ vendorId }: { vendorId: string }) {
   const [added, setAdded] = useState<boolean>(false);
+  const { dictionary } = useLanguage();
+  const labels = dictionary.shortlistButton;
 
   useEffect(() => {
     const sync = () => setAdded(inShortlist(vendorId));
@@ -22,7 +25,7 @@ export default function ShortlistButton({ vendorId }: { vendorId: string }) {
         else addToShortlist(vendorId);
       }}
     >
-      {added ? "In shortlist ✔" : "Add to shortlist"}
+      {added ? `${labels.inList} ✔` : labels.add}
     </button>
   );
 }
