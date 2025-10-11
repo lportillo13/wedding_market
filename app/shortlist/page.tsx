@@ -1,5 +1,5 @@
 // app/shortlist/page.tsx
-import { createRfqAndInvites } from "./actions";
+import { submitShortlistRfq } from "./actions";
 import ShortlistHiddenVendors from "@/components/ShortlistHiddenVendors";
 
 export default function ShortlistRequestPage() {
@@ -7,7 +7,7 @@ export default function ShortlistRequestPage() {
     <main className="container py-4" style={{ maxWidth: 960 }}>
       <h1 className="mb-3">Request quotes</h1>
 
-      <form action={createRfqAndInvites} className="vstack gap-3">
+      <form action={submitShortlistRfq} className="vstack gap-3">
         {/* Hidden field gets filled on the client from localStorage */}
         <ShortlistHiddenVendors />
 
