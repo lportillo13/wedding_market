@@ -1,6 +1,5 @@
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { createReview } from "../../actions";
-import { revalidatePath } from "next/cache";
 
 export default async function NewReviewPage({ params }: { params: Promise<{ rfq_id: string }> }) {
   const { rfq_id } = await params;
@@ -46,8 +45,8 @@ export default async function NewReviewPage({ params }: { params: Promise<{ rfq_
     );
   }
 
-  async function actionWrapper(prev: any, fd: FormData) {
-    const res = await createReview(prev, fd);
+  async function actionWrapper(fd: FormData) {
+    const res = await createReview(fd);
     if (res.ok) {
       // invalidate vendor public page later if needed
     }
