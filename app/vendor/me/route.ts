@@ -16,7 +16,14 @@ export async function GET() {
   if (error) return NextResponse.json({ vendor: null, error: error.message }, { status: 500 });
   if (!data) return NextResponse.json({ vendor: null });
 
-  const v: any = data;
+  type VendorRow = {
+    slug: string | null;
+    business_name: string | null;
+    bio: { en?: string | null; es?: string | null } | null;
+    bio_en: string | null;
+    bio_es: string | null;
+  };
+  const v = data as VendorRow;
   // Normalize to the shape the form expects
   const vendor = {
     slug: v.slug ?? "",

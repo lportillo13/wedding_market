@@ -7,6 +7,12 @@ import { getUserAndRole } from "@/lib/auth/guards";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import ProfileForm from "./profileForm";
 
+type VendorRow = {
+  slug: string | null;
+  business_name: string | null;
+  bio: { en?: string | null; es?: string | null } | null;
+};
+
 export default async function ProfilePage() {
   const { user } = await getUserAndRole();
   if (!user) redirect(`/login?next=${encodeURIComponent("/vendor/profile")}`);
@@ -14,7 +20,7 @@ export default async function ProfilePage() {
   const supabase = await getSupabaseServer();
 
   // ✅ Only select columns that actually exist in your table
-  let { data: vendor, error } = await supabase
+  let { data: vendor } = await supabase
     .from("vendors")
     .select("id, slug, business_name, bio")
     .eq("owner_id", user.id)
@@ -34,16 +40,21 @@ export default async function ProfilePage() {
       .select("id, slug, business_name, bio")
       .single();
 
+    if (inserted.error) {
+      throw new Error(inserted.error.message);
+    }
+
     vendor = inserted.data ?? null;
-    error = inserted.error ?? null;
   }
 
   // Normalize to the form shape
+  const v = vendor as VendorRow | null;
+  const bio = v?.bio ?? null;
   const initial = {
-    slug: vendor?.slug ?? "",
-    business_name: vendor?.business_name ?? "",
-    bio_en: (vendor as any)?.bio?.en ?? "",
-    bio_es: (vendor as any)?.bio?.es ?? "",
+    slug: v?.slug ?? "",
+    business_name: v?.business_name ?? "",
+    bio_en: bio?.en ?? "",
+    bio_es: bio?.es ?? "",
   };
 
   return (

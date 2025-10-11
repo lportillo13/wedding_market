@@ -2,7 +2,10 @@
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
-export async function acceptQuote(_: any, form: FormData): Promise<{ ok: boolean; message?: string }> {
+export async function acceptQuote(
+  _prevState: unknown,
+  form: FormData
+): Promise<{ ok: boolean; message?: string }> {
   const rfq_id = form.get("rfq_id")?.toString();
   const quote_id = form.get("quote_id")?.toString();
   const reveal_email = form.get("reveal_email") === "on";

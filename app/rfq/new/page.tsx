@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useActionState } from "react";
+import Link from "next/link";
 import { getShortlist, clearShortlist, removeFromShortlist } from "@/lib/shortlist";
 import { createRfqAndInvites, type CreateRfqState } from "./actions";
 
@@ -18,7 +19,7 @@ export default function NewRfqPage() {
 
       {ids.length === 0 ? (
         <div className="alert alert-warning">
-          Your shortlist is empty. Go to <a href="/vendors">Vendors</a> and add some.
+          Your shortlist is empty. Go to <Link href="/vendors">Vendors</Link> and add some.
         </div>
       ) : (
         <>

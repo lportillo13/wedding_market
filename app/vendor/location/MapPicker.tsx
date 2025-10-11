@@ -2,7 +2,11 @@
 
 import { useEffect, useRef } from "react";
 
-declare global { interface Window { google: any } }
+declare global {
+  interface Window {
+    google: typeof google;
+  }
+}
 
 type Coords = {
   lat: number | null; lng: number | null;
@@ -17,9 +21,9 @@ type Props = {
   onChange: (v: Coords) => void;
 };
 
-function parseComponents(place: any) {
-  const comps: any[] = place.address_components || [];
-  const pick = (t: string) => comps.find(c => c.types?.includes(t))?.long_name ?? "";
+function parseComponents(place: google.maps.places.PlaceResult) {
+  const comps = place.address_components ?? [];
+  const pick = (t: string) => comps.find((c) => c.types?.includes(t))?.long_name ?? "";
   const city = pick("locality") || pick("postal_town") || pick("administrative_area_level_2");
   const state = pick("administrative_area_level_1");
   const country = pick("country");
@@ -42,12 +46,14 @@ export default function MapPicker({ apiKey, lat, lng, radiusKm, onChange }: Prop
   const inputRef = useRef<HTMLInputElement | null>(null);
   const mapRef = useRef<HTMLDivElement | null>(null);
 
-  const mapInst = useRef<any>(null);
-  const markerInst = useRef<any>(null);
-  const circleInst = useRef<any>(null);
+  const mapInst = useRef<google.maps.Map | null>(null);
+  const markerInst = useRef<google.maps.Marker | null>(null);
+  const circleInst = useRef<google.maps.Circle | null>(null);
 
   useEffect(() => {
-    let clickListener: any, dragListener: any, acListener: any;
+    let clickListener: google.maps.MapsEventListener | undefined;
+    let dragListener: google.maps.MapsEventListener | undefined;
+    let acListener: google.maps.MapsEventListener | undefined;
 
     waitForGoogle().then(() => {
       const center = (lat != null && lng != null)
@@ -80,19 +86,22 @@ export default function MapPicker({ apiKey, lat, lng, radiusKm, onChange }: Prop
       });
 
       // Click on map
-      clickListener = mapInst.current.addListener("click", (e: any) => {
-        const pos = { lat: e.latLng.lat(), lng: e.latLng.lng() };
-        markerInst.current.setPosition(pos);
-        markerInst.current.setMap(mapInst.current);
-        circleInst.current.setCenter(pos);
+      clickListener = mapInst.current.addListener("click", (e: google.maps.MapMouseEvent) => {
+        const latLng = e.latLng;
+        if (!latLng) return;
+        const pos = { lat: latLng.lat(), lng: latLng.lng() };
+        markerInst.current?.setPosition(pos);
+        markerInst.current?.setMap(mapInst.current);
+        circleInst.current?.setCenter(pos);
         onChange({ lat: pos.lat, lng: pos.lng });
       });
 
       // Drag marker
-      dragListener = markerInst.current.addListener("dragend", () => {
-        const pos = markerInst.current.getPosition();
+      dragListener = markerInst.current?.addListener("dragend", () => {
+        const pos = markerInst.current?.getPosition();
+        if (!pos) return;
         const next = { lat: pos.lat(), lng: pos.lng() };
-        circleInst.current.setCenter(next);
+        circleInst.current?.setCenter(next);
         onChange(next);
       });
 
@@ -100,26 +109,34 @@ export default function MapPicker({ apiKey, lat, lng, radiusKm, onChange }: Prop
       const ac = new window.google.maps.places.Autocomplete(inputRef.current!, { types: ["geocode"] });
       acListener = ac.addListener("place_changed", () => {
         const place = ac.getPlace();
-        const g = place.geometry; if (!g) return;
+        const g = place.geometry;
+        if (!g || !g.location) return;
         const pos = { lat: g.location.lat(), lng: g.location.lng() };
-        mapInst.current.panTo(pos);
-        mapInst.current.setZoom(14);
-        markerInst.current.setPosition(pos);
-        markerInst.current.setMap(mapInst.current);
-        circleInst.current.setCenter(pos);
+        mapInst.current?.panTo(pos);
+        mapInst.current?.setZoom(14);
+        markerInst.current?.setPosition(pos);
+        markerInst.current?.setMap(mapInst.current);
+        circleInst.current?.setCenter(pos);
 
         const { city, state, country } = parseComponents(place);
-        onChange({ lat: pos.lat, lng: pos.lng, address: place.formatted_address || "", city, state, country });
+        onChange({
+          lat: pos.lat,
+          lng: pos.lng,
+          address: place.formatted_address ?? "",
+          city,
+          state,
+          country,
+        });
       });
     }).catch(() => { /* ignore */ });
 
     return () => {
       try {
-        clickListener && window.google?.maps?.event?.removeListener(clickListener);
-        dragListener && window.google?.maps?.event?.removeListener(dragListener);
-        acListener && window.google?.maps?.event?.removeListener(acListener);
-        circleInst.current && circleInst.current.setMap(null);
-        markerInst.current && markerInst.current.setMap(null);
+        if (clickListener) window.google?.maps?.event?.removeListener(clickListener);
+        if (dragListener) window.google?.maps?.event?.removeListener(dragListener);
+        if (acListener) window.google?.maps?.event?.removeListener(acListener);
+        circleInst.current?.setMap(null);
+        markerInst.current?.setMap(null);
       } catch { /* noop */ }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

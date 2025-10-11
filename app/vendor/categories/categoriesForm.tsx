@@ -3,7 +3,8 @@
 import { useState, FormEvent } from "react";
 import { saveCategories } from "../_actions";
 
-type Cat = { key: string; label: any };
+type CategoryLabel = { en?: string | null } | null | undefined;
+type Cat = { key: string; label?: CategoryLabel };
 
 export default function CategoriesForm({ allCats, selected }: { allCats: Cat[]; selected: string[] }) {
   const [busy, setBusy] = useState(false);
@@ -19,8 +20,9 @@ export default function CategoriesForm({ allCats, selected }: { allCats: Cat[]; 
       const fd = new FormData(e.currentTarget);
       await saveCategories(fd);
       setMsg("Saved!");
-    } catch (e: any) {
-      setErr(String(e.message || e));
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : String(e);
+      setErr(message);
     } finally {
       setBusy(false);
     }
@@ -32,7 +34,8 @@ export default function CategoriesForm({ allCats, selected }: { allCats: Cat[]; 
         <div className="form-text mb-2">Choose all that apply</div>
         <div className="row">
           {allCats.map((c) => {
-            const label = (c.label?.en as string) || c.key;
+            const localized = typeof c.label === "object" && c.label ? c.label.en : undefined;
+            const label = localized ?? c.key;
             const id = `cat-${c.key}`;
             return (
               <div className="col-md-6 mb-2" key={c.key}>

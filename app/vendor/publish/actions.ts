@@ -41,7 +41,8 @@ export async function setPublishStatus(
     revalidatePath("/vendor/publish");
     revalidatePath(`/vendors/${vendor.slug}`); // public page
     return { ok: true, message: publish ? "Published!" : "Unpublished.", published: publish };
-  } catch (e: any) {
-    return { ok: false, message: String(e?.message || e) };
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : String(e);
+    return { ok: false, message };
   }
 }

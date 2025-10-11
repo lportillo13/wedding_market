@@ -1,4 +1,6 @@
 // app/rfq/sent/page.tsx
+import Link from "next/link";
+
 export default async function SentPage({
   searchParams,
 }: {
@@ -15,13 +17,17 @@ export default async function SentPage({
       <div className="alert alert-info">
         Your RFQ ID: <code>{rfq}</code>
       </div>
-      <a className="btn btn-primary me-2" href="/vendors">Find more vendors</a>
+      <Link className="btn btn-primary me-2" href="/vendors">
+        Find more vendors
+      </Link>
       {rfq ? (
-        <a className="btn btn-outline-secondary" href={`/account/rfqs/${rfq}`}>
+        <Link className="btn btn-outline-secondary" href={`/account/rfqs/${rfq}`}>
           View this RFQ
-        </a>
+        </Link>
       ) : (
-        <a className="btn btn-outline-secondary" href="/rfq/new">Send another RFQ</a>
+        <Link className="btn btn-outline-secondary" href="/rfq/new">
+          Send another RFQ
+        </Link>
       )}
     </main>
   );
