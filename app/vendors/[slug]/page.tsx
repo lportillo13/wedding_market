@@ -56,49 +56,18 @@ export default async function VendorPage({
 
   let reviewRfqId: string | null = null;
   if (user) {
-    const { data: rfqs } = await supabase
-      .from('rfqs')
-      .select(`
-        id,
-        owner_id,
-        accepted_quote_id,
-        quotes:quotes!rfqs_accepted_quote_id_fkey(vendor_id)
-      `)
-      .eq('owner_id', user.id)
-      .not('accepted_quote_id', 'is', null)
-      .limit(20);
+    const { data: hired } = await supabase.rpc('user_hired_vendor', {
+      _uid: user.id,
+      _vendor_id: vendor.id,
+    });
 
-    if (Array.isArray(rfqs)) {
-      for (const rfq of rfqs) {
-        type VendorQuoteRow = { vendor_id: string | null };
-        const rfqWithQuotes = rfq as typeof rfq & { quotes?: VendorQuoteRow[] | null };
-        const vendorIdFromQuote = Array.isArray(rfqWithQuotes.quotes)
-          ? rfqWithQuotes.quotes?.[0]?.vendor_id ?? null
-          : null;
+    if (hired) {
+      const { data: rfqId } = await supabase.rpc('first_eligible_review_rfq', {
+        _uid: user.id,
+        _vendor_id: vendor.id,
+      });
 
-        if (vendorIdFromQuote !== vendor.id) {
-          continue;
-        }
-
-        const { count: existingCount } = await supabase
-          .from('reviews')
-          .select('id', { count: 'exact', head: true })
-          .eq('author_id', user.id)
-          .eq('vendor_id', vendor.id)
-          .eq('rfq_id', rfq.id);
-
-        if ((existingCount ?? 0) > 0) {
-          continue;
-        }
-
-        const { data: canReview } = await supabase
-          .rpc('can_user_review', { _uid: user.id, _vendor_id: vendor.id, _rfq_id: rfq.id });
-
-        if (canReview) {
-          reviewRfqId = rfq.id;
-          break;
-        }
-      }
+      reviewRfqId = rfqId ?? null;
     }
   }
 
@@ -122,11 +91,7 @@ export default async function VendorPage({
 
       {reviewRfqId && (
         <div className="my-3">
-          <Link
-            className="btn btn-outline-primary"
-            href={`/account/reviews/new/${reviewRfqId}`}
-            aria-label="Write a review for this vendor"
-          >
+          <Link className="btn btn-primary" href={`/account/reviews/new/${reviewRfqId}`}>
             Write a review
           </Link>
         </div>

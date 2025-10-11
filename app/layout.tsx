@@ -2,7 +2,7 @@ import "../styles/bootstrap-theme.scss";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import NavBar from "@/components/NavBar"; // ⬅️ add this
+import NavBarContainer from "@/components/NavBarContainer"; // ⬅️ add this
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" data-bs-theme="light">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <NavBar /> {/* ⬅️ show header everywhere */}
+        <NavBarContainer /> {/* ⬅️ show header everywhere */}
         {children}
       </body>
     </html>
