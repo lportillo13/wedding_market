@@ -44,10 +44,10 @@ export async function createReview(_prev: CreateReviewState, formData: FormData)
   const { error } = await supabase.from('reviews').insert({
     rfq_id: input.rfq_id,
     vendor_id: input.vendor_id,
-    rating: input.rating,
+    stars: input.rating,
     title: input.title,
     body: input.body,
-    rater_user_id: user.id,
+    author_id: user.id,
   });
 
   if (error) return { ok: false, error: error.message };

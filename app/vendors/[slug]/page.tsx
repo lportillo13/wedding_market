@@ -83,7 +83,7 @@ export default async function VendorPage({
         const { count: existingCount } = await supabase
           .from('reviews')
           .select('id', { count: 'exact', head: true })
-          .eq('rater_user_id', user.id)
+          .eq('author_id', user.id)
           .eq('vendor_id', vendor.id)
           .eq('rfq_id', rfq.id);
 
