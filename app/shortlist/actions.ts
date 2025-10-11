@@ -8,7 +8,7 @@ export type CreateRfqState = { ok: boolean; message?: string; rfq_id?: string };
 const MAX_INVITES = 10;
 const QUOTE_EXPIRES_DAYS = 14;
 
-export async function createRfqAndInvites(_: CreateRfqState, formData: FormData): Promise<CreateRfqState> {
+async function handleCreateRfqAndInvites(formData: FormData): Promise<CreateRfqState> {
   const supabase = await getSupabaseServer();
   const { data: { user }, error: userErr } = await supabase.auth.getUser();
   if (userErr || !user) return { ok: false, message: "Not authenticated." };
@@ -60,4 +60,12 @@ export async function createRfqAndInvites(_: CreateRfqState, formData: FormData)
   if (invErr) return { ok: false, message: invErr.message };
 
   redirect(`/rfq/sent?rfq=${rfq.id}&count=${vendorIds.length}`);
+}
+
+export async function createRfqAndInvites(_: CreateRfqState, formData: FormData): Promise<CreateRfqState> {
+  return handleCreateRfqAndInvites(formData);
+}
+
+export async function submitShortlistRfq(formData: FormData): Promise<void> {
+  await handleCreateRfqAndInvites(formData);
 }
