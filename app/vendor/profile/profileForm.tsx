@@ -24,7 +24,8 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
 
   // If the server action changed the slug, reflect it
   useEffect(() => {
-    if (state.ok && state.slug) setForm((prev) => ({ ...prev, slug: state.slug }));
+    if (state.ok && state.slug)
+      setForm((prev) => ({ ...prev, slug: state.slug ?? prev.slug }));
   }, [state.ok, state.slug]);
 
   function onChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
