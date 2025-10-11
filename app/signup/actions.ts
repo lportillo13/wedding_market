@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 const SignUpSchema = z.object({
@@ -38,12 +39,31 @@ export async function signUp(_: SignUpState, formData: FormData): Promise<SignUp
     };
   }
 
-  const { error: profileErr } = await supabase
-    .from('profiles')
-    .upsert({ id: userId, role: 'user' }, { onConflict: 'id' });
+  const supabaseAdmin = createSupabaseAdminClient();
 
-  if (profileErr) {
-    return { ok: false, message: profileErr.message };
+  if (supabaseAdmin) {
+    const { error: profileErr } = await supabaseAdmin
+      .from('profiles')
+      .upsert({ id: userId, role: 'user' }, { onConflict: 'id' });
+
+    if (profileErr) {
+      return { ok: false, message: profileErr.message };
+    }
+  } else {
+    const { error: profileErr } = await supabase
+      .from('profiles')
+      .upsert({ id: userId, role: 'user' }, { onConflict: 'id' });
+
+    if (profileErr) {
+      const message = profileErr.message.toLowerCase();
+      if (message.includes('row-level security')) {
+        console.warn(
+          'Profile creation blocked by row-level security. Configure SUPABASE_SERVICE_ROLE_KEY to allow server-side profile provisioning.'
+        );
+      } else {
+        return { ok: false, message: profileErr.message };
+      }
+    }
   }
 
   redirect('/');
