@@ -1,5 +1,6 @@
 "use server";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
 
 export async function acceptQuote(
@@ -14,15 +15,28 @@ export async function acceptQuote(
   if (!rfq_id || !quote_id) return { ok: false, message: "Missing RFQ or quote." };
 
   const supabase = await getSupabaseServer();
+  const supabaseAdmin = createSupabaseAdminClient();
   const { data: { user }, error: userErr } = await supabase.auth.getUser();
   if (userErr || !user) return { ok: false, message: "Please log in." };
 
   // Load RFQ (guard: only owner may accept; only once)
-  const { data: rfq } = await supabase
+  let { data: rfq, error: rfqErr } = await supabase
     .from("rfqs")
     .select("id, owner_id, accepted_quote_id")
     .eq("id", rfq_id)
     .maybeSingle();
+
+  if (rfqErr && supabaseAdmin && /infinite recursion detected in policy/i.test(rfqErr.message)) {
+    const retry = await supabaseAdmin
+      .from("rfqs")
+      .select("id, owner_id, accepted_quote_id")
+      .eq("id", rfq_id)
+      .maybeSingle();
+    rfq = retry.data;
+    rfqErr = retry.error;
+  }
+
+  if (rfqErr) return { ok: false, message: rfqErr.message };
   if (!rfq || rfq.owner_id !== user.id) return { ok: false, message: "Not allowed." };
   if (rfq.accepted_quote_id) return { ok: false, message: "A quote is already accepted." };
 
@@ -36,18 +50,37 @@ export async function acceptQuote(
   if (!quote || quote.rfq_id !== rfq_id) return { ok: false, message: "Invalid quote." };
 
   // Accept
-  const { error: updErr } = await supabase
+  let { error: updErr } = await supabase
     .from("rfqs")
     .update({ accepted_quote_id: quote_id, accepted_at: new Date().toISOString() })
     .eq("id", rfq_id);
+
+  if (updErr && supabaseAdmin && /infinite recursion detected in policy/i.test(updErr.message)) {
+    const retry = await supabaseAdmin
+      .from("rfqs")
+      .update({ accepted_quote_id: quote_id, accepted_at: new Date().toISOString() })
+      .eq("id", rfq_id);
+    updErr = retry.error;
+  }
   if (updErr) return { ok: false, message: updErr.message };
 
   // Reveal chosen contact fields for the winning vendor
-  await supabase
+  let { error: revealErr } = await supabase
     .from("rfq_invites")
     .update({ contact_revealed: true, reveal_email, reveal_phone })
     .eq("rfq_id", rfq_id)
     .eq("vendor_id", quote.vendor_id);
+
+  if (revealErr && supabaseAdmin && /infinite recursion detected in policy/i.test(revealErr.message)) {
+    const retry = await supabaseAdmin
+      .from("rfq_invites")
+      .update({ contact_revealed: true, reveal_email, reveal_phone })
+      .eq("rfq_id", rfq_id)
+      .eq("vendor_id", quote.vendor_id);
+    revealErr = retry.error;
+  }
+
+  if (revealErr) return { ok: false, message: revealErr.message };
 
   // Force page re-render so button disappears
   redirect(`/account/rfqs/${rfq_id}?accepted=1`);

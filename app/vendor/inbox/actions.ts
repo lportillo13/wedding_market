@@ -2,11 +2,13 @@
 "use server";
 
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export type SendQuoteState = { ok: boolean; message?: string };
 
 export async function sendQuote(_: SendQuoteState, form: FormData): Promise<SendQuoteState> {
   const supabase = await getSupabaseServer();
+  const supabaseAdmin = createSupabaseAdminClient();
   const { data: { user }, error: userErr } = await supabase.auth.getUser();
   if (userErr || !user) return { ok: false, message: "Not authenticated." };
 
@@ -33,11 +35,22 @@ export async function sendQuote(_: SendQuoteState, form: FormData): Promise<Send
   if (!vendor) return { ok: false, message: "You don’t own this vendor." };
 
   // 🚧 NEW: refuse if RFQ already accepted
-  const { data: rfq, error: rErr } = await supabase
+  let { data: rfq, error: rErr } = await supabase
     .from("rfqs")
     .select("accepted_quote_id")
     .eq("id", rfq_id)
     .maybeSingle();
+
+  if (rErr && supabaseAdmin && /infinite recursion detected in policy/i.test(rErr.message)) {
+    const retry = await supabaseAdmin
+      .from("rfqs")
+      .select("accepted_quote_id")
+      .eq("id", rfq_id)
+      .maybeSingle();
+    rfq = retry.data;
+    rErr = retry.error;
+  }
+
   if (rErr) return { ok: false, message: rErr.message };
   if (!rfq) return { ok: false, message: "RFQ not found." };
   if (rfq.accepted_quote_id) return { ok: false, message: "This request is already accepted." };
@@ -47,16 +60,34 @@ export async function sendQuote(_: SendQuoteState, form: FormData): Promise<Send
   if (!isFinite(dollars) || dollars <= 0) return { ok: false, message: "Invalid amount." };
   const amount_cents = Math.round(dollars * 100);
 
-  const { error: qErr } = await supabase
+  let { error: qErr } = await supabase
     .from("quotes")
     .insert([{ rfq_id, vendor_id, amount_cents, currency: "USD", message }]);
+
+  if (qErr && supabaseAdmin && /infinite recursion detected in policy/i.test(qErr.message)) {
+    const retry = await supabaseAdmin
+      .from("quotes")
+      .insert([{ rfq_id, vendor_id, amount_cents, currency: "USD", message }]);
+    qErr = retry.error;
+  }
   if (qErr) return { ok: false, message: qErr.message };
 
-  await supabase
+  let { error: inviteErr } = await supabase
     .from("rfq_invites")
     .update({ status: "responded" })
     .eq("rfq_id", rfq_id)
     .eq("vendor_id", vendor_id);
+
+  if (inviteErr && supabaseAdmin && /infinite recursion detected in policy/i.test(inviteErr.message)) {
+    const retry = await supabaseAdmin
+      .from("rfq_invites")
+      .update({ status: "responded" })
+      .eq("rfq_id", rfq_id)
+      .eq("vendor_id", vendor_id);
+    inviteErr = retry.error;
+  }
+
+  if (inviteErr) return { ok: false, message: inviteErr.message };
 
   return { ok: true };
 }

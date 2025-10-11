@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import AcceptButton from "./AcceptButton";
 
 export default async function RfqDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -11,14 +12,19 @@ export default async function RfqDetailPage({ params }: { params: Promise<{ id: 
     return (
       <main className="container py-4" style={{ maxWidth: 960 }}>
         <div className="alert alert-warning">Please log in to view this RFQ.</div>
-        <a className="btn btn-primary" href={`/login?next=${encodeURIComponent(`/account/rfqs/${rfq_id}`)}`}>
+        <Link className="btn btn-primary" href={`/login?next=${encodeURIComponent(`/account/rfqs/${rfq_id}`)}`}>
           Log in
-        </a>
+        </Link>
       </main>
     );
   }
 
-  const { data: rfq, error: rfqErr } = await supabase
+  const supabaseAdmin = createSupabaseAdminClient();
+
+  let {
+    data: rfq,
+    error: rfqErr,
+  } = await supabase
     .from("rfqs")
     .select(`
       id, owner_id, event_date, guest_count, budget_min, budget_max,
@@ -28,6 +34,22 @@ export default async function RfqDetailPage({ params }: { params: Promise<{ id: 
     `)
     .eq("id", rfq_id)
     .maybeSingle();
+
+  if (rfqErr && supabaseAdmin && /infinite recursion detected in policy/i.test(rfqErr.message)) {
+    const retry = await supabaseAdmin
+      .from("rfqs")
+      .select(`
+        id, owner_id, event_date, guest_count, budget_min, budget_max,
+        city, state, country, language, theme, notes,
+        created_at, accepted_quote_id, accepted_at,
+        quotes:quotes!rfqs_accepted_quote_id_fkey(vendor_id)
+      `)
+      .eq("id", rfq_id)
+      .maybeSingle();
+    rfq = retry.data;
+    rfqErr = retry.error;
+  }
+
   if (rfqErr) throw new Error(rfqErr.message);
   if (!rfq) {
     return (
@@ -37,7 +59,17 @@ export default async function RfqDetailPage({ params }: { params: Promise<{ id: 
     );
   }
 
-  const isOwner = rfq.owner_id === user.id;
+  if (rfq.owner_id !== user.id) {
+    return (
+      <main className="container py-4" style={{ maxWidth: 960 }}>
+        <div className="alert alert-danger">You do not have access to this RFQ.</div>
+        <Link className="btn btn-outline-secondary mt-3" href="/account/rfqs">
+          Back to my RFQs
+        </Link>
+      </main>
+    );
+  }
+
   const accepted = Boolean(rfq.accepted_quote_id);
 
   type VendorQuoteRow = { vendor_id: string | null };
@@ -97,8 +129,6 @@ export default async function RfqDetailPage({ params }: { params: Promise<{ id: 
           </Link>
         </div>
       )}
-      {!isOwner && <div className="alert alert-info">View only — you’re not the owner of this RFQ.</div>}
-
       <div className="card mb-4">
         <div className="card-body">
           <div className="text-secondary small mb-2">
@@ -140,7 +170,7 @@ export default async function RfqDetailPage({ params }: { params: Promise<{ id: 
                 </div>
                 <div className="small text-secondary mb-2">{new Date(q.created_at).toLocaleString()}</div>
                 {q.message && <div>{q.message}</div>}
-                {isOwner && !accepted && (
+                {!accepted && (
                   <div className="mt-2">
                     <AcceptButton rfq_id={rfq.id} quote_id={q.id} />
                   </div>

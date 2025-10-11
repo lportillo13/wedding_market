@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export default async function RfqsListPage() {
   const supabase = await getSupabaseServer();
@@ -17,11 +18,26 @@ export default async function RfqsListPage() {
     );
   }
 
-  const { data: rfqs, error } = await supabase
-    .from("rfqs")
-    .select("id, created_at, city, state, country, event_date, accepted_quote_id")
-    .eq("owner_id", user.id)
-    .order("created_at", { ascending: false });
+  const supabaseAdmin = createSupabaseAdminClient();
+
+  const selectQuery = () =>
+    supabase
+      .from("rfqs")
+      .select("id, created_at, city, state, country, event_date, accepted_quote_id")
+      .eq("owner_id", user.id)
+      .order("created_at", { ascending: false });
+
+  let { data: rfqs, error } = await selectQuery();
+
+  if (error && supabaseAdmin && /infinite recursion detected in policy/i.test(error.message)) {
+    const retry = await supabaseAdmin
+      .from("rfqs")
+      .select("id, created_at, city, state, country, event_date, accepted_quote_id")
+      .eq("owner_id", user.id)
+      .order("created_at", { ascending: false });
+    rfqs = retry.data;
+    error = retry.error;
+  }
 
   if (error) {
     console.error("Failed to load RFQs", error);
