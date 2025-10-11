@@ -1,5 +1,6 @@
 'use server';
 
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
@@ -25,7 +26,23 @@ export async function signUp(_: SignUpState, formData: FormData): Promise<SignUp
   const { email, password } = parsed.data;
   const supabase = await createSupabaseServerClient();
 
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  const headerList = await headers();
+  const proto = headerList.get('x-forwarded-proto');
+  const host = headerList.get('x-forwarded-host') ?? headerList.get('host');
+
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (proto && host ? `${proto}://${host}` : host ? `https://${host}` : 'http://localhost:3000');
+
+  const emailRedirectTo = new URL('/auth/callback', siteUrl).toString();
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo,
+    },
+  });
   if (error) {
     return { ok: false, message: error.message };
   }
