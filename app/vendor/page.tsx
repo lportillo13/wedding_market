@@ -1,7 +1,9 @@
+"use client";
+
+import { useTranslation } from "@/contexts/LanguageContext";
+
 export default function VendorHome() {
-  return (
-    <div className="alert alert-info">
-      Welcome! Use the tabs above to manage your profile, review RFQs, and track quotes you’ve sent.
-    </div>
-  );
+  const t = useTranslation();
+
+  return <div className="alert alert-info">{t("vendorDashboard.overview.welcome")}</div>;
 }
