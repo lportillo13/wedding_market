@@ -1,25 +1,60 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+// eslint.config.mjs
+import js from "@eslint/js";
+import globals from "globals";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// Plugins (pure; no rushstack/eslint-patch)
+import nextPlugin from "@next/eslint-plugin-next";
+import reactPlugin from "eslint-plugin-react";
+import reactHooksPlugin from "eslint-plugin-react-hooks";
+import a11yPlugin from "eslint-plugin-jsx-a11y";
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+// TS meta package (brings parser + plugin + flat presets)
+import tseslint from "typescript-eslint";
 
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+export default [
+  // Hard ignores FIRST so build outputs are never linted
   {
     ignores: [
-      "node_modules/**",
-      ".next/**",
+      "**/node_modules/**",
+      "**/.next/**",
       "out/**",
       "build/**",
-      "next-env.d.ts",
-    ],
+      "next-env.d.ts"
+    ]
   },
-];
 
-export default eslintConfig;
+  // Base JS rules + TypeScript (non type-aware, fast)
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+
+  // App ruleset for JS/TS + React + Next + a11y
+  {
+    files: ["**/*.{js,jsx,ts,tsx}"],
+    plugins: {
+      "@next/next": nextPlugin,
+      react: reactPlugin,
+      "react-hooks": reactHooksPlugin,
+      "jsx-a11y": a11yPlugin
+    },
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.node },
+      parserOptions: {
+        ecmaFeatures: { jsx: true }
+        // leave project:false => faster; switch to ["./tsconfig.json"] if you want type-aware linting later
+      }
+    },
+    rules: {
+      // React/Hooks/a11y/Next recommended rules
+      ...reactPlugin.configs.recommended.rules,
+      ...reactHooksPlugin.configs.recommended.rules,
+      ...a11yPlugin.configs.recommended.rules,
+      ...nextPlugin.configs.recommended.rules,
+
+      // Modern React (Next) doesn't require React in scope for JSX
+      "react/react-in-jsx-scope": "off"
+    },
+    settings: {
+      react: { version: "detect" }
+    }
+  }
+];

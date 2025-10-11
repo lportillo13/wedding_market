@@ -2,17 +2,41 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 20.x (use \`.nvmrc\`)
+- npm (or pnpm/yarn)
 
-```bash
+### 1) Environment variables
+Copy the template and fill values:
+\`\`\`bash
+cp .env.local.example .env.local
+\`\`\`
+Required vars:
+- \`NEXT_PUBLIC_SUPABASE_URL\`: Supabase project URL
+- \`NEXT_PUBLIC_SUPABASE_ANON_KEY\`: Supabase anon key (public)
+- \`SUPABASE_SERVICE_ROLE_KEY\`: Supabase service key (server-only)
+- \`NEXT_PUBLIC_GOOGLE_MAPS_API_KEY\`: Google Maps JavaScript API key
+
+> **Never commit** \`.env.local\`. Rotate keys if a secret is ever exposed.
+
+### 2) Install & run (dev)
+\`\`\`bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+\`\`\`
+App runs at http://localhost:3000
+
+### 3) Build & start (prod)
+\`\`\`bash
+npm run build
+npm start
+\`\`\`
+
+### 4) Useful scripts
+- \`npm run typecheck\` — TypeScript check (no emit)
+- \`npm run lint\` — Next/ESLint
+- \`npm run build\` — Production build
+
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
