@@ -18,3 +18,8 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   min-height: 100vh;
 }
+
+/* Restore Bootstrap's navbar collapse visibility that Tailwind overrides */
+#wmNav.navbar-collapse {
+  visibility: visible;
+}
