@@ -1,6 +1,8 @@
 import Link from "next/link";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 import AcceptButton from "./AcceptButton";
 
 export default async function RfqDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -20,32 +22,43 @@ export default async function RfqDetailPage({ params }: { params: Promise<{ id: 
   }
 
   const supabaseAdmin = createSupabaseAdminClient();
-
-  let {
-    data: rfq,
-    error: rfqErr,
-  } = await supabase
-    .from("rfqs")
-    .select(`
-      id, owner_id, event_date, guest_count, budget_min, budget_max,
-      city, state, country, language, theme, notes,
-      created_at, accepted_quote_id, accepted_at,
-      quotes:quotes!rfqs_accepted_quote_id_fkey(vendor_id)
-    `)
-    .eq("id", rfq_id)
-    .maybeSingle();
-
-  if (rfqErr && supabaseAdmin && /infinite recursion detected in policy/i.test(rfqErr.message)) {
-    const retry = await supabaseAdmin
-      .from("rfqs")
-      .select(`
+  const selectColumns = {
+    owner_id: `
         id, owner_id, event_date, guest_count, budget_min, budget_max,
         city, state, country, language, theme, notes,
         created_at, accepted_quote_id, accepted_at,
         quotes:quotes!rfqs_accepted_quote_id_fkey(vendor_id)
-      `)
+      `,
+    owner_uuid: `
+        id, owner_id:owner_uuid, event_date, guest_count, budget_min, budget_max,
+        city, state, country, language, theme, notes,
+        created_at, accepted_quote_id, accepted_at,
+        quotes:quotes!rfqs_accepted_quote_id_fkey(vendor_id)
+      `,
+  } as const satisfies Record<OwnerColumn, string>;
+
+  const selectWithOwner = (client: SupabaseClient, column: OwnerColumn) =>
+    client
+      .from("rfqs")
+      .select(selectColumns[column])
       .eq("id", rfq_id)
       .maybeSingle();
+
+  let ownerColumn: OwnerColumn = "owner_id";
+  let {
+    data: rfq,
+    error: rfqErr,
+  } = await selectWithOwner(supabase, ownerColumn);
+
+  if (isMissingOwnerColumnError(rfqErr, ownerColumn)) {
+    ownerColumn = "owner_uuid";
+    const retry = await selectWithOwner(supabase, ownerColumn);
+    rfq = retry.data;
+    rfqErr = retry.error;
+  }
+
+  if (rfqErr && supabaseAdmin && /infinite recursion detected in policy/i.test(rfqErr.message)) {
+    const retry = await selectWithOwner(supabaseAdmin, ownerColumn);
     rfq = retry.data;
     rfqErr = retry.error;
   }
