@@ -1,11 +1,12 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { getShortlistCount } from "@/lib/shortlist";
 
-export default function NavBar() {
+export default function NavBar({ authMenu }: { authMenu?: ReactNode }) {
   const [count, setCount] = useState(() => (typeof window !== "undefined" ? getShortlistCount() : 0));
   const mounted = typeof window !== "undefined";
   const [isOpen, setIsOpen] = useState(false);
@@ -70,7 +71,7 @@ export default function NavBar() {
             <li className="nav-item"><Link href="/account/rfqs" className="nav-link">My requests</Link></li>
           </ul>
 
-          <div className="d-flex align-items-center gap-2">
+          <div className="d-flex align-items-center gap-2 flex-wrap flex-lg-nowrap ms-lg-auto">
             <Link href="/rfq/new" className="btn btn-primary btn-sm">
               Request quotes
             </Link>
@@ -84,6 +85,7 @@ export default function NavBar() {
                 </span>
               )}
             </Link>
+            {authMenu}
           </div>
         </div>
       </div>
