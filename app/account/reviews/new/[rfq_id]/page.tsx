@@ -64,8 +64,8 @@ export default async function NewReviewPage({ params }: { params: Promise<{ rfq_
         <input type="hidden" name="vendor_id" value={quote.vendor_id} />
 
         <div>
-          <label className="form-label">Rating</label>
-          <select name="stars" className="form-select" defaultValue="5" required>
+          <label className="form-label" htmlFor="review-stars">Rating</label>
+          <select id="review-stars" name="stars" className="form-select" defaultValue="5" required>
             <option value="5">★★★★★</option>
             <option value="4">★★★★☆</option>
             <option value="3">★★★☆☆</option>
@@ -75,13 +75,13 @@ export default async function NewReviewPage({ params }: { params: Promise<{ rfq_
         </div>
 
         <div>
-          <label className="form-label">Title (optional)</label>
-          <input name="title" className="form-control" maxLength={120} />
+          <label className="form-label" htmlFor="review-title">Title (optional)</label>
+          <input id="review-title" name="title" className="form-control" maxLength={120} />
         </div>
 
         <div>
-          <label className="form-label">Your experience (optional)</label>
-          <textarea name="body" className="form-control" rows={5} />
+          <label className="form-label" htmlFor="review-body">Your experience (optional)</label>
+          <textarea id="review-body" name="body" className="form-control" rows={5} />
         </div>
 
         <button className="btn btn-primary">Submit review</button>

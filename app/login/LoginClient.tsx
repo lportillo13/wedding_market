@@ -40,8 +40,9 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
 
       <form onSubmit={onEmailPassword} className="mb-3">
         <div className="mb-3">
-          <label className="form-label">Email</label>
+          <label className="form-label" htmlFor="login-email">Email</label>
           <input
+            id="login-email"
             className="form-control"
             type="email"
             value={email}
@@ -50,8 +51,9 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
           />
         </div>
         <div className="mb-3">
-          <label className="form-label">Password</label>
+          <label className="form-label" htmlFor="login-password">Password</label>
           <input
+            id="login-password"
             className="form-control"
             type="password"
             value={password}

@@ -52,29 +52,30 @@ export default function LocationForm({ initial }: { initial: Initial }) {
       </div>
 
       <div className="mb-3">
-        <label className="form-label">Address (formatted)</label>
-        <input name="address" className="form-control" value={form.address} onChange={onChange} />
+        <label className="form-label" htmlFor="location-address">Address (formatted)</label>
+        <input id="location-address" name="address" className="form-control" value={form.address} onChange={onChange} />
       </div>
 
       <div className="row">
         <div className="col-md-4 mb-3">
-          <label className="form-label">City</label>
-          <input name="city" className="form-control" value={form.city} onChange={onChange} />
+          <label className="form-label" htmlFor="location-city">City</label>
+          <input id="location-city" name="city" className="form-control" value={form.city} onChange={onChange} />
         </div>
         <div className="col-md-4 mb-3">
-          <label className="form-label">State/Region</label>
-          <input name="state" className="form-control" value={form.state} onChange={onChange} />
+          <label className="form-label" htmlFor="location-state">State/Region</label>
+          <input id="location-state" name="state" className="form-control" value={form.state} onChange={onChange} />
         </div>
         <div className="col-md-4 mb-3">
-          <label className="form-label">Country</label>
-          <input name="country" className="form-control" value={form.country} onChange={onChange} />
+          <label className="form-label" htmlFor="location-country">Country</label>
+          <input id="location-country" name="country" className="form-control" value={form.country} onChange={onChange} />
         </div>
       </div>
 
       <div className="row">
         <div className="col-md-6 mb-3">
-          <label className="form-label">Service radius (km)</label>
+          <label className="form-label" htmlFor="location-service-radius">Service radius (km)</label>
           <input
+            id="location-service-radius"
             name="service_radius_km"
             type="number"
             min={1}

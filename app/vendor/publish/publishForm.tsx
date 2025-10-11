@@ -1,16 +1,19 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { setPublishStatus, type PubState } from "./actions";
 
 export default function PublishForm({ initial }: { initial: { is_published: boolean; slug?: string } }) {
   const [state, formAction, pending] = useActionState<PubState, FormData>(setPublishStatus, { ok: false, message: "" });
   const [checked, setChecked] = useState(initial.is_published);
 
+  const prevOk = useRef(state.ok);
+
   useEffect(() => {
-    if (state.ok && typeof state.published === "boolean") {
+    if (!prevOk.current && state.ok && typeof state.published === "boolean") {
       setChecked(state.published);
     }
+    prevOk.current = state.ok;
   }, [state.ok, state.published]);
 
   return (
@@ -40,7 +43,7 @@ export default function PublishForm({ initial }: { initial: { is_published: bool
       </button>
 
       {checked && initial.slug && (
-        <a className="btn btn-link ms-2" href={`/vendors/${initial.slug}`} target="_blank">
+        <a className="btn btn-link ms-2" href={`/vendors/${initial.slug}`} target="_blank" rel="noreferrer">
           View public page
         </a>
       )}

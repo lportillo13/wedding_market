@@ -36,8 +36,9 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
   return (
     <form action={formAction} suppressHydrationWarning>
       <div className="mb-3">
-        <label className="form-label">Business name</label>
+        <label className="form-label" htmlFor="profile-business-name">Business name</label>
         <input
+          id="profile-business-name"
           name="business_name"
           className={`form-control ${state.fieldErrors?.business_name ? "is-invalid" : ""}`}
           value={form.business_name}
@@ -50,8 +51,9 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
       </div>
 
       <div className="mb-3">
-        <label className="form-label">Slug</label>
+        <label className="form-label" htmlFor="profile-slug">Slug</label>
         <input
+          id="profile-slug"
           name="slug"
           className={`form-control ${state.fieldErrors?.slug ? "is-invalid" : ""}`}
           value={form.slug}
@@ -63,8 +65,9 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
       </div>
 
       <div className="mb-3">
-        <label className="form-label">Bio (EN)</label>
+        <label className="form-label" htmlFor="profile-bio-en">Bio (EN)</label>
         <textarea
+          id="profile-bio-en"
           name="bio_en"
           className="form-control"
           rows={4}
@@ -74,8 +77,9 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
       </div>
 
       <div className="mb-3">
-        <label className="form-label">Bio (ES)</label>
+        <label className="form-label" htmlFor="profile-bio-es">Bio (ES)</label>
         <textarea
+          id="profile-bio-es"
           name="bio_es"
           className="form-control"
           rows={4}

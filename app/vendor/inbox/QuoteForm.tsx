@@ -1,19 +1,21 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { sendQuote, type SendQuoteState } from "./actions";
 
 export default function QuoteForm({ rfq_id, vendor_id }: { rfq_id: string; vendor_id: string }) {
   const [state, action, pending] = useActionState<SendQuoteState, FormData>(sendQuote, { ok: false });
   const [amount, setAmount] = useState<string>("");
   const [message, setMessage] = useState<string>("");
+  const prevOk = useRef(state.ok);
 
   // On successful submit, clear fields
   useEffect(() => {
-    if (state.ok) {
+    if (!prevOk.current && state.ok) {
       setAmount("");
       setMessage("");
     }
+    prevOk.current = state.ok;
   }, [state.ok]);
 
   return (
@@ -22,8 +24,9 @@ export default function QuoteForm({ rfq_id, vendor_id }: { rfq_id: string; vendo
       <input type="hidden" name="vendor_id" value={vendor_id} />
 
       <div className="col-md-3">
-        <label className="form-label">Quote (USD)</label>
+        <label className="form-label" htmlFor="quote-amount-usd">Quote (USD)</label>
         <input
+          id="quote-amount-usd"
           className="form-control"
           name="amount_usd"
           inputMode="decimal"
@@ -35,8 +38,9 @@ export default function QuoteForm({ rfq_id, vendor_id }: { rfq_id: string; vendo
       </div>
 
       <div className="col-md-7">
-        <label className="form-label">Message</label>
+        <label className="form-label" htmlFor="quote-message">Message</label>
         <input
+          id="quote-message"
           className="form-control"
           name="message"
           placeholder="What’s included, availability, next steps…"

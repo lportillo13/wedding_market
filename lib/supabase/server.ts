@@ -25,7 +25,9 @@ export async function getSupabaseServer() {
               sameSite,
               secure: isProd, // ⬅️ critical: false on localhost
             });
-          } catch {}
+          } catch {
+            // Intentionally ignore cookie write errors: fall back to stateless auth.
+          }
         },
         remove(name: string, options: CookieOptions) {
           const sameSite = options?.sameSite ?? "lax";
@@ -39,7 +41,9 @@ export async function getSupabaseServer() {
               secure: isProd, // ⬅️ critical
               maxAge: 0,
             });
-          } catch {}
+          } catch {
+            // Intentionally ignore cookie removal errors: session cleanup isn't critical.
+          }
         },
       },
     }
