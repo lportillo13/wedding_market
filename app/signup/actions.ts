@@ -42,6 +42,11 @@ export async function signUp(_: SignUpState, formData: FormData): Promise<SignUp
   const supabaseAdmin = createSupabaseAdminClient();
 
   if (supabaseAdmin) {
+    const { error: confirmErr } = await supabaseAdmin.auth.admin.updateUserById(userId, { email_confirm: true });
+    if (confirmErr) {
+      return { ok: false, message: confirmErr.message };
+    }
+
     const { error: profileErr } = await supabaseAdmin
       .from('profiles')
       .upsert({ id: userId, role: 'user' }, { onConflict: 'id' });
