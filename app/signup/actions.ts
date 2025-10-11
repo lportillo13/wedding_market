@@ -2,6 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 const SignUpSchema = z.object({
@@ -38,12 +39,18 @@ export async function signUp(_: SignUpState, formData: FormData): Promise<SignUp
     };
   }
 
-  const { error: profileErr } = await supabase
-    .from('profiles')
-    .upsert({ id: userId, role: 'user' }, { onConflict: 'id' });
+  try {
+    const supabaseAdmin = createSupabaseAdminClient();
+    const { error: profileErr } = await supabaseAdmin
+      .from('profiles')
+      .upsert({ id: userId, role: 'user' }, { onConflict: 'id' });
 
-  if (profileErr) {
-    return { ok: false, message: profileErr.message };
+    if (profileErr) {
+      return { ok: false, message: profileErr.message };
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Failed to create profile';
+    return { ok: false, message };
   }
 
   redirect('/');
