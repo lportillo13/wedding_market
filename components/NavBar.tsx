@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { getShortlistCount } from "@/lib/shortlist";
 
 export default function NavBar() {
   const [count, setCount] = useState<number>(0);
   const [mounted, setMounted] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const sync = () => setCount(getShortlistCount());
@@ -16,26 +19,37 @@ export default function NavBar() {
     return () => window.removeEventListener("wm-shortlist-changed", sync);
   }, []);
 
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
   return (
-    <nav className="navbar navbar-expand-lg bg-body border-bottom">
+    <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
       <div className="container">
         <Link href="/" className="navbar-brand">Wedding Market</Link>
 
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#wmNav">
+        <button
+          className="navbar-toggler"
+          type="button"
+          aria-controls="wmNav"
+          aria-expanded={isOpen}
+          aria-label="Toggle navigation"
+          onClick={() => setIsOpen((prev) => !prev)}
+        >
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        <div className="collapse" id="wmNav">
+        <div className={`collapse navbar-collapse${isOpen ? " show" : ""}`} id="wmNav">
           <ul className="navbar-nav me-auto">
             <li className="nav-item"><Link href="/vendors" className="nav-link">Vendors</Link></li>
-            <li className="nav-item"> <a href="/account/rfqs" className="nav-link">My requests</a></li>
+            <li className="nav-item"><Link href="/account/rfqs" className="nav-link">My requests</Link></li>
           </ul>
 
           <div className="d-flex align-items-center gap-2">
             <Link href="/rfq/new" className="btn btn-primary btn-sm">
               Request quotes
             </Link>
-            <Link href="/rfq/new" className="btn btn-outline-secondary btn-sm position-relative">
+            <Link href="/shortlist" className="btn btn-outline-secondary btn-sm position-relative">
               Shortlist
               {/* render badge after mount to avoid hydration mismatch */}
               {mounted && (

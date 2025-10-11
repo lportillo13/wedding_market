@@ -1,120 +1,140 @@
-"use client";
-import { supabaseBrowser } from "@/lib/supabase/client";
-import Image from "next/image";
+import Link from "next/link";
 
-export function SignOutButton() {
-  return (
-    <button
-      className="btn btn-outline-danger"
-      onClick={async () => {
-        await supabaseBrowser.auth.signOut();
-        location.href = "/"; // force refresh to clear session UI
-      }}
-    >
-      Sign out
-    </button>
-  );
-}
+const highlights = [
+  {
+    title: "Curated vendor matches",
+    description:
+      "Answer a few questions and we will surface venues, photographers, florists and more who fit your style and budget.",
+  },
+  {
+    title: "One place to compare quotes",
+    description:
+      "Send requests with a single click and keep every response organised so you can review availability, pricing and reviews side by side.",
+  },
+  {
+    title: "Plan with total confidence",
+    description:
+      "Favourite the vendors you love, share shortlists with your partner and book with the support of our wedding planning team.",
+  },
+];
+
+const categories = [
+  "Venues",
+  "Photography",
+  "Catering",
+  "Beauty",
+  "Entertainment",
+  "Decor",
+];
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <main>
+      <section className="bg-body-secondary py-5 border-bottom">
+        <div className="container">
+          <div className="row align-items-center g-5">
+            <div className="col-lg-7">
+              <span className="badge bg-primary-subtle text-primary-emphasis mb-3">All-in-one wedding marketplace</span>
+              <h1 className="display-4 fw-bold text-primary mb-4">
+                Plan your dream wedding with less stress
+              </h1>
+              <p className="lead text-secondary mb-4">
+                Discover trusted professionals, compare quotes instantly and book your favourites without leaving the platform.
+              </p>
+              <div className="d-flex flex-column flex-sm-row gap-3">
+                <Link href="/rfq/new" className="btn btn-primary btn-lg px-4">
+                  Get personalised quotes
+                </Link>
+                <Link href="/vendors" className="btn btn-outline-secondary btn-lg px-4">
+                  Browse vendors
+                </Link>
+              </div>
+            </div>
+            <div className="col-lg-5">
+              <div className="card shadow-sm border-0 overflow-hidden">
+                <div className="card-body p-4">
+                  <h2 className="h5 text-uppercase text-secondary mb-3">Why couples choose us</h2>
+                  <ul className="list-unstyled mb-0">
+                    {highlights.map((item, index) => (
+                      <li key={item.title} className="d-flex gap-3 mb-3">
+                        <div className="flex-shrink-0 rounded-circle bg-primary-subtle text-primary-emphasis d-inline-flex align-items-center justify-content-center" style={{ width: "2.5rem", height: "2.5rem" }}>
+                          <span className="fw-semibold">{index + 1}</span>
+                        </div>
+                        <div>
+                          <h3 className="h6 fw-semibold mb-1">{item.title}</h3>
+                          <p className="text-secondary mb-0">{item.description}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </section>
+
+      <section className="py-5">
+        <div className="container">
+          <div className="row g-4">
+            {highlights.map((item) => (
+              <div key={item.title} className="col-md-4">
+                <div className="card h-100 shadow-sm border-0">
+                  <div className="card-body p-4">
+                    <h3 className="h5 fw-semibold mb-2">{item.title}</h3>
+                    <p className="text-secondary mb-0">{item.description}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-white py-5 border-top border-bottom">
+        <div className="container">
+          <div className="row align-items-center g-4">
+            <div className="col-lg-6">
+              <h2 className="display-6 fw-bold mb-3">Explore popular categories</h2>
+              <p className="text-secondary">
+                Whether you&apos;re searching for the perfect venue or putting the finishing touches on decor, our directory showcases
+                vetted professionals across every category.
+              </p>
+            </div>
+            <div className="col-lg-6">
+              <div className="row g-3">
+                {categories.map((category) => (
+                  <div key={category} className="col-6">
+                    <div className="border rounded-4 p-4 h-100 shadow-sm bg-body-tertiary">
+                      <p className="fw-semibold mb-1">{category}</p>
+                      <Link href={`/vendors?category=${encodeURIComponent(category.toLowerCase())}`} className="text-primary fw-semibold">
+                        See vendors →
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-5">
+        <div className="container">
+          <div className="row justify-content-center text-center">
+            <div className="col-lg-8">
+              <h2 className="display-6 fw-bold mb-3">Ready to start planning?</h2>
+              <p className="text-secondary mb-4">
+                Build a shortlist, share it with your partner and message vendors directly. Wedding Market keeps your planning journey
+                organised from the first idea to the final booking.
+              </p>
+              <Link href="/shortlist" className="btn btn-primary btn-lg px-4">
+                View your shortlist
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }

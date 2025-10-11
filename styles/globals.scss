@@ -14,8 +14,8 @@ html[data-bs-theme="light"] body {
 
 /* OPTIONAL: if anything still forces dark, keep these hard overrides */
 html[data-bs-theme="light"] {
-  --bs-body-bg: #ffffff;
-  --bs-body-color: #212529;
+  --bs-body-bg: #f8f9fa;
+  --bs-body-color: #1f2933;
 }
 
 html[data-bs-theme="light"] body {
