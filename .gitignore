@@ -1,3 +1,7 @@
+# Env
+.env*
+!.env.local.example
+
 # Node
 node_modules/
 npm-debug.log*
@@ -5,6 +9,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 .pnpm-store/
+.cache/
 
 # Next.js
 .next/
