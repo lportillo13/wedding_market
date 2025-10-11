@@ -1,15 +1,9 @@
 // app/vendors/[slug]/page.tsx
-import { notFound } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
-import ShortlistButton from "@/components/shortlist/ShortlistButton";
-import ReviewsList from "./Reviews"; // 👈 add this
-
-function supabasePublic() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
-}
+import { notFound } from 'next/navigation';
+import ShortlistButton from '@/components/shortlist/ShortlistButton';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { Stars } from '@/components/Stars';
+import Reviews from './Reviews';
 
 type Vendor = {
   id: string;
@@ -18,10 +12,13 @@ type Vendor = {
   bio_en: string | null;
   bio_es: string | null;
   categories: string[] | null;
-  rating_avg: number | null;
-  rating_count: number | null;
   created_at: string;
   is_published: boolean;
+};
+
+type VendorRating = {
+  rating_avg: number | null;
+  rating_count: number | null;
 };
 
 export default async function VendorPage({
@@ -31,11 +28,11 @@ export default async function VendorPage({
 }) {
   const { slug } = await params; // ✅ Next 15: await params
 
-  const supabase = supabasePublic();
+  const supabase = await createSupabaseServerClient();
   const { data: vendor, error } = await supabase
-    .from("vendor_public_search")
-    .select("*")
-    .eq("slug", slug)
+    .from('vendor_public_search')
+    .select('*')
+    .eq('slug', slug)
     .maybeSingle<Vendor>();
 
   if (error) {
@@ -45,9 +42,14 @@ export default async function VendorPage({
     notFound();
   }
 
-  const avg = Number(vendor.rating_avg || 0);
-  const count = Number(vendor.rating_count || 0);
-  const rounded = Math.round(avg);
+  const { data: rating } = await supabase
+    .from('vendor_ratings')
+    .select('rating_avg, rating_count')
+    .eq('vendor_id', vendor.id)
+    .maybeSingle<VendorRating>();
+
+  const avg = Number(rating?.rating_avg ?? 0);
+  const count = Number(rating?.rating_count ?? 0);
 
   return (
     <main className="container py-4" style={{ maxWidth: 960 }}>
@@ -58,29 +60,21 @@ export default async function VendorPage({
 
       {vendor.categories?.length ? (
         <div className="mb-2 small text-secondary">
-          {vendor.categories.join(" • ")}
+          {vendor.categories.join(' • ')}
         </div>
       ) : null}
 
-      {/* Rating summary */}
-      <div className="mb-3 d-flex align-items-center gap-2">
-        <div className="fs-5">
-          {"★".repeat(rounded)}
-          {"☆".repeat(5 - rounded)}
-        </div>
-        <div className="small text-secondary">
-          {avg.toFixed(2)} ({count} review{count === 1 ? "" : "s"})
-        </div>
+      <div className="d-flex align-items-center gap-2 my-3">
+        <Stars value={avg} />
+        <span className="text-muted">({count})</span>
       </div>
 
       {vendor.bio_en ? <p className="lead">{vendor.bio_en}</p> : null}
 
       <hr className="my-4" />
 
-      {/* Reviews list (public) */}
-      <ReviewsList vendor_id={vendor.id} />
+      <Reviews vendorId={vendor.id} />
 
-      {/* Placeholder for gallery, FAQs, coupons, etc. */}
       <div className="alert alert-info mt-4">
         More details (gallery, FAQs, coupons) coming soon.
       </div>
