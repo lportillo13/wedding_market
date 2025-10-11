@@ -58,6 +58,60 @@ const common = {
       welcome:
         "¡Bienvenido! Usa las pestañas superiores para gestionar tu perfil, revisar solicitudes y seguir las cotizaciones que has enviado.",
     },
+    profileForm: {
+      businessNameLabel: "Nombre del negocio",
+      slugLabel: "Slug",
+      slugPlaceholder: "mi-proveedor-increible",
+      slugHelp: "Solo letras, números y guiones.",
+      bioEnLabel: "Biografía (EN)",
+      bioEsLabel: "Biografía (ES)",
+      save: "Guardar perfil",
+      saving: "Guardando…",
+    },
+    location: {
+      heading: "Ubicación y zona de servicio",
+      form: {
+        addressLabel: "Dirección (formateada)",
+        cityLabel: "Ciudad",
+        stateLabel: "Estado/Región",
+        countryLabel: "País",
+        radiusLabel: "Radio de servicio (km)",
+        save: "Guardar ubicación",
+        saving: "Guardando…",
+      },
+      map: {
+        searchLabel: "Buscar dirección",
+        searchPlaceholder: "Escribe una dirección…",
+      },
+    },
+    categories: {
+      instructions: "Elige todas las opciones que apliquen",
+      save: "Guardar categorías",
+      saving: "Guardando…",
+      success: "¡Categorías guardadas!",
+    },
+    publish: {
+      heading: "Publicar",
+      description: "Activa o desactiva si tu perfil aparece en la búsqueda pública.",
+      status: {
+        published: "Publicado (visible en el catálogo)",
+        unpublished: "No publicado (oculto del catálogo)",
+      },
+      save: "Guardar",
+      saving: "Guardando…",
+      viewPublic: "Ver página pública",
+    },
+  },
+  vendorInbox: {
+    quoteForm: {
+      amountLabel: "Cotización (USD)",
+      amountPlaceholder: "ej. 2500",
+      messageLabel: "Mensaje",
+      messagePlaceholder: "Qué incluye, disponibilidad, próximos pasos…",
+      submit: "Enviar cotización",
+      submitting: "Enviando…",
+      success: "Cotización enviada ✅",
+    },
   },
   vendorRfqs: {
     title: "Solicitudes recibidas",
@@ -139,6 +193,41 @@ const common = {
       description:
         "Crea una lista de favoritos, compártela con tu pareja y envía mensajes a los proveedores directamente. Wedding Market mantiene tu proceso de planificación organizado desde la primera idea hasta la reserva final.",
       cta: "Ver tus favoritos",
+    },
+  },
+  signup: {
+    page: {
+      title: "Crea tu cuenta",
+      description: "Regístrate para solicitar cotizaciones, seguir proveedores y dejar reseñas.",
+      alreadyHave: "¿Ya tienes una cuenta?",
+      loginLink: "Inicia sesión",
+    },
+    form: {
+      emailLabel: "Correo electrónico",
+      passwordLabel: "Contraseña",
+      passwordHelp: "Al menos 6 caracteres.",
+      submit: "Crear cuenta",
+      submitting: "Registrándote…",
+    },
+    vendor: {
+      gate: {
+        title: "Conviértete en proveedor",
+        description: "Inicia sesión o crea una cuenta para comenzar a construir tu perfil de proveedor.",
+        loginCta: "Inicia sesión",
+        newHere: "¿Eres nuevo?",
+        signUpLink: "Regístrate primero",
+      },
+      formPage: {
+        title: "Crea tu perfil de proveedor",
+        description: "Cuéntanos quién eres para configurar tu panel de proveedor.",
+      },
+      form: {
+        businessNameLabel: "Nombre del negocio",
+        cityLabel: "Ciudad",
+        countryLabel: "País",
+        submit: "Crear perfil de proveedor",
+        submitting: "Creando…",
+      },
     },
   },
 } as const;

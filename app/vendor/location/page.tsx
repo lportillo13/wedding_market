@@ -4,8 +4,7 @@ export const revalidate = 0;
 import { redirect } from 'next/navigation';
 import { getRoles } from '@/lib/auth/roles';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import LocationForm from './locationForm';
-import ClientOnly from '@/components/ClientOnly';
+import LocationSection from './LocationSection';
 
 export default async function LocationPage() {
   const { user, isVendor } = await getRoles();
@@ -40,10 +39,7 @@ export default async function LocationPage() {
   return (
     <div className="row">
       <div className="col-lg-6">
-        <h2 className="mb-3">Location &amp; Service Area</h2>
-        <ClientOnly>
-          <LocationForm initial={initial} />
-        </ClientOnly>
+        <LocationSection initial={initial} />
       </div>
     </div>
   );

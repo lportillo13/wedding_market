@@ -58,6 +58,60 @@ const common = {
       welcome:
         "Welcome! Use the tabs above to manage your profile, review RFQs, and track quotes you’ve sent.",
     },
+    profileForm: {
+      businessNameLabel: "Business name",
+      slugLabel: "Slug",
+      slugPlaceholder: "my-amazing-vendor",
+      slugHelp: "Only letters, numbers and hyphens.",
+      bioEnLabel: "Bio (EN)",
+      bioEsLabel: "Bio (ES)",
+      save: "Save profile",
+      saving: "Saving…",
+    },
+    location: {
+      heading: "Location & Service Area",
+      form: {
+        addressLabel: "Address (formatted)",
+        cityLabel: "City",
+        stateLabel: "State/Region",
+        countryLabel: "Country",
+        radiusLabel: "Service radius (km)",
+        save: "Save location",
+        saving: "Saving…",
+      },
+      map: {
+        searchLabel: "Search address",
+        searchPlaceholder: "Type an address…",
+      },
+    },
+    categories: {
+      instructions: "Choose all that apply",
+      save: "Save categories",
+      saving: "Saving…",
+      success: "Categories saved!",
+    },
+    publish: {
+      heading: "Publish",
+      description: "Toggle whether your vendor profile appears in public search.",
+      status: {
+        published: "Published (visible in catalog)",
+        unpublished: "Unpublished (hidden from catalog)",
+      },
+      save: "Save",
+      saving: "Saving…",
+      viewPublic: "View public page",
+    },
+  },
+  vendorInbox: {
+    quoteForm: {
+      amountLabel: "Quote (USD)",
+      amountPlaceholder: "e.g. 2500",
+      messageLabel: "Message",
+      messagePlaceholder: "What’s included, availability, next steps…",
+      submit: "Send quote",
+      submitting: "Sending…",
+      success: "Quote sent ✅",
+    },
   },
   vendorRfqs: {
     title: "Received RFQs",
@@ -139,6 +193,41 @@ const common = {
       description:
         "Build a shortlist, share it with your partner and message vendors directly. Wedding Market keeps your planning journey organised from the first idea to the final booking.",
       cta: "View your shortlist",
+    },
+  },
+  signup: {
+    page: {
+      title: "Create your account",
+      description: "Sign up to request quotes, track vendors, and leave reviews.",
+      alreadyHave: "Already have an account?",
+      loginLink: "Log in",
+    },
+    form: {
+      emailLabel: "Email",
+      passwordLabel: "Password",
+      passwordHelp: "At least 6 characters.",
+      submit: "Create account",
+      submitting: "Signing up…",
+    },
+    vendor: {
+      gate: {
+        title: "Become a vendor",
+        description: "Log in or create an account to start building your vendor profile.",
+        loginCta: "Log in",
+        newHere: "New here?",
+        signUpLink: "Sign up first",
+      },
+      formPage: {
+        title: "Create your vendor profile",
+        description: "Tell us who you are so we can set up your vendor dashboard.",
+      },
+      form: {
+        businessNameLabel: "Business name",
+        cityLabel: "City",
+        countryLabel: "Country",
+        submit: "Create vendor profile",
+        submitting: "Creating…",
+      },
     },
   },
 } as const;

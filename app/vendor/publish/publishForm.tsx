@@ -1,11 +1,13 @@
 "use client";
 
 import { useActionState } from "react";
+import { useTranslation } from "@/contexts/LanguageContext";
 import { setPublishStatus, type PubState } from "./actions";
 
 export default function PublishForm({ initial }: { initial: { is_published: boolean; slug?: string } }) {
   const [state, formAction, pending] = useActionState<PubState, FormData>(setPublishStatus, { ok: false, message: "" });
   const published = typeof state.published === "boolean" ? state.published : initial.is_published;
+  const t = useTranslation();
 
   return (
     <form action={formAction} className="border rounded p-3">
@@ -19,7 +21,7 @@ export default function PublishForm({ initial }: { initial: { is_published: bool
           onChange={() => {}}
         />
         <label className="form-check-label" htmlFor="publishSwitch">
-          {published ? "Published (visible in catalog)" : "Unpublished (hidden from catalog)"}
+          {published ? t("vendorDashboard.publish.status.published") : t("vendorDashboard.publish.status.unpublished")}
         </label>
       </div>
 
@@ -30,12 +32,12 @@ export default function PublishForm({ initial }: { initial: { is_published: bool
       )}
 
       <button className="btn btn-primary" disabled={pending}>
-        {pending ? "Saving…" : "Save"}
+        {pending ? t("vendorDashboard.publish.saving") : t("vendorDashboard.publish.save")}
       </button>
 
       {published && initial.slug && (
         <a className="btn btn-link ms-2" href={`/vendors/${initial.slug}`} target="_blank" rel="noreferrer">
-          View public page
+          {t("vendorDashboard.publish.viewPublic")}
         </a>
       )}
     </form>

@@ -4,7 +4,7 @@ export const revalidate = 0;
 import { redirect } from 'next/navigation';
 import { getRoles } from '@/lib/auth/roles';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import PublishForm from './publishForm';
+import PublishSection from './PublishSection';
 
 export default async function PublishPage() {
   const { user, isVendor } = await getRoles();
@@ -26,11 +26,7 @@ export default async function PublishPage() {
   return (
     <div className="row">
       <div className="col-lg-8">
-        <h2 className="mb-3">Publish</h2>
-        <p className="text-muted">
-          Toggle whether your vendor profile appears in public search.
-        </p>
-        <PublishForm initial={initial} />
+        <PublishSection initial={initial} />
       </div>
     </div>
   );

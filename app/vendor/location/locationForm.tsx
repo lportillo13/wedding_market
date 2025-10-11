@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { saveLocation, type SaveLocState } from "./actions";
 import MapPicker from "./MapPicker";
+import { useTranslation } from "@/contexts/LanguageContext";
 
 type Initial = {
   address: string; city: string; state: string; country: string;
@@ -14,6 +15,7 @@ const initState: SaveLocState = { ok: false, message: "" };
 export default function LocationForm({ initial }: { initial: Initial }) {
   const [state, formAction, pending] = useActionState(saveLocation, initState);
   const [form, setForm] = useState<Initial>(initial);
+  const t = useTranslation();
 
   useEffect(() => { setForm(initial); }, [initial]);
 
@@ -52,28 +54,38 @@ export default function LocationForm({ initial }: { initial: Initial }) {
       </div>
 
       <div className="mb-3">
-        <label className="form-label" htmlFor="location-address">Address (formatted)</label>
+        <label className="form-label" htmlFor="location-address">
+          {t("vendorDashboard.location.form.addressLabel")}
+        </label>
         <input id="location-address" name="address" className="form-control" value={form.address} onChange={onChange} />
       </div>
 
       <div className="row">
         <div className="col-md-4 mb-3">
-          <label className="form-label" htmlFor="location-city">City</label>
+          <label className="form-label" htmlFor="location-city">
+            {t("vendorDashboard.location.form.cityLabel")}
+          </label>
           <input id="location-city" name="city" className="form-control" value={form.city} onChange={onChange} />
         </div>
         <div className="col-md-4 mb-3">
-          <label className="form-label" htmlFor="location-state">State/Region</label>
+          <label className="form-label" htmlFor="location-state">
+            {t("vendorDashboard.location.form.stateLabel")}
+          </label>
           <input id="location-state" name="state" className="form-control" value={form.state} onChange={onChange} />
         </div>
         <div className="col-md-4 mb-3">
-          <label className="form-label" htmlFor="location-country">Country</label>
+          <label className="form-label" htmlFor="location-country">
+            {t("vendorDashboard.location.form.countryLabel")}
+          </label>
           <input id="location-country" name="country" className="form-control" value={form.country} onChange={onChange} />
         </div>
       </div>
 
       <div className="row">
         <div className="col-md-6 mb-3">
-          <label className="form-label" htmlFor="location-service-radius">Service radius (km)</label>
+          <label className="form-label" htmlFor="location-service-radius">
+            {t("vendorDashboard.location.form.radiusLabel")}
+          </label>
           <input
             id="location-service-radius"
             name="service_radius_km"
@@ -102,7 +114,7 @@ export default function LocationForm({ initial }: { initial: Initial }) {
       )}
 
       <button className="btn btn-primary" disabled={pending}>
-        {pending ? "Saving…" : "Save location"}
+        {pending ? t("vendorDashboard.location.form.saving") : t("vendorDashboard.location.form.save")}
       </button>
     </form>
   );

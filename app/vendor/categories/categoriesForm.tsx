@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import { useTranslation } from "@/contexts/LanguageContext";
 import { saveCategories } from "../_actions";
 
 type CategoryLabel = { en?: string | null } | null | undefined;
@@ -10,6 +11,7 @@ export default function CategoriesForm({ allCats, selected }: { allCats: Cat[]; 
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const t = useTranslation();
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -19,7 +21,7 @@ export default function CategoriesForm({ allCats, selected }: { allCats: Cat[]; 
     try {
       const fd = new FormData(e.currentTarget);
       await saveCategories(fd);
-      setMsg("Saved!");
+      setMsg(t("vendorDashboard.categories.success"));
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : String(e);
       setErr(message);
@@ -31,7 +33,7 @@ export default function CategoriesForm({ allCats, selected }: { allCats: Cat[]; 
   return (
     <form onSubmit={onSubmit}>
       <div className="mb-3">
-        <div className="form-text mb-2">Choose all that apply</div>
+        <div className="form-text mb-2">{t("vendorDashboard.categories.instructions")}</div>
         <div className="row">
           {allCats.map((c) => {
             const localized = typeof c.label === "object" && c.label ? c.label.en : undefined;
@@ -56,7 +58,7 @@ export default function CategoriesForm({ allCats, selected }: { allCats: Cat[]; 
         </div>
       </div>
       <button className="btn btn-primary" disabled={busy}>
-        {busy ? "Saving..." : "Save categories"}
+        {busy ? t("vendorDashboard.categories.saving") : t("vendorDashboard.categories.save")}
       </button>
       {msg && <div className="alert alert-success mt-3">{msg}</div>}
       {err && <div className="alert alert-danger mt-3">{err}</div>}

@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import type { SaveState } from "./actions";
 import { saveProfile } from "./actions";
+import { useTranslation } from "@/contexts/LanguageContext";
 
 type FormShape = {
   slug: string;
@@ -16,6 +17,7 @@ const actionInitial: SaveState = { ok: false, message: "" };
 export default function ProfileForm({ initial }: { initial: FormShape }) {
   const [state, formAction, isPending] = useActionState(saveProfile, actionInitial);
   const [form, setForm] = useState<FormShape>(initial);
+  const t = useTranslation();
 
   // If the server sends new props (after save/revalidate), sync them
   useEffect(() => {
@@ -36,7 +38,9 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
   return (
     <form action={formAction} suppressHydrationWarning>
       <div className="mb-3">
-        <label className="form-label" htmlFor="profile-business-name">Business name</label>
+        <label className="form-label" htmlFor="profile-business-name">
+          {t("vendorDashboard.profileForm.businessNameLabel")}
+        </label>
         <input
           id="profile-business-name"
           name="business_name"
@@ -51,21 +55,25 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
       </div>
 
       <div className="mb-3">
-        <label className="form-label" htmlFor="profile-slug">Slug</label>
+        <label className="form-label" htmlFor="profile-slug">
+          {t("vendorDashboard.profileForm.slugLabel")}
+        </label>
         <input
           id="profile-slug"
           name="slug"
           className={`form-control ${state.fieldErrors?.slug ? "is-invalid" : ""}`}
           value={form.slug}
           onChange={onChange}
-          placeholder="my-amazing-vendor"
+          placeholder={t("vendorDashboard.profileForm.slugPlaceholder")}
         />
         {state.fieldErrors?.slug && <div className="invalid-feedback">{state.fieldErrors.slug}</div>}
-        <div className="form-text">Only letters, numbers and hyphens.</div>
+        <div className="form-text">{t("vendorDashboard.profileForm.slugHelp")}</div>
       </div>
 
       <div className="mb-3">
-        <label className="form-label" htmlFor="profile-bio-en">Bio (EN)</label>
+        <label className="form-label" htmlFor="profile-bio-en">
+          {t("vendorDashboard.profileForm.bioEnLabel")}
+        </label>
         <textarea
           id="profile-bio-en"
           name="bio_en"
@@ -77,7 +85,9 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
       </div>
 
       <div className="mb-3">
-        <label className="form-label" htmlFor="profile-bio-es">Bio (ES)</label>
+        <label className="form-label" htmlFor="profile-bio-es">
+          {t("vendorDashboard.profileForm.bioEsLabel")}
+        </label>
         <textarea
           id="profile-bio-es"
           name="bio_es"
@@ -95,7 +105,7 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
       )}
 
       <button className="btn btn-primary" disabled={isPending}>
-        {isPending ? "Saving..." : "Save profile"}
+        {isPending ? t("vendorDashboard.profileForm.saving") : t("vendorDashboard.profileForm.save")}
       </button>
     </form>
   );
