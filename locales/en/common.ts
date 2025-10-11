@@ -113,6 +113,17 @@ const common = {
       success: "Quote sent ✅",
     },
   },
+  vendorQuotes: {
+    title: "Quotes sent",
+    empty: "You haven’t sent any quotes yet.",
+    sentLabel: "Sent",
+    status: {
+      sent: "SENT",
+    },
+    contact: {
+      hiddenNote: "Contact details unlock automatically once your quote is accepted.",
+    },
+  },
   vendorRfqs: {
     title: "Received RFQs",
     noProfile: {

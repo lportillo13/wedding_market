@@ -1,6 +1,8 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useMemo } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { isSupportedLanguage, type SupportedLanguage } from "@/lib/i18n";
 import { saveProfile, type SaveProfileState } from "./actions";
 
 const initialState: SaveProfileState = { ok: false, message: "" };
@@ -25,10 +27,20 @@ export type ProfileFormInitial = {
   guest_count: number | null;
   wedding_budget: number | null;
   wedding_theme: string;
+  language: SupportedLanguage;
 };
 
 export default function ProfileForm({ initial }: { initial: ProfileFormInitial }) {
   const [state, formAction, pending] = useActionState<SaveProfileState, FormData>(saveProfile, initialState);
+  const { setLanguage, dictionary } = useLanguage();
+
+  const languageOptions = useMemo(
+    () => [
+      { value: "en" as SupportedLanguage, label: dictionary.languageSelector.english },
+      { value: "es" as SupportedLanguage, label: dictionary.languageSelector.spanish },
+    ],
+    [dictionary.languageSelector.english, dictionary.languageSelector.spanish]
+  );
 
   return (
     <form action={formAction} className="border rounded p-3 bg-body">
@@ -92,6 +104,31 @@ export default function ProfileForm({ initial }: { initial: ProfileFormInitial }
             autoComplete="country-name"
           />
           {state.fieldErrors?.country && <div className="text-danger small">{state.fieldErrors.country}</div>}
+        </div>
+        <div className="col-md-6 mb-3">
+          <label className="form-label" htmlFor="profile-language">
+            Preferred language
+          </label>
+          <select
+            id="profile-language"
+            name="language"
+            className="form-select"
+            defaultValue={initial.language}
+            onChange={(event) => {
+              const value = event.target.value;
+              if (isSupportedLanguage(value)) {
+                setLanguage(value);
+              }
+            }}
+          >
+            {languageOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          <div className="form-text">Changes the default language shown after you log in.</div>
+          {state.fieldErrors?.language && <div className="text-danger small">{state.fieldErrors.language}</div>}
         </div>
       </div>
 

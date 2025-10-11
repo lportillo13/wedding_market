@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { useTranslation } from "@/contexts/LanguageContext";
+import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
 import { saveCategories } from "../_actions";
 
-type CategoryLabel = { en?: string | null } | null | undefined;
+type CategoryLabel = { en?: string | null; es?: string | null } | null | undefined;
 type Cat = { key: string; label?: CategoryLabel };
 
 export default function CategoriesForm({ allCats, selected }: { allCats: Cat[]; selected: string[] }) {
@@ -12,6 +12,7 @@ export default function CategoriesForm({ allCats, selected }: { allCats: Cat[]; 
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const t = useTranslation();
+  const { language } = useLanguage();
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -36,7 +37,12 @@ export default function CategoriesForm({ allCats, selected }: { allCats: Cat[]; 
         <div className="form-text mb-2">{t("vendorDashboard.categories.instructions")}</div>
         <div className="row">
           {allCats.map((c) => {
-            const localized = typeof c.label === "object" && c.label ? c.label.en : undefined;
+            const localized =
+              typeof c.label === "object" && c.label
+                ? language === "es"
+                  ? c.label.es ?? c.label.en
+                  : c.label.en ?? c.label.es
+                : undefined;
             const label = localized ?? c.key;
             const id = `cat-${c.key}`;
             return (
