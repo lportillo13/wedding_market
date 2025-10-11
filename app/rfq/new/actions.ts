@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 export type CreateRfqState = { ok: boolean; message?: string };
 
@@ -36,13 +37,30 @@ export async function createRfqAndInvites(_: CreateRfqState, formData: FormData)
     notes: formData.get("notes") || null,
   };
 
-  const { data: rfq, error: rfqErr } = await supabase.from("rfqs").insert([payload]).select("id").single();
-  if (rfqErr || !rfq) return { ok: false, message: rfqErr?.message || "Failed to create RFQ." };
+  const supabaseAdmin = createSupabaseAdminClient();
+  const dbClient = supabaseAdmin ?? supabase;
+
+  const { data: rfq, error: rfqErr } = await dbClient.from("rfqs").insert([payload]).select("id").single();
+  if (rfqErr || !rfq) {
+    if (!supabaseAdmin && /policy for relation "rfqs"/i.test(rfqErr?.message ?? "")) {
+      console.warn(
+        "RFQ creation blocked by row-level security. Configure SUPABASE_SERVICE_ROLE_KEY to allow server-side RFQ creation."
+      );
+    }
+    return { ok: false, message: rfqErr?.message || "Failed to create RFQ." };
+  }
 
   const expires_at = new Date(Date.now() + QUOTE_EXPIRES_DAYS * 86400_000).toISOString();
   const invites = vendorIds.map((vendor_id) => ({ rfq_id: rfq.id, vendor_id, expires_at }));
-  const { error: invErr } = await supabase.from("rfq_invites").insert(invites);
-  if (invErr) return { ok: false, message: invErr.message };
+  const { error: invErr } = await dbClient.from("rfq_invites").insert(invites);
+  if (invErr) {
+    if (!supabaseAdmin && /policy for relation "rfq_invites"/i.test(invErr?.message ?? "")) {
+      console.warn(
+        "RFQ invite creation blocked by row-level security. Configure SUPABASE_SERVICE_ROLE_KEY to allow server-side RFQ creation."
+      );
+    }
+    return { ok: false, message: invErr.message };
+  }
 
   redirect(`/rfq/sent?rfq=${rfq.id}&count=${vendorIds.length}`);
 }
