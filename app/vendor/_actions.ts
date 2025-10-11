@@ -4,8 +4,10 @@ import { revalidatePath } from "next/cache";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { slugify } from "@/lib/slugify";
 
+type SupabaseServerClient = Awaited<ReturnType<typeof getSupabaseServer>>;
+
 async function getUser() {
-  const supabase = await getSupabaseServer();
+  const supabase: SupabaseServerClient = await getSupabaseServer();
   const { data: { user }, error } = await supabase.auth.getUser();
   if (error || !user) throw new Error("Not authenticated");
   return { supabase, user };
