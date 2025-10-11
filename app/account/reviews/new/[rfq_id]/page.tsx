@@ -1,8 +1,10 @@
 import { revalidatePath } from "next/cache";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 import { createReview, type CreateReviewState } from "@/app/account/reviews/actions";
 import ReviewForm from "./ReviewForm";
 
@@ -28,22 +30,33 @@ export default async function NewReviewPage({
   }
 
   const supabaseAdmin = createSupabaseAdminClient();
+  const selectColumns = {
+    owner_id: "id, accepted_quote_id, owner_id",
+    owner_uuid: "id, accepted_quote_id, owner_id:owner_uuid",
+  } as const satisfies Record<OwnerColumn, string>;
 
+  const selectRfq = (client: SupabaseClient, column: OwnerColumn) =>
+    client
+      .from("rfqs")
+      .select(selectColumns[column])
+      .eq("id", rfq_id)
+      .maybeSingle<{ id: string; accepted_quote_id: string | null; owner_id: string }>();
+
+  let ownerColumn: OwnerColumn = "owner_id";
   let {
     data: rfq,
     error: rfqErr,
-  } = await supabase
-    .from("rfqs")
-    .select("id, accepted_quote_id, owner_id")
-    .eq("id", rfq_id)
-    .maybeSingle<{ id: string; accepted_quote_id: string | null; owner_id: string }>();
+  } = await selectRfq(supabase, ownerColumn);
+
+  if (isMissingOwnerColumnError(rfqErr, ownerColumn)) {
+    ownerColumn = "owner_uuid";
+    const retry = await selectRfq(supabase, ownerColumn);
+    rfq = retry.data;
+    rfqErr = retry.error;
+  }
 
   if (rfqErr && supabaseAdmin && /infinite recursion detected in policy/i.test(rfqErr.message)) {
-    const retry = await supabaseAdmin
-      .from("rfqs")
-      .select("id, accepted_quote_id, owner_id")
-      .eq("id", rfq_id)
-      .maybeSingle<{ id: string; accepted_quote_id: string | null; owner_id: string }>();
+    const retry = await selectRfq(supabaseAdmin, ownerColumn);
     rfq = retry.data;
     rfqErr = retry.error;
   }

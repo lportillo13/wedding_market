@@ -1,6 +1,8 @@
 import Link from "next/link";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 
 export default async function AccountQuotesPage() {
   const supabase = await createSupabaseServerClient();
@@ -30,18 +32,26 @@ export default async function AccountQuotesPage() {
     created_at: string;
   };
 
-  let { data: rfqs, error: rfqsErr } = await supabase
-    .from("rfqs")
-    .select("id, city, state, country, event_date, accepted_quote_id, created_at")
-    .eq("owner_id", user.id)
-    .order("created_at", { ascending: false });
+  const selectFields = "id, city, state, country, event_date, accepted_quote_id, created_at";
+  const selectRfqs = (client: SupabaseClient, column: OwnerColumn) =>
+    client
+      .from("rfqs")
+      .select(selectFields)
+      .eq(column, user.id)
+      .order("created_at", { ascending: false });
+
+  let ownerColumn: OwnerColumn = "owner_id";
+  let { data: rfqs, error: rfqsErr } = await selectRfqs(supabase, ownerColumn);
+
+  if (isMissingOwnerColumnError(rfqsErr, ownerColumn)) {
+    ownerColumn = "owner_uuid";
+    const retry = await selectRfqs(supabase, ownerColumn);
+    rfqs = retry.data;
+    rfqsErr = retry.error;
+  }
 
   if (rfqsErr && supabaseAdmin && /infinite recursion detected in policy/i.test(rfqsErr.message)) {
-    const retry = await supabaseAdmin
-      .from("rfqs")
-      .select("id, city, state, country, event_date, accepted_quote_id, created_at")
-      .eq("owner_id", user.id)
-      .order("created_at", { ascending: false });
+    const retry = await selectRfqs(supabaseAdmin, ownerColumn);
     rfqs = retry.data;
     rfqsErr = retry.error;
   }

@@ -1,7 +1,9 @@
 // app/shortlist/actions.ts
 "use server";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 import { redirect } from "next/navigation";
 
 export type CreateRfqState = { ok: boolean; message?: string; rfq_id?: string };
@@ -42,31 +44,42 @@ async function handleCreateRfqAndInvites(formData: FormData): Promise<CreateRfqS
   const contact_phone = formData.get("contact_phone")?.toString().trim() || null;
 
   // 1) Create RFQ
-  let {
-    data: rfq,
-    error: rfqErr,
-  } = await supabase
-    .from("rfqs")
-    .insert([{
-      owner_id: user.id,
-      event_date, guest_count, budget_min, budget_max,
-      city, state, country, language, theme, notes,
-      contact_email, contact_phone,
-    }])
-    .select("id")
-    .single();
+  const basePayload = {
+    event_date,
+    guest_count,
+    budget_min,
+    budget_max,
+    city,
+    state,
+    country,
+    language,
+    theme,
+    notes,
+    contact_email,
+    contact_phone,
+  } as const;
 
-  if (rfqErr && supabaseAdmin && /infinite recursion detected in policy/i.test(rfqErr.message)) {
-    const retry = await supabaseAdmin
-      .from("rfqs")
-      .insert([{
-        owner_id: user.id,
-        event_date, guest_count, budget_min, budget_max,
-        city, state, country, language, theme, notes,
-        contact_email, contact_phone,
-      }])
-      .select("id")
-      .single();
+  const ownerColumns: OwnerColumn[] = ["owner_id", "owner_uuid"];
+  const insertRfq = async (client: SupabaseClient) => {
+    let lastError: { message?: string } | null = null;
+    for (const column of ownerColumns) {
+      const payload = { ...basePayload, [column]: user.id };
+      const result = await client.from("rfqs").insert([payload]).select("id").single();
+      if (!result.error) {
+        return { data: result.data, error: null } as const;
+      }
+      lastError = result.error;
+      if (!isMissingOwnerColumnError(result.error, column)) {
+        break;
+      }
+    }
+    return { data: null, error: lastError } as const;
+  };
+
+  let { data: rfq, error: rfqErr } = await insertRfq(supabase);
+
+  if (rfqErr && supabaseAdmin && /infinite recursion detected in policy/i.test(rfqErr.message ?? "")) {
+    const retry = await insertRfq(supabaseAdmin);
     rfq = retry.data;
     rfqErr = retry.error;
   }

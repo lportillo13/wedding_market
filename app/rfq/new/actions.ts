@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 
 export type CreateRfqState = { ok: boolean; message?: string };
 
@@ -23,8 +24,7 @@ export async function createRfqAndInvites(_: CreateRfqState, formData: FormData)
   vendorIds = Array.from(new Set(vendorIds)).slice(0, MAX_INVITES);
   if (!vendorIds.length) return { ok: false, message: "Your shortlist is empty." };
 
-  const payload = {
-    owner_id: user.id,
+  const basePayload = {
     event_date: formData.get("event_date") || null,
     guest_count: Number(formData.get("guest_count") || 0) || null,
     budget_min: Number(formData.get("budget_min") || 0) || null,
@@ -35,12 +35,24 @@ export async function createRfqAndInvites(_: CreateRfqState, formData: FormData)
     language: formData.get("language") || "en",
     theme: formData.get("theme") || null,
     notes: formData.get("notes") || null,
-  };
+  } satisfies Record<string, unknown>;
 
   const supabaseAdmin = createSupabaseAdminClient();
   const dbClient = supabaseAdmin ?? supabase;
 
-  const { data: rfq, error: rfqErr } = await dbClient.from("rfqs").insert([payload]).select("id").single();
+  const ownerColumns: OwnerColumn[] = ["owner_id", "owner_uuid"];
+  let rfq: { id: string } | null = null;
+  let rfqErr: { message?: string } | null = null;
+
+  for (const column of ownerColumns) {
+    const insertPayload = { ...basePayload, [column]: user.id };
+    const result = await dbClient.from("rfqs").insert([insertPayload]).select("id").single();
+    rfq = result.data;
+    rfqErr = result.error;
+    if (!rfqErr) break;
+    if (!isMissingOwnerColumnError(rfqErr, column)) break;
+  }
+
   if (rfqErr || !rfq) {
     if (!supabaseAdmin && /policy for relation "rfqs"/i.test(rfqErr?.message ?? "")) {
       console.warn(
