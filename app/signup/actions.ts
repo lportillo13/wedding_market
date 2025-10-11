@@ -42,27 +42,35 @@ export async function signUp(_: SignUpState, formData: FormData): Promise<SignUp
   const supabaseAdmin = createSupabaseAdminClient();
 
   if (supabaseAdmin) {
-    const { error: profileErr } = await supabaseAdmin
-      .from('profiles')
-      .upsert({ id: userId, role: 'user' }, { onConflict: 'id' });
+    const { error: confirmErr } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+      email_confirm: true,
+      email_confirmed_at: new Date().toISOString(),
+    });
+    if (confirmErr) {
+      return { ok: false, message: confirmErr.message };
+    }
+  }
 
-    if (profileErr) {
+  const profileClient = supabaseAdmin ?? supabase;
+  const { error: profileErr } = await profileClient
+    .from('profiles')
+    .upsert({ id: userId, role: 'user' }, { onConflict: 'id' });
+
+  if (profileErr) {
+    const message = profileErr.message.toLowerCase();
+    if (!supabaseAdmin && message.includes('row-level security')) {
+      console.warn(
+        'Profile creation blocked by row-level security. Configure SUPABASE_SERVICE_ROLE_KEY to allow server-side profile provisioning.'
+      );
+    } else {
       return { ok: false, message: profileErr.message };
     }
-  } else {
-    const { error: profileErr } = await supabase
-      .from('profiles')
-      .upsert({ id: userId, role: 'user' }, { onConflict: 'id' });
+  }
 
-    if (profileErr) {
-      const message = profileErr.message.toLowerCase();
-      if (message.includes('row-level security')) {
-        console.warn(
-          'Profile creation blocked by row-level security. Configure SUPABASE_SERVICE_ROLE_KEY to allow server-side profile provisioning.'
-        );
-      } else {
-        return { ok: false, message: profileErr.message };
-      }
+  if (!data.session) {
+    const { error: signInErr } = await supabase.auth.signInWithPassword({ email, password });
+    if (signInErr) {
+      return { ok: false, message: signInErr.message };
     }
   }
 
