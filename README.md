@@ -14,7 +14,7 @@ cp .env.local.example .env.local
 Required vars:
 - \`NEXT_PUBLIC_SUPABASE_URL\`: Supabase project URL
 - \`NEXT_PUBLIC_SUPABASE_ANON_KEY\`: Supabase anon key (public)
-- \`SUPABASE_SERVICE_ROLE_KEY\`: Supabase service key (server-only)
+- \`SUPABASE_SERVICE_ROLE_KEY\` or \`SUPABASE_SERVICE_KEY\`: Supabase service key (server-only)
 - \`NEXT_PUBLIC_GOOGLE_MAPS_API_KEY\`: Google Maps JavaScript API key
 
 > **Never commit** \`.env.local\`. Rotate keys if a secret is ever exposed.
@@ -44,6 +44,8 @@ The schema exporter uses Supabase's `pg_meta` views via the REST API. Provide cr
 ```bash
 export SUPABASE_URL="https://<project>.supabase.co"
 export SUPABASE_SERVICE_ROLE_KEY="<service-role-key>"
+# or, equivalently
+export SUPABASE_SERVICE_KEY="<service-role-key>"
 # Optional: restrict schemas (comma separated). Defaults to `public`.
 export SUPABASE_SCHEMAS="public,storage"
 
