@@ -78,13 +78,6 @@ export default function AuthDropdown({ user, isVendor }: AuthDropdownProps) {
             </Link>
           </li>
         )}
-        {!isVendor && (
-          <li>
-            <Link className="dropdown-item" href="/signup/vendor">
-              {t("auth.createVendorProfile")}
-            </Link>
-          </li>
-        )}
         <li>
           <form action="/auth/signout" method="post">
             <button className="dropdown-item" type="submit" onClick={() => setOpen(false)}>
