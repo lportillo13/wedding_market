@@ -151,7 +151,10 @@ async function fetchMeta(resource) {
   const response = await fetch(`${baseUrl}/pg_meta/${resource}?select=*`, { headers });
   if (!response.ok) {
     const message = await response.text();
-    throw new Error(`Failed to fetch pg_meta/${resource}: ${response.status} ${message}`);
+    const error = new Error(`Failed to fetch pg_meta/${resource}: ${response.status} ${message}`);
+    error.status = response.status;
+    error.responseBody = message;
+    throw error;
   }
   return response.json();
 }
@@ -161,7 +164,14 @@ try {
     fetchMeta('tables'),
     fetchMeta('columns'),
     fetchMeta('constraints'),
-    fetchMeta('indexes')
+    fetchMeta('indexes').catch((error) => {
+      if (error?.status === 404) {
+        console.warn('pg_meta indexes endpoint not available. Continuing without index information.');
+        return [];
+      }
+
+      throw error;
+    })
   ]);
 
   const schemaSet = new Set(schemas);
