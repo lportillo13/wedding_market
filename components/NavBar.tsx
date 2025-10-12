@@ -10,7 +10,7 @@ import LanguageDropdown from "@/components/LanguageDropdown";
 
 export default function NavBar({ authMenu }: { authMenu?: ReactNode }) {
   const [count, setCount] = useState(() => (typeof window !== "undefined" ? getShortlistCount() : 0));
-  const mounted = typeof window !== "undefined";
+  const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isLargeScreen, setIsLargeScreen] = useState(false);
   const pathname = usePathname();
@@ -22,6 +22,11 @@ export default function NavBar({ authMenu }: { authMenu?: ReactNode }) {
     const sync = () => setCount(getShortlistCount());
     window.addEventListener("wm-shortlist-changed", sync);
     return () => window.removeEventListener("wm-shortlist-changed", sync);
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
   }, []);
 
   useEffect(() => {
