@@ -35,6 +35,16 @@ const common = {
       title: "Profile",
       loginRequired: "Please log in to view your profile.",
       intro: "Update your contact information and wedding preferences.",
+      avatar: {
+        heading: "Profile photo",
+        description: "Add a profile photo so vendors recognize you across the site.",
+        fileLabel: "Profile image",
+        helpText: "We’ll optimize the image for fast loading.",
+        submit: {
+          label: "Upload photo",
+          pending: "Uploading…",
+        },
+      },
       form: {
         fullNameLabel: "Name",
         phoneLabel: "Phone",

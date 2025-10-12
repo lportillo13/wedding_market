@@ -1,7 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { UploadApiOptions, type UploadApiResponse } from "cloudinary";
 import { z } from "zod";
+import cloudinary, { isCloudinaryConfigured } from "@/lib/cloudinary";
+import { parseCloudinaryImage } from "@/lib/images";
+import type { CloudinaryImage } from "@/types/images";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
 const ProfileSchema = z.object({
@@ -43,6 +47,136 @@ export type SaveProfileState = {
 };
 
 type FieldErrorMap = Partial<Record<keyof z.infer<typeof ProfileSchema>, string>>;
+
+export type AvatarUploadState = {
+  ok: boolean;
+  message: string;
+};
+
+const MAX_AVATAR_UPLOAD_SIZE = 8 * 1024 * 1024; // 8 MB
+
+function mapUploadResult(result: UploadApiResponse): CloudinaryImage {
+  return {
+    url: result.secure_url ?? result.url,
+    public_id: result.public_id,
+    width: result.width,
+    height: result.height,
+    format: result.format,
+    bytes: result.bytes,
+  };
+}
+
+async function uploadImageFromFile(file: File, options: UploadApiOptions) {
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+
+  return new Promise<UploadApiResponse>((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(options, (error, result) => {
+      if (error || !result) {
+        reject(error ?? new Error("Upload failed"));
+        return;
+      }
+      resolve(result);
+    });
+
+    uploadStream.end(buffer);
+  });
+}
+
+function validateImageFile(file: File | null): string | null {
+  if (!file) {
+    return "Please choose an image.";
+  }
+
+  if (file.size <= 0) {
+    return "The selected file is empty.";
+  }
+
+  if (!file.type.startsWith("image/")) {
+    return "Unsupported file type.";
+  }
+
+  if (file.size > MAX_AVATAR_UPLOAD_SIZE) {
+    const mb = Math.round(MAX_AVATAR_UPLOAD_SIZE / (1024 * 1024));
+    return `Image must be smaller than ${mb}MB.`;
+  }
+
+  return null;
+}
+
+async function destroyPreviousAvatar(publicId: string | undefined) {
+  if (!publicId || !isCloudinaryConfigured) {
+    return;
+  }
+
+  try {
+    await cloudinary.uploader.destroy(publicId, { invalidate: true });
+  } catch (error) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("Failed to remove previous avatar", error);
+    }
+  }
+}
+
+export async function uploadProfileAvatar(
+  _prevState: AvatarUploadState,
+  formData: FormData
+): Promise<AvatarUploadState> {
+  if (!isCloudinaryConfigured) {
+    return { ok: false, message: "Image storage is not configured." };
+  }
+
+  const fileEntry = formData.get("avatar");
+  if (!(fileEntry instanceof File)) {
+    return { ok: false, message: "Please choose an image." };
+  }
+
+  const validation = validateImageFile(fileEntry);
+  if (validation) {
+    return { ok: false, message: validation };
+  }
+
+  const supabase = await getSupabaseServer();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return { ok: false, message: "You must be logged in to update your profile." };
+  }
+
+  const previous = parseCloudinaryImage(user.user_metadata?.avatar_image);
+
+  try {
+    const uploadResult = await uploadImageFromFile(fileEntry, {
+      folder: `profiles/${user.id}/avatar`,
+      resource_type: "image",
+      format: "webp",
+      transformation: [{ width: 400, height: 400, crop: "fill", gravity: "auto" }],
+    });
+
+    const image = mapUploadResult(uploadResult);
+
+    const { error: updateError } = await supabase.auth.updateUser({ data: { avatar_image: image } });
+    if (updateError) {
+      return { ok: false, message: updateError.message };
+    }
+
+    if (previous?.public_id && previous.public_id !== image.public_id) {
+      await destroyPreviousAvatar(previous.public_id);
+    }
+
+    revalidatePath("/account/profile");
+    revalidatePath("/rfq/new");
+    revalidatePath("/", "layout");
+
+    return { ok: true, message: "Profile photo updated." };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return { ok: false, message };
+  }
+}
 
 export async function saveProfile(
   _prevState: SaveProfileState,
@@ -108,8 +242,14 @@ export async function saveProfile(
     return { ok: false, message: error.message };
   }
 
+  const { error: metadataError } = await supabase.auth.updateUser({ data: { full_name } });
+  if (metadataError) {
+    return { ok: false, message: metadataError.message };
+  }
+
   revalidatePath("/account/profile");
   revalidatePath("/rfq/new");
+  revalidatePath("/", "layout");
 
   return { ok: true, message: "Profile updated successfully." };
 }

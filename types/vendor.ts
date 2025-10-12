@@ -1,11 +1,6 @@
-export type VendorImage = {
-  url: string;
-  public_id: string;
-  width: number;
-  height: number;
-  format: string;
-  bytes?: number;
-};
+import type { CloudinaryImage } from "./images";
+
+export type VendorImage = CloudinaryImage;
 
 export type VendorImagesPayload = {
   hero_image: VendorImage | null;

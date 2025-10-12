@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isSupportedLanguage } from "@/lib/i18n";
+import { parseCloudinaryImage } from "@/lib/images";
 import ProfilePageContent from "./ProfilePageContent";
 import type { ProfileFormInitial } from "./profileForm";
 
@@ -10,7 +11,7 @@ export default async function AccountProfilePage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return <ProfilePageContent initial={null} />;
+    return <ProfilePageContent initial={null} avatarImage={null} />;
   }
 
   const { data: profile } = await supabase
@@ -33,5 +34,7 @@ export default async function AccountProfilePage() {
     language: isSupportedLanguage(profile?.language) ? profile.language : "en",
   };
 
-  return <ProfilePageContent initial={initial} />;
+  const avatarImage = parseCloudinaryImage(user.user_metadata?.avatar_image);
+
+  return <ProfilePageContent initial={initial} avatarImage={avatarImage} />;
 }
