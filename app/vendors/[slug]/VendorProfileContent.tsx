@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import type { PointerEvent as ReactPointerEvent, ReactNode, TransitionEvent } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import ShortlistButton from "@/components/shortlist/ShortlistButton";
 import { Stars } from "@/components/Stars";
@@ -26,16 +26,57 @@ function GalleryCarousel({ vendorName, images }: GalleryProps) {
     dragging: boolean;
   }>({ id: null, startX: 0, lastX: 0, dragging: false });
 
-  const [activeIndex, setActiveIndex] = useState(0);
+  const slideCount = images.length;
+  const hasLoop = slideCount > 1;
+
+  const slides = useMemo(() => {
+    if (!slideCount) return [] as { image: VendorImage; key: string }[];
+    if (!hasLoop) {
+      return images.map((image) => ({ image, key: image.public_id }));
+    }
+
+    const firstImage = images[0]!;
+    const lastImage = images[slideCount - 1]!;
+
+    return [
+      { image: lastImage, key: `${lastImage.public_id}-clone-start` },
+      ...images.map((image) => ({ image, key: image.public_id })),
+      { image: firstImage, key: `${firstImage.public_id}-clone-end` },
+    ];
+  }, [hasLoop, images, slideCount]);
+
+  const displayCount = slides.length;
+
+  const [activeIndex, setActiveIndex] = useState(() => (hasLoop ? 1 : 0));
   const [offset, setOffset] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [disableTransition, setDisableTransition] = useState(false);
 
-  const slideCount = images.length;
-  const safeActiveIndex = slideCount ? Math.min(activeIndex, slideCount - 1) : 0;
+  useEffect(() => {
+    slideRefs.current = [];
+    // Reset to the first logical slide whenever the gallery size changes.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setActiveIndex((prev) => {
+      const nextIndex = hasLoop ? 1 : 0;
+      return prev === nextIndex ? prev : nextIndex;
+    });
+  }, [hasLoop, slideCount]);
+
+  useEffect(() => {
+    slideRefs.current = slideRefs.current.slice(0, displayCount);
+  }, [displayCount]);
+
+  const currentLogicalIndex = slideCount
+    ? hasLoop
+      ? ((activeIndex - 1 + slideCount) % slideCount)
+      : Math.min(activeIndex, slideCount - 1)
+    : 0;
 
   const updateOffset = useCallback(
     (index: number) => {
+      if (index < 0 || index >= slideRefs.current.length) return;
+
       const track = trackRef.current;
       const slide = slideRefs.current[index] ?? null;
       const viewport = viewportRef.current;
@@ -51,31 +92,47 @@ function GalleryCarousel({ vendorName, images }: GalleryProps) {
   );
 
   useLayoutEffect(() => {
-    updateOffset(safeActiveIndex);
-  }, [safeActiveIndex, updateOffset]);
+    updateOffset(activeIndex);
+  }, [activeIndex, displayCount, updateOffset]);
 
   useEffect(() => {
-    const handleResize = () => updateOffset(safeActiveIndex);
+    const handleResize = () => updateOffset(activeIndex);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [safeActiveIndex, updateOffset]);
+  }, [activeIndex, updateOffset]);
 
   const goToSlide = useCallback(
     (nextIndex: number) => {
       if (!slideCount) return;
       const normalized = ((nextIndex % slideCount) + slideCount) % slideCount;
-      setActiveIndex(normalized);
+      if (hasLoop) {
+        setActiveIndex(normalized + 1);
+      } else {
+        setActiveIndex(normalized);
+      }
     },
-    [slideCount]
+    [hasLoop, slideCount]
   );
 
   const handlePrev = useCallback(() => {
-    goToSlide(safeActiveIndex - 1);
-  }, [safeActiveIndex, goToSlide]);
+    if (!slideCount) return;
+    setActiveIndex((prev) => {
+      if (hasLoop) {
+        return prev <= 0 ? prev : prev - 1;
+      }
+      return Math.max(prev - 1, 0);
+    });
+  }, [hasLoop, slideCount]);
 
   const handleNext = useCallback(() => {
-    goToSlide(safeActiveIndex + 1);
-  }, [safeActiveIndex, goToSlide]);
+    if (!slideCount) return;
+    setActiveIndex((prev) => {
+      if (hasLoop) {
+        return prev >= displayCount - 1 ? prev : prev + 1;
+      }
+      return Math.min(prev + 1, slideCount - 1);
+    });
+  }, [displayCount, hasLoop, slideCount]);
 
   const handlePointerDown = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
     if (event.pointerType === "mouse" && event.button !== 0) return;
@@ -123,9 +180,33 @@ function GalleryCarousel({ vendorName, images }: GalleryProps) {
     [handleNext, handlePrev]
   );
 
+  useEffect(() => {
+    if (!disableTransition) return;
+    const id = requestAnimationFrame(() => {
+      setDisableTransition(false);
+    });
+    return () => cancelAnimationFrame(id);
+  }, [disableTransition]);
+
+  const handleTransitionEnd = useCallback(
+    (event: TransitionEvent<HTMLDivElement>) => {
+      if (event.target !== event.currentTarget) return;
+      if (!hasLoop || displayCount === 0) return;
+
+      if (activeIndex === 0) {
+        setDisableTransition(true);
+        setActiveIndex(slideCount);
+      } else if (activeIndex === displayCount - 1) {
+        setDisableTransition(true);
+        setActiveIndex(1);
+      }
+    },
+    [activeIndex, displayCount, hasLoop, slideCount]
+  );
+
   const trackStyle = {
     transform: `translate3d(${-offset + dragOffset}px, 0, 0)`,
-    transition: isDragging ? "none" : undefined,
+    transition: isDragging || disableTransition ? "none" : undefined,
   };
 
   return (
@@ -137,18 +218,19 @@ function GalleryCarousel({ vendorName, images }: GalleryProps) {
           role="group"
           aria-label={`${vendorName} gallery images`}
           style={trackStyle}
+          onTransitionEnd={handleTransitionEnd}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={finishPointer}
           onPointerLeave={finishPointer}
           onPointerCancel={finishPointer}
         >
-          {images.map((image, index) => {
+          {slides.map(({ image, key }, index) => {
             const aspectRatio = image.width && image.height ? `${image.width} / ${image.height}` : "4 / 3";
             return (
               <div
                 className="vendor-gallery-swiper__slide"
-                key={image.public_id}
+                key={key}
                 ref={(el) => {
                   slideRefs.current[index] = el;
                 }}
@@ -161,7 +243,11 @@ function GalleryCarousel({ vendorName, images }: GalleryProps) {
                     sizes="(max-width: 960px) 100vw, 480px"
                     className="vendor-gallery-swiper__image"
                     priority={false}
-                    onLoadingComplete={() => updateOffset(safeActiveIndex)}
+                    onLoadingComplete={() => {
+                      if (index === activeIndex) {
+                        updateOffset(index);
+                      }
+                    }}
                   />
                 </div>
               </div>
@@ -186,13 +272,13 @@ function GalleryCarousel({ vendorName, images }: GalleryProps) {
                 key={image.public_id}
                 type="button"
                 className={
-                  index === safeActiveIndex
+                  index === currentLogicalIndex
                     ? "vendor-gallery-swiper__bullet vendor-gallery-swiper__bullet--active"
                     : "vendor-gallery-swiper__bullet"
                 }
                 onClick={() => goToSlide(index)}
                 aria-label={`${vendorName} gallery image ${index + 1}`}
-                aria-current={index === safeActiveIndex ? "true" : undefined}
+                aria-current={index === currentLogicalIndex ? "true" : undefined}
               />
             ))}
           </div>
