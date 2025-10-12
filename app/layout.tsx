@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBarContainer from "@/components/NavBarContainer"; // ⬅️ add this
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isSupportedLanguage, type SupportedLanguage } from "@/lib/i18n";
 
@@ -40,10 +41,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={htmlLang} data-bs-theme="light">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <LanguageProvider key={initialLanguage ?? 'en'} initialLanguage={initialLanguage}>
-          <NavBarContainer /> {/* ⬅️ show header everywhere */}
-          {children}
-        </LanguageProvider>
+        <ThemeProvider>
+          <LanguageProvider key={initialLanguage ?? 'en'} initialLanguage={initialLanguage}>
+            <NavBarContainer /> {/* ⬅️ show header everywhere */}
+            {children}
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

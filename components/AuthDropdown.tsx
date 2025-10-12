@@ -6,6 +6,7 @@ import Link from "next/link";
 import { parseCloudinaryImage } from "@/lib/images";
 import UserAvatar from "@/components/UserAvatar";
 import { useTranslation } from "@/contexts/LanguageContext";
+import { useTheme } from "@/contexts/ThemeContext";
 
 type AuthDropdownProps = {
   user: User;
@@ -17,6 +18,7 @@ export default function AuthDropdown({ user, isVendor }: AuthDropdownProps) {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const profileHref = isVendor ? "/vendor/profile" : "/account/profile";
   const t = useTranslation();
+  const { theme, toggleTheme } = useTheme();
   const metadata = user.user_metadata as Record<string, unknown> | undefined;
   const metadataFullName = metadata?.full_name;
   const metadataAvatar = metadata?.avatar_image;
@@ -26,6 +28,7 @@ export default function AuthDropdown({ user, isVendor }: AuthDropdownProps) {
   }, [metadataFullName]);
   const avatarImage = useMemo(() => parseCloudinaryImage(metadataAvatar), [metadataAvatar]);
   const displayName = fullName || user.email || t("auth.account");
+  const themeToggleLabel = theme === "light" ? t("theme.switchToDark") : t("theme.switchToLight");
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -92,6 +95,18 @@ export default function AuthDropdown({ user, isVendor }: AuthDropdownProps) {
             </Link>
           </li>
         )}
+        <li>
+          <button
+            className="dropdown-item"
+            type="button"
+            onClick={() => {
+              toggleTheme();
+              setOpen(false);
+            }}
+          >
+            {themeToggleLabel}
+          </button>
+        </li>
         <li>
           <form action="/auth/signout" method="post">
             <button className="dropdown-item" type="submit" onClick={() => setOpen(false)}>

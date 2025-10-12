@@ -21,6 +21,10 @@ const common = {
     createVendorProfile: "Create vendor profile",
     logOut: "Log out",
   },
+  theme: {
+    switchToLight: "Switch to light theme",
+    switchToDark: "Switch to dark theme",
+  },
   account: {
     layout: {
       heading: "My account",
