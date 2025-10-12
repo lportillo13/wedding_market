@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo } from "react";
 import ShortlistButton from "@/components/shortlist/ShortlistButton";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -69,6 +70,18 @@ export default function VendorsPageContent({ items, page, totalPages, searchPara
             return (
               <div className="col" key={v.id}>
                 <div className="card h-100">
+                  {v.thumbnail_image?.url ? (
+                    <div className="position-relative" style={{ height: 180 }}>
+                      <Image
+                        src={v.thumbnail_image.url}
+                        alt={`${v.business_name} thumbnail`}
+                        fill
+                        className="card-img-top"
+                        sizes="(max-width: 768px) 100vw, 320px"
+                        style={{ objectFit: "cover" }}
+                      />
+                    </div>
+                  ) : null}
                   <div className="card-body d-flex flex-column">
                     <h5 className="card-title mb-1">
                       <a href={`/vendors/${v.slug}`} className="stretched-link text-decoration-none">

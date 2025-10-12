@@ -87,7 +87,8 @@ const common = {
   },
   vendorProfile: {
     writeReview: "Write a review",
-    moreComing: "More details (gallery, FAQs, coupons) coming soon.",
+    galleryHeading: "Gallery",
+    moreComing: "Have questions? Reach out to the vendor for more details.",
   },
   vendorDashboard: {
     heading: "Vendor Dashboard",
@@ -113,6 +114,20 @@ const common = {
       bioEsLabel: "Bio (ES)",
       save: "Save profile",
       saving: "Saving…",
+    },
+    profileImages: {
+      heading: "Images",
+      help: "Upload hero, thumbnail, and gallery images. We’ll optimize them for the site.",
+      heroLabel: "Hero image",
+      heroEmpty: "No hero image yet.",
+      thumbnailLabel: "Thumbnail image",
+      thumbnailEmpty: "No thumbnail image yet.",
+      galleryLabel: "Gallery",
+      galleryEmpty: "No gallery images yet.",
+      upload: "Upload image",
+      uploading: "Uploading…",
+      remove: "Remove",
+      removing: "Removing…",
     },
     location: {
       heading: "Location & Service Area",
