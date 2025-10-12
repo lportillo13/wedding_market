@@ -41,18 +41,26 @@ npm start
 #### Supabase schema export
 The schema exporter uses Supabase's `pg_meta` views via the REST API. Provide credentials before running the script:
 
-```bash
-export SUPABASE_URL="https://<project>.supabase.co"
-export SUPABASE_SERVICE_ROLE_KEY="<service-role-key>"
-# or, equivalently
-export SUPABASE_SERVICE_KEY="<service-role-key>"
-# Optional: restrict schemas (comma separated). Defaults to `public`.
-export SUPABASE_SCHEMAS="public,storage"
+1. Store your Supabase credentials in `.env.local` (or `.env`) in the project root:
 
-npm run schema:supabase
-# or choose a destination file
-npm run schema:supabase -- schema/latest.json
-```
+   ```bash
+   NEXT_PUBLIC_SUPABASE_URL="https://<project>.supabase.co"
+   SUPABASE_SERVICE_KEY="<service-role-key>"
+   # Optional: restrict schemas (comma separated). Defaults to `public`.
+   SUPABASE_SCHEMAS="public,storage"
+   ```
+
+   The exporter automatically loads `.env.local`/`.env` when you run it from the repository root. If you keep the variables elsewhere, export them in your shell before running the command.
+
+2. Generate the snapshot:
+
+   ```bash
+   npm run schema:supabase
+   # or choose a destination file
+   npm run schema:supabase -- schema/latest.json
+   ```
+
+   > Tip: to preload an alternate env file, you can use [`dotenv-cli`](https://github.com/entropitor/dotenv-cli): `npx dotenv-cli -e <file> -- npm run schema:supabase`.
 
 The script writes a JSON description of tables, columns, constraints, and indexes for the selected schemas so new changes can be compared against the live database.
 

@@ -1,7 +1,93 @@
 #!/usr/bin/env node
-import { mkdir, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import process from 'node:process';
+
+async function loadEnvFile(filePath) {
+  const contents = await readFile(filePath, 'utf8');
+  const loadedKeys = [];
+
+  for (const rawLine of contents.split(/\r?\n/)) {
+    const line = rawLine.trim();
+
+    if (!line || line.startsWith('#')) {
+      continue;
+    }
+
+    const declaration = line.startsWith('export ')
+      ? line.slice('export '.length).trim()
+      : line;
+
+    const equalsIndex = declaration.indexOf('=');
+    if (equalsIndex === -1) {
+      continue;
+    }
+
+    const key = declaration.slice(0, equalsIndex).trim();
+    let value = declaration.slice(equalsIndex + 1).trim();
+
+    if (!key || value === undefined || value === null) {
+      continue;
+    }
+
+    if (value.startsWith('"') && value.endsWith('"')) {
+      value = value.slice(1, -1)
+        .replace(/\\n/g, '\n')
+        .replace(/\\r/g, '\r')
+        .replace(/\\t/g, '\t')
+        .replace(/\\"/g, '"')
+        .replace(/\\\\/g, '\\');
+    } else if (value.startsWith("'") && value.endsWith("'")) {
+      value = value.slice(1, -1);
+    } else {
+      const commentIndex = value.search(/\s+#/);
+      if (commentIndex !== -1) {
+        value = value.slice(0, commentIndex);
+      }
+      value = value.replace(/\\ /g, ' ').trim();
+    }
+
+    if (process.env[key] === undefined) {
+      process.env[key] = value;
+      loadedKeys.push(key);
+    }
+  }
+
+  return loadedKeys;
+}
+
+async function loadEnvFiles() {
+  const envFiles = ['.env.local', '.env'];
+  const loadedFiles = [];
+
+  for (const envFile of envFiles) {
+    const absolutePath = resolve(process.cwd(), envFile);
+    if (!existsSync(absolutePath)) {
+      continue;
+    }
+
+    try {
+      const keys = await loadEnvFile(absolutePath);
+      if (keys.length > 0) {
+        loadedFiles.push({ file: envFile, keys });
+      }
+    } catch (error) {
+      console.warn(`Unable to read ${envFile}:`, error instanceof Error ? error.message : error);
+    }
+  }
+
+  if (loadedFiles.length > 0) {
+    const summary = loadedFiles
+      .map(({ file, keys }) => `${file} (${keys.join(', ')})`)
+      .join('; ');
+    console.info(`Loaded environment variables from: ${summary}`);
+  }
+
+  return loadedFiles.flatMap(({ keys }) => keys);
+}
+
+await loadEnvFiles();
 
 const urlSources = [
   ['SUPABASE_URL', process.env.SUPABASE_URL],
@@ -35,7 +121,7 @@ if (!supabaseUrl || !supabaseKey) {
 
   console.error(`Missing required environment variables: ${missingMessages.join(' and ')}.`);
   console.error(
-    'If the values are stored in a file such as .env.local, ensure they are loaded before running the script (e.g. `npx dotenv -e .env.local -- npm run schema:supabase`).'
+    'If the values are stored in a file such as .env.local, run this script from the project root so it can load them automatically, or preload them with a tool like `npx dotenv-cli -e .env.local -- npm run schema:supabase`.'
   );
   process.exit(1);
 }
