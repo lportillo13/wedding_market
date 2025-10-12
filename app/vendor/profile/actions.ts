@@ -359,14 +359,19 @@ export async function uploadGalleryImage(
     return handleError("Image storage is not configured.");
   }
 
-  const fileEntry = formData.get("gallery");
-  if (!(fileEntry instanceof File)) {
-    return handleError("Please choose an image.");
+  const fileEntries = formData
+    .getAll("gallery")
+    .filter((entry): entry is File => entry instanceof File && entry.size > 0);
+
+  if (fileEntries.length === 0) {
+    return handleError("Please choose at least one image.");
   }
 
-  const validation = validateImageFile(fileEntry);
-  if (validation) {
-    return handleError(validation);
+  for (const file of fileEntries) {
+    const validation = validateImageFile(file);
+    if (validation) {
+      return handleError(validation);
+    }
   }
 
   const { supabase, vendor, error } = await ensureVendorForImages();
@@ -375,16 +380,19 @@ export async function uploadGalleryImage(
   }
 
   try {
-    const result = await uploadImageFromFile(fileEntry, {
-      folder: `vendors/${vendor.id}/gallery`,
-      resource_type: "image",
-      format: "webp",
-      transformation: [{ width: 1500, crop: "limit" }],
-    });
+    const uploads: VendorImage[] = [];
+    for (const fileEntry of fileEntries) {
+      const result = await uploadImageFromFile(fileEntry, {
+        folder: `vendors/${vendor.id}/gallery`,
+        resource_type: "image",
+        format: "webp",
+        transformation: [{ width: 1500, crop: "limit" }],
+      });
 
-    const image = mapUploadResult(result);
+      uploads.push(mapUploadResult(result));
+    }
     const existing = Array.isArray(vendor.gallery_images) ? vendor.gallery_images : [];
-    const updated = [image, ...existing];
+    const updated = [...uploads, ...existing];
 
     const { error: updateError } = await supabase
       .from("vendors")
@@ -398,7 +406,9 @@ export async function uploadGalleryImage(
     revalidatePath("/vendor/profile");
     revalidatePath(`/vendors/${vendor.slug}`);
 
-    return { ok: true, message: "Gallery image added." };
+    const count = uploads.length;
+    const plural = count === 1 ? "image" : "images";
+    return { ok: true, message: `Gallery ${plural} added.` };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     return handleError(message);
