@@ -3,6 +3,7 @@
 import { useActionState } from 'react';
 import { useTranslation } from '@/contexts/LanguageContext';
 import { createVendor, type VendorSignUpState } from './actions';
+import { COUNTRY_NAMES } from '@/lib/countries';
 
 const initialState: VendorSignUpState = { ok: false };
 
@@ -28,7 +29,14 @@ export default function VendorSignUpForm() {
         <label className="form-label" htmlFor="vendor-country">
           {t('signup.vendor.form.countryLabel')}
         </label>
-        <input id="vendor-country" className="form-control" name="country" />
+        <select id="vendor-country" className="form-select" name="country" defaultValue="">
+          <option value="">{t('signup.vendor.form.countryPlaceholder')}</option>
+          {COUNTRY_NAMES.map((country) => (
+            <option key={country} value={country}>
+              {country}
+            </option>
+          ))}
+        </select>
       </div>
       {state.message && <div className="alert alert-danger">{state.message}</div>}
       <button className="btn btn-primary w-100" disabled={pending}>
