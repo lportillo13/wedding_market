@@ -105,6 +105,3 @@ export async function createRfqAndInvites(_: CreateRfqState, formData: FormData)
   return handleCreateRfqAndInvites(formData);
 }
 
-export async function submitShortlistRfq(formData: FormData): Promise<void> {
-  await handleCreateRfqAndInvites(formData);
-}
