@@ -87,7 +87,8 @@ const common = {
   },
   vendorProfile: {
     writeReview: "Escribir una reseña",
-    moreComing: "Más detalles (galería, preguntas frecuentes, cupones) muy pronto.",
+    galleryHeading: "Galería",
+    moreComing: "¿Tienes preguntas? Ponte en contacto con el proveedor para más detalles.",
   },
   vendorDashboard: {
     heading: "Panel del proveedor",
@@ -113,6 +114,20 @@ const common = {
       bioEsLabel: "Biografía (ES)",
       save: "Guardar perfil",
       saving: "Guardando…",
+    },
+    profileImages: {
+      heading: "Imágenes",
+      help: "Sube imágenes para la portada, la miniatura y la galería. Las optimizamos automáticamente.",
+      heroLabel: "Imagen principal",
+      heroEmpty: "Aún no tienes una imagen principal.",
+      thumbnailLabel: "Miniatura",
+      thumbnailEmpty: "Aún no tienes una miniatura.",
+      galleryLabel: "Galería",
+      galleryEmpty: "Aún no hay imágenes en la galería.",
+      upload: "Subir imagen",
+      uploading: "Subiendo…",
+      remove: "Eliminar",
+      removing: "Eliminando…",
     },
     location: {
       heading: "Ubicación y zona de servicio",

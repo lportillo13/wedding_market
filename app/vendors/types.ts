@@ -1,3 +1,5 @@
+import type { VendorImage } from "@/types/vendor";
+
 export type VendorListItem = {
   id: string;
   slug: string;
@@ -8,6 +10,9 @@ export type VendorListItem = {
   rating_avg: number;
   rating_count: number;
   created_at: string;
+  hero_image?: VendorImage | null;
+  thumbnail_image?: VendorImage | null;
+  gallery_images?: VendorImage[] | null;
 };
 
 export type VendorsResponse = {

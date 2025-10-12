@@ -1,6 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { UploadApiOptions, type UploadApiResponse } from "cloudinary";
+import cloudinary, { isCloudinaryConfigured } from "@/lib/cloudinary";
+import type { VendorImage } from "@/types/vendor";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
 // tiny helper to keep slugs URL-safe
@@ -19,6 +22,103 @@ export type SaveState = {
   slug?: string;
   fieldErrors?: Record<string, string>;
 };
+
+export type ImageActionState = {
+  ok: boolean;
+  message: string;
+};
+
+type VendorRow = {
+  id: string;
+  slug: string;
+  business_name: string;
+  hero_image: VendorImage | null;
+  thumbnail_image: VendorImage | null;
+  gallery_images: VendorImage[] | null;
+};
+
+async function requireAuthVendor() {
+  const supabase = await getSupabaseServer();
+  const {
+    data: { user },
+    error: userErr,
+  } = await supabase.auth.getUser();
+  if (userErr || !user) {
+    return { supabase, error: "Not authenticated.", user: null, vendor: null } as const;
+  }
+
+  const uidArg = { _uid: user.id } satisfies { _uid: string };
+  const { data: isVendor, error: roleErr } = await supabase.rpc("is_vendor", uidArg);
+  if (roleErr) {
+    return { supabase, error: roleErr.message, user: null, vendor: null } as const;
+  }
+  if (!isVendor) {
+    return { supabase, error: "Vendor access required.", user: null, vendor: null } as const;
+  }
+
+  const { data: vendor } = await supabase
+    .from("vendors")
+    .select("id, slug, business_name, hero_image, thumbnail_image, gallery_images")
+    .eq("owner_id", user.id)
+    .maybeSingle<VendorRow>();
+
+  if (!vendor) {
+    return { supabase, error: "Vendor profile not found.", user: null, vendor: null } as const;
+  }
+
+  return { supabase, error: null, user, vendor } as const;
+}
+
+const MAX_UPLOAD_SIZE = 12 * 1024 * 1024; // 12 MB
+
+function mapUploadResult(result: UploadApiResponse): VendorImage {
+  return {
+    url: result.secure_url ?? result.url,
+    public_id: result.public_id,
+    width: result.width,
+    height: result.height,
+    format: result.format,
+    bytes: result.bytes,
+  };
+}
+
+async function uploadImageFromFile(file: File, options: UploadApiOptions) {
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+
+  return new Promise<UploadApiResponse>((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(options, (error, result) => {
+      if (error || !result) {
+        reject(error ?? new Error("Upload failed"));
+        return;
+      }
+      resolve(result);
+    });
+
+    uploadStream.end(buffer);
+  });
+}
+
+function validateImageFile(file: File | null): string | null {
+  if (!file) {
+    return "Please choose an image.";
+  }
+
+  if (file.size <= 0) {
+    return "The selected file is empty.";
+  }
+
+  if (!file.type.startsWith("image/")) {
+    return "Unsupported file type.";
+  }
+
+  if (file.size > MAX_UPLOAD_SIZE) {
+    const mb = Math.round(MAX_UPLOAD_SIZE / (1024 * 1024));
+    return `Image must be smaller than ${mb}MB.`;
+  }
+
+  return null;
+}
 
 export async function saveProfile(
   _prevState: SaveState,
@@ -113,4 +213,234 @@ export async function saveProfile(
     const message = e instanceof Error ? e.message : String(e);
     return { ok: false, message };
   }
+}
+
+function handleError(message: string): ImageActionState {
+  return { ok: false, message };
+}
+
+async function ensureVendorForImages() {
+  const { supabase, error, vendor } = await requireAuthVendor();
+  if (error || !vendor) {
+    return { supabase, vendor: null, error: error ?? "Vendor profile not found." } as const;
+  }
+  return { supabase, vendor, error: null } as const;
+}
+
+async function destroyPreviousAsset(publicId: string | undefined) {
+  if (!publicId || !isCloudinaryConfigured) {
+    return;
+  }
+
+  try {
+    await cloudinary.uploader.destroy(publicId, { invalidate: true });
+  } catch (err) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("Failed to delete Cloudinary asset", err);
+    }
+  }
+}
+
+export async function uploadHeroImage(
+  _prev: ImageActionState,
+  formData: FormData
+): Promise<ImageActionState> {
+  if (!isCloudinaryConfigured) {
+    return handleError("Image storage is not configured.");
+  }
+
+  const fileEntry = formData.get("hero");
+  if (!(fileEntry instanceof File)) {
+    return handleError("Please choose an image.");
+  }
+
+  const validation = validateImageFile(fileEntry);
+  if (validation) {
+    return handleError(validation);
+  }
+
+  const { supabase, vendor, error } = await ensureVendorForImages();
+  if (error || !vendor) {
+    return handleError(error ?? "Unable to load vendor profile.");
+  }
+
+  try {
+    const result = await uploadImageFromFile(fileEntry, {
+      folder: `vendors/${vendor.id}/hero`,
+      resource_type: "image",
+      format: "webp",
+      transformation: [{ width: 1920, crop: "limit" }],
+    });
+
+    const image = mapUploadResult(result);
+
+    const { error: updateError } = await supabase
+      .from("vendors")
+      .update({ hero_image: image })
+      .eq("id", vendor.id);
+
+    if (updateError) {
+      return handleError(`Save failed: ${updateError.message}`);
+    }
+
+    await destroyPreviousAsset(vendor.hero_image?.public_id);
+
+    revalidatePath("/vendor/profile");
+    revalidatePath(`/vendors/${vendor.slug}`);
+    revalidatePath("/vendors");
+
+    return { ok: true, message: "Hero image updated." };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    return handleError(message);
+  }
+}
+
+export async function uploadThumbnailImage(
+  _prev: ImageActionState,
+  formData: FormData
+): Promise<ImageActionState> {
+  if (!isCloudinaryConfigured) {
+    return handleError("Image storage is not configured.");
+  }
+
+  const fileEntry = formData.get("thumbnail");
+  if (!(fileEntry instanceof File)) {
+    return handleError("Please choose an image.");
+  }
+
+  const validation = validateImageFile(fileEntry);
+  if (validation) {
+    return handleError(validation);
+  }
+
+  const { supabase, vendor, error } = await ensureVendorForImages();
+  if (error || !vendor) {
+    return handleError(error ?? "Unable to load vendor profile.");
+  }
+
+  try {
+    const result = await uploadImageFromFile(fileEntry, {
+      folder: `vendors/${vendor.id}/thumbnail`,
+      resource_type: "image",
+      format: "webp",
+      transformation: [{ width: 600, height: 600, crop: "fill", gravity: "auto" }],
+    });
+
+    const image = mapUploadResult(result);
+
+    const { error: updateError } = await supabase
+      .from("vendors")
+      .update({ thumbnail_image: image })
+      .eq("id", vendor.id);
+
+    if (updateError) {
+      return handleError(`Save failed: ${updateError.message}`);
+    }
+
+    await destroyPreviousAsset(vendor.thumbnail_image?.public_id);
+
+    revalidatePath("/vendor/profile");
+    revalidatePath(`/vendors/${vendor.slug}`);
+    revalidatePath("/vendors");
+
+    return { ok: true, message: "Thumbnail image updated." };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    return handleError(message);
+  }
+}
+
+export async function uploadGalleryImage(
+  _prev: ImageActionState,
+  formData: FormData
+): Promise<ImageActionState> {
+  if (!isCloudinaryConfigured) {
+    return handleError("Image storage is not configured.");
+  }
+
+  const fileEntry = formData.get("gallery");
+  if (!(fileEntry instanceof File)) {
+    return handleError("Please choose an image.");
+  }
+
+  const validation = validateImageFile(fileEntry);
+  if (validation) {
+    return handleError(validation);
+  }
+
+  const { supabase, vendor, error } = await ensureVendorForImages();
+  if (error || !vendor) {
+    return handleError(error ?? "Unable to load vendor profile.");
+  }
+
+  try {
+    const result = await uploadImageFromFile(fileEntry, {
+      folder: `vendors/${vendor.id}/gallery`,
+      resource_type: "image",
+      format: "webp",
+      transformation: [{ width: 1500, crop: "limit" }],
+    });
+
+    const image = mapUploadResult(result);
+    const existing = Array.isArray(vendor.gallery_images) ? vendor.gallery_images : [];
+    const updated = [image, ...existing];
+
+    const { error: updateError } = await supabase
+      .from("vendors")
+      .update({ gallery_images: updated })
+      .eq("id", vendor.id);
+
+    if (updateError) {
+      return handleError(`Save failed: ${updateError.message}`);
+    }
+
+    revalidatePath("/vendor/profile");
+    revalidatePath(`/vendors/${vendor.slug}`);
+
+    return { ok: true, message: "Gallery image added." };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    return handleError(message);
+  }
+}
+
+export async function removeGalleryImage(
+  _prev: ImageActionState,
+  formData: FormData
+): Promise<ImageActionState> {
+  const publicId = String(formData.get("public_id") || "").trim();
+  if (!publicId) {
+    return handleError("Missing image identifier.");
+  }
+
+  const { supabase, vendor, error } = await ensureVendorForImages();
+  if (error || !vendor) {
+    return handleError(error ?? "Unable to load vendor profile.");
+  }
+
+  const existing = Array.isArray(vendor.gallery_images) ? vendor.gallery_images : [];
+  const updated = existing.filter((image) => image.public_id !== publicId);
+
+  if (updated.length === existing.length) {
+    return handleError("Image not found.");
+  }
+
+  const { error: updateError } = await supabase
+    .from("vendors")
+    .update({ gallery_images: updated })
+    .eq("id", vendor.id);
+
+  if (updateError) {
+    return handleError(`Save failed: ${updateError.message}`);
+  }
+
+  if (isCloudinaryConfigured) {
+    await destroyPreviousAsset(publicId);
+  }
+
+  revalidatePath("/vendor/profile");
+  revalidatePath(`/vendors/${vendor.slug}`);
+
+  return { ok: true, message: "Gallery image removed." };
 }

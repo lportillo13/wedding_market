@@ -5,11 +5,16 @@ import { redirect } from 'next/navigation';
 import { getRoles } from '@/lib/auth/roles';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import ProfileForm from './profileForm';
+import ImagesForm from './ImagesForm';
+import type { VendorImage } from '@/types/vendor';
 
 type VendorRow = {
   slug: string | null;
   business_name: string | null;
   bio: { en?: string | null; es?: string | null } | null;
+  hero_image: VendorImage | null;
+  thumbnail_image: VendorImage | null;
+  gallery_images: VendorImage[] | null;
 };
 
 export default async function ProfilePage() {
@@ -20,7 +25,7 @@ export default async function ProfilePage() {
 
   let { data: vendor } = await supabase
     .from('vendors')
-    .select('id, slug, business_name, bio')
+    .select('id, slug, business_name, bio, hero_image, thumbnail_image, gallery_images')
     .eq('owner_id', user.id)
     .maybeSingle();
 
@@ -34,7 +39,7 @@ export default async function ProfilePage() {
         bio: { en: '', es: '' },
         is_published: false,
       })
-      .select('id, slug, business_name, bio')
+      .select('id, slug, business_name, bio, hero_image, thumbnail_image, gallery_images')
       .single();
 
     if (inserted.error) {
@@ -53,10 +58,28 @@ export default async function ProfilePage() {
     bio_es: bio?.es ?? '',
   };
 
+  const heroImage = v?.hero_image?.url ? v.hero_image : null;
+  const thumbnailImage = v?.thumbnail_image?.url ? v.thumbnail_image : null;
+  const galleryImages = Array.isArray(v?.gallery_images)
+    ? (v.gallery_images as VendorImage[]).filter(
+        (img): img is VendorImage => Boolean(img && typeof img.url === "string" && img.url.length > 0)
+      )
+    : [];
+
+  const safeGallery = galleryImages.map((img) => ({ ...img }));
+
   return (
-    <div className="row">
-      <div className="col-lg-8">
+    <div className="row gy-4">
+      <div className="col-lg-7 col-xl-8">
         <ProfileForm initial={initial} />
+      </div>
+      <div className="col-lg-5 col-xl-4">
+        <ImagesForm
+          vendorName={initial.business_name}
+          heroImage={heroImage}
+          thumbnailImage={thumbnailImage}
+          galleryImages={safeGallery}
+        />
       </div>
     </div>
   );
