@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
+import { parseCloudinaryImage } from "@/lib/images";
+import UserAvatar from "@/components/UserAvatar";
 import { useTranslation } from "@/contexts/LanguageContext";
 
 type AuthDropdownProps = {
@@ -15,6 +17,15 @@ export default function AuthDropdown({ user, isVendor }: AuthDropdownProps) {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const profileHref = isVendor ? "/vendor/profile" : "/account/profile";
   const t = useTranslation();
+  const metadata = user.user_metadata as Record<string, unknown> | undefined;
+  const metadataFullName = metadata?.full_name;
+  const metadataAvatar = metadata?.avatar_image;
+  const fullName = useMemo(() => {
+    const name = metadataFullName;
+    return typeof name === "string" ? name : "";
+  }, [metadataFullName]);
+  const avatarImage = useMemo(() => parseCloudinaryImage(metadataAvatar), [metadataAvatar]);
+  const displayName = fullName || user.email || t("auth.account");
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -58,12 +69,15 @@ export default function AuthDropdown({ user, isVendor }: AuthDropdownProps) {
   return (
     <div className="dropdown ms-auto" ref={menuRef}>
       <button
-        className="btn btn-outline-secondary dropdown-toggle"
+        className="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2"
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((prev) => !prev)}
       >
-        {user.email ?? t("auth.account")}
+        <UserAvatar image={avatarImage} name={displayName} size={32} />
+        <span className="text-truncate" style={{ maxWidth: 160 }}>
+          {displayName}
+        </span>
       </button>
       <ul className={`dropdown-menu dropdown-menu-end${open ? " show" : ""}`}>
         <li>
