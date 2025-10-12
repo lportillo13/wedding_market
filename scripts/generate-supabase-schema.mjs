@@ -3,16 +3,39 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import process from 'node:process';
 
-const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey =
-  process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  process.env.SUPABASE_SERVICE_KEY ||
-  process.env.SUPABASE_SECRET_KEY ||
-  process.env.SUPABASE_ANON_KEY;
+const urlSources = [
+  ['SUPABASE_URL', process.env.SUPABASE_URL],
+  ['NEXT_PUBLIC_SUPABASE_URL', process.env.NEXT_PUBLIC_SUPABASE_URL]
+];
+const keySources = [
+  ['SUPABASE_SERVICE_ROLE_KEY', process.env.SUPABASE_SERVICE_ROLE_KEY],
+  ['SUPABASE_SERVICE_KEY', process.env.SUPABASE_SERVICE_KEY],
+  ['SUPABASE_SECRET_KEY', process.env.SUPABASE_SECRET_KEY],
+  ['SUPABASE_ANON_KEY', process.env.SUPABASE_ANON_KEY]
+];
+
+const supabaseUrlEntry = urlSources.find(([, value]) => value);
+const supabaseKeyEntry = keySources.find(([, value]) => value);
+
+const supabaseUrl = supabaseUrlEntry?.[1];
+const supabaseKey = supabaseKeyEntry?.[1];
 
 if (!supabaseUrl || !supabaseKey) {
+  const missingMessages = [];
+
+  if (!supabaseUrl) {
+    const urlEnvNames = urlSources.map(([name]) => name).join(', ');
+    missingMessages.push(`Supabase URL (set one of ${urlEnvNames})`);
+  }
+
+  if (!supabaseKey) {
+    const keyEnvNames = keySources.map(([name]) => name).join(', ');
+    missingMessages.push(`Supabase service key (set one of ${keyEnvNames})`);
+  }
+
+  console.error(`Missing required environment variables: ${missingMessages.join(' and ')}.`);
   console.error(
-    'Missing Supabase connection details. Please set SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_URL) and SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_SERVICE_KEY/SUPABASE_SECRET_KEY/SUPABASE_ANON_KEY).'
+    'If the values are stored in a file such as .env.local, ensure they are loaded before running the script (e.g. `npx dotenv -e .env.local -- npm run schema:supabase`).'
   );
   process.exit(1);
 }
