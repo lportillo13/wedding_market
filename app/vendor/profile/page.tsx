@@ -4,8 +4,7 @@ export const revalidate = 0;
 import { redirect } from 'next/navigation';
 import { getRoles } from '@/lib/auth/roles';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import ProfileForm from './profileForm';
-import ImagesForm from './ImagesForm';
+import VendorProfileTabs from './VendorProfileTabs';
 import type { VendorImage } from '@/types/vendor';
 
 type VendorRow = {
@@ -69,18 +68,12 @@ export default async function ProfilePage() {
   const safeGallery = galleryImages.map((img) => ({ ...img }));
 
   return (
-    <div className="row gy-4">
-      <div className="col-lg-7 col-xl-8">
-        <ProfileForm initial={initial} />
-      </div>
-      <div className="col-lg-5 col-xl-4">
-        <ImagesForm
-          vendorName={initial.business_name}
-          heroImage={heroImage}
-          thumbnailImage={thumbnailImage}
-          galleryImages={safeGallery}
-        />
-      </div>
-    </div>
+    <VendorProfileTabs
+      profileInitial={initial}
+      vendorName={initial.business_name}
+      heroImage={heroImage}
+      thumbnailImage={thumbnailImage}
+      galleryImages={safeGallery}
+    />
   );
 }

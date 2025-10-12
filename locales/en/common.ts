@@ -115,6 +115,10 @@ const common = {
       save: "Save profile",
       saving: "Saving…",
     },
+    profileTabs: {
+      details: "Profile details",
+      images: "Images",
+    },
     profileImages: {
       heading: "Images",
       help: "Upload hero, thumbnail, and gallery images. We’ll optimize them for the site.",
@@ -123,8 +127,11 @@ const common = {
       thumbnailLabel: "Thumbnail image",
       thumbnailEmpty: "No thumbnail image yet.",
       galleryLabel: "Gallery",
+      galleryHelp: "Select one or many photos to keep your gallery fresh.",
+      gallerySelectHelp: "Hold Shift or Command/Ctrl to pick multiple files at once.",
       galleryEmpty: "No gallery images yet.",
-      upload: "Upload image",
+      uploadSingle: "Upload image",
+      uploadMultiple: "Upload images",
       uploading: "Uploading…",
       remove: "Remove",
       removing: "Removing…",

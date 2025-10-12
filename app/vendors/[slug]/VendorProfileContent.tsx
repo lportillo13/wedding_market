@@ -2,11 +2,100 @@
 
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import ShortlistButton from "@/components/shortlist/ShortlistButton";
 import { Stars } from "@/components/Stars";
 import { useLanguage } from "@/contexts/LanguageContext";
+import type { VendorImage } from "@/types/vendor";
 import type { VendorProfile } from "./types";
+
+type GalleryProps = {
+  vendorName: string;
+  images: VendorImage[];
+};
+
+function GalleryCarousel({ vendorName, images }: GalleryProps) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(false);
+
+  const updateScrollState = useCallback(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const { scrollLeft, scrollWidth, clientWidth } = el;
+    setCanScrollPrev(scrollLeft > 8);
+    setCanScrollNext(scrollLeft + clientWidth < scrollWidth - 8);
+  }, []);
+
+  useEffect(() => {
+    updateScrollState();
+    const el = containerRef.current;
+    if (!el) return;
+
+    const handler = () => updateScrollState();
+    el.addEventListener("scroll", handler, { passive: true });
+    window.addEventListener("resize", handler);
+    return () => {
+      el.removeEventListener("scroll", handler);
+      window.removeEventListener("resize", handler);
+    };
+  }, [updateScrollState]);
+
+  const scrollBy = useCallback((direction: 1 | -1) => {
+    const el = containerRef.current;
+    if (!el) return;
+    const amount = Math.max(el.clientWidth * 0.9, 240);
+    el.scrollBy({ left: amount * direction, behavior: "smooth" });
+  }, []);
+
+  return (
+    <div className="vendor-gallery-swiper">
+      <div
+        ref={containerRef}
+        className="vendor-gallery-swiper__track"
+        role="group"
+        aria-label={`${vendorName} gallery images`}
+      >
+        {images.map((image) => {
+          const aspectRatio = image.width && image.height ? `${image.width} / ${image.height}` : "4 / 3";
+          return (
+            <div className="vendor-gallery-swiper__slide" key={image.public_id}>
+              <div className="vendor-gallery-swiper__figure" style={{ aspectRatio }}>
+                <Image
+                  src={image.url}
+                  alt={`${vendorName} gallery image`}
+                  fill
+                  sizes="(max-width: 960px) 100vw, 480px"
+                  className="vendor-gallery-swiper__image"
+                  priority={false}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="vendor-gallery-swiper__controls" aria-hidden="true">
+        <button
+          type="button"
+          className="vendor-gallery-swiper__control btn btn-light btn-sm"
+          onClick={() => scrollBy(-1)}
+          disabled={!canScrollPrev}
+        >
+          ‹
+        </button>
+        <button
+          type="button"
+          className="vendor-gallery-swiper__control btn btn-light btn-sm"
+          onClick={() => scrollBy(1)}
+          disabled={!canScrollNext}
+        >
+          ›
+        </button>
+      </div>
+    </div>
+  );
+}
 
 type VendorProfileContentProps = {
   vendor: VendorProfile;
@@ -86,20 +175,7 @@ export default function VendorProfileContent({
       {vendor.gallery_images && vendor.gallery_images.length > 0 ? (
         <section className="my-4">
           <h2 className="h5">{labels.galleryHeading}</h2>
-          <div className="row g-3">
-            {vendor.gallery_images.map((image) => (
-              <div className="col-12 col-md-6" key={image.public_id}>
-                <Image
-                  src={image.url}
-                  alt={`${vendor.business_name} gallery image`}
-                  width={image.width}
-                  height={image.height}
-                  className="w-100 rounded"
-                  sizes="(max-width: 960px) 100vw, 480px"
-                />
-              </div>
-            ))}
-          </div>
+          <GalleryCarousel vendorName={vendor.business_name} images={vendor.gallery_images} />
         </section>
       ) : null}
 

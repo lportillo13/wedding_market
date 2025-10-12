@@ -115,6 +115,10 @@ const common = {
       save: "Guardar perfil",
       saving: "Guardando…",
     },
+    profileTabs: {
+      details: "Detalles del perfil",
+      images: "Imágenes",
+    },
     profileImages: {
       heading: "Imágenes",
       help: "Sube imágenes para la portada, la miniatura y la galería. Las optimizamos automáticamente.",
@@ -123,8 +127,11 @@ const common = {
       thumbnailLabel: "Miniatura",
       thumbnailEmpty: "Aún no tienes una miniatura.",
       galleryLabel: "Galería",
+      galleryHelp: "Selecciona una o varias fotos para mantener tu galería actualizada.",
+      gallerySelectHelp: "Mantén presionado Shift o Command/Ctrl para elegir varios archivos a la vez.",
       galleryEmpty: "Aún no hay imágenes en la galería.",
-      upload: "Subir imagen",
+      uploadSingle: "Subir imagen",
+      uploadMultiple: "Subir imágenes",
       uploading: "Subiendo…",
       remove: "Eliminar",
       removing: "Eliminando…",
