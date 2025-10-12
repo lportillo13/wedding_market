@@ -21,6 +21,52 @@ const common = {
     createVendorProfile: "Crear perfil de proveedor",
     logOut: "Cerrar sesión",
   },
+  account: {
+    layout: {
+      heading: "Mi cuenta",
+      tabs: {
+        profile: "Perfil",
+        rfqs: "Mis solicitudes",
+        quotes: "Cotizaciones recibidas",
+        reviews: "Reseñas",
+      },
+    },
+    profile: {
+      title: "Perfil",
+      loginRequired: "Inicia sesión para ver tu perfil.",
+      intro: "Actualiza tu información de contacto y preferencias de boda.",
+      form: {
+        fullNameLabel: "Nombre",
+        phoneLabel: "Teléfono",
+        emailLabel: "Correo electrónico",
+        emailHelp: "El correo electrónico se gestiona con tus credenciales de acceso.",
+        countryLabel: "País",
+        preferredLanguageLabel: "Idioma preferido",
+        preferredLanguageHelp: "Cambia el idioma predeterminado que verás después de iniciar sesión.",
+        weddingPreferencesHeading: "Preferencias de la boda",
+        tentativeWeddingDateLabel: "Fecha tentativa de la boda",
+        guestCountLabel: "Número estimado de invitados",
+        budgetLabel: "Presupuesto (USD)",
+        weddingThemeLabel: "Tema de la boda",
+        weddingTheme: {
+          options: {
+            none: "—",
+            classic: "Clásica",
+            boho: "Bohemia",
+            rustic: "Rústica",
+            beach: "Playa",
+            garden: "Jardín",
+            modern: "Moderna",
+            vintage: "Vintage",
+          },
+        },
+        submit: {
+          label: "Guardar perfil",
+          saving: "Guardando…",
+        },
+      },
+    },
+  },
   shortlistButton: {
     add: "Agregar a favoritos",
     inList: "En favoritos",

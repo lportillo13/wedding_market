@@ -21,6 +21,52 @@ const common = {
     createVendorProfile: "Create vendor profile",
     logOut: "Log out",
   },
+  account: {
+    layout: {
+      heading: "My account",
+      tabs: {
+        profile: "Profile",
+        rfqs: "My RFQs",
+        quotes: "Quotes received",
+        reviews: "Reviews",
+      },
+    },
+    profile: {
+      title: "Profile",
+      loginRequired: "Please log in to view your profile.",
+      intro: "Update your contact information and wedding preferences.",
+      form: {
+        fullNameLabel: "Name",
+        phoneLabel: "Phone",
+        emailLabel: "Email",
+        emailHelp: "Email is managed via your login credentials.",
+        countryLabel: "Country",
+        preferredLanguageLabel: "Preferred language",
+        preferredLanguageHelp: "Changes the default language shown after you log in.",
+        weddingPreferencesHeading: "Wedding preferences",
+        tentativeWeddingDateLabel: "Tentative wedding date",
+        guestCountLabel: "Estimated number of guests",
+        budgetLabel: "Budget (USD)",
+        weddingThemeLabel: "Wedding theme",
+        weddingTheme: {
+          options: {
+            none: "—",
+            classic: "Classic",
+            boho: "Boho",
+            rustic: "Rustic",
+            beach: "Beach",
+            garden: "Garden",
+            modern: "Modern",
+            vintage: "Vintage",
+          },
+        },
+        submit: {
+          label: "Save profile",
+          saving: "Saving…",
+        },
+      },
+    },
+  },
   shortlistButton: {
     add: "Add to shortlist",
     inList: "In shortlist",
