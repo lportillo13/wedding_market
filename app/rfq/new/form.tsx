@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useActionState } from "react";
 import Link from "next/link";
 import { getShortlist, clearShortlist, removeFromShortlist } from "@/lib/shortlist";
+import { useVendorSummaries } from "@/lib/useVendorSummaries";
 import { createRfqAndInvites, type CreateRfqState } from "./actions";
 
 export type RfqPrefill = {
@@ -17,6 +18,7 @@ export type RfqPrefill = {
 export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
   const [ids, setIds] = useState<string[]>(() => (typeof window !== "undefined" ? getShortlist() : []));
   const [state, action, pending] = useActionState<CreateRfqState, FormData>(createRfqAndInvites, { ok: false });
+  const { vendorsById, loading: vendorsLoading, error: vendorsError } = useVendorSummaries(ids);
   const vendorIdsJson = useMemo(() => JSON.stringify(ids), [ids]);
 
   const eventDate = prefill.eventDate ?? "";
@@ -37,22 +39,36 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
         <>
           <div className="mb-3">
             <p className="form-label">Vendors selected</p>
+            {vendorsError && (
+              <div className="alert alert-warning" role="status">
+                We couldn&apos;t load the vendor details. You can still submit your request for quotes.
+              </div>
+            )}
             <div className="d-flex flex-wrap gap-2">
-              {ids.map((id) => (
-                <span key={id} className="badge text-bg-secondary d-inline-flex align-items-center gap-2">
-                  {id.slice(0, 8)}…{/* keep it simple for now */}
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-outline-light"
-                    onClick={() => {
-                      removeFromShortlist(id);
-                      setIds((cur) => cur.filter((x) => x !== id));
-                    }}
+              {ids.map((id) => {
+                const vendor = vendorsById[id];
+                const vendorName = vendor?.business_name ?? (vendorsLoading ? "Loading…" : "Vendor unavailable");
+
+                return (
+                  <span
+                    key={id}
+                    className="badge text-bg-secondary d-inline-flex align-items-center gap-2"
+                    title={vendorName}
                   >
-                    ×
-                  </button>
-                </span>
-              ))}
+                    <span className="text-truncate" style={{ maxWidth: 180 }}>{vendorName}</span>
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-light"
+                      onClick={() => {
+                        removeFromShortlist(id);
+                        setIds((cur) => cur.filter((x) => x !== id));
+                      }}
+                    >
+                      ×
+                    </button>
+                  </span>
+                );
+              })}
             </div>
             <div className="form-text">Max 10 vendors per RFQ.</div>
           </div>
