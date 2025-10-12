@@ -148,10 +148,11 @@ const headers = {
 };
 
 async function fetchMeta(resource) {
-  const response = await fetch(`${baseUrl}/pg_meta/${resource}?select=*`, { headers });
+  const endpoint = `pg_meta.${resource}`;
+  const response = await fetch(`${baseUrl}/${endpoint}?select=*`, { headers });
   if (!response.ok) {
     const message = await response.text();
-    const error = new Error(`Failed to fetch pg_meta/${resource}: ${response.status} ${message}`);
+    const error = new Error(`Failed to fetch ${endpoint}: ${response.status} ${message}`);
     error.status = response.status;
     error.responseBody = message;
     throw error;
