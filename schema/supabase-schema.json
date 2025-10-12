@@ -1,0 +1,1415 @@
+{
+  "public": {
+    "categories": {
+      "kind": "r",
+      "comment": null,
+      "columns": [
+        {
+          "name": "id",
+          "position": 1,
+          "type": "bigint",
+          "nullable": false,
+          "default": "nextval('categories_id_seq'::regclass)",
+          "comment": null
+        },
+        {
+          "name": "key",
+          "position": 2,
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "label",
+          "position": 3,
+          "type": "jsonb",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "slug",
+          "position": 4,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "name": "categories_key_key",
+          "type": "u",
+          "definition": "UNIQUE (key)"
+        },
+        {
+          "name": "categories_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "categories_slug_key",
+          "type": "u",
+          "definition": "UNIQUE (slug)"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "categories_key_key",
+          "definition": "CREATE UNIQUE INDEX categories_key_key ON public.categories USING btree (key)"
+        },
+        {
+          "name": "categories_pkey",
+          "definition": "CREATE UNIQUE INDEX categories_pkey ON public.categories USING btree (id)"
+        },
+        {
+          "name": "categories_slug_key",
+          "definition": "CREATE UNIQUE INDEX categories_slug_key ON public.categories USING btree (slug)"
+        }
+      ]
+    },
+    "profiles": {
+      "kind": "r",
+      "comment": null,
+      "columns": [
+        {
+          "name": "id",
+          "position": 1,
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "full_name",
+          "position": 2,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "role",
+          "position": 3,
+          "type": "text",
+          "nullable": false,
+          "default": "'user'::text",
+          "comment": null
+        },
+        {
+          "name": "created_at",
+          "position": 4,
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": null
+        },
+        {
+          "name": "phone",
+          "position": 5,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "country",
+          "position": 6,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "tentative_wedding_date",
+          "position": 7,
+          "type": "date",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "guest_count",
+          "position": 8,
+          "type": "integer",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "wedding_budget",
+          "position": 9,
+          "type": "numeric",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "wedding_theme",
+          "position": 10,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "language",
+          "position": 11,
+          "type": "text",
+          "nullable": false,
+          "default": "'en'::text",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "name": "profiles_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "profiles_language_check",
+          "type": "c",
+          "definition": "CHECK ((language = ANY (ARRAY['en'::text, 'es'::text])))"
+        },
+        {
+          "name": "profiles_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "profiles_role_check",
+          "type": "c",
+          "definition": "CHECK ((role = ANY (ARRAY['user'::text, 'vendor'::text, 'admin'::text])))"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "profiles_pkey",
+          "definition": "CREATE UNIQUE INDEX profiles_pkey ON public.profiles USING btree (id)"
+        }
+      ]
+    },
+    "profiles_resolved": {
+      "kind": "v",
+      "comment": null,
+      "columns": [
+        {
+          "name": "user_id",
+          "position": 1,
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "role",
+          "position": 2,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        }
+      ],
+      "constraints": [],
+      "indexes": []
+    },
+    "quotes": {
+      "kind": "r",
+      "comment": null,
+      "columns": [
+        {
+          "name": "id",
+          "position": 1,
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "name": "rfq_id",
+          "position": 2,
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "vendor_id",
+          "position": 3,
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "version",
+          "position": 4,
+          "type": "integer",
+          "nullable": false,
+          "default": "1",
+          "comment": null
+        },
+        {
+          "name": "amount_cents",
+          "position": 5,
+          "type": "integer",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "currency",
+          "position": 6,
+          "type": "text",
+          "nullable": true,
+          "default": "'USD'::text",
+          "comment": null
+        },
+        {
+          "name": "message",
+          "position": 7,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "created_at",
+          "position": 8,
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": null
+        },
+        {
+          "name": "updated_at",
+          "position": 9,
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "name": "quotes_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "quotes_rfq_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (rfq_id) REFERENCES rfqs(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "quotes_vendor_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "quotes_pkey",
+          "definition": "CREATE UNIQUE INDEX quotes_pkey ON public.quotes USING btree (id)"
+        },
+        {
+          "name": "quotes_rfq_id_idx",
+          "definition": "CREATE INDEX quotes_rfq_id_idx ON public.quotes USING btree (rfq_id)"
+        },
+        {
+          "name": "quotes_rfq_vendor_idx",
+          "definition": "CREATE INDEX quotes_rfq_vendor_idx ON public.quotes USING btree (rfq_id, vendor_id, version)"
+        },
+        {
+          "name": "quotes_vendor_id_idx",
+          "definition": "CREATE INDEX quotes_vendor_id_idx ON public.quotes USING btree (vendor_id)"
+        }
+      ]
+    },
+    "reviews": {
+      "kind": "r",
+      "comment": null,
+      "columns": [
+        {
+          "name": "id",
+          "position": 1,
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "name": "rfq_id",
+          "position": 2,
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "vendor_id",
+          "position": 3,
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "author_id",
+          "position": 4,
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "stars",
+          "position": 5,
+          "type": "smallint",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "title",
+          "position": 6,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "body",
+          "position": 7,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "created_at",
+          "position": 8,
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": null
+        },
+        {
+          "name": "updated_at",
+          "position": 9,
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "name": "reviews_author_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (author_id) REFERENCES auth.users(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "reviews_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "reviews_rfq_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (rfq_id) REFERENCES rfqs(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "reviews_stars_check",
+          "type": "c",
+          "definition": "CHECK (((stars >= 1) AND (stars <= 5)))"
+        },
+        {
+          "name": "reviews_unique_author_vendor_rfq",
+          "type": "u",
+          "definition": "UNIQUE (author_id, vendor_id, rfq_id)"
+        },
+        {
+          "name": "reviews_vendor_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "unique_author_per_rfq",
+          "type": "u",
+          "definition": "UNIQUE (rfq_id, author_id)"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "reviews_author_id_idx",
+          "definition": "CREATE INDEX reviews_author_id_idx ON public.reviews USING btree (author_id)"
+        },
+        {
+          "name": "reviews_author_vendor_rfq_idx",
+          "definition": "CREATE INDEX reviews_author_vendor_rfq_idx ON public.reviews USING btree (author_id, vendor_id, rfq_id)"
+        },
+        {
+          "name": "reviews_pkey",
+          "definition": "CREATE UNIQUE INDEX reviews_pkey ON public.reviews USING btree (id)"
+        },
+        {
+          "name": "reviews_rfq_id_idx",
+          "definition": "CREATE INDEX reviews_rfq_id_idx ON public.reviews USING btree (rfq_id)"
+        },
+        {
+          "name": "reviews_unique_author_vendor_rfq",
+          "definition": "CREATE UNIQUE INDEX reviews_unique_author_vendor_rfq ON public.reviews USING btree (author_id, vendor_id, rfq_id)"
+        },
+        {
+          "name": "reviews_vendor_id_idx",
+          "definition": "CREATE INDEX reviews_vendor_id_idx ON public.reviews USING btree (vendor_id)"
+        },
+        {
+          "name": "unique_author_per_rfq",
+          "definition": "CREATE UNIQUE INDEX unique_author_per_rfq ON public.reviews USING btree (rfq_id, author_id)"
+        }
+      ]
+    },
+    "reviews_public": {
+      "kind": "v",
+      "comment": null,
+      "columns": [
+        {
+          "name": "id",
+          "position": 1,
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "vendor_id",
+          "position": 2,
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "rfq_id",
+          "position": 3,
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "rater_user_id",
+          "position": 4,
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "rating",
+          "position": 5,
+          "type": "smallint",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "title",
+          "position": 6,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "body",
+          "position": 7,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "created_at",
+          "position": 8,
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        }
+      ],
+      "constraints": [],
+      "indexes": []
+    },
+    "rfq_invites": {
+      "kind": "r",
+      "comment": null,
+      "columns": [
+        {
+          "name": "rfq_id",
+          "position": 1,
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "vendor_id",
+          "position": 2,
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "status",
+          "position": 3,
+          "type": "rfq_invite_status",
+          "nullable": false,
+          "default": "'invited'::rfq_invite_status",
+          "comment": null
+        },
+        {
+          "name": "expires_at",
+          "position": 4,
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "created_at",
+          "position": 5,
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": null
+        },
+        {
+          "name": "updated_at",
+          "position": 6,
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": null
+        },
+        {
+          "name": "reveal_email",
+          "position": 7,
+          "type": "boolean",
+          "nullable": false,
+          "default": "false",
+          "comment": null
+        },
+        {
+          "name": "reveal_phone",
+          "position": 8,
+          "type": "boolean",
+          "nullable": false,
+          "default": "false",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "name": "rfq_invites_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (rfq_id, vendor_id)"
+        },
+        {
+          "name": "rfq_invites_rfq_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (rfq_id) REFERENCES rfqs(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "rfq_invites_vendor_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "rfq_invites_pkey",
+          "definition": "CREATE UNIQUE INDEX rfq_invites_pkey ON public.rfq_invites USING btree (rfq_id, vendor_id)"
+        }
+      ]
+    },
+    "rfqs": {
+      "kind": "r",
+      "comment": null,
+      "columns": [
+        {
+          "name": "id",
+          "position": 1,
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "name": "owner_id",
+          "position": 2,
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "created_at",
+          "position": 3,
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": null
+        },
+        {
+          "name": "event_date",
+          "position": 4,
+          "type": "date",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "guest_count",
+          "position": 5,
+          "type": "integer",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "budget_min",
+          "position": 6,
+          "type": "integer",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "budget_max",
+          "position": 7,
+          "type": "integer",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "city",
+          "position": 8,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "state",
+          "position": 9,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "country",
+          "position": 10,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "language",
+          "position": 11,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "theme",
+          "position": 12,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "notes",
+          "position": 13,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "accepted_quote_id",
+          "position": 14,
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "accepted_at",
+          "position": 15,
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "updated_at",
+          "position": 16,
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": null
+        },
+        {
+          "name": "contact_email",
+          "position": 17,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "contact_phone",
+          "position": 18,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "name": "rfqs_accepted_quote_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (accepted_quote_id) REFERENCES quotes(id)"
+        },
+        {
+          "name": "rfqs_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "rfqs_accepted_quote_id_idx",
+          "definition": "CREATE INDEX rfqs_accepted_quote_id_idx ON public.rfqs USING btree (accepted_quote_id)"
+        },
+        {
+          "name": "rfqs_owner_id_idx",
+          "definition": "CREATE INDEX rfqs_owner_id_idx ON public.rfqs USING btree (owner_id)"
+        },
+        {
+          "name": "rfqs_pkey",
+          "definition": "CREATE UNIQUE INDEX rfqs_pkey ON public.rfqs USING btree (id)"
+        }
+      ]
+    },
+    "vendor_categories": {
+      "kind": "r",
+      "comment": null,
+      "columns": [
+        {
+          "name": "vendor_id",
+          "position": 1,
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "category_id",
+          "position": 2,
+          "type": "bigint",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "name": "vendor_categories_category_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "vendor_categories_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (vendor_id, category_id)"
+        },
+        {
+          "name": "vendor_categories_vendor_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "vendor_categories_pkey",
+          "definition": "CREATE UNIQUE INDEX vendor_categories_pkey ON public.vendor_categories USING btree (vendor_id, category_id)"
+        }
+      ]
+    },
+    "vendor_latest_quotes": {
+      "kind": "v",
+      "comment": null,
+      "columns": [
+        {
+          "name": "id",
+          "position": 1,
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "rfq_id",
+          "position": 2,
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "vendor_id",
+          "position": 3,
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "version",
+          "position": 4,
+          "type": "integer",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "amount_cents",
+          "position": 5,
+          "type": "integer",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "currency",
+          "position": 6,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "message",
+          "position": 7,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "created_at",
+          "position": 8,
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "updated_at",
+          "position": 9,
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        }
+      ],
+      "constraints": [],
+      "indexes": []
+    },
+    "vendor_locations": {
+      "kind": "r",
+      "comment": null,
+      "columns": [
+        {
+          "name": "vendor_id",
+          "position": 1,
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "country",
+          "position": 2,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "region",
+          "position": 3,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "city",
+          "position": 4,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "lat",
+          "position": 5,
+          "type": "double precision",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "lng",
+          "position": 6,
+          "type": "double precision",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "address",
+          "position": 7,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "state",
+          "position": 8,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "service_radius_km",
+          "position": 9,
+          "type": "integer",
+          "nullable": false,
+          "default": "50",
+          "comment": null
+        },
+        {
+          "name": "updated_at",
+          "position": 10,
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "name": "vendor_locations_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (vendor_id)"
+        },
+        {
+          "name": "vendor_locations_radius_chk",
+          "type": "c",
+          "definition": "CHECK (((service_radius_km >= 1) AND (service_radius_km <= 500)))"
+        },
+        {
+          "name": "vendor_locations_vendor_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "vendor_locations_vendor_id_key",
+          "type": "u",
+          "definition": "UNIQUE (vendor_id)"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "vendor_locations_pkey",
+          "definition": "CREATE UNIQUE INDEX vendor_locations_pkey ON public.vendor_locations USING btree (vendor_id)"
+        },
+        {
+          "name": "vendor_locations_vendor_id_key",
+          "definition": "CREATE UNIQUE INDEX vendor_locations_vendor_id_key ON public.vendor_locations USING btree (vendor_id)"
+        }
+      ]
+    },
+    "vendor_media": {
+      "kind": "r",
+      "comment": null,
+      "columns": [
+        {
+          "name": "id",
+          "position": 1,
+          "type": "bigint",
+          "nullable": false,
+          "default": "nextval('vendor_media_id_seq'::regclass)",
+          "comment": null
+        },
+        {
+          "name": "vendor_id",
+          "position": 2,
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "kind",
+          "position": 3,
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "url",
+          "position": 4,
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "is_cover",
+          "position": 5,
+          "type": "boolean",
+          "nullable": true,
+          "default": "false",
+          "comment": null
+        },
+        {
+          "name": "created_at",
+          "position": 6,
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "name": "vendor_media_kind_check",
+          "type": "c",
+          "definition": "CHECK ((kind = ANY (ARRAY['image'::text, 'video'::text])))"
+        },
+        {
+          "name": "vendor_media_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "vendor_media_vendor_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "vendor_media_pkey",
+          "definition": "CREATE UNIQUE INDEX vendor_media_pkey ON public.vendor_media USING btree (id)"
+        }
+      ]
+    },
+    "vendor_public_search": {
+      "kind": "v",
+      "comment": null,
+      "columns": [
+        {
+          "name": "id",
+          "position": 1,
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "slug",
+          "position": 2,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "business_name",
+          "position": 3,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "rating_avg",
+          "position": 4,
+          "type": "numeric(3,2)",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "rating_count",
+          "position": 5,
+          "type": "integer",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "is_published",
+          "position": 6,
+          "type": "boolean",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "created_at",
+          "position": 7,
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "bio_en",
+          "position": 8,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "bio_es",
+          "position": 9,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "city",
+          "position": 10,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "region",
+          "position": 11,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "country",
+          "position": 12,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "lat",
+          "position": 13,
+          "type": "double precision",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "lng",
+          "position": 14,
+          "type": "double precision",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "categories",
+          "position": 15,
+          "type": "text[]",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        }
+      ],
+      "constraints": [],
+      "indexes": []
+    },
+    "vendor_ratings": {
+      "kind": "v",
+      "comment": null,
+      "columns": [
+        {
+          "name": "vendor_id",
+          "position": 1,
+          "type": "uuid",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "rating_avg",
+          "position": 2,
+          "type": "numeric(4,2)",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "rating_count",
+          "position": 3,
+          "type": "bigint",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        }
+      ],
+      "constraints": [],
+      "indexes": []
+    },
+    "vendors": {
+      "kind": "r",
+      "comment": null,
+      "columns": [
+        {
+          "name": "id",
+          "position": 1,
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "name": "owner_id",
+          "position": 2,
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "slug",
+          "position": 3,
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "business_name",
+          "position": 4,
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "bio",
+          "position": 5,
+          "type": "jsonb",
+          "nullable": true,
+          "default": "'{}'::jsonb",
+          "comment": null
+        },
+        {
+          "name": "rating_avg",
+          "position": 6,
+          "type": "numeric(3,2)",
+          "nullable": true,
+          "default": "0",
+          "comment": null
+        },
+        {
+          "name": "rating_count",
+          "position": 7,
+          "type": "integer",
+          "nullable": true,
+          "default": "0",
+          "comment": null
+        },
+        {
+          "name": "is_published",
+          "position": 8,
+          "type": "boolean",
+          "nullable": false,
+          "default": "false",
+          "comment": null
+        },
+        {
+          "name": "created_at",
+          "position": 9,
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "name": "vendors_owner_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (owner_id) REFERENCES profiles(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "vendors_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "vendors_slug_key",
+          "type": "u",
+          "definition": "UNIQUE (slug)"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "vendors_name_trgm",
+          "definition": "CREATE INDEX vendors_name_trgm ON public.vendors USING gin (business_name gin_trgm_ops)"
+        },
+        {
+          "name": "vendors_owner_id_idx",
+          "definition": "CREATE INDEX vendors_owner_id_idx ON public.vendors USING btree (owner_id)"
+        },
+        {
+          "name": "vendors_pkey",
+          "definition": "CREATE UNIQUE INDEX vendors_pkey ON public.vendors USING btree (id)"
+        },
+        {
+          "name": "vendors_published_idx",
+          "definition": "CREATE INDEX vendors_published_idx ON public.vendors USING btree (is_published)"
+        },
+        {
+          "name": "vendors_slug_key",
+          "definition": "CREATE UNIQUE INDEX vendors_slug_key ON public.vendors USING btree (slug)"
+        }
+      ]
+    }
+  }
+}

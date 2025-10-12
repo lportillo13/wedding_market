@@ -1,11 +1,11 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 /**
  * scripts/generate-supabase-schema-pg.mjs
  * Usage:
  *   node scripts/generate-supabase-schema-pg.mjs [outputPath]
  *
- * Env (from .env.local / .env):
- *   SUPABASE_DB_URL = postgresql://USER:PASSWORD@HOST:PORT/postgres?sslmode=require
+ * Env:
+ *   SUPABASE_DB_URL = postgresql://postgres:PASSWORD@db.<ref>.supabase.co:5432/postgres?sslmode=require
  *   SUPABASE_SCHEMAS (optional, comma-separated; default: "public")
  */
 
@@ -14,10 +14,8 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import process from 'node:process';
 import pg from 'pg';
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-
-// ---------- tiny dotenv loader (no deps) ----------
+// --- tiny dotenv loader for .env.local then .env (no deps) ---
 async function loadEnvFile(filePath) {
   const contents = await readFile(filePath, 'utf8');
   const loaded = [];
@@ -66,7 +64,7 @@ async function loadEnvFiles() {
 }
 await loadEnvFiles();
 
-// ---------- inputs ----------
+// --- inputs ---
 const dbUrl = process.env.SUPABASE_DB_URL;
 const schemaList = (process.env.SUPABASE_SCHEMAS || process.env.SUPABASE_SCHEMA || 'public')
   .split(',')
@@ -84,21 +82,20 @@ if (schemaList.length === 0) {
 
 const outputPath = resolve(process.cwd(), process.argv[2] || 'schema/supabase-schema.json');
 
-// ---------- connect ----------
+// --- connect ---
 const client = new pg.Client({
   connectionString: dbUrl,
   ssl: { rejectUnauthorized: false } // Supabase requires SSL
 });
 await client.connect();
 
-// helpers
 const params = schemaList.map((_, i) => `$${i + 1}`).join(', ');
 
-// tables (incl. partitioned, views, matviews, foreign tables)
+// tables/views
 const { rows: tables } = await client.query(
   `select n.nspname as schema,
           c.relname as name,
-          c.relkind as kind,          -- r=table, p=partitioned table, v=view, m=matview, f=foreign table
+          c.relkind as kind,          -- r=table, p=partitioned, v=view, m=matview, f=foreign
           obj_description(c.oid, 'pg_class') as comment
    from pg_class c
    join pg_namespace n on n.oid = c.relnamespace
@@ -129,7 +126,7 @@ const { rows: columns } = await client.query(
   schemaList
 );
 
-// constraints (only real tables/partitions/foreign where applicable)
+// constraints
 const { rows: constraints } = await client.query(
   `select n.nspname as schema,
           c.relname as table_name,
@@ -161,12 +158,12 @@ const { rows: indexes } = await client.query(
 
 await client.end();
 
-// ---------- assemble ----------
+// assemble
 const map = {};
 for (const t of tables) {
   map[t.schema] ??= {};
   map[t.schema][t.name] = {
-    kind: t.kind,                       // r/p/v/m/f
+    kind: t.kind,
     comment: t.comment ?? null,
     columns: [],
     constraints: [],
@@ -188,19 +185,12 @@ for (const col of columns) {
 for (const con of constraints) {
   const tbl = map[con.schema]?.[con.table_name];
   if (!tbl) continue;
-  tbl.constraints.push({
-    name: con.name,
-    type: con.type,
-    definition: con.definition
-  });
+  tbl.constraints.push({ name: con.name, type: con.type, definition: con.definition });
 }
 for (const idx of indexes) {
   const tbl = map[idx.schema]?.[idx.table_name];
   if (!tbl) continue;
-  tbl.indexes.push({
-    name: idx.name,
-    definition: idx.definition
-  });
+  tbl.indexes.push({ name: idx.name, definition: idx.definition });
 }
 for (const s of Object.keys(map)) {
   for (const t of Object.keys(map[s])) {
@@ -208,7 +198,7 @@ for (const s of Object.keys(map)) {
   }
 }
 
-// ---------- write ----------
+// write
 await mkdir(dirname(outputPath), { recursive: true });
 await writeFile(outputPath, JSON.stringify(map, null, 2));
-console.log(`Supabase schema written to ${outputPath}`);
+console.log(\`Supabase schema written to \${outputPath}\`);
