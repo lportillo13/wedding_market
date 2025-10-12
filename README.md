@@ -33,9 +33,26 @@ npm start
 \`\`\`
 
 ### 4) Useful scripts
-- \`npm run typecheck\` — TypeScript check (no emit)
-- \`npm run lint\` — Next/ESLint
-- \`npm run build\` — Production build
+- `npm run typecheck` — TypeScript check (no emit)
+- `npm run lint` — Next/ESLint
+- `npm run build` — Production build
+- `npm run schema:supabase [outputPath]` — export the Supabase schema to `schema/supabase-schema.json` (or a custom path)
+
+#### Supabase schema export
+The schema exporter uses Supabase's `pg_meta` views via the REST API. Provide credentials before running the script:
+
+```bash
+export SUPABASE_URL="https://<project>.supabase.co"
+export SUPABASE_SERVICE_ROLE_KEY="<service-role-key>"
+# Optional: restrict schemas (comma separated). Defaults to `public`.
+export SUPABASE_SCHEMAS="public,storage"
+
+npm run schema:supabase
+# or choose a destination file
+npm run schema:supabase -- schema/latest.json
+```
+
+The script writes a JSON description of tables, columns, constraints, and indexes for the selected schemas so new changes can be compared against the live database.
 
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
