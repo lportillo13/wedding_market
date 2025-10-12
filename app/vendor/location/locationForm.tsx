@@ -1,9 +1,10 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import { saveLocation, type SaveLocState } from "./actions";
 import MapPicker from "./MapPicker";
 import { useTranslation } from "@/contexts/LanguageContext";
+import { buildCountryOptions } from "@/lib/countries";
 
 type Initial = {
   address: string; city: string; state: string; country: string;
@@ -16,6 +17,7 @@ export default function LocationForm({ initial }: { initial: Initial }) {
   const [state, formAction, pending] = useActionState(saveLocation, initState);
   const [form, setForm] = useState<Initial>(initial);
   const t = useTranslation();
+  const countryOptions = useMemo(() => buildCountryOptions(form.country), [form.country]);
 
   useEffect(() => { setForm(initial); }, [initial]);
 
@@ -36,7 +38,7 @@ export default function LocationForm({ initial }: { initial: Initial }) {
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 
-  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function onChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: name === "service_radius_km" ? Number(value) : value }));
   }
@@ -77,7 +79,20 @@ export default function LocationForm({ initial }: { initial: Initial }) {
           <label className="form-label" htmlFor="location-country">
             {t("vendorDashboard.location.form.countryLabel")}
           </label>
-          <input id="location-country" name="country" className="form-control" value={form.country} onChange={onChange} />
+          <select
+            id="location-country"
+            name="country"
+            className="form-select"
+            value={form.country}
+            onChange={onChange}
+          >
+            <option value="">{t("vendorDashboard.location.form.countryPlaceholder")}</option>
+            {countryOptions.map(country => (
+              <option key={country} value={country}>
+                {country}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 

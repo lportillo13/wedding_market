@@ -5,6 +5,7 @@ import { useActionState } from "react";
 import Link from "next/link";
 import { getShortlist, clearShortlist, removeFromShortlist } from "@/lib/shortlist";
 import { useVendorSummaries } from "@/lib/useVendorSummaries";
+import { buildCountryOptions } from "@/lib/countries";
 import { createRfqAndInvites, type CreateRfqState } from "./actions";
 
 export type RfqPrefill = {
@@ -26,6 +27,7 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
   const country = prefill.country ?? "";
   const budgetValue = prefill.budget ?? "";
   const theme = prefill.theme ?? "";
+  const countryOptions = useMemo(() => buildCountryOptions(country), [country]);
 
   return (
     <main className="container py-4" style={{ maxWidth: 920 }}>
@@ -105,7 +107,14 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
               </div>
               <div className="col-md-4 mb-3">
                 <label className="form-label" htmlFor="rfq-country">Country</label>
-                <input id="rfq-country" className="form-control" name="country" defaultValue={country} />
+                <select id="rfq-country" className="form-select" name="country" defaultValue={country}>
+                  <option value="">Select a country</option>
+                  {countryOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 

@@ -4,6 +4,7 @@ import { useActionState, useMemo } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { isSupportedLanguage, type SupportedLanguage } from "@/lib/i18n";
 import { saveProfile, type SaveProfileState } from "./actions";
+import { buildCountryOptions } from "@/lib/countries";
 
 const initialState: SaveProfileState = { ok: false, message: "" };
 
@@ -23,6 +24,11 @@ export default function ProfileForm({ initial }: { initial: ProfileFormInitial }
   const [state, formAction, pending] = useActionState<SaveProfileState, FormData>(saveProfile, initialState);
   const { setLanguage, dictionary } = useLanguage();
   const formLabels = dictionary.account.profile.form;
+
+  const countryOptions = useMemo(
+    () => buildCountryOptions(initial.country),
+    [initial.country]
+  );
 
   const languageOptions = useMemo(
     () => [
@@ -108,14 +114,20 @@ export default function ProfileForm({ initial }: { initial: ProfileFormInitial }
           <label className="form-label" htmlFor="profile-country">
             {formLabels.countryLabel}
           </label>
-          <input
+          <select
             id="profile-country"
             name="country"
-            type="text"
-            className="form-control"
+            className="form-select"
             defaultValue={initial.country}
             autoComplete="country-name"
-          />
+          >
+            <option value="">{formLabels.countryPlaceholder}</option>
+            {countryOptions.map((country) => (
+              <option key={country} value={country}>
+                {country}
+              </option>
+            ))}
+          </select>
           {state.fieldErrors?.country && <div className="text-danger small">{state.fieldErrors.country}</div>}
         </div>
         <div className="col-md-6 mb-3">
