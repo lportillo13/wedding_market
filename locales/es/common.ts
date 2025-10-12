@@ -21,6 +21,10 @@ const common = {
     createVendorProfile: "Crear perfil de proveedor",
     logOut: "Cerrar sesión",
   },
+  theme: {
+    switchToLight: "Cambiar a tema claro",
+    switchToDark: "Cambiar a tema oscuro",
+  },
   account: {
     layout: {
       heading: "Mi cuenta",
