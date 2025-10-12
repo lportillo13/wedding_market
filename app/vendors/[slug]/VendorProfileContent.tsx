@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import type { ReactNode } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import type { PointerEvent as ReactPointerEvent, ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import ShortlistButton from "@/components/shortlist/ShortlistButton";
 import { Stars } from "@/components/Stars";
@@ -16,83 +16,188 @@ type GalleryProps = {
 };
 
 function GalleryCarousel({ vendorName, images }: GalleryProps) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const pointerState = useRef<{
+    id: number | null;
+    startX: number;
+    lastX: number;
+    dragging: boolean;
+  }>({ id: null, startX: 0, lastX: 0, dragging: false });
 
-  const updateScrollState = useCallback(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const { scrollLeft, scrollWidth, clientWidth } = el;
-    setCanScrollPrev(scrollLeft > 8);
-    setCanScrollNext(scrollLeft + clientWidth < scrollWidth - 8);
-  }, []);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [offset, setOffset] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const slideCount = images.length;
+  const safeActiveIndex = slideCount ? Math.min(activeIndex, slideCount - 1) : 0;
+
+  const updateOffset = useCallback(
+    (index: number) => {
+      const track = trackRef.current;
+      const slide = slideRefs.current[index] ?? null;
+      const viewport = viewportRef.current;
+      if (!track || !slide || !viewport) return;
+
+      const viewportWidth = viewport.clientWidth;
+      const slideWidth = slide.clientWidth;
+      const slideLeft = slide.offsetLeft;
+      const centeredOffset = slideLeft - (viewportWidth - slideWidth) / 2;
+      setOffset(centeredOffset);
+    },
+    []
+  );
+
+  useLayoutEffect(() => {
+    updateOffset(safeActiveIndex);
+  }, [safeActiveIndex, updateOffset]);
 
   useEffect(() => {
-    updateScrollState();
-    const el = containerRef.current;
-    if (!el) return;
+    const handleResize = () => updateOffset(safeActiveIndex);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [safeActiveIndex, updateOffset]);
 
-    const handler = () => updateScrollState();
-    el.addEventListener("scroll", handler, { passive: true });
-    window.addEventListener("resize", handler);
-    return () => {
-      el.removeEventListener("scroll", handler);
-      window.removeEventListener("resize", handler);
+  const goToSlide = useCallback(
+    (nextIndex: number) => {
+      if (!slideCount) return;
+      const normalized = ((nextIndex % slideCount) + slideCount) % slideCount;
+      setActiveIndex(normalized);
+    },
+    [slideCount]
+  );
+
+  const handlePrev = useCallback(() => {
+    goToSlide(safeActiveIndex - 1);
+  }, [safeActiveIndex, goToSlide]);
+
+  const handleNext = useCallback(() => {
+    goToSlide(safeActiveIndex + 1);
+  }, [safeActiveIndex, goToSlide]);
+
+  const handlePointerDown = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    const track = trackRef.current;
+    if (!track) return;
+    track.setPointerCapture(event.pointerId);
+    setIsDragging(true);
+    pointerState.current = {
+      id: event.pointerId,
+      startX: event.clientX,
+      lastX: event.clientX,
+      dragging: true,
     };
-  }, [updateScrollState]);
-
-  const scrollBy = useCallback((direction: 1 | -1) => {
-    const el = containerRef.current;
-    if (!el) return;
-    const amount = Math.max(el.clientWidth * 0.9, 240);
-    el.scrollBy({ left: amount * direction, behavior: "smooth" });
   }, []);
+
+  const handlePointerMove = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    const state = pointerState.current;
+    if (!state.dragging || state.id !== event.pointerId) return;
+    const delta = event.clientX - state.startX;
+    state.lastX = event.clientX;
+    setDragOffset(-delta);
+  }, []);
+
+  const finishPointer = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      const state = pointerState.current;
+      if (!state.dragging || state.id !== event.pointerId) return;
+
+      const delta = event.clientX - state.startX;
+      const threshold = 60;
+      const track = trackRef.current;
+      if (track && track.hasPointerCapture(event.pointerId)) {
+        track.releasePointerCapture(event.pointerId);
+      }
+      pointerState.current = { id: null, startX: 0, lastX: 0, dragging: false };
+      setDragOffset(0);
+      setIsDragging(false);
+
+      if (delta < -threshold) {
+        handleNext();
+      } else if (delta > threshold) {
+        handlePrev();
+      }
+    },
+    [handleNext, handlePrev]
+  );
+
+  const trackStyle = {
+    transform: `translate3d(${-offset + dragOffset}px, 0, 0)`,
+    transition: isDragging ? "none" : undefined,
+  };
 
   return (
     <div className="vendor-gallery-swiper">
-      <div
-        ref={containerRef}
-        className="vendor-gallery-swiper__track"
-        role="group"
-        aria-label={`${vendorName} gallery images`}
-      >
-        {images.map((image) => {
-          const aspectRatio = image.width && image.height ? `${image.width} / ${image.height}` : "4 / 3";
-          return (
-            <div className="vendor-gallery-swiper__slide" key={image.public_id}>
-              <div className="vendor-gallery-swiper__figure" style={{ aspectRatio }}>
-                <Image
-                  src={image.url}
-                  alt={`${vendorName} gallery image`}
-                  fill
-                  sizes="(max-width: 960px) 100vw, 480px"
-                  className="vendor-gallery-swiper__image"
-                  priority={false}
-                />
+      <div className="vendor-gallery-swiper__viewport" ref={viewportRef}>
+        <div
+          ref={trackRef}
+          className="vendor-gallery-swiper__track"
+          role="group"
+          aria-label={`${vendorName} gallery images`}
+          style={trackStyle}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={finishPointer}
+          onPointerLeave={finishPointer}
+          onPointerCancel={finishPointer}
+        >
+          {images.map((image, index) => {
+            const aspectRatio = image.width && image.height ? `${image.width} / ${image.height}` : "4 / 3";
+            return (
+              <div
+                className="vendor-gallery-swiper__slide"
+                key={image.public_id}
+                ref={(el) => {
+                  slideRefs.current[index] = el;
+                }}
+              >
+                <div className="vendor-gallery-swiper__figure" style={{ aspectRatio }}>
+                  <Image
+                    src={image.url}
+                    alt={`${vendorName} gallery image`}
+                    fill
+                    sizes="(max-width: 960px) 100vw, 480px"
+                    className="vendor-gallery-swiper__image"
+                    priority={false}
+                    onLoadingComplete={() => updateOffset(safeActiveIndex)}
+                  />
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
-      <div className="vendor-gallery-swiper__controls" aria-hidden="true">
-        <button
-          type="button"
-          className="vendor-gallery-swiper__control btn btn-light btn-sm"
-          onClick={() => scrollBy(-1)}
-          disabled={!canScrollPrev}
-        >
-          ‹
-        </button>
-        <button
-          type="button"
-          className="vendor-gallery-swiper__control btn btn-light btn-sm"
-          onClick={() => scrollBy(1)}
-          disabled={!canScrollNext}
-        >
-          ›
-        </button>
-      </div>
+
+      {slideCount > 1 ? (
+        <>
+          <div className="vendor-gallery-swiper__controls" aria-hidden="true">
+            <button type="button" className="vendor-gallery-swiper__control btn btn-light btn-sm" onClick={handlePrev}>
+              ‹
+            </button>
+            <button type="button" className="vendor-gallery-swiper__control btn btn-light btn-sm" onClick={handleNext}>
+              ›
+            </button>
+          </div>
+          <div className="vendor-gallery-swiper__pagination" role="tablist" aria-label={`${vendorName} gallery pagination`}>
+            {images.map((image, index) => (
+              <button
+                key={image.public_id}
+                type="button"
+                className={
+                  index === safeActiveIndex
+                    ? "vendor-gallery-swiper__bullet vendor-gallery-swiper__bullet--active"
+                    : "vendor-gallery-swiper__bullet"
+                }
+                onClick={() => goToSlide(index)}
+                aria-label={`${vendorName} gallery image ${index + 1}`}
+                aria-current={index === safeActiveIndex ? "true" : undefined}
+              />
+            ))}
+          </div>
+        </>
+      ) : null}
     </div>
   );
 }
