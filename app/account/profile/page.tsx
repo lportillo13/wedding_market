@@ -1,6 +1,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isSupportedLanguage } from "@/lib/i18n";
-import ProfileForm, { type ProfileFormInitial } from "./profileForm";
+import ProfilePageContent from "./ProfilePageContent";
+import type { ProfileFormInitial } from "./profileForm";
 
 export default async function AccountProfilePage() {
   const supabase = await createSupabaseServerClient();
@@ -9,12 +10,7 @@ export default async function AccountProfilePage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return (
-      <main className="container py-4" style={{ maxWidth: 960 }}>
-        <h1 className="mb-3">Profile</h1>
-        <div className="alert alert-warning">Please log in to view your profile.</div>
-      </main>
-    );
+    return <ProfilePageContent initial={null} />;
   }
 
   const { data: profile } = await supabase
@@ -37,11 +33,5 @@ export default async function AccountProfilePage() {
     language: isSupportedLanguage(profile?.language) ? profile.language : "en",
   };
 
-  return (
-    <main className="container py-4" style={{ maxWidth: 960 }}>
-      <h1 className="mb-3">Profile</h1>
-      <p className="text-secondary">Update your contact information and wedding preferences.</p>
-      <ProfileForm initial={initial} />
-    </main>
-  );
+  return <ProfilePageContent initial={initial} />;
 }

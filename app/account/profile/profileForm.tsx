@@ -7,17 +7,6 @@ import { saveProfile, type SaveProfileState } from "./actions";
 
 const initialState: SaveProfileState = { ok: false, message: "" };
 
-const THEME_OPTIONS = [
-  { value: "", label: "—" },
-  { value: "classic", label: "Classic" },
-  { value: "boho", label: "Boho" },
-  { value: "rustic", label: "Rustic" },
-  { value: "beach", label: "Beach" },
-  { value: "garden", label: "Garden" },
-  { value: "modern", label: "Modern" },
-  { value: "vintage", label: "Vintage" },
-];
-
 export type ProfileFormInitial = {
   full_name: string;
   phone: string;
@@ -33,6 +22,7 @@ export type ProfileFormInitial = {
 export default function ProfileForm({ initial }: { initial: ProfileFormInitial }) {
   const [state, formAction, pending] = useActionState<SaveProfileState, FormData>(saveProfile, initialState);
   const { setLanguage, dictionary } = useLanguage();
+  const formLabels = dictionary.account.profile.form;
 
   const languageOptions = useMemo(
     () => [
@@ -42,12 +32,35 @@ export default function ProfileForm({ initial }: { initial: ProfileFormInitial }
     [dictionary.languageSelector.english, dictionary.languageSelector.spanish]
   );
 
+  const themeOptions = useMemo(
+    () => [
+      { value: "", label: formLabels.weddingTheme.options.none },
+      { value: "classic", label: formLabels.weddingTheme.options.classic },
+      { value: "boho", label: formLabels.weddingTheme.options.boho },
+      { value: "rustic", label: formLabels.weddingTheme.options.rustic },
+      { value: "beach", label: formLabels.weddingTheme.options.beach },
+      { value: "garden", label: formLabels.weddingTheme.options.garden },
+      { value: "modern", label: formLabels.weddingTheme.options.modern },
+      { value: "vintage", label: formLabels.weddingTheme.options.vintage },
+    ],
+    [
+      formLabels.weddingTheme.options.none,
+      formLabels.weddingTheme.options.classic,
+      formLabels.weddingTheme.options.boho,
+      formLabels.weddingTheme.options.rustic,
+      formLabels.weddingTheme.options.beach,
+      formLabels.weddingTheme.options.garden,
+      formLabels.weddingTheme.options.modern,
+      formLabels.weddingTheme.options.vintage,
+    ]
+  );
+
   return (
     <form action={formAction} className="border rounded p-3 bg-body">
       <div className="row">
         <div className="col-md-6 mb-3">
           <label className="form-label" htmlFor="profile-name">
-            Name
+            {formLabels.fullNameLabel}
           </label>
           <input
             id="profile-name"
@@ -62,7 +75,7 @@ export default function ProfileForm({ initial }: { initial: ProfileFormInitial }
         </div>
         <div className="col-md-6 mb-3">
           <label className="form-label" htmlFor="profile-phone">
-            Phone
+            {formLabels.phoneLabel}
           </label>
           <input
             id="profile-phone"
@@ -79,7 +92,7 @@ export default function ProfileForm({ initial }: { initial: ProfileFormInitial }
       <div className="row">
         <div className="col-md-6 mb-3">
           <label className="form-label" htmlFor="profile-email">
-            Email
+            {formLabels.emailLabel}
           </label>
           <input
             id="profile-email"
@@ -89,11 +102,11 @@ export default function ProfileForm({ initial }: { initial: ProfileFormInitial }
             disabled
             readOnly
           />
-          <div className="form-text">Email is managed via your login credentials.</div>
+          <div className="form-text">{formLabels.emailHelp}</div>
         </div>
         <div className="col-md-6 mb-3">
           <label className="form-label" htmlFor="profile-country">
-            Country
+            {formLabels.countryLabel}
           </label>
           <input
             id="profile-country"
@@ -107,7 +120,7 @@ export default function ProfileForm({ initial }: { initial: ProfileFormInitial }
         </div>
         <div className="col-md-6 mb-3">
           <label className="form-label" htmlFor="profile-language">
-            Preferred language
+            {formLabels.preferredLanguageLabel}
           </label>
           <select
             id="profile-language"
@@ -127,19 +140,19 @@ export default function ProfileForm({ initial }: { initial: ProfileFormInitial }
               </option>
             ))}
           </select>
-          <div className="form-text">Changes the default language shown after you log in.</div>
+          <div className="form-text">{formLabels.preferredLanguageHelp}</div>
           {state.fieldErrors?.language && <div className="text-danger small">{state.fieldErrors.language}</div>}
         </div>
       </div>
 
       <hr className="my-4" />
 
-      <h2 className="h5 mb-3">Wedding preferences</h2>
+      <h2 className="h5 mb-3">{formLabels.weddingPreferencesHeading}</h2>
 
       <div className="row">
         <div className="col-md-6 mb-3">
           <label className="form-label" htmlFor="profile-date">
-            Tentative wedding date
+            {formLabels.tentativeWeddingDateLabel}
           </label>
           <input
             id="profile-date"
@@ -154,7 +167,7 @@ export default function ProfileForm({ initial }: { initial: ProfileFormInitial }
         </div>
         <div className="col-md-6 mb-3">
           <label className="form-label" htmlFor="profile-guests">
-            Estimate amount of people
+            {formLabels.guestCountLabel}
           </label>
           <input
             id="profile-guests"
@@ -171,7 +184,7 @@ export default function ProfileForm({ initial }: { initial: ProfileFormInitial }
       <div className="row">
         <div className="col-md-6 mb-3">
           <label className="form-label" htmlFor="profile-budget">
-            Budget (USD)
+            {formLabels.budgetLabel}
           </label>
           <input
             id="profile-budget"
@@ -186,7 +199,7 @@ export default function ProfileForm({ initial }: { initial: ProfileFormInitial }
         </div>
         <div className="col-md-6 mb-3">
           <label className="form-label" htmlFor="profile-theme">
-            Theme of wedding
+            {formLabels.weddingThemeLabel}
           </label>
           <select
             id="profile-theme"
@@ -194,7 +207,7 @@ export default function ProfileForm({ initial }: { initial: ProfileFormInitial }
             className="form-select"
             defaultValue={initial.wedding_theme}
           >
-            {THEME_OPTIONS.map((option) => (
+            {themeOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -210,7 +223,7 @@ export default function ProfileForm({ initial }: { initial: ProfileFormInitial }
 
       <div className="d-flex justify-content-end">
         <button type="submit" className="btn btn-primary" disabled={pending}>
-          {pending ? "Saving…" : "Save profile"}
+          {pending ? formLabels.submit.saving : formLabels.submit.label}
         </button>
       </div>
     </form>
