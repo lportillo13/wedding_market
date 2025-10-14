@@ -10,6 +10,8 @@ type FormShape = {
   business_name: string;
   bio_en: string;
   bio_es: string;
+  extra_info_en: string;
+  extra_info_es: string;
 };
 
 const actionInitial: SaveState = { ok: false, message: "" };
@@ -94,6 +96,34 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
           className="form-control"
           rows={4}
           value={form.bio_es}
+          onChange={onChange}
+        />
+      </div>
+
+      <div className="mb-3">
+        <label className="form-label" htmlFor="profile-extra-en">
+          {t("vendorDashboard.profileForm.extraInfoEnLabel")}
+        </label>
+        <textarea
+          id="profile-extra-en"
+          name="extra_info_en"
+          className="form-control"
+          rows={4}
+          value={form.extra_info_en}
+          onChange={onChange}
+        />
+      </div>
+
+      <div className="mb-3">
+        <label className="form-label" htmlFor="profile-extra-es">
+          {t("vendorDashboard.profileForm.extraInfoEsLabel")}
+        </label>
+        <textarea
+          id="profile-extra-es"
+          name="extra_info_es"
+          className="form-control"
+          rows={4}
+          value={form.extra_info_es}
           onChange={onChange}
         />
       </div>

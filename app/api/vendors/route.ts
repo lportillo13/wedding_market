@@ -24,7 +24,7 @@ export async function GET(req: Request) {
 
     if (q) {
       query = query.or(
-        `business_name.ilike.%${q}%,bio_en.ilike.%${q}%,bio_es.ilike.%${q}%`
+        `business_name.ilike.%${q}%,bio_en.ilike.%${q}%,bio_es.ilike.%${q}%,extra_info_en.ilike.%${q}%,extra_info_es.ilike.%${q}%`
       );
     }
     if (category) {

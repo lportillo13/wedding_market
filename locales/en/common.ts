@@ -80,45 +80,6 @@ const common = {
         saving: "Saving…",
       },
     },
-    translations: {
-      heading: "Localized answers",
-      intro: "Add translations so vendors see your details in their preferred language.",
-      defaultBadge: "Default",
-      fields: {
-        full_name: {
-          label: "Name translations",
-          help: "Control how your name appears to vendors in each language.",
-        },
-        country: {
-          label: "Country translations",
-          help: "Customize the country label you share with vendors.",
-        },
-        wedding_theme: {
-          label: "Wedding theme translations",
-          help: "Describe your wedding theme preferences per language.",
-        },
-      },
-      languageHeadings: {
-        en: "English answer",
-        es: "Spanish answer",
-      },
-      save: {
-        label: "Save translations",
-        saving: "Saving…",
-        success: "Translations saved.",
-      },
-      ai: {
-        translateFrom: {
-          en: "Translate from English",
-          es: "Translate from Spanish",
-        },
-        translating: "Translating…",
-        success: "Saved the {language} translation.",
-        error: "We couldn’t translate right now. Try again.",
-        notConfigured: "AI translation is not configured.",
-        emptySource: "Enter text to translate first.",
-      },
-    },
   },
   },
   shortlistButton: {
@@ -142,6 +103,7 @@ const common = {
   vendorProfile: {
     writeReview: "Write a review",
     galleryHeading: "Gallery",
+    extraInfoHeading: "Additional details",
     moreComing: "Have questions? Reach out to the vendor for more details.",
   },
   vendorDashboard: {
@@ -166,6 +128,8 @@ const common = {
       slugHelp: "Only letters, numbers and hyphens.",
       bioEnLabel: "Bio (EN)",
       bioEsLabel: "Bio (ES)",
+      extraInfoEnLabel: "Extra info (EN)",
+      extraInfoEsLabel: "Extra info (ES)",
       save: "Save profile",
       saving: "Saving…",
     },

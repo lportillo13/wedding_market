@@ -39,6 +39,7 @@ async function ensureVendorId() {
       slug: defaultSlug,
       business_name: "Untitled Vendor",
       bio: { en: "", es: "" },
+      extra_info: { en: "", es: "" },
       is_published: false,
     })
     .select("id")
@@ -56,6 +57,8 @@ export async function saveProfile(formData: FormData) {
   const slug = slugify(slugInput || name);
   const bio_en = (formData.get("bio_en") as string) ?? "";
   const bio_es = (formData.get("bio_es") as string) ?? "";
+  const extra_info_en = (formData.get("extra_info_en") as string) ?? "";
+  const extra_info_es = (formData.get("extra_info_es") as string) ?? "";
 
   const { supabase } = await getVendorContext();
 
@@ -70,7 +73,12 @@ export async function saveProfile(formData: FormData) {
 
   const { error } = await supabase
     .from("vendors")
-    .update({ business_name: name, slug, bio: { en: bio_en, es: bio_es } })
+    .update({
+      business_name: name,
+      slug,
+      bio: { en: bio_en, es: bio_es },
+      extra_info: { en: extra_info_en, es: extra_info_es },
+    })
     .eq("id", id);
 
   if (error) throw new Error(error.message);

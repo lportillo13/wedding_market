@@ -14,7 +14,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from("vendors")
-    .select("id, slug, business_name, bio, bio_en, bio_es")
+    .select("id, slug, business_name, bio, bio_en, bio_es, extra_info")
     .eq("owner_id", user.id)
     .maybeSingle();
 
@@ -27,6 +27,7 @@ export async function GET() {
     bio: { en?: string | null; es?: string | null } | null;
     bio_en: string | null;
     bio_es: string | null;
+    extra_info: { en?: string | null; es?: string | null } | null;
   };
   const v = data as VendorRow;
   // Normalize to the shape the form expects
@@ -35,6 +36,8 @@ export async function GET() {
     business_name: v.business_name ?? "",
     bio_en: v.bio_en ?? v?.bio?.en ?? "",
     bio_es: v.bio_es ?? v?.bio?.es ?? "",
+    extra_info_en: v.extra_info?.en ?? "",
+    extra_info_es: v.extra_info?.es ?? "",
   };
 
   return NextResponse.json({ vendor });

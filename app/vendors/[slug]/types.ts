@@ -6,6 +6,8 @@ export type VendorProfile = {
   business_name: string;
   bio_en: string | null;
   bio_es: string | null;
+  extra_info_en: string | null;
+  extra_info_es: string | null;
   categories: string[] | null;
   created_at: string;
   is_published: boolean;

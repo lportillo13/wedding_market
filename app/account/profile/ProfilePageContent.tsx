@@ -2,18 +2,15 @@
 
 import ProfileForm, { type ProfileFormInitial } from "./profileForm";
 import AvatarForm from "./AvatarForm";
-import ProfileTranslationsForm from "./ProfileTranslationsForm";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { CloudinaryImage } from "@/types/images";
-import type { ProfileTranslationsByField } from "./translationConfig";
 
 type ProfilePageContentProps = {
   initial: ProfileFormInitial | null;
   avatarImage: CloudinaryImage | null;
-  translations: ProfileTranslationsByField | null;
 };
 
-export default function ProfilePageContent({ initial, avatarImage, translations }: ProfilePageContentProps) {
+export default function ProfilePageContent({ initial, avatarImage }: ProfilePageContentProps) {
   const { dictionary } = useLanguage();
   const labels = dictionary.account.profile;
 
@@ -36,12 +33,6 @@ export default function ProfilePageContent({ initial, avatarImage, translations 
         labels={labels.avatar}
       />
       <ProfileForm initial={initial} />
-      {translations ? (
-        <ProfileTranslationsForm
-          initialTranslations={translations}
-          defaultLanguage={initial.language}
-        />
-      ) : null}
     </main>
   );
 }
