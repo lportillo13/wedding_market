@@ -7,6 +7,17 @@ import cloudinary, { isCloudinaryConfigured } from "@/lib/cloudinary";
 import { parseCloudinaryImage } from "@/lib/images";
 import type { CloudinaryImage } from "@/types/images";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { translateTextWithAI } from "@/lib/ai/translate";
+import { supportedLanguages, isSupportedLanguage, type SupportedLanguage } from "@/lib/i18n";
+import {
+  PROFILE_TRANSLATION_FIELDS,
+  PROFILE_LANGUAGE_NAMES,
+  type ProfileTranslatableField,
+} from "./translationConfig";
+
+type SupabaseServerClient = Awaited<ReturnType<typeof getSupabaseServer>>;
+
+const MAX_TRANSLATION_LENGTH = 2000;
 
 const ProfileSchema = z.object({
   full_name: z.string().trim().min(1, "Name is required").max(200, "Name is too long"),
@@ -40,6 +51,79 @@ const ProfileSchema = z.object({
   language: z.enum(["en", "es"]).optional().default("en"),
 });
 
+const TRANSLATABLE_FIELD_SET = new Set<string>(PROFILE_TRANSLATION_FIELDS);
+
+type TranslationFieldErrorMap = Partial<Record<SupportedLanguage, string>>;
+
+type TranslatableValues = Partial<Record<ProfileTranslatableField, string | null>>;
+
+function isTranslatableField(value: unknown): value is ProfileTranslatableField {
+  return typeof value === "string" && TRANSLATABLE_FIELD_SET.has(value);
+}
+
+async function upsertProfileTranslationRow(
+  supabase: SupabaseServerClient,
+  profileId: string,
+  field: ProfileTranslatableField,
+  language: SupportedLanguage,
+  value: string,
+  translatedVia: "manual" | "ai"
+) {
+  return supabase.rpc("upsert_profile_translation", {
+    p_profile_id: profileId,
+    p_field: field,
+    p_language: language,
+    p_value: value,
+    p_translated_via: translatedVia,
+  });
+}
+
+async function deleteProfileTranslationRow(
+  supabase: SupabaseServerClient,
+  profileId: string,
+  field: ProfileTranslatableField,
+  language: SupportedLanguage
+) {
+  return supabase
+    .from("profile_translated_fields")
+    .delete()
+    .eq("profile_id", profileId)
+    .eq("field", field)
+    .eq("language", language);
+}
+
+async function syncDefaultProfileTranslations(
+  supabase: SupabaseServerClient,
+  profileId: string,
+  values: TranslatableValues,
+  language: SupportedLanguage
+): Promise<string | null> {
+  try {
+    for (const field of PROFILE_TRANSLATION_FIELDS) {
+      const raw = values[field];
+      const value = typeof raw === "string" ? raw.trim() : "";
+
+      if (!value) {
+        const { error } = await deleteProfileTranslationRow(supabase, profileId, field, language);
+        if (error) {
+          return error.message;
+        }
+        continue;
+      }
+
+      const { error } = await upsertProfileTranslationRow(supabase, profileId, field, language, value, "manual");
+      if (error) {
+        return error.message;
+      }
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return message;
+  }
+
+  return null;
+}
+
 export type SaveProfileState = {
   ok: boolean;
   message: string;
@@ -51,6 +135,30 @@ type FieldErrorMap = Partial<Record<keyof z.infer<typeof ProfileSchema>, string>
 export type AvatarUploadState = {
   ok: boolean;
   message: string;
+};
+
+export type SaveFieldTranslationsState = {
+  ok: boolean;
+  message: string;
+  translations?: Partial<Record<SupportedLanguage, string>>;
+  fieldErrors?: TranslationFieldErrorMap;
+  errorCode?: "validation" | "auth" | "unknown";
+};
+
+export type AutoTranslateProfileFieldInput = {
+  field: ProfileTranslatableField;
+  sourceLanguage: SupportedLanguage;
+  targetLanguage: SupportedLanguage;
+  sourceText: string;
+};
+
+export type AutoTranslateProfileFieldResult = {
+  ok: boolean;
+  message: string;
+  translations?: Partial<Record<SupportedLanguage, string>>;
+  sourceLanguage?: SupportedLanguage;
+  targetLanguage?: SupportedLanguage;
+  errorCode?: "not_configured" | "empty_source" | "auth" | "validation" | "unknown";
 };
 
 const MAX_AVATAR_UPLOAD_SIZE = 8 * 1024 * 1024; // 8 MB
@@ -242,6 +350,21 @@ export async function saveProfile(
     return { ok: false, message: error.message };
   }
 
+  const translationError = await syncDefaultProfileTranslations(
+    supabase,
+    user.id,
+    {
+      full_name,
+      country: country || null,
+      wedding_theme: wedding_theme || null,
+    },
+    language
+  );
+
+  if (translationError) {
+    return { ok: false, message: translationError };
+  }
+
   const { error: metadataError } = await supabase.auth.updateUser({ data: { full_name } });
   if (metadataError) {
     return { ok: false, message: metadataError.message };
@@ -252,4 +375,194 @@ export async function saveProfile(
   revalidatePath("/", "layout");
 
   return { ok: true, message: "Profile updated successfully." };
+}
+
+export async function saveProfileTranslations(
+  field: ProfileTranslatableField,
+  _prevState: SaveFieldTranslationsState,
+  formData: FormData
+): Promise<SaveFieldTranslationsState> {
+  if (!isTranslatableField(field)) {
+    return { ok: false, message: "Unsupported field.", errorCode: "validation" };
+  }
+
+  const supabase = await getSupabaseServer();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return { ok: false, message: "You must be logged in to update translations.", errorCode: "auth" };
+  }
+
+  const translations: Partial<Record<SupportedLanguage, string>> = {};
+  const fieldErrors: TranslationFieldErrorMap = {};
+
+  for (const language of supportedLanguages) {
+    const raw = formData.get(`value_${language}`);
+    if (typeof raw !== "string") {
+      continue;
+    }
+
+    const trimmed = raw.trim();
+    translations[language] = trimmed;
+
+    if (trimmed.length > MAX_TRANSLATION_LENGTH) {
+      fieldErrors[language] = `Translation must be ${MAX_TRANSLATION_LENGTH} characters or fewer.`;
+    }
+  }
+
+  if (Object.keys(fieldErrors).length > 0) {
+    return {
+      ok: false,
+      message: "Please fix the highlighted translations.",
+      translations,
+      fieldErrors,
+      errorCode: "validation",
+    };
+  }
+
+  try {
+    for (const language of supportedLanguages) {
+      const value = translations[language];
+      if (typeof value === "string" && value.length > 0) {
+        const { error } = await upsertProfileTranslationRow(supabase, user.id, field, language, value, "manual");
+        if (error) {
+          throw error;
+        }
+      } else {
+        const { error } = await deleteProfileTranslationRow(supabase, user.id, field, language);
+        if (error) {
+          throw error;
+        }
+        translations[language] = "";
+      }
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return { ok: false, message, translations, errorCode: "unknown" };
+  }
+
+  revalidatePath("/account/profile");
+
+  return { ok: true, message: "Translations saved.", translations };
+}
+
+export async function autoTranslateProfileField(
+  input: AutoTranslateProfileFieldInput
+): Promise<AutoTranslateProfileFieldResult> {
+  const { field, sourceLanguage, targetLanguage, sourceText } = input;
+
+  if (!isTranslatableField(field)) {
+    return { ok: false, message: "Unsupported field.", errorCode: "validation" };
+  }
+
+  if (!isSupportedLanguage(sourceLanguage) || !isSupportedLanguage(targetLanguage)) {
+    return { ok: false, message: "Unsupported language.", errorCode: "validation" };
+  }
+
+  if (sourceLanguage === targetLanguage) {
+    return { ok: false, message: "Choose a different target language.", errorCode: "validation" };
+  }
+
+  const trimmedSource = sourceText.trim();
+  if (!trimmedSource) {
+    return {
+      ok: false,
+      message: "Enter text to translate first.",
+      errorCode: "empty_source",
+      sourceLanguage,
+      targetLanguage,
+    };
+  }
+
+  const supabase = await getSupabaseServer();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return { ok: false, message: "You must be logged in to translate this field.", errorCode: "auth" };
+  }
+
+  const sourceSave = await upsertProfileTranslationRow(supabase, user.id, field, sourceLanguage, trimmedSource, "manual");
+  if (sourceSave.error) {
+    return {
+      ok: false,
+      message: sourceSave.error.message,
+      errorCode: "unknown",
+      translations: { [sourceLanguage]: trimmedSource },
+      sourceLanguage,
+      targetLanguage,
+    };
+  }
+
+  let translatedText: string;
+
+  try {
+    const sourceName = PROFILE_LANGUAGE_NAMES[sourceLanguage] ?? sourceLanguage;
+    const targetName = PROFILE_LANGUAGE_NAMES[targetLanguage] ?? targetLanguage;
+    translatedText = await translateTextWithAI({
+      text: trimmedSource,
+      sourceLanguageName: sourceName,
+      targetLanguageName: targetName,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return {
+      ok: false,
+      message,
+      translations: { [sourceLanguage]: trimmedSource },
+      sourceLanguage,
+      targetLanguage,
+      errorCode: message === "AI translation is not configured." ? "not_configured" : "unknown",
+    };
+  }
+
+  const cleanedTranslation = translatedText.trim();
+  if (!cleanedTranslation) {
+    return {
+      ok: false,
+      message: "Translation service did not return text.",
+      translations: { [sourceLanguage]: trimmedSource },
+      sourceLanguage,
+      targetLanguage,
+      errorCode: "unknown",
+    };
+  }
+
+  const targetSave = await upsertProfileTranslationRow(
+    supabase,
+    user.id,
+    field,
+    targetLanguage,
+    cleanedTranslation,
+    "ai"
+  );
+
+  if (targetSave.error) {
+    return {
+      ok: false,
+      message: targetSave.error.message,
+      translations: { [sourceLanguage]: trimmedSource },
+      sourceLanguage,
+      targetLanguage,
+      errorCode: "unknown",
+    };
+  }
+
+  revalidatePath("/account/profile");
+
+  return {
+    ok: true,
+    message: "Translation saved.",
+    translations: {
+      [sourceLanguage]: trimmedSource,
+      [targetLanguage]: cleanedTranslation,
+    },
+    sourceLanguage,
+    targetLanguage,
+  };
 }

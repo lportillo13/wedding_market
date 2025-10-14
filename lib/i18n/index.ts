@@ -8,6 +8,8 @@ export const dictionaries = {
 
 export type SupportedLanguage = keyof typeof dictionaries;
 
+export const supportedLanguages = Object.keys(dictionaries) as SupportedLanguage[];
+
 export type CommonDictionary = (typeof dictionaries)[SupportedLanguage];
 
 type Join<K, P> = K extends string
