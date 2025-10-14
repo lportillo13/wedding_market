@@ -307,6 +307,10 @@ export default function VendorProfileContent({
   const labels = dictionary.vendorProfile;
 
   const bio = language === "es" ? vendor.bio_es || vendor.bio_en : vendor.bio_en || vendor.bio_es;
+  const extraInfo =
+    language === "es"
+      ? vendor.extra_info_es || vendor.extra_info_en
+      : vendor.extra_info_en || vendor.extra_info_es;
 
   return (
     <main className="container py-4" style={{ maxWidth: 960 }}>
@@ -361,7 +365,14 @@ export default function VendorProfileContent({
         </div>
       )}
 
-      {bio ? <p className="lead">{bio}</p> : null}
+      {bio ? <p className="lead" style={{ whiteSpace: "pre-wrap" }}>{bio}</p> : null}
+
+      {extraInfo ? (
+        <section className="mt-4">
+          <h2 className="h5">{labels.extraInfoHeading}</h2>
+          <p className="mb-0" style={{ whiteSpace: "pre-wrap" }}>{extraInfo}</p>
+        </section>
+      ) : null}
 
       {vendor.gallery_images && vendor.gallery_images.length > 0 ? (
         <section className="my-4">

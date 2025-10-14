@@ -80,45 +80,6 @@ const common = {
         saving: "Guardando…",
       },
     },
-    translations: {
-      heading: "Respuestas en varios idiomas",
-      intro: "Añade traducciones para que los proveedores vean tus datos en su idioma preferido.",
-      defaultBadge: "Predeterminado",
-      fields: {
-        full_name: {
-          label: "Traducciones del nombre",
-          help: "Elige cómo se muestra tu nombre a los proveedores en cada idioma.",
-        },
-        country: {
-          label: "Traducciones del país",
-          help: "Personaliza el nombre del país que compartes con los proveedores.",
-        },
-        wedding_theme: {
-          label: "Traducciones del tema de la boda",
-          help: "Describe tu tema de boda preferido según el idioma.",
-        },
-      },
-      languageHeadings: {
-        en: "Respuesta en inglés",
-        es: "Respuesta en español",
-      },
-      save: {
-        label: "Guardar traducciones",
-        saving: "Guardando…",
-        success: "Traducciones guardadas.",
-      },
-      ai: {
-        translateFrom: {
-          en: "Traducir desde inglés",
-          es: "Traducir desde español",
-        },
-        translating: "Traduciendo…",
-        success: "Guardamos la traducción en {language}.",
-        error: "No pudimos traducir en este momento. Intenta de nuevo.",
-        notConfigured: "La traducción automática no está configurada.",
-        emptySource: "Escribe un texto para traducirlo.",
-      },
-    },
   },
   },
   shortlistButton: {
@@ -142,6 +103,7 @@ const common = {
   vendorProfile: {
     writeReview: "Escribir una reseña",
     galleryHeading: "Galería",
+    extraInfoHeading: "Detalles adicionales",
     moreComing: "¿Tienes preguntas? Ponte en contacto con el proveedor para más detalles.",
   },
   vendorDashboard: {
@@ -166,6 +128,8 @@ const common = {
       slugHelp: "Solo letras, números y guiones.",
       bioEnLabel: "Biografía (EN)",
       bioEsLabel: "Biografía (ES)",
+      extraInfoEnLabel: "Información adicional (EN)",
+      extraInfoEsLabel: "Información adicional (ES)",
       save: "Guardar perfil",
       saving: "Guardando…",
     },

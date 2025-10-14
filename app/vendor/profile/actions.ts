@@ -147,6 +147,8 @@ export async function saveProfile(
     const slugRaw = String(formData.get("slug") || "").trim();
     const bio_en = String(formData.get("bio_en") || "");
     const bio_es = String(formData.get("bio_es") || "");
+    const extra_info_en = String(formData.get("extra_info_en") || "");
+    const extra_info_es = String(formData.get("extra_info_es") || "");
 
     const fieldErrors: Record<string, string> = {};
     if (!business_name) fieldErrors.business_name = "Required";
@@ -184,6 +186,7 @@ export async function saveProfile(
         business_name,
         slug,
         bio: { en: bio_en, es: bio_es },
+        extra_info: { en: extra_info_en, es: extra_info_es },
         is_published: false,
       });
       if (insErr) {
@@ -197,6 +200,7 @@ export async function saveProfile(
           business_name,
           slug,
           bio: { en: bio_en, es: bio_es },
+          extra_info: { en: extra_info_en, es: extra_info_es },
         })
         .eq("owner_id", user.id);
       if (upErr) {

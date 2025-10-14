@@ -6,6 +6,8 @@ export type VendorListItem = {
   business_name: string;
   bio_en: string;
   bio_es?: string;
+  extra_info_en?: string | null;
+  extra_info_es?: string | null;
   categories: string[];
   rating_avg: number;
   rating_count: number;

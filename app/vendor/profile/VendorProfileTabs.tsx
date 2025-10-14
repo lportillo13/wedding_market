@@ -11,6 +11,8 @@ type ProfileInitial = {
   business_name: string;
   bio_en: string;
   bio_es: string;
+  extra_info_en: string;
+  extra_info_es: string;
 };
 
 type TabId = "details" | "images";
