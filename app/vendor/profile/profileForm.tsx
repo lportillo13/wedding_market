@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useState } from "react";
 import type { SaveState } from "./actions";
-import { saveProfile } from "./actions";
+import { saveProfile, translateProfileText } from "./actions";
 import { useTranslation } from "@/contexts/LanguageContext";
 
 type FormShape = {
@@ -19,6 +19,10 @@ const actionInitial: SaveState = { ok: false, message: "" };
 export default function ProfileForm({ initial }: { initial: FormShape }) {
   const [state, formAction, isPending] = useActionState(saveProfile, actionInitial);
   const [form, setForm] = useState<FormShape>(initial);
+  const [isBioTranslating, setIsBioTranslating] = useState(false);
+  const [isExtraTranslating, setIsExtraTranslating] = useState(false);
+  const [bioTranslationError, setBioTranslationError] = useState<string | null>(null);
+  const [extraTranslationError, setExtraTranslationError] = useState<string | null>(null);
   const t = useTranslation();
 
   // If the server sends new props (after save/revalidate), sync them
@@ -35,6 +39,80 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
   function onChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+  }
+
+  useEffect(() => {
+    if (form.bio_en.trim()) {
+      setBioTranslationError(null);
+    }
+  }, [form.bio_en]);
+
+  useEffect(() => {
+    if (form.extra_info_en.trim()) {
+      setExtraTranslationError(null);
+    }
+  }, [form.extra_info_en]);
+
+  async function handleTranslateBio() {
+    if (!form.bio_en.trim()) {
+      setBioTranslationError(t("vendorDashboard.profileForm.translationSourceMissing"));
+      return;
+    }
+
+    setIsBioTranslating(true);
+    setBioTranslationError(null);
+    try {
+      const result = await translateProfileText({
+        sourceText: form.bio_en,
+        sourceLanguageName: "English",
+        targetLanguageName: "Spanish",
+      });
+
+      if (!result.ok || typeof result.translation !== "string") {
+        setBioTranslationError(
+          result.message ?? t("vendorDashboard.profileForm.translationFailed")
+        );
+        return;
+      }
+
+      setForm((prev) => ({ ...prev, bio_es: result.translation ?? "" }));
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setBioTranslationError(message || t("vendorDashboard.profileForm.translationFailed"));
+    } finally {
+      setIsBioTranslating(false);
+    }
+  }
+
+  async function handleTranslateExtraInfo() {
+    if (!form.extra_info_en.trim()) {
+      setExtraTranslationError(t("vendorDashboard.profileForm.translationSourceMissing"));
+      return;
+    }
+
+    setIsExtraTranslating(true);
+    setExtraTranslationError(null);
+    try {
+      const result = await translateProfileText({
+        sourceText: form.extra_info_en,
+        sourceLanguageName: "English",
+        targetLanguageName: "Spanish",
+      });
+
+      if (!result.ok || typeof result.translation !== "string") {
+        setExtraTranslationError(
+          result.message ?? t("vendorDashboard.profileForm.translationFailed")
+        );
+        return;
+      }
+
+      setForm((prev) => ({ ...prev, extra_info_es: result.translation ?? "" }));
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setExtraTranslationError(message || t("vendorDashboard.profileForm.translationFailed"));
+    } finally {
+      setIsExtraTranslating(false);
+    }
   }
 
   return (
@@ -87,9 +165,21 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
       </div>
 
       <div className="mb-3">
-        <label className="form-label" htmlFor="profile-bio-es">
-          {t("vendorDashboard.profileForm.bioEsLabel")}
-        </label>
+        <div className="d-flex align-items-start justify-content-between gap-2">
+          <label className="form-label" htmlFor="profile-bio-es">
+            {t("vendorDashboard.profileForm.bioEsLabel")}
+          </label>
+          <button
+            type="button"
+            className="btn btn-outline-secondary btn-sm"
+            onClick={handleTranslateBio}
+            disabled={isBioTranslating || !form.bio_en.trim()}
+          >
+            {isBioTranslating
+              ? t("vendorDashboard.profileForm.translating")
+              : t("vendorDashboard.profileForm.translateFromEnglish")}
+          </button>
+        </div>
         <textarea
           id="profile-bio-es"
           name="bio_es"
@@ -98,6 +188,9 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
           value={form.bio_es}
           onChange={onChange}
         />
+        {bioTranslationError ? (
+          <div className="form-text text-danger">{bioTranslationError}</div>
+        ) : null}
       </div>
 
       <div className="mb-3">
@@ -115,9 +208,21 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
       </div>
 
       <div className="mb-3">
-        <label className="form-label" htmlFor="profile-extra-es">
-          {t("vendorDashboard.profileForm.extraInfoEsLabel")}
-        </label>
+        <div className="d-flex align-items-start justify-content-between gap-2">
+          <label className="form-label" htmlFor="profile-extra-es">
+            {t("vendorDashboard.profileForm.extraInfoEsLabel")}
+          </label>
+          <button
+            type="button"
+            className="btn btn-outline-secondary btn-sm"
+            onClick={handleTranslateExtraInfo}
+            disabled={isExtraTranslating || !form.extra_info_en.trim()}
+          >
+            {isExtraTranslating
+              ? t("vendorDashboard.profileForm.translating")
+              : t("vendorDashboard.profileForm.translateFromEnglish")}
+          </button>
+        </div>
         <textarea
           id="profile-extra-es"
           name="extra_info_es"
@@ -126,6 +231,9 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
           value={form.extra_info_es}
           onChange={onChange}
         />
+        {extraTranslationError ? (
+          <div className="form-text text-danger">{extraTranslationError}</div>
+        ) : null}
       </div>
 
       {state.message && (

@@ -5,6 +5,7 @@ import { UploadApiOptions, type UploadApiResponse } from "cloudinary";
 import cloudinary, { isCloudinaryConfigured } from "@/lib/cloudinary";
 import type { VendorImage } from "@/types/vendor";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { translateTextWithAI } from "@/lib/ai/translate";
 
 // tiny helper to keep slugs URL-safe
 function slugify(input: string) {
@@ -36,6 +37,47 @@ type VendorRow = {
   thumbnail_image: VendorImage | null;
   gallery_images: VendorImage[] | null;
 };
+
+export type TranslateProfileTextInput = {
+  sourceText: string;
+  sourceLanguageName: string;
+  targetLanguageName: string;
+};
+
+export type TranslateProfileTextResult = {
+  ok: boolean;
+  translation?: string;
+  message?: string;
+};
+
+export async function translateProfileText(
+  input: TranslateProfileTextInput
+): Promise<TranslateProfileTextResult> {
+  try {
+    const sourceText = typeof input?.sourceText === "string" ? input.sourceText : "";
+    const trimmed = sourceText.trim();
+
+    if (!trimmed) {
+      return { ok: false, message: "No text provided for translation." };
+    }
+
+    const { error } = await requireAuthVendor();
+    if (error) {
+      return { ok: false, message: error };
+    }
+
+    const translation = await translateTextWithAI({
+      text: trimmed,
+      sourceLanguageName: input.sourceLanguageName,
+      targetLanguageName: input.targetLanguageName,
+    });
+
+    return { ok: true, translation };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    return { ok: false, message };
+  }
+}
 
 async function requireAuthVendor() {
   const supabase = await getSupabaseServer();
