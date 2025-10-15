@@ -50,10 +50,18 @@ export default async function AdminControlRoomPage() {
     await Promise.all([loadSiteSettings(), loadBlogPosts()]);
 
   return (
-    <div className="space-y-10">
-      <SiteSettingsPanel initialSettings={settings} errorMessage={settingsError ?? undefined} />
-      <BlogPostManager initialPosts={posts} errorMessage={postsError ?? undefined} />
-      <OperationsPanel />
+    <div className="space-y-16">
+      <section id="site-settings" className="scroll-mt-32">
+        <SiteSettingsPanel initialSettings={settings} errorMessage={settingsError ?? undefined} />
+      </section>
+
+      <section id="blog-posts" className="scroll-mt-32">
+        <BlogPostManager initialPosts={posts} errorMessage={postsError ?? undefined} />
+      </section>
+
+      <section id="operations" className="scroll-mt-32">
+        <OperationsPanel />
+      </section>
     </div>
   );
 }
