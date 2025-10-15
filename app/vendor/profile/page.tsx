@@ -93,7 +93,7 @@ export default async function ProfilePage() {
 
   const supabase = await createSupabaseServerClient();
 
-  let { data: vendor } = await supabase
+  const { data: vendorData, error: vendorError } = await supabase
     .from("vendors")
     .select(
       [
@@ -125,8 +125,21 @@ export default async function ProfilePage() {
     .eq("owner_id", user.id)
     .maybeSingle();
 
+  if (vendorError) {
+    throw new Error(vendorError.message);
+  }
+
+  if (typeof vendorData === "string") {
+    throw new Error(vendorData);
+  }
+
+  let vendor: VendorRow | null = vendorData;
+
   if (!vendor) {
-    const inserted = await supabase
+    const {
+      data: insertedData,
+      error: insertedError,
+    } = await supabase
       .from("vendors")
       .insert({
         owner_id: user.id,
@@ -165,18 +178,22 @@ export default async function ProfilePage() {
       )
       .single();
 
-    if (inserted.error) {
-      throw new Error(inserted.error.message);
+    if (insertedError) {
+      throw new Error(insertedError.message);
     }
 
-    vendor = inserted.data ?? null;
+    if (typeof insertedData === "string") {
+      throw new Error(insertedData);
+    }
+
+    vendor = insertedData ?? null;
   }
 
   if (!vendor) {
     throw new Error("Vendor profile not found.");
   }
 
-  const v = vendor as VendorRow;
+  const v: VendorRow = vendor;
   const bio = parseLocalizedPair(v.bio);
   const extraInfo = (v.extra_info ?? {}) as Record<string, unknown>;
   const extraPair = parseLocalizedPair(v.extra_info);
