@@ -691,7 +691,7 @@ function BlockFields({ block, onChange }: BlockFieldsProps) {
                 })
               }
               rows={4}
-              placeholder="\"Our vendors were incredible. Wedding Market matched us perfectly.\""
+              placeholder={'"Our vendors were incredible. Wedding Market matched us perfectly."'}
               className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white focus:border-emerald-400 focus:outline-none"
             />
           </label>
