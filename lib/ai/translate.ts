@@ -36,7 +36,7 @@ export async function translateTextWithAI(options: TranslateTextOptions): Promis
           role: "system",
           content: [
             {
-              type: "text",
+              type: "input_text",
               text: "You are a professional translator. Return only the translated text without additional commentary or quotation marks.",
             },
           ],
@@ -45,7 +45,7 @@ export async function translateTextWithAI(options: TranslateTextOptions): Promis
           role: "user",
           content: [
             {
-              type: "text",
+              type: "input_text",
               text: `Translate the following text from ${sourceLanguageName} to ${targetLanguageName}. Preserve the meaning, tone, and any numbers. Do not add extra explanations.\n\n${trimmed}`,
             },
           ],
