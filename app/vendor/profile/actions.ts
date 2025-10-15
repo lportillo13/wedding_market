@@ -17,6 +17,54 @@ function slugify(input: string) {
     .slice(0, 80);
 }
 
+function parseCurrencyToCents(value: string): number | null {
+  if (!value) return null;
+  const normalized = value.replace(/[^0-9,.-]/g, "").replace(/,/g, ".");
+  const amount = Number.parseFloat(normalized);
+  if (!Number.isFinite(amount)) {
+    return null;
+  }
+  return Math.round(amount * 100);
+}
+
+function parseInteger(value: string): number | null {
+  if (!value) return null;
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed)) {
+    return null;
+  }
+  return parsed;
+}
+
+function parseCsv(input: string): string[] {
+  if (!input) return [];
+  return input
+    .split(",")
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0);
+}
+
+function buildLocalizedField(value: string): Record<string, string> | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  return { en: trimmed, es: trimmed };
+}
+
+function buildLocalizedPairValue(enValue: string, esValue: string): Record<string, string> | null {
+  const result: Record<string, string> = {};
+  const enTrimmed = enValue.trim();
+  const esTrimmed = esValue.trim();
+  if (enTrimmed) {
+    result.en = enTrimmed;
+  }
+  if (esTrimmed) {
+    result.es = esTrimmed;
+  }
+  return Object.keys(result).length ? result : null;
+}
+
+const PRICING_KEYS = ["reception", "ceremony", "bar", "catering"] as const;
+
 export type SaveState = {
   ok: boolean;
   message: string;
@@ -29,6 +77,11 @@ export type ImageActionState = {
   message: string;
 };
 
+export type FormMessageState = {
+  ok: boolean;
+  message: string;
+};
+
 type VendorRow = {
   id: string;
   slug: string;
@@ -36,6 +89,10 @@ type VendorRow = {
   hero_image: VendorImage | null;
   thumbnail_image: VendorImage | null;
   gallery_images: VendorImage[] | null;
+  extra_info: Record<string, unknown> | null;
+  starting_price_currency: string | null;
+  pricing_typical_spend_currency: string | null;
+  pricing_peak_seasons: string[] | null;
 };
 
 export type TranslateProfileTextInput = {
@@ -100,7 +157,9 @@ async function requireAuthVendor() {
 
   const { data: vendor } = await supabase
     .from("vendors")
-    .select("id, slug, business_name, hero_image, thumbnail_image, gallery_images")
+    .select(
+      "id, slug, business_name, hero_image, thumbnail_image, gallery_images, extra_info, starting_price_currency, pricing_typical_spend_currency, pricing_peak_seasons"
+    )
     .eq("owner_id", user.id)
     .maybeSingle<VendorRow>();
 
@@ -204,9 +263,12 @@ export async function saveProfile(
     // Do we already have a vendor for this user?
     const { data: existing } = await supabase
       .from("vendors")
-      .select("id, slug")
+      .select("id, slug, extra_info")
       .eq("owner_id", user.id)
-      .maybeSingle();
+      .maybeSingle<{ id: string; slug: string | null; extra_info: Record<string, unknown> | null }>();
+
+    const existingExtra = (existing?.extra_info ?? {}) as Record<string, unknown>;
+    const nextExtra = { ...existingExtra, en: extra_info_en, es: extra_info_es } as Record<string, unknown>;
 
     // Ensure slug is unique (simple check)
     if (slug) {
@@ -228,7 +290,7 @@ export async function saveProfile(
         business_name,
         slug,
         bio: { en: bio_en, es: bio_es },
-        extra_info: { en: extra_info_en, es: extra_info_es },
+        extra_info: nextExtra,
         is_published: false,
       });
       if (insErr) {
@@ -242,7 +304,7 @@ export async function saveProfile(
           business_name,
           slug,
           bio: { en: bio_en, es: bio_es },
-          extra_info: { en: extra_info_en, es: extra_info_es },
+          extra_info: nextExtra,
         })
         .eq("owner_id", user.id);
       if (upErr) {
@@ -259,6 +321,394 @@ export async function saveProfile(
     const message = e instanceof Error ? e.message : String(e);
     return { ok: false, message };
   }
+}
+
+export async function saveContact(
+  _prevState: FormMessageState,
+  formData: FormData
+): Promise<FormMessageState> {
+  const { supabase, vendor, error } = await requireAuthVendor();
+  if (error || !vendor) {
+    return { ok: false, message: error ?? "Vendor profile not found." };
+  }
+
+  const phone = String(formData.get("phone") ?? "").trim();
+  const website = String(formData.get("website_url") ?? "").trim();
+  const mapUrl = String(formData.get("map_url") ?? "").trim();
+  const addressLabel = String(formData.get("address_label") ?? "").trim();
+  const startingPriceInput = String(formData.get("starting_price") ?? "").trim();
+  const startingCurrencyInput = String(formData.get("starting_price_currency") ?? "")
+    .trim()
+    .toUpperCase();
+  const eventTypesInput = String(formData.get("event_types") ?? "");
+  const yearsInBusinessInput = String(formData.get("years_in_business") ?? "");
+  const languagesInput = String(formData.get("languages") ?? "");
+  const teamSizeRange = String(formData.get("team_size_range") ?? "").trim();
+
+  const startingPriceCents = parseCurrencyToCents(startingPriceInput);
+  const yearsInBusiness = parseInteger(yearsInBusinessInput);
+  const eventTypes = parseCsv(eventTypesInput);
+  const languages = parseCsv(languagesInput);
+
+  const updatePayload: Record<string, unknown> = {
+    phone: phone || null,
+    website_url: website || null,
+    map_url: mapUrl || null,
+    address_label: addressLabel || null,
+    starting_price_cents: startingPriceCents,
+    event_types: eventTypes,
+    years_in_business: yearsInBusiness,
+    languages,
+    team_size_range: teamSizeRange || null,
+  };
+
+  if (startingCurrencyInput || startingPriceCents !== null) {
+    updatePayload.starting_price_currency =
+      startingCurrencyInput || vendor.starting_price_currency || "USD";
+  } else {
+    updatePayload.starting_price_currency = null;
+  }
+
+  const { error: updateError } = await supabase
+    .from("vendors")
+    .update(updatePayload)
+    .eq("id", vendor.id);
+
+  if (updateError) {
+    return { ok: false, message: `Save failed: ${updateError.message}` };
+  }
+
+  revalidatePath("/vendor/profile");
+  revalidatePath(`/vendors/${vendor.slug}`);
+  revalidatePath("/vendors");
+
+  return { ok: true, message: "Contact details saved." };
+}
+
+type PricingItemPayload = {
+  itemKey: string;
+  price?: string;
+  contactForPrice?: boolean;
+  notesEn?: string;
+  notesEs?: string;
+};
+
+export async function savePricing(
+  _prevState: FormMessageState,
+  formData: FormData
+): Promise<FormMessageState> {
+  const { supabase, vendor, error } = await requireAuthVendor();
+  if (error || !vendor) {
+    return { ok: false, message: error ?? "Vendor profile not found." };
+  }
+
+  const rawItems = String(formData.get("pricing_items") ?? "").trim();
+  let parsedItems: PricingItemPayload[] = [];
+  if (rawItems) {
+    try {
+      const value = JSON.parse(rawItems);
+      if (Array.isArray(value)) {
+        parsedItems = value as PricingItemPayload[];
+      }
+    } catch {
+      return { ok: false, message: "Invalid pricing data." };
+    }
+  }
+
+  const normalized = new Map<string, PricingItemPayload>();
+  for (const item of parsedItems) {
+    if (!item || typeof item !== "object") continue;
+    const key = String(item.itemKey ?? "").toLowerCase();
+    if (!(PRICING_KEYS as readonly string[]).includes(key)) continue;
+    normalized.set(key, {
+      itemKey: key,
+      price: typeof item.price === "string" ? item.price : String(item.price ?? ""),
+      contactForPrice: Boolean(item.contactForPrice),
+      notesEn: typeof item.notesEn === "string" ? item.notesEn : "",
+      notesEs: typeof item.notesEs === "string" ? item.notesEs : "",
+    });
+  }
+
+  const typicalSpendInput = String(formData.get("typical_spend") ?? "").trim();
+  const typicalCurrencyInput = String(formData.get("typical_currency") ?? "")
+    .trim()
+    .toUpperCase();
+  const peakSeasonsInput = String(formData.get("peak_seasons") ?? "");
+
+  const typicalSpendCents = parseCurrencyToCents(typicalSpendInput);
+  const peakSeasons = parseCsv(peakSeasonsInput);
+  const currencyFallback =
+    typicalCurrencyInput || vendor.pricing_typical_spend_currency || vendor.starting_price_currency || "USD";
+  const pricingCurrency = currencyFallback;
+
+  const upserts: {
+    vendor_id: string;
+    item_key: string;
+    price_cents: number | null;
+    currency: string;
+    contact_for_price: boolean;
+    notes: Record<string, string> | null;
+  }[] = [];
+  const deleteKeys: string[] = [];
+
+  for (const key of PRICING_KEYS) {
+    const entry = normalized.get(key) ?? null;
+    const priceCents = entry && !entry.contactForPrice ? parseCurrencyToCents(entry.price ?? "") : null;
+    const notes = entry ? buildLocalizedPairValue(entry.notesEn ?? "", entry.notesEs ?? "") : null;
+    const hasContent = Boolean(entry?.contactForPrice) || priceCents !== null || Boolean(notes);
+    if (hasContent && entry) {
+      upserts.push({
+        vendor_id: vendor.id,
+        item_key: key,
+        price_cents: priceCents,
+        currency: pricingCurrency,
+        contact_for_price: Boolean(entry.contactForPrice),
+        notes,
+      });
+    } else {
+      deleteKeys.push(key);
+    }
+  }
+
+  if (deleteKeys.length) {
+    const { error: deleteError } = await supabase
+      .from("vendor_pricing")
+      .delete()
+      .eq("vendor_id", vendor.id)
+      .in("item_key", deleteKeys);
+    if (deleteError) {
+      return { ok: false, message: `Save failed: ${deleteError.message}` };
+    }
+  }
+
+  if (upserts.length) {
+    const { error: upsertError } = await supabase
+      .from("vendor_pricing")
+      .upsert(upserts, { onConflict: "vendor_id,item_key" });
+    if (upsertError) {
+      return { ok: false, message: `Save failed: ${upsertError.message}` };
+    }
+  }
+
+  const vendorUpdate: Record<string, unknown> = {
+    pricing_typical_spend_cents: typicalSpendCents,
+    pricing_peak_seasons: peakSeasons,
+  };
+
+  if (typicalCurrencyInput || typicalSpendCents !== null || upserts.length > 0) {
+    vendorUpdate.pricing_typical_spend_currency = pricingCurrency;
+  } else {
+    vendorUpdate.pricing_typical_spend_currency = null;
+  }
+
+  const { error: vendorError } = await supabase
+    .from("vendors")
+    .update(vendorUpdate)
+    .eq("id", vendor.id);
+
+  if (vendorError) {
+    return { ok: false, message: `Save failed: ${vendorError.message}` };
+  }
+
+  revalidatePath("/vendor/profile");
+  revalidatePath(`/vendors/${vendor.slug}`);
+  revalidatePath("/vendors");
+
+  return { ok: true, message: "Pricing saved." };
+}
+
+export async function saveAmenities(
+  _prevState: FormMessageState,
+  formData: FormData
+): Promise<FormMessageState> {
+  const { supabase, vendor, error } = await requireAuthVendor();
+  if (error || !vendor) {
+    return { ok: false, message: error ?? "Vendor profile not found." };
+  }
+
+  const selectedKeys = formData
+    .getAll("amenities")
+    .map((value) => String(value ?? "").trim())
+    .filter((value) => value.length > 0);
+  const capacityMaxInput = String(formData.get("capacity_max") ?? "");
+  const eventTypesInput = String(formData.get("event_types") ?? "");
+
+  const capacityMax = parseInteger(capacityMaxInput);
+  const eventTypes = parseCsv(eventTypesInput);
+
+  const { error: deleteError } = await supabase
+    .from("vendor_amenities")
+    .delete()
+    .eq("vendor_id", vendor.id);
+  if (deleteError) {
+    return { ok: false, message: `Save failed: ${deleteError.message}` };
+  }
+
+  if (selectedKeys.length) {
+    const { error: insertError } = await supabase
+      .from("vendor_amenities")
+      .insert(selectedKeys.map((key) => ({ vendor_id: vendor.id, amenity_key: key })));
+    if (insertError) {
+      return { ok: false, message: `Save failed: ${insertError.message}` };
+    }
+  }
+
+  const { error: updateError } = await supabase
+    .from("vendors")
+    .update({
+      capacity_max: capacityMax,
+      event_types: eventTypes,
+    })
+    .eq("id", vendor.id);
+
+  if (updateError) {
+    return { ok: false, message: `Save failed: ${updateError.message}` };
+  }
+
+  revalidatePath("/vendor/profile");
+  revalidatePath(`/vendors/${vendor.slug}`);
+  revalidatePath("/vendors");
+
+  return { ok: true, message: "Amenities saved." };
+}
+
+type TeamPayload = {
+  name?: string;
+  title?: string;
+  bio?: string;
+  headshotUrl?: string;
+  respondsWithinHours?: string;
+};
+
+export async function saveTeam(
+  _prevState: FormMessageState,
+  formData: FormData
+): Promise<FormMessageState> {
+  const { supabase, vendor, error } = await requireAuthVendor();
+  if (error || !vendor) {
+    return { ok: false, message: error ?? "Vendor profile not found." };
+  }
+
+  const rawTeam = String(formData.get("team") ?? "");
+  let parsedTeam: TeamPayload[] = [];
+  if (rawTeam) {
+    try {
+      const value = JSON.parse(rawTeam);
+      if (Array.isArray(value)) {
+        parsedTeam = value as TeamPayload[];
+      }
+    } catch {
+      return { ok: false, message: "Invalid team data." };
+    }
+  }
+
+  const members = parsedTeam
+    .map((member) => ({
+      name: typeof member.name === "string" ? member.name.trim() : "",
+      title: typeof member.title === "string" ? member.title : "",
+      bio: typeof member.bio === "string" ? member.bio : "",
+      headshotUrl: typeof member.headshotUrl === "string" ? member.headshotUrl.trim() : "",
+      respondsWithinHours:
+        typeof member.respondsWithinHours === "string"
+          ? member.respondsWithinHours
+          : member.respondsWithinHours !== undefined && member.respondsWithinHours !== null
+          ? String(member.respondsWithinHours)
+          : "",
+    }))
+    .filter((member) => member.name.length > 0);
+
+  const { error: deleteError } = await supabase
+    .from("vendor_team")
+    .delete()
+    .eq("vendor_id", vendor.id);
+  if (deleteError) {
+    return { ok: false, message: `Save failed: ${deleteError.message}` };
+  }
+
+  if (members.length) {
+    const insertPayload = members.map((member, index) => ({
+      vendor_id: vendor.id,
+      name: member.name,
+      title: buildLocalizedField(member.title),
+      bio: buildLocalizedField(member.bio),
+      headshot_url: member.headshotUrl || null,
+      responds_within_hours: parseInteger(member.respondsWithinHours),
+      sort_order: index,
+    }));
+
+    const { error: insertError } = await supabase.from("vendor_team").insert(insertPayload);
+    if (insertError) {
+      return { ok: false, message: `Save failed: ${insertError.message}` };
+    }
+  }
+
+  revalidatePath("/vendor/profile");
+  revalidatePath(`/vendors/${vendor.slug}`);
+
+  return { ok: true, message: "Team saved." };
+}
+
+export async function saveAvailability(
+  _prevState: FormMessageState,
+  formData: FormData
+): Promise<FormMessageState> {
+  const { supabase, vendor, error } = await requireAuthVendor();
+  if (error || !vendor) {
+    return { ok: false, message: error ?? "Vendor profile not found." };
+  }
+
+  const availabilityEn = String(formData.get("availability_en") ?? "");
+  const availabilityEs = String(formData.get("availability_es") ?? "");
+
+  const extraInfo = (vendor.extra_info ?? {}) as Record<string, unknown>;
+  const nextExtra: Record<string, unknown> = { ...extraInfo };
+  const availabilityValue = buildLocalizedPairValue(availabilityEn, availabilityEs);
+
+  if (availabilityValue) {
+    nextExtra.availability_note = availabilityValue;
+  } else {
+    delete nextExtra.availability_note;
+  }
+
+  const { error: updateError } = await supabase
+    .from("vendors")
+    .update({ extra_info: nextExtra })
+    .eq("id", vendor.id);
+
+  if (updateError) {
+    return { ok: false, message: `Save failed: ${updateError.message}` };
+  }
+
+  revalidatePath("/vendor/profile");
+  revalidatePath(`/vendors/${vendor.slug}`);
+
+  return { ok: true, message: "Availability saved." };
+}
+
+export async function saveReviews(
+  _prevState: FormMessageState,
+  formData: FormData
+): Promise<FormMessageState> {
+  const { supabase, vendor, error } = await requireAuthVendor();
+  if (error || !vendor) {
+    return { ok: false, message: error ?? "Vendor profile not found." };
+  }
+
+  const summary = String(formData.get("review_summary") ?? "").trim();
+
+  const { error: updateError } = await supabase
+    .from("vendors")
+    .update({ review_ai_summary: summary || null })
+    .eq("id", vendor.id);
+
+  if (updateError) {
+    return { ok: false, message: `Save failed: ${updateError.message}` };
+  }
+
+  revalidatePath("/vendor/profile");
+  revalidatePath(`/vendors/${vendor.slug}`);
+
+  return { ok: true, message: "Reviews updated." };
 }
 
 function handleError(message: string): ImageActionState {
