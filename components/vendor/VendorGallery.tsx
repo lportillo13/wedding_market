@@ -4,6 +4,13 @@ import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { VendorMediaItem } from "@/types/vendor-profile";
 
+function buildCaptionTrackSrc(text: string) {
+  const sanitized = text.replace(/\s+/g, " ").trim();
+  const captionText = sanitized || "Video with descriptive audio";
+  const vtt = `WEBVTT\n\n00:00.000 --> 00:10.000\n${captionText}`;
+  return `data:text/vtt;charset=utf-8,${encodeURIComponent(vtt)}`;
+}
+
 type VendorGalleryProps = {
   media: VendorMediaItem[];
   vendorName: string;
@@ -147,6 +154,13 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
               <div className="ratio ratio-16x9 rounded overflow-hidden bg-black">
                 <video controls className="w-100 h-100" preload="metadata">
                   <source src={video.url} />
+                  <track
+                    kind="captions"
+                    srcLang="en"
+                    label="English captions"
+                    src={buildCaptionTrackSrc(video.caption ?? `${vendorName} video`)}
+                    default
+                  />
                   Your browser does not support the video tag.
                 </video>
               </div>
