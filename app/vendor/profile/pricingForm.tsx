@@ -2,6 +2,7 @@
 
 import { useActionState, useMemo, useState } from "react";
 import { useTranslation } from "@/contexts/LanguageContext";
+import type { TranslationKey } from "@/lib/i18n";
 import { savePricing, type FormMessageState } from "./actions";
 
 type PricingItemState = {
@@ -27,12 +28,12 @@ type PricingFormProps = {
 
 const initialState: FormMessageState = { ok: false, message: "" };
 
-const PRICING_LABELS: Record<string, string> = {
+const PRICING_LABELS = {
   reception: "vendorDashboard.profilePricing.reception",
   ceremony: "vendorDashboard.profilePricing.ceremony",
   bar: "vendorDashboard.profilePricing.bar",
   catering: "vendorDashboard.profilePricing.catering",
-};
+} as const satisfies Record<string, TranslationKey>;
 
 export default function PricingForm({ initial }: PricingFormProps) {
   const [state, formAction, isPending] = useActionState(savePricing, initialState);
@@ -42,18 +43,24 @@ export default function PricingForm({ initial }: PricingFormProps) {
   const [peakSeasons, setPeakSeasons] = useState(initial.peakSeasons);
   const t = useTranslation();
 
-  function handleItemChange(index: number, field: keyof PricingItemState, value: string | boolean) {
+  function handleItemChange<T extends keyof PricingItemState>(
+    index: number,
+    field: T,
+    value: PricingItemState[T]
+  ) {
     setItems((prev) => {
       const next = [...prev];
       const current = { ...next[index] };
-      if (field === "contactForPrice" && typeof value === "boolean") {
-        current.contactForPrice = value;
-        if (value) {
+      if (field === "contactForPrice") {
+        const contactForPrice = value as PricingItemState["contactForPrice"];
+        current.contactForPrice = contactForPrice;
+        if (contactForPrice) {
           current.price = "";
         }
-      } else if (typeof value === "string") {
+      } else {
         const stringField = field as PricingItemStringField;
-        current[stringField] = value;
+        const stringValue = value as PricingItemState[PricingItemStringField];
+        current[stringField] = stringValue;
       }
       next[index] = current;
       return next;
@@ -129,10 +136,11 @@ export default function PricingForm({ initial }: PricingFormProps) {
           </thead>
           <tbody>
             {items.map((item, index) => {
-              const labelKey = PRICING_LABELS[item.itemKey] ?? item.itemKey;
+              const labelKey = PRICING_LABELS[item.itemKey as keyof typeof PRICING_LABELS];
+              const packageLabel = labelKey ? t(labelKey) : item.itemKey;
               return (
                 <tr key={item.itemKey}>
-                  <th scope="row">{t(labelKey)}</th>
+                  <th scope="row">{packageLabel}</th>
                   <td>
                     <div className="d-flex flex-column gap-2">
                       <input

@@ -110,6 +110,13 @@ export default function VendorProfileTabs({
   heroImage,
   thumbnailImage,
   galleryImages,
+  contactInitial,
+  pricingInitial,
+  amenitiesInitial,
+  amenityOptions,
+  teamInitial,
+  availabilityInitial,
+  reviewsInitial,
 }: VendorProfileTabsProps) {
   const t = useTranslation();
   const [activeTab, setActiveTab] = useState<TabId>("details");
