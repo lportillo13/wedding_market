@@ -76,8 +76,8 @@ function sortMedia(items: VendorMediaItem[]): VendorMediaItem[] {
     const sortA = a.sort ?? 0;
     const sortB = b.sort ?? 0;
     if (sortA !== sortB) return sortA - sortB;
-    const idA = typeof a.id === "number" ? a.id : a.id?.toString();
-    const idB = typeof b.id === "number" ? b.id : b.id?.toString();
+    const idA = String(a.id);
+    const idB = String(b.id);
     return idA.localeCompare(idB);
   });
 }

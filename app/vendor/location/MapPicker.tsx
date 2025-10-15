@@ -3,9 +3,23 @@
 import { useEffect, useRef } from "react";
 import { useTranslation } from "@/contexts/LanguageContext";
 
+type GoogleMapsRuntime = {
+  Map: typeof google.maps.Map;
+  Marker: typeof google.maps.Marker;
+  Circle: typeof google.maps.Circle;
+  places: {
+    Autocomplete: typeof google.maps.places.Autocomplete;
+  };
+  event: typeof google.maps.event;
+};
+
+type GoogleNamespace = {
+  maps: GoogleMapsRuntime;
+};
+
 declare global {
   interface Window {
-    google: typeof google;
+    google: GoogleNamespace;
   }
 }
 
@@ -23,8 +37,9 @@ type Props = {
 };
 
 function parseComponents(place: google.maps.places.PlaceResult) {
-  const comps = place.address_components ?? [];
-  const pick = (t: string) => comps.find((c) => c.types?.includes(t))?.long_name ?? "";
+  const comps: readonly google.maps.GeocoderAddressComponent[] = place.address_components ?? [];
+  const pick = (t: string) =>
+    comps.find((component) => component.types?.includes(t))?.long_name ?? "";
   const city = pick("locality") || pick("postal_town") || pick("administrative_area_level_2");
   const state = pick("administrative_area_level_1");
   const country = pick("country");

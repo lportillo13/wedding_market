@@ -1,4 +1,10 @@
-type GoogleWindow = typeof window & { google?: typeof google };
+type GoogleWindow = typeof window & {
+  google?: {
+    maps?: {
+      places?: unknown;
+    };
+  };
+};
 
 let promise: Promise<void> | null = null;
 
