@@ -6,7 +6,7 @@ async function loadBlogPosts() {
   const { data, error } = await supabase
     .from("blog_posts")
     .select(
-      "id, title, slug, status, excerpt, hero_image_url, published_at, updated_at"
+      "id, title, slug, status, excerpt, hero_image_url, body, published_at, updated_at"
     )
     .order("updated_at", { ascending: false })
     .limit(50);
