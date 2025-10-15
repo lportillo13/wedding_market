@@ -12,6 +12,8 @@ type PricingItemState = {
   notesEs: string;
 };
 
+type PricingItemStringField = Exclude<keyof PricingItemState, "contactForPrice">;
+
 type PricingFormInitial = {
   items: PricingItemState[];
   typicalSpend: string;
@@ -50,7 +52,8 @@ export default function PricingForm({ initial }: PricingFormProps) {
           current.price = "";
         }
       } else if (typeof value === "string") {
-        current[field] = value;
+        const stringField = field as PricingItemStringField;
+        current[stringField] = value;
       }
       next[index] = current;
       return next;
