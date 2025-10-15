@@ -7,6 +7,7 @@ const common = {
   nav: {
     brand: "Mercado de Bodas",
     vendors: "Proveedores",
+    blog: "Blog",
     myRequests: "Mis solicitudes",
     requestQuotes: "Solicitar cotizaciones",
     shortlist: "Favoritos",

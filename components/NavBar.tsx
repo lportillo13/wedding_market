@@ -76,6 +76,7 @@ export default function NavBar({ authMenu }: { authMenu?: ReactNode }) {
         <div className={`collapse navbar-collapse${navExpanded ? " show" : ""}`} id="wmNav">
           <ul className="navbar-nav me-auto">
             <li className="nav-item"><Link href="/vendors" className="nav-link">{t("nav.vendors")}</Link></li>
+            <li className="nav-item"><Link href="/blog" className="nav-link">{t("nav.blog")}</Link></li>
             <li className="nav-item"><Link href="/account/rfqs" className="nav-link">{t("nav.myRequests")}</Link></li>
           </ul>
 

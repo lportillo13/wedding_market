@@ -7,6 +7,7 @@ const common = {
   nav: {
     brand: "Wedding Market",
     vendors: "Vendors",
+    blog: "Blog",
     myRequests: "My requests",
     requestQuotes: "Request quotes",
     shortlist: "Shortlist",
