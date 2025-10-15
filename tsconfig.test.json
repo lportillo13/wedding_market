@@ -1,0 +1,25 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "dist-tests",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowJs": false,
+    "target": "ES2019",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "types": ["react", "node"]
+  },
+  "include": [
+    "__tests__/**/*.test.tsx",
+    "components/vendor/**/*.tsx",
+    "types/**/*.ts"
+  ],
+  "exclude": ["node_modules", "dist-tests"]
+}
