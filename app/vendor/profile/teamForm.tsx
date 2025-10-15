@@ -101,7 +101,10 @@ export default function TeamForm({ initial }: TeamFormProps) {
               <div className="card-body">
                 <div className="d-flex justify-content-between align-items-start mb-3">
                   <h4 className="h6 mb-0">
-                    {t("vendorDashboard.profileTeam.memberTitle", { index: index + 1 })}
+                    {t("vendorDashboard.profileTeam.memberTitle").replace(
+                      "{index}",
+                      String(index + 1)
+                    )}
                   </h4>
                   <div className="btn-group" role="group" aria-label="Reorder team member">
                     <button
