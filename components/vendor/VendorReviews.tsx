@@ -13,11 +13,10 @@ const PAGE_SIZE = 5;
 function matchesSearch(review: VendorReviewItem, term: string): boolean {
   if (!term) return true;
   const normalized = term.toLowerCase();
-  return (
-    review.title?.toLowerCase().includes(normalized) ||
-    review.body?.toLowerCase().includes(normalized) ||
-    review.authorName?.toLowerCase().includes(normalized)
-  );
+  const titleMatch = review.title?.toLowerCase().includes(normalized) ?? false;
+  const bodyMatch = review.body?.toLowerCase().includes(normalized) ?? false;
+  const authorMatch = review.authorName?.toLowerCase().includes(normalized) ?? false;
+  return titleMatch || bodyMatch || authorMatch;
 }
 
 function sortReviews(items: VendorReviewItem[], sortOrder: string): VendorReviewItem[] {
