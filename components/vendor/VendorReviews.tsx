@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import clsx from "clsx";
 import { useMemo, useState, type ChangeEvent } from "react";
 import type { VendorProfileDTO, VendorReviewItem } from "@/types/vendor-profile";
@@ -247,11 +248,12 @@ type ThumbnailProps = {
 function ImageThumbnail({ url, alt }: ThumbnailProps) {
   return (
     <figure className="ratio ratio-1x1" style={{ width: "100px" }}>
-      <img
+      <Image
         src={url}
         alt={alt ?? "Review photo"}
+        fill
+        sizes="100px"
         className="img-thumbnail w-100 h-100 object-fit-cover"
-        loading="lazy"
       />
     </figure>
   );
