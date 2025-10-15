@@ -1,5 +1,113 @@
 {
   "public": {
+    "blog_posts": {
+      "kind": "r",
+      "comment": null,
+      "columns": [
+        {
+          "name": "id",
+          "position": 1,
+          "type": "uuid",
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "comment": null
+        },
+        {
+          "name": "title",
+          "position": 2,
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "slug",
+          "position": 3,
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "status",
+          "position": 4,
+          "type": "text",
+          "nullable": false,
+          "default": "'draft'::text",
+          "comment": null
+        },
+        {
+          "name": "excerpt",
+          "position": 5,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "hero_image_url",
+          "position": 6,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "body",
+          "position": 7,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "published_at",
+          "position": 8,
+          "type": "timestamp with time zone",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "created_at",
+          "position": 9,
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": null
+        },
+        {
+          "name": "updated_at",
+          "position": 10,
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "name": "blog_posts_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "blog_posts_status_check",
+          "type": "c",
+          "definition": "CHECK ((status = ANY (ARRAY['draft'::text, 'published'::text])))"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "blog_posts_pkey",
+          "definition": "CREATE UNIQUE INDEX blog_posts_pkey ON public.blog_posts USING btree (id)"
+        },
+        {
+          "name": "blog_posts_slug_idx",
+          "definition": "CREATE UNIQUE INDEX blog_posts_slug_idx ON public.blog_posts USING btree (slug)"
+        }
+      ]
+    },
     "categories": {
       "kind": "r",
       "comment": null,
@@ -66,6 +174,147 @@
         {
           "name": "categories_slug_key",
           "definition": "CREATE UNIQUE INDEX categories_slug_key ON public.categories USING btree (slug)"
+        }
+      ]
+    },
+    "languages": {
+      "kind": "r",
+      "comment": null,
+      "columns": [
+        {
+          "name": "code",
+          "position": 1,
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "name",
+          "position": 2,
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "is_default",
+          "position": 3,
+          "type": "boolean",
+          "nullable": false,
+          "default": "false",
+          "comment": null
+        },
+        {
+          "name": "created_at",
+          "position": 4,
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "name": "languages_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (code)"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "languages_pkey",
+          "definition": "CREATE UNIQUE INDEX languages_pkey ON public.languages USING btree (code)"
+        }
+      ]
+    },
+    "profile_translated_fields": {
+      "kind": "r",
+      "comment": null,
+      "columns": [
+        {
+          "name": "profile_id",
+          "position": 1,
+          "type": "uuid",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "field",
+          "position": 2,
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "language",
+          "position": 3,
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "value",
+          "position": 4,
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "translated_via",
+          "position": 5,
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "created_at",
+          "position": 6,
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": null
+        },
+        {
+          "name": "updated_at",
+          "position": 7,
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "name": "profile_translated_fields_field_check",
+          "type": "c",
+          "definition": "CHECK ((field ~ '^[a-z0-9_]+$'::text))"
+        },
+        {
+          "name": "profile_translated_fields_language_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (language) REFERENCES languages(code) ON DELETE CASCADE"
+        },
+        {
+          "name": "profile_translated_fields_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (profile_id, field, language)"
+        },
+        {
+          "name": "profile_translated_fields_profile_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "profile_translated_fields_pkey",
+          "definition": "CREATE UNIQUE INDEX profile_translated_fields_pkey ON public.profile_translated_fields USING btree (profile_id, field, language)"
         }
       ]
     },
@@ -169,9 +418,9 @@
           "definition": "FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE"
         },
         {
-          "name": "profiles_language_check",
-          "type": "c",
-          "definition": "CHECK ((language = ANY (ARRAY['en'::text, 'es'::text])))"
+          "name": "profiles_language_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (language) REFERENCES languages(code) ON UPDATE CASCADE"
         },
         {
           "name": "profiles_pkey",
@@ -814,6 +1063,53 @@
         }
       ]
     },
+    "site_settings": {
+      "kind": "r",
+      "comment": null,
+      "columns": [
+        {
+          "name": "key",
+          "position": 1,
+          "type": "text",
+          "nullable": false,
+          "default": null,
+          "comment": null
+        },
+        {
+          "name": "value",
+          "position": 2,
+          "type": "jsonb",
+          "nullable": false,
+          "default": "'{}'::jsonb",
+          "comment": null
+        },
+        {
+          "name": "updated_at",
+          "position": 3,
+          "type": "timestamp with time zone",
+          "nullable": false,
+          "default": "now()",
+          "comment": null
+        }
+      ],
+      "constraints": [
+        {
+          "name": "site_settings_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (key)"
+        }
+      ],
+      "indexes": [
+        {
+          "name": "site_settings_key_idx",
+          "definition": "CREATE UNIQUE INDEX site_settings_key_idx ON public.site_settings USING btree (key)"
+        },
+        {
+          "name": "site_settings_pkey",
+          "definition": "CREATE UNIQUE INDEX site_settings_pkey ON public.site_settings USING btree (key)"
+        }
+      ]
+    },
     "vendor_categories": {
       "kind": "r",
       "comment": null,
@@ -1379,40 +1675,8 @@
           "comment": null
         },
         {
-          "name": "extra_info",
-          "position": 6,
-          "type": "jsonb",
-          "nullable": true,
-          "default": "'{}'::jsonb",
-          "comment": null
-        },
-        {
-          "name": "hero_image",
-          "position": 7,
-          "type": "jsonb",
-          "nullable": true,
-          "default": "'{}'::jsonb",
-          "comment": null
-        },
-        {
-          "name": "thumbnail_image",
-          "position": 8,
-          "type": "jsonb",
-          "nullable": true,
-          "default": "'{}'::jsonb",
-          "comment": null
-        },
-        {
-          "name": "gallery_images",
-          "position": 9,
-          "type": "jsonb",
-          "nullable": true,
-          "default": "'[]'::jsonb",
-          "comment": null
-        },
-        {
           "name": "rating_avg",
-          "position": 10,
+          "position": 6,
           "type": "numeric(3,2)",
           "nullable": true,
           "default": "0",
@@ -1420,7 +1684,7 @@
         },
         {
           "name": "rating_count",
-          "position": 11,
+          "position": 7,
           "type": "integer",
           "nullable": true,
           "default": "0",
@@ -1428,7 +1692,7 @@
         },
         {
           "name": "is_published",
-          "position": 12,
+          "position": 8,
           "type": "boolean",
           "nullable": false,
           "default": "false",
@@ -1436,10 +1700,42 @@
         },
         {
           "name": "created_at",
-          "position": 13,
+          "position": 9,
           "type": "timestamp with time zone",
           "nullable": false,
           "default": "now()",
+          "comment": null
+        },
+        {
+          "name": "hero_image",
+          "position": 10,
+          "type": "jsonb",
+          "nullable": true,
+          "default": "'{}'::jsonb",
+          "comment": null
+        },
+        {
+          "name": "thumbnail_image",
+          "position": 11,
+          "type": "jsonb",
+          "nullable": true,
+          "default": "'{}'::jsonb",
+          "comment": null
+        },
+        {
+          "name": "gallery_images",
+          "position": 12,
+          "type": "jsonb",
+          "nullable": true,
+          "default": "'[]'::jsonb",
+          "comment": null
+        },
+        {
+          "name": "extra_info",
+          "position": 13,
+          "type": "jsonb",
+          "nullable": true,
+          "default": "'{}'::jsonb",
           "comment": null
         }
       ],
