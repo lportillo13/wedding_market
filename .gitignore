@@ -21,7 +21,9 @@ out/
 
 # Tooling & misc
 dist/
+dist-tests/
 coverage/
+tsconfig.tsbuildinfo
 .DS_Store
 Thumbs.db
 *.log
