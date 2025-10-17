@@ -317,3 +317,77 @@ export async function fetchVendorProfile(slug: string): Promise<VendorProfileDTO
 
   return profile;
 }
+
+type VendorPublicSearchMetadataRow = {
+  business_name: string | null;
+  slug: string | null;
+  bio_en: string | null;
+  bio_es: string | null;
+  extra_info_en: string | null;
+  extra_info_es: string | null;
+  thumbnail_image: {
+    url?: string | null;
+    width?: number | null;
+    height?: number | null;
+  } | null;
+};
+
+export type VendorShareMetadata = {
+  name: string;
+  description: string | null;
+  thumbnail:
+    | {
+        url: string;
+        width?: number;
+        height?: number;
+      }
+    | null;
+};
+
+export async function fetchVendorShareMetadata(slug: string): Promise<VendorShareMetadata | null> {
+  const supabase = await createSupabaseServerClient();
+
+  const { data, error } = await supabase
+    .from<VendorPublicSearchMetadataRow>("vendor_public_search")
+    .select(
+      [
+        "business_name",
+        "slug",
+        "bio_en",
+        "bio_es",
+        "extra_info_en",
+        "extra_info_es",
+        "thumbnail_image",
+      ].join(","),
+    )
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!data) {
+    return null;
+  }
+
+  const descriptionCandidates = [data.bio_en, data.bio_es, data.extra_info_en, data.extra_info_es]
+    .map((value) => (typeof value === "string" ? value.trim() : ""))
+    .filter((value) => value.length > 0);
+
+  const thumbnailRaw = data.thumbnail_image;
+  const thumbnail =
+    thumbnailRaw && typeof thumbnailRaw === "object" && thumbnailRaw.url
+      ? {
+          url: String(thumbnailRaw.url),
+          width: typeof thumbnailRaw.width === "number" ? thumbnailRaw.width : undefined,
+          height: typeof thumbnailRaw.height === "number" ? thumbnailRaw.height : undefined,
+        }
+      : null;
+
+  return {
+    name: data.business_name ?? "Wedding Vendor",
+    description: descriptionCandidates[0] ?? null,
+    thumbnail,
+  };
+}

@@ -2,6 +2,7 @@
 // and the `public.reviews_public` view for review details. The contact form posts to
 // `/api/rfqs/create` which persists into `public.rfqs` and `public.rfq_invites`.
 
+import type { Metadata } from "next";
 import Breadcrumbs from "@/components/vendor/Breadcrumbs";
 import VendorAbout from "@/components/vendor/VendorAbout";
 import VendorAmenities from "@/components/vendor/VendorAmenities";
@@ -13,7 +14,7 @@ import VendorPricing from "@/components/vendor/VendorPricing";
 import VendorReviews from "@/components/vendor/VendorReviews";
 import VendorTabs from "@/components/vendor/VendorTabs";
 import VendorTeam from "@/components/vendor/VendorTeam";
-import { fetchVendorProfile } from "./data";
+import { fetchVendorProfile, fetchVendorShareMetadata } from "./data";
 
 const SECTIONS = [
   { id: "photos", label: "Photos" },
@@ -25,6 +26,49 @@ const SECTIONS = [
   { id: "reviews", label: "Reviews" },
   { id: "contact", label: "Contact" },
 ] as const;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const shareMetadata = await fetchVendorShareMetadata(slug);
+
+  const vendorName = shareMetadata?.name ?? "Wedding Vendor";
+  const title = `${vendorName} | Wedding Market`;
+  const description =
+    shareMetadata?.description ?? `Discover ${vendorName} on Wedding Market.`;
+
+  const openGraphImages = shareMetadata?.thumbnail
+    ? [
+        {
+          url: shareMetadata.thumbnail.url,
+          width: shareMetadata.thumbnail.width,
+          height: shareMetadata.thumbnail.height,
+          alt: `${vendorName} thumbnail`,
+        },
+      ]
+    : undefined;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      siteName: "Wedding Market",
+      images: openGraphImages,
+    },
+    twitter: {
+      card: openGraphImages ? "summary_large_image" : "summary",
+      title,
+      description,
+      images: openGraphImages?.map((image) => image.url),
+    },
+  };
+}
 
 export default async function VendorProfilePage({
   params,
