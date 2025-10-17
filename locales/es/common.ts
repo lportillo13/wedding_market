@@ -238,6 +238,8 @@ const common = {
     profileReviews: {
       summaryLabel: "Resumen de reseñas",
       summaryHelp: "Resume lo que más aprecian las parejas. Se mostrará sobre tus reseñas.",
+      googleLinkLabel: "Enlace del Perfil de Negocio de Google",
+      googleLinkHelp: "Pega el enlace para compartir o el ID de Place de tu Perfil de Negocio de Google.",
       saving: "Guardando…",
       save: "Guardar reseñas",
     },

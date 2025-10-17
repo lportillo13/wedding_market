@@ -6,6 +6,7 @@ import { saveReviews, type FormMessageState } from "./actions";
 
 type ReviewsInitial = {
   summary: string;
+  googleBusinessProfileUrl: string;
 };
 
 type ReviewsFormProps = {
@@ -17,6 +18,7 @@ const initialState: FormMessageState = { ok: false, message: "" };
 export default function ReviewsForm({ initial }: ReviewsFormProps) {
   const [state, formAction, isPending] = useActionState(saveReviews, initialState);
   const [summary, setSummary] = useState(initial.summary);
+  const [googleUrl, setGoogleUrl] = useState(initial.googleBusinessProfileUrl);
   const t = useTranslation();
 
   return (
@@ -34,6 +36,20 @@ export default function ReviewsForm({ initial }: ReviewsFormProps) {
           onChange={(event) => setSummary(event.target.value)}
         />
         <div className="form-text">{t("vendorDashboard.profileReviews.summaryHelp")}</div>
+      </div>
+
+      <div className="mb-3">
+        <label className="form-label" htmlFor="google-review-url">
+          {t("vendorDashboard.profileReviews.googleLinkLabel")}
+        </label>
+        <input
+          id="google-review-url"
+          name="google_business_profile_url"
+          className="form-control"
+          value={googleUrl}
+          onChange={(event) => setGoogleUrl(event.target.value)}
+        />
+        <div className="form-text">{t("vendorDashboard.profileReviews.googleLinkHelp")}</div>
       </div>
 
       {state.message ? (

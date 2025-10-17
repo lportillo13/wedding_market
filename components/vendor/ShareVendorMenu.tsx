@@ -214,7 +214,7 @@ export default function ShareVendorMenu({ vendorName, className }: ShareVendorMe
           <ul className="list-unstyled mb-0">
             {shareOptions.map((option) => (
               <li key={option.key}>
-                {option.isButton ? (
+                {"onSelect" in option ? (
                   <button
                     type="button"
                     className="dropdown-item w-100 text-start"
@@ -227,6 +227,7 @@ export default function ShareVendorMenu({ vendorName, className }: ShareVendorMe
                     type="button"
                     className="dropdown-item w-100 text-start"
                     onClick={() => option.href && handleOpenWindow(option.href)}
+                    disabled={!option.href}
                   >
                     {option.label}
                   </button>

@@ -238,6 +238,8 @@ const common = {
     profileReviews: {
       summaryLabel: "Review highlight",
       summaryHelp: "Summarize what couples love about working with you. This appears above your reviews.",
+      googleLinkLabel: "Google Business Profile link",
+      googleLinkHelp: "Paste the share link or Place ID for your Google Business Profile reviews.",
       saving: "Saving…",
       save: "Save reviews",
     },
