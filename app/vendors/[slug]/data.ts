@@ -348,7 +348,7 @@ export async function fetchVendorShareMetadata(slug: string): Promise<VendorShar
   const supabase = await createSupabaseServerClient();
 
   const { data, error } = await supabase
-    .from<VendorPublicSearchMetadataRow>("vendor_public_search")
+    .from("vendor_public_search")
     .select(
       [
         "business_name",
@@ -361,7 +361,7 @@ export async function fetchVendorShareMetadata(slug: string): Promise<VendorShar
       ].join(","),
     )
     .eq("slug", slug)
-    .maybeSingle();
+    .maybeSingle<VendorPublicSearchMetadataRow>();
 
   if (error) {
     throw new Error(error.message);
