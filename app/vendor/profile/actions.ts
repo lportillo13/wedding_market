@@ -695,10 +695,20 @@ export async function saveReviews(
   }
 
   const summary = String(formData.get("review_summary") ?? "").trim();
+  const googleBusinessUrl = String(formData.get("google_business_profile_url") ?? "").trim();
+
+  const currentExtra = (vendor.extra_info ?? {}) as Record<string, unknown>;
+  const nextExtra: Record<string, unknown> = { ...currentExtra };
+
+  if (googleBusinessUrl) {
+    nextExtra.google_business_profile_url = googleBusinessUrl;
+  } else {
+    delete nextExtra.google_business_profile_url;
+  }
 
   const { error: updateError } = await supabase
     .from("vendors")
-    .update({ review_ai_summary: summary || null })
+    .update({ review_ai_summary: summary || null, extra_info: nextExtra })
     .eq("id", vendor.id);
 
   if (updateError) {

@@ -77,6 +77,7 @@ type AvailabilityInitial = {
 
 type ReviewsInitial = {
   summary: string;
+  googleBusinessProfileUrl: string;
 };
 
 type TabId =

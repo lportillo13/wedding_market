@@ -54,6 +54,8 @@ export type VendorReviewSummary = {
   distribution: { rating: number; count: number }[];
 };
 
+export type VendorReviewSource = "internal" | "google";
+
 export type VendorBreadcrumb = {
   slug: string | null;
   label: string;
@@ -106,6 +108,8 @@ export type VendorProfileDTO = {
     note: string | null;
   };
   reviews: {
+    source: VendorReviewSource;
+    externalUrl: string | null;
     summary: VendorReviewSummary;
     items: VendorReviewItem[];
   };

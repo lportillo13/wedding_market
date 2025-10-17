@@ -38,6 +38,8 @@ export default function VendorReviews({ reviews }: VendorReviewsProps) {
   const [ratingFilter, setRatingFilter] = useState<number | "all">("all");
   const [sortOrder, setSortOrder] = useState("newest");
   const [page, setPage] = useState(1);
+  const isGoogleSource = reviews.source === "google";
+  const externalLink = reviews.externalUrl;
 
   const filteredReviews = useMemo(() => {
     const filtered = reviews.items.filter((review) => {
@@ -85,6 +87,27 @@ export default function VendorReviews({ reviews }: VendorReviewsProps) {
           {reviews.summary.aiSummary ? (
             <div className="alert alert-secondary" role="status">
               {reviews.summary.aiSummary}
+            </div>
+          ) : null}
+
+          {isGoogleSource ? (
+            <div
+              className="alert alert-light border d-flex flex-column flex-md-row align-items-md-center gap-3"
+              role="note"
+            >
+              <span className="flex-grow-1">
+                Reviews are synced from this vendor&apos;s Google Business Profile.
+              </span>
+              {externalLink ? (
+                <a
+                  href={externalLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn-sm btn-outline-primary align-self-start align-self-md-center"
+                >
+                  View on Google
+                </a>
+              ) : null}
             </div>
           ) : null}
 

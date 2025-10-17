@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
+import { fetchGoogleBusinessReviews } from "@/lib/google/places";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type {
   VendorAmenity,
@@ -7,6 +8,7 @@ import type {
   VendorPricingItem,
   VendorProfileDTO,
   VendorReviewItem,
+  VendorReviewSource,
 } from "@/types/vendor-profile";
 
 const SUPPORTED_LANGUAGES = ["en", "es", "de", "fr"] as const;
@@ -100,7 +102,8 @@ function buildDistribution(reviews: VendorReviewItem[]): { rating: number; count
     buckets.set(i, 0);
   }
   for (const review of reviews) {
-    const bucket = Math.round(review.rating);
+    const rounded = Math.round(review.rating);
+    const bucket = Math.min(5, Math.max(1, Number.isFinite(rounded) ? rounded : 0));
     buckets.set(bucket, (buckets.get(bucket) ?? 0) + 1);
   }
   return Array.from(buckets.entries())
@@ -165,6 +168,13 @@ export async function fetchVendorProfile(slug: string): Promise<VendorProfileDTO
       typeof member.responds_within_hours === "number" ? member.responds_within_hours : null,
   }));
 
+  const extraInfo = (row.extra_info ?? {}) as Record<string, unknown>;
+  const googleBusinessProfileUrlRaw =
+    typeof extraInfo["google_business_profile_url"] === "string"
+      ? extraInfo["google_business_profile_url"].trim()
+      : "";
+  const googleBusinessProfileUrl = googleBusinessProfileUrlRaw ? googleBusinessProfileUrlRaw : null;
+
   const location = {
     city: row.city ?? null,
     region: row.region ?? null,
@@ -185,7 +195,7 @@ export async function fetchVendorProfile(slug: string): Promise<VendorProfileDTO
     throw new Error(reviewError.message);
   }
 
-  const reviews: VendorReviewItem[] = (reviewRows ?? []).map((review) => ({
+  const internalReviews: VendorReviewItem[] = (reviewRows ?? []).map((review) => ({
     id: review.id,
     rating: Number(review.rating ?? 0),
     title: review.title ?? null,
@@ -196,14 +206,42 @@ export async function fetchVendorProfile(slug: string): Promise<VendorProfileDTO
     photos: [],
   }));
 
-  const distribution = buildDistribution(reviews);
+  const reviewAiSummary =
+    typeof row.review_ai_summary === "string" ? row.review_ai_summary : null;
+  let ratingAvg =
+    row.rating_avg !== null && row.rating_avg !== undefined
+      ? Number(row.rating_avg)
+      : null;
+  let ratingCount = row.rating_count ?? internalReviews.length;
+  let reviewItems = internalReviews;
+  let reviewSource: VendorReviewSource = "internal";
+  let externalReviewUrl: string | null = null;
+
+  if (googleBusinessProfileUrl) {
+    const googleReviews = await fetchGoogleBusinessReviews(googleBusinessProfileUrl);
+    const hasGoogleContent =
+      googleReviews &&
+      (googleReviews.items.length > 0 ||
+        googleReviews.ratingCount > 0 ||
+        googleReviews.ratingAvg !== null);
+
+    if (hasGoogleContent && googleReviews) {
+      reviewSource = "google";
+      reviewItems = googleReviews.items;
+      externalReviewUrl = googleReviews.url ?? googleBusinessProfileUrl;
+      if (googleReviews.ratingAvg !== null) {
+        ratingAvg = googleReviews.ratingAvg;
+      }
+      ratingCount = googleReviews.ratingCount;
+    }
+  }
+
+  const distribution = buildDistribution(reviewItems);
 
   const categories = (row.categories ?? []).map((category: Record<string, unknown>) => ({
     slug: typeof category.slug === "string" ? category.slug : null,
     label: resolveLocalizedField(category.label, locale) ?? String(category.slug ?? ""),
   }));
-
-  const extraInfo = (row.extra_info ?? {}) as Record<string, unknown>;
 
   const descriptionSource =
     typeof row.extra_info === "object" && row.extra_info !== null
@@ -232,11 +270,14 @@ export async function fetchVendorProfile(slug: string): Promise<VendorProfileDTO
     peakSeasons: Array.isArray(row.pricing_peak_seasons)
       ? (row.pricing_peak_seasons as string[])
       : [],
-    ratingAvg: row.rating_avg !== null && row.rating_avg !== undefined ? Number(row.rating_avg) : null,
-    ratingCount: row.rating_count ?? reviews.length,
-    reviewAiSummary: typeof row.review_ai_summary === "string" ? row.review_ai_summary : null,
+    ratingAvg,
+    ratingCount,
+    reviewAiSummary,
     location,
   };
+
+  const resolvedExternalReviewUrl =
+    reviewSource === "google" ? externalReviewUrl ?? googleBusinessProfileUrl : null;
 
   const availabilityNote = (extraInfo?.["availability_note"] ?? null) as unknown;
 
@@ -256,13 +297,15 @@ export async function fetchVendorProfile(slug: string): Promise<VendorProfileDTO
       note: resolveLocalizedField(availabilityNote, locale),
     },
     reviews: {
+      source: reviewSource,
+      externalUrl: resolvedExternalReviewUrl,
       summary: {
         ratingAvg: vendor.ratingAvg,
         ratingCount: vendor.ratingCount,
         aiSummary: vendor.reviewAiSummary,
         distribution,
       },
-      items: reviews,
+      items: reviewItems,
     },
     breadcrumbs: {
       categories,

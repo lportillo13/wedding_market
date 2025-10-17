@@ -287,8 +287,14 @@ export default async function ProfilePage() {
 
   const availabilityInitial = parseLocalizedPair(extraInfo["availability_note"]);
 
+  const googleBusinessProfileUrl =
+    typeof extraInfo["google_business_profile_url"] === "string"
+      ? String(extraInfo["google_business_profile_url"]).trim()
+      : "";
+
   const reviewsInitial = {
     summary: v.review_ai_summary ?? "",
+    googleBusinessProfileUrl,
   };
 
   const heroImage = v.hero_image?.url ? v.hero_image : null;

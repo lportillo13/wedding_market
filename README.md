@@ -16,6 +16,8 @@ Required vars:
 - \`NEXT_PUBLIC_SUPABASE_ANON_KEY\`: Supabase anon key (public)
 - \`SUPABASE_SERVICE_ROLE_KEY\` or \`SUPABASE_SERVICE_KEY\`: Supabase service key (server-only)
 - \`NEXT_PUBLIC_GOOGLE_MAPS_API_KEY\`: Google Maps JavaScript API key
+- \`GOOGLE_PLACES_API_KEY\` (optional): Server-side Google Places API key used to sync Google Business reviews. Falls back to
+  the public Maps key when omitted.
 
 > **Never commit** \`.env.local\`. Rotate keys if a secret is ever exposed.
 
