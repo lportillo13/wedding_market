@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Stars } from "@/components/Stars";
+import ShareVendorMenu from "./ShareVendorMenu";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
 
 type VendorHeaderProps = {
@@ -89,6 +90,7 @@ export default function VendorHeader({ vendor }: VendorHeaderProps) {
           <Link href="#contact" className="btn btn-outline-secondary btn-lg w-100">
             Message Vendor
           </Link>
+          <ShareVendorMenu vendorName={vendor.name} className="w-100" />
         </div>
       </div>
     </header>
