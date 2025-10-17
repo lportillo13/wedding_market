@@ -81,12 +81,22 @@ async function findPlaceIdByText(query: string, apiKey: string): Promise<string 
       method: "GET",
       next: { revalidate: 3600 },
     });
-    if (!response.ok) return null;
+    if (!response.ok) {
+      console.warn("[google-places] findPlaceIdByText request failed", response.status, response.statusText);
+      return null;
+    }
     const data = (await response.json()) as FindPlaceResponse;
-    if (data.status !== "OK") return null;
+    if (data.status !== "OK") {
+      console.warn("[google-places] findPlaceIdByText returned non-OK status", data.status);
+      return null;
+    }
     const candidate = data.candidates?.find((item) => typeof item.place_id === "string" && item.place_id.length > 0);
+    if (!candidate?.place_id) {
+      console.warn("[google-places] findPlaceIdByText did not return any place_id candidates");
+    }
     return candidate?.place_id ?? null;
-  } catch {
+  } catch (error) {
+    console.error("[google-places] findPlaceIdByText threw", error);
     return null;
   }
 }
@@ -118,9 +128,15 @@ async function fetchPlaceDetails(placeId: string, apiKey: string): Promise<Googl
       method: "GET",
       next: { revalidate: 1800 },
     });
-    if (!response.ok) return null;
+    if (!response.ok) {
+      console.warn("[google-places] fetchPlaceDetails request failed", response.status, response.statusText);
+      return null;
+    }
     const data = (await response.json()) as PlaceDetailsResult;
-    if (data.status !== "OK" || !data.result) return null;
+    if (data.status !== "OK" || !data.result) {
+      console.warn("[google-places] fetchPlaceDetails returned no usable result", data.status);
+      return null;
+    }
     const { reviews, rating, user_ratings_total, url: mapsUrl } = data.result;
     const items = Array.isArray(reviews)
       ? reviews
@@ -135,19 +151,35 @@ async function fetchPlaceDetails(placeId: string, apiKey: string): Promise<Googl
       ratingCount: typeof user_ratings_total === "number" ? user_ratings_total : items.length,
       items,
     };
-  } catch {
+  } catch (error) {
+    console.error("[google-places] fetchPlaceDetails threw", error);
     return null;
   }
 }
 
 export async function fetchGoogleBusinessReviews(link: string): Promise<GoogleReviewFetchResult | null> {
-  if (!link) return null;
+  if (!link) {
+    console.warn("[google-places] fetchGoogleBusinessReviews called without a link");
+    return null;
+  }
   const apiKey = getPlacesApiKey();
-  if (!apiKey) return null;
+  if (!apiKey) {
+    console.warn("[google-places] No Google Places API key configured");
+    return null;
+  }
 
   const directPlaceId = extractPlaceIdFromLink(link);
+  if (directPlaceId) {
+    console.debug("[google-places] extracted place_id from link", directPlaceId);
+  } else {
+    console.debug("[google-places] no place_id in link, attempting findPlaceIdByText");
+  }
   const placeId = directPlaceId ?? (await findPlaceIdByText(link, apiKey));
-  if (!placeId) return null;
+  if (!placeId) {
+    console.warn("[google-places] Unable to resolve a place_id for link", link);
+    return null;
+  }
+  console.debug("[google-places] resolved place_id", placeId);
 
   return fetchPlaceDetails(placeId, apiKey);
 }
