@@ -17,8 +17,10 @@
     "types": ["react", "node"]
   },
   "include": [
+    "__tests__/**/*.test.ts",
     "__tests__/**/*.test.tsx",
     "components/vendor/**/*.tsx",
+    "lib/**/*.ts",
     "types/**/*.ts"
   ],
   "exclude": ["node_modules", "dist-tests"]
