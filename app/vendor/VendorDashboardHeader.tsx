@@ -5,8 +5,7 @@ import { useTranslation } from "@/contexts/LanguageContext";
 
 const tabs = [
   { href: "/vendor", key: "overview" as const },
-  { href: "/vendor/rfqs", key: "rfqs" as const },
-  { href: "/vendor/quotes", key: "quotes" as const },
+  { href: "/vendor/inbox", key: "inbox" as const },
   { href: "/vendor/profile", key: "profile" as const },
   { href: "/vendor/location", key: "location" as const },
   { href: "/vendor/categories", key: "categories" as const },
@@ -18,7 +17,7 @@ export default function VendorDashboardHeader() {
 
   return (
     <>
-      <h1 className="mb-3">{t("vendorDashboard.heading")}</h1>
+      <p className="wm-shell-title mb-3">{t("vendorDashboard.heading")}</p>
       <ul className="nav nav-tabs mb-4">
         {tabs.map((tab) => (
           <li className="nav-item" key={tab.key}>

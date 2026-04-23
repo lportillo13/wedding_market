@@ -31,9 +31,9 @@
 .vendor-gallery-swiper__figure {
   position: relative;
   width: 100%;
-  border-radius: 0.75rem;
+  border-radius: 1.25rem;
   overflow: hidden;
-  background: #f1f3f5;
+  background: var(--wm-bg-card, #111111);
 }
 
 .vendor-gallery-swiper__image {
@@ -53,7 +53,7 @@
 
 .vendor-gallery-swiper__control {
   pointer-events: auto;
-  border-radius: 999px;
+  border-radius: 9999px;
   opacity: 0.92;
 }
 
@@ -67,7 +67,7 @@
 .vendor-gallery-swiper__bullet {
   width: 0.75rem;
   height: 0.75rem;
-  border-radius: 999px;
+  border-radius: 9999px;
   border: none;
   background: rgba(0, 0, 0, 0.18);
   padding: 0;

@@ -36,6 +36,12 @@ export type VendorTeamMember = {
   respondsWithinHours: number | null;
 };
 
+export type VendorAvailabilityDate = {
+  id: string;
+  date: string;
+  status: "available" | "busy";
+};
+
 export type VendorReviewItem = {
   id: string;
   rating: number;
@@ -57,6 +63,7 @@ export type VendorReviewSummary = {
 export type VendorReviewSource = "internal" | "google";
 
 export type VendorBreadcrumb = {
+  key: string | null;
   slug: string | null;
   label: string;
 };
@@ -105,7 +112,7 @@ export type VendorProfileDTO = {
   };
   team: VendorTeamMember[];
   availability: {
-    note: string | null;
+    dates: VendorAvailabilityDate[];
   };
   reviews: {
     source: VendorReviewSource;

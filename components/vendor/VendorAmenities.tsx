@@ -1,3 +1,7 @@
+"use client";
+
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getVendorServiceProfile, type VendorAmenityGroupKey } from "@/lib/vendorServiceProfile";
 import type { VendorAmenity } from "@/types/vendor-profile";
 
 type VendorAmenitiesProps = {
@@ -8,25 +12,44 @@ type VendorAmenitiesProps = {
     services: VendorAmenity[];
   };
   capacityMax: number | null;
+  categoryKeys: readonly (string | null | undefined)[];
 };
 
-const GROUPS: { key: keyof VendorAmenitiesProps["amenities"]; label: string }[] = [
-  { key: "amenities", label: "Amenities" },
-  { key: "ceremonyTypes", label: "Ceremony Types" },
-  { key: "settings", label: "Settings" },
-  { key: "services", label: "Services" },
-];
+function fill(template: string, values: Record<string, string | number>) {
+  return Object.entries(values).reduce(
+    (result, [key, value]) => result.replaceAll(`{${key}}`, String(value)),
+    template,
+  );
+}
 
-export default function VendorAmenities({ amenities, capacityMax }: VendorAmenitiesProps) {
-  const hasData = GROUPS.some((group) => amenities[group.key]?.length);
+export default function VendorAmenities({ amenities, capacityMax, categoryKeys }: VendorAmenitiesProps) {
+  const { dictionary } = useLanguage();
+  const labels = dictionary.vendorPublic.amenities;
+  const serviceProfile = getVendorServiceProfile(categoryKeys);
+  const categoryHeadings = labels.categoryHeadings as Record<string, string>;
+  const groupLabelsByCategory = labels.groupLabelsByCategory as Record<
+    string,
+    Partial<Record<VendorAmenityGroupKey, string>>
+  >;
+  const categoryGroupLabels = groupLabelsByCategory[serviceProfile.key] ?? {};
+  const groups = [
+    { key: "amenities", label: categoryGroupLabels.amenities ?? labels.groups.amenities },
+    { key: "ceremonyTypes", label: categoryGroupLabels.ceremonyTypes ?? labels.groups.ceremonyTypes },
+    { key: "settings", label: categoryGroupLabels.settings ?? labels.groups.settings },
+    { key: "services", label: categoryGroupLabels.services ?? labels.groups.services },
+  ] as const;
+  const hasData = groups.some((group) => amenities[group.key]?.length);
+  const heading = categoryHeadings[serviceProfile.key] ?? labels.heading;
 
   return (
     <div>
-      <h2 className="h3 mb-4">Amenities & Details</h2>
-      {capacityMax ? <p className="text-muted">Maximum capacity: {capacityMax} guests</p> : null}
+      <h2 className="h3 mb-4">{heading}</h2>
+      {serviceProfile.supportsGuestCapacity && capacityMax ? (
+        <p className="text-muted">{fill(labels.capacity, { count: capacityMax })}</p>
+      ) : null}
       {hasData ? (
         <div className="row g-4">
-          {GROUPS.map((group) => {
+          {groups.map((group) => {
             const items = amenities[group.key] ?? [];
             if (!items.length) return null;
             return (
@@ -45,7 +68,7 @@ export default function VendorAmenities({ amenities, capacityMax }: VendorAmenit
           })}
         </div>
       ) : (
-        <p className="text-muted">Amenities are being updated.</p>
+        <p className="text-muted">{labels.empty}</p>
       )}
     </div>
   );

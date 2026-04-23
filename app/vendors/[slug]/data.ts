@@ -1,9 +1,11 @@
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { fetchGoogleBusinessReviews } from "@/lib/google/places";
+import { parseMediaAsset } from "@/lib/images";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type {
   VendorAmenity,
+  VendorAvailabilityDate,
   VendorMediaItem,
   VendorPricingItem,
   VendorProfileDTO,
@@ -84,15 +86,40 @@ function sortMedia(items: VendorMediaItem[]): VendorMediaItem[] {
   });
 }
 
+function toVendorMediaItem(
+  item: Record<string, unknown>,
+  locale: SupportedLocale,
+  fallbackSort: number | null = null
+): VendorMediaItem | null {
+  const parsedAsset = parseMediaAsset(item);
+  const url = parsedAsset?.url ?? (typeof item.url === "string" ? item.url : "");
+
+  if (!url) {
+    return null;
+  }
+
+  const resolvedType =
+    parsedAsset?.type === "video" ||
+    (typeof item.type === "string" && item.type.toLowerCase() === "video") ||
+    url.toLowerCase().endsWith(".mp4")
+      ? "video"
+      : "photo";
+
+  return {
+    id:
+      (item.id as string | number | undefined) ??
+      parsedAsset?.public_id ??
+      crypto.randomUUID(),
+    type: resolvedType,
+    url,
+    caption: resolveLocalizedField(item.caption, locale),
+    sort: typeof item.sort === "number" ? item.sort : fallbackSort,
+  };
+}
+
 function normalizePricing(items: VendorPricingItem[]): VendorPricingItem[] {
-  const order = ["reception", "ceremony", "bar", "catering"];
   return [...items].sort((a, b) => {
-    const indexA = order.indexOf(a.itemKey.toLowerCase());
-    const indexB = order.indexOf(b.itemKey.toLowerCase());
-    if (indexA === -1 && indexB === -1) return a.itemKey.localeCompare(b.itemKey);
-    if (indexA === -1) return 1;
-    if (indexB === -1) return -1;
-    return indexA - indexB;
+    return a.itemKey.localeCompare(b.itemKey);
   });
 }
 
@@ -111,6 +138,26 @@ function buildDistribution(reviews: VendorReviewItem[]): { rating: number; count
     .sort((a, b) => b.rating - a.rating);
 }
 
+export type VendorContactPrefill = {
+  rfqId: string | null;
+  hasExistingRequest: boolean;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  eventDate: string;
+  guestCount: string;
+  city: string;
+  state: string;
+  country: string;
+  budgetMin: string;
+  budgetMax: string;
+  language: string;
+  theme: string;
+  message: string;
+  flexible: boolean;
+};
+
 export async function fetchVendorProfile(slug: string): Promise<VendorProfileDTO> {
   const locale = await resolveLocale();
   const supabase = await createSupabaseServerClient();
@@ -128,14 +175,56 @@ export async function fetchVendorProfile(slug: string): Promise<VendorProfileDTO
     notFound();
   }
 
-  const media: VendorMediaItem[] = sortMedia(
-    (row.media ?? []).map((item: Record<string, unknown>) => ({
-      id: (item.id as string | number | undefined) ?? crypto.randomUUID(),
-      type: (item.type as string)?.toLowerCase() === "video" ? "video" : "photo",
-      url: String(item.url ?? ""),
-      caption: resolveLocalizedField(item.caption, locale),
-      sort: typeof item.sort === "number" ? item.sort : null,
-    }))
+  const { data: vendorMediaRow, error: vendorMediaError } = await supabase
+    .from("vendors")
+    .select("hero_image, thumbnail_image, gallery_images")
+    .eq("id", row.id)
+    .maybeSingle();
+
+  if (vendorMediaError) {
+    throw new Error(vendorMediaError.message);
+  }
+
+  const mediaCandidates: VendorMediaItem[] = [];
+
+  for (const item of (row.media ?? []) as Record<string, unknown>[]) {
+    const mapped = toVendorMediaItem(item, locale);
+    if (mapped) {
+      mediaCandidates.push(mapped);
+    }
+  }
+
+  const heroImage = parseMediaAsset(vendorMediaRow?.hero_image);
+  if (heroImage?.url) {
+    mediaCandidates.unshift({
+      id: heroImage.public_id,
+      type: heroImage.type === "video" ? "video" : "photo",
+      url: heroImage.url,
+      caption: null,
+      sort: -200,
+    });
+  }
+
+  const thumbnailImage = parseMediaAsset(vendorMediaRow?.thumbnail_image);
+  if (thumbnailImage?.url && !mediaCandidates.some((item) => item.url === thumbnailImage.url)) {
+    mediaCandidates.push({
+      id: thumbnailImage.public_id,
+      type: thumbnailImage.type === "video" ? "video" : "photo",
+      url: thumbnailImage.url,
+      caption: null,
+      sort: -100,
+    });
+  }
+
+  for (const [index, item] of ((vendorMediaRow?.gallery_images ?? []) as Record<string, unknown>[]).entries()) {
+    const mapped = toVendorMediaItem(item, locale, index);
+    if (mapped) {
+      mediaCandidates.push(mapped);
+    }
+  }
+
+  const media = sortMedia(
+    mediaCandidates.filter((item, index, items) => items.findIndex((candidate) => candidate.url === item.url) === index)
   );
 
   const spaces = (row.spaces ?? []).map((space: Record<string, unknown>) => ({
@@ -167,6 +256,24 @@ export async function fetchVendorProfile(slug: string): Promise<VendorProfileDTO
     respondsWithinHours:
       typeof member.responds_within_hours === "number" ? member.responds_within_hours : null,
   }));
+
+  const availabilityDates: VendorAvailabilityDate[] = ((row.availability_dates ?? []) as Record<string, unknown>[])
+    .map((entry) => {
+      const availableOn = typeof entry.available_on === "string" ? entry.available_on : null;
+      if (!availableOn) {
+        return null;
+      }
+
+      return {
+        id: String(entry.id ?? availableOn),
+        date: availableOn,
+        status:
+          entry.availability_status === "busy"
+            ? "busy"
+            : "available",
+      };
+    })
+    .filter((entry): entry is VendorAvailabilityDate => Boolean(entry));
 
   const extraInfo = (row.extra_info ?? {}) as Record<string, unknown>;
   const googleBusinessProfileUrlRaw =
@@ -238,10 +345,48 @@ export async function fetchVendorProfile(slug: string): Promise<VendorProfileDTO
 
   const distribution = buildDistribution(reviewItems);
 
-  const categories = (row.categories ?? []).map((category: Record<string, unknown>) => ({
-    slug: typeof category.slug === "string" ? category.slug : null,
-    label: resolveLocalizedField(category.label, locale) ?? String(category.slug ?? ""),
-  }));
+  const rawCategories = Array.isArray(row.categories) ? (row.categories as Record<string, unknown>[]) : [];
+  const categoryIds = rawCategories
+    .map((category) => {
+      const id = category.id;
+      return typeof id === "number" || typeof id === "string" ? String(id) : null;
+    })
+    .filter((id): id is string => Boolean(id));
+
+  const categoryLookup = new Map<string, { key: string | null; slug: string | null; label: unknown }>();
+  if (categoryIds.length > 0) {
+    const { data: categoryRows, error: categoryError } = await supabase
+      .from("categories")
+      .select("id,key,slug,label")
+      .in("id", categoryIds);
+
+    if (categoryError) {
+      throw new Error(categoryError.message);
+    }
+
+    for (const categoryRow of categoryRows ?? []) {
+      categoryLookup.set(String(categoryRow.id), {
+        key: typeof categoryRow.key === "string" ? categoryRow.key : null,
+        slug: typeof categoryRow.slug === "string" ? categoryRow.slug : null,
+        label: categoryRow.label,
+      });
+    }
+  }
+
+  const categories = rawCategories.map((category) => {
+    const categoryId =
+      typeof category.id === "number" || typeof category.id === "string" ? String(category.id) : null;
+    const resolvedCategory = categoryId ? categoryLookup.get(categoryId) : null;
+    const key = resolvedCategory?.key ?? (typeof category.key === "string" ? category.key : null);
+    const resolvedSlug = resolvedCategory?.slug ?? (typeof category.slug === "string" ? category.slug : null);
+    const labelSource = resolvedCategory?.label ?? category.label;
+
+    return {
+      key,
+      slug: resolvedSlug,
+      label: resolveLocalizedField(labelSource, locale) ?? key ?? String(resolvedSlug ?? ""),
+    };
+  });
 
   const descriptionSource =
     typeof row.extra_info === "object" && row.extra_info !== null
@@ -279,8 +424,6 @@ export async function fetchVendorProfile(slug: string): Promise<VendorProfileDTO
   const resolvedExternalReviewUrl =
     reviewSource === "google" ? externalReviewUrl ?? googleBusinessProfileUrl : null;
 
-  const availabilityNote = (extraInfo?.["availability_note"] ?? null) as unknown;
-
   const profile: VendorProfileDTO = {
     vendor,
     media,
@@ -294,7 +437,7 @@ export async function fetchVendorProfile(slug: string): Promise<VendorProfileDTO
     },
     team,
     availability: {
-      note: resolveLocalizedField(availabilityNote, locale),
+      dates: availabilityDates,
     },
     reviews: {
       source: reviewSource,
@@ -316,6 +459,98 @@ export async function fetchVendorProfile(slug: string): Promise<VendorProfileDTO
   };
 
   return profile;
+}
+
+export async function fetchVendorContactPrefill(vendorId: string): Promise<VendorContactPrefill | null> {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return null;
+  }
+
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("full_name, phone, country, tentative_wedding_date, guest_count, wedding_budget, wedding_theme, language")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const { data: existingRfq, error: existingRfqError } = await supabase
+    .from("rfqs")
+    .select("id, event_date, guest_count, guest_count_range, budget_min, budget_max, city, state, country, language, theme, notes, flexible_date, guest_first_name, guest_last_name, contact_email, contact_phone")
+    .eq("owner_id", user.id)
+    .eq("vendor_id", vendorId)
+    .is("accepted_quote_id", null)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (existingRfqError) {
+    throw new Error(existingRfqError.message);
+  }
+
+  let hasVendorResponse = false;
+  if (existingRfq?.id) {
+    const { count, error: quotesError } = await supabase
+      .from("quotes")
+      .select("id", { count: "exact", head: true })
+      .eq("rfq_id", existingRfq.id)
+      .eq("vendor_id", vendorId);
+
+    if (quotesError) {
+      throw new Error(quotesError.message);
+    }
+
+    hasVendorResponse = (count ?? 0) > 0;
+  }
+
+  const fullName = profile?.full_name?.trim() ?? "";
+  const [firstName = "", ...restName] = fullName ? fullName.split(/\s+/) : [];
+  const lastName = restName.join(" ");
+  const guestCount =
+    typeof profile?.guest_count === "number" && Number.isFinite(profile.guest_count)
+      ? String(profile.guest_count)
+      : "";
+  const budget =
+    typeof profile?.wedding_budget === "number" && Number.isFinite(profile.wedding_budget)
+      ? String(profile.wedding_budget)
+      : "";
+  const editableRfq = existingRfq?.id && !hasVendorResponse ? existingRfq : null;
+
+  return {
+    rfqId: editableRfq?.id ?? null,
+    hasExistingRequest: Boolean(editableRfq),
+    firstName: editableRfq?.guest_first_name ?? firstName,
+    lastName: editableRfq?.guest_last_name ?? lastName,
+    email: editableRfq?.contact_email ?? user.email ?? "",
+    phone: editableRfq?.contact_phone ?? profile?.phone ?? "",
+    eventDate: editableRfq?.event_date ?? profile?.tentative_wedding_date ?? "",
+    guestCount:
+      typeof editableRfq?.guest_count === "number"
+        ? String(editableRfq.guest_count)
+        : editableRfq?.guest_count_range ?? guestCount,
+    city: editableRfq?.city ?? "",
+    state: editableRfq?.state ?? "",
+    country: editableRfq?.country ?? profile?.country ?? "",
+    budgetMin:
+      typeof editableRfq?.budget_min === "number"
+        ? String(editableRfq.budget_min)
+        : budget,
+    budgetMax:
+      typeof editableRfq?.budget_max === "number"
+        ? String(editableRfq.budget_max)
+        : budget,
+    language: editableRfq?.language ?? profile?.language ?? "es",
+    theme: editableRfq?.theme ?? profile?.wedding_theme ?? "",
+    message: editableRfq?.notes ?? "",
+    flexible: Boolean(editableRfq?.flexible_date),
+  };
 }
 
 type VendorPublicSearchMetadataRow = {

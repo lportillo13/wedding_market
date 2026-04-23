@@ -5,7 +5,7 @@ import { dictionaries, type SupportedLanguage } from "@/lib/i18n";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function LanguageDropdown() {
-  const { language, setLanguage, dictionary } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
@@ -43,12 +43,12 @@ export default function LanguageDropdown() {
   return (
     <div className="dropdown" ref={menuRef}>
       <button
-        className="btn btn-outline-secondary dropdown-toggle"
+        className="btn btn-outline-secondary dropdown-toggle wm-header-action"
         type="button"
         aria-expanded={open}
         onClick={() => setOpen((prev) => !prev)}
       >
-        {dictionary.languageSelector.label}
+        {language.toUpperCase()}
       </button>
       <ul className={`dropdown-menu dropdown-menu-end${open ? " show" : ""}`}>
         {(Object.keys(dictionaries) as SupportedLanguage[]).map((code) => (
@@ -58,7 +58,7 @@ export default function LanguageDropdown() {
               className={`dropdown-item${language === code ? " active" : ""}`}
               onClick={() => handleSelect(code)}
             >
-              {code === "en" ? dictionary.languageSelector.english : dictionary.languageSelector.spanish}
+              {code.toUpperCase()}
             </button>
           </li>
         ))}

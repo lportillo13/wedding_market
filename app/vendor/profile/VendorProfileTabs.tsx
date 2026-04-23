@@ -22,6 +22,7 @@ type ProfileInitial = {
 };
 
 type ContactInitial = {
+  logo_url: string;
   phone: string;
   website_url: string;
   map_url: string;
@@ -71,8 +72,7 @@ type TeamMemberInitial = {
 };
 
 type AvailabilityInitial = {
-  en: string;
-  es: string;
+  dates: { date: string; status: "available" | "busy" }[];
 };
 
 type ReviewsInitial = {

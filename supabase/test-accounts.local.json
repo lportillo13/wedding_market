@@ -1,0 +1,71 @@
+{
+  "generated_at": "2026-03-23T15:52:25.342Z",
+  "app_url_examples": [
+    "http://localhost:3000",
+    "http://localhost:3005"
+  ],
+  "accounts": [
+    {
+      "role": "client",
+      "name": "Alice Rivera",
+      "email": "client.alice@wedding-market.local",
+      "password": "TestPass!1001",
+      "business_name": null,
+      "slug": null
+    },
+    {
+      "role": "client",
+      "name": "Maya Thompson",
+      "email": "client.maya@wedding-market.local",
+      "password": "TestPass!1002",
+      "business_name": null,
+      "slug": null
+    },
+    {
+      "role": "vendor",
+      "name": "Luna Lens",
+      "email": "vendor.luna@wedding-market.local",
+      "password": "TestPass!2001",
+      "business_name": "Luna Lens Photography",
+      "slug": "luna-lens-photography"
+    },
+    {
+      "role": "vendor",
+      "name": "Harbor House Events",
+      "email": "vendor.harbor@wedding-market.local",
+      "password": "TestPass!2002",
+      "business_name": "Harbor House Catering",
+      "slug": "harbor-house-catering"
+    },
+    {
+      "role": "vendor",
+      "name": "Sunset Sounds",
+      "email": "vendor.sunset@wedding-market.local",
+      "password": "TestPass!2003",
+      "business_name": "Sunset Sounds DJ Co.",
+      "slug": "sunset-sounds-dj"
+    }
+  ],
+  "seeded_interactions": [
+    {
+      "client": "client.alice@wedding-market.local",
+      "rfq": "Alice fall wedding RFQ",
+      "invited_vendors": [
+        "vendor.luna@wedding-market.local",
+        "vendor.harbor@wedding-market.local"
+      ],
+      "accepted_vendor": "vendor.luna@wedding-market.local",
+      "review_created": true
+    },
+    {
+      "client": "client.maya@wedding-market.local",
+      "rfq": "Maya beach wedding RFQ",
+      "invited_vendors": [
+        "vendor.harbor@wedding-market.local",
+        "vendor.sunset@wedding-market.local"
+      ],
+      "accepted_vendor": null,
+      "review_created": false
+    }
+  ]
+}

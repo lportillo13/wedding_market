@@ -10,12 +10,17 @@ export default async function Page({
   searchParams: Promise<{ next?: string }>;
 }) {
   const sp = await searchParams;
-  const nextPath = sp?.next && sp.next.startsWith("/") ? sp.next : "/";
-
   const supabase = await getSupabaseServer();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  let nextPath = sp?.next && sp.next.startsWith("/") ? sp.next : "/account/profile";
+
+  if (user && !sp?.next) {
+    const { data: isVendor } = await supabase.rpc("is_vendor", { _uid: user.id });
+    nextPath = isVendor ? "/vendor/profile" : "/account/profile";
+  }
 
   // If already logged in, go straight to target
   if (user) redirect(nextPath);

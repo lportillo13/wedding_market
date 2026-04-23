@@ -1,14 +1,34 @@
 // components/shortlist/ShortlistFavorites.tsx
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import ContextualSponsoredUnits from "@/components/ads/ContextualSponsoredUnits";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { getShortlist, removeFromShortlist } from "@/lib/shortlist";
 import { useVendorSummaries } from "@/lib/useVendorSummaries";
 
 export default function ShortlistFavorites() {
   const [ids, setIds] = useState<string[]>(() => (typeof window !== "undefined" ? getShortlist() : []));
   const { vendorsById, loading, error } = useVendorSummaries(ids);
+  const { dictionary } = useLanguage();
+  const labels = dictionary.shortlistPage;
+  const shortlistAdKeywords = useMemo(
+    () =>
+      ids.flatMap((id) => {
+        const vendor = vendorsById[id];
+        if (!vendor) {
+          return [];
+        }
+
+        return [vendor.business_name, ...(vendor.categories ?? [])];
+      }),
+    [ids, vendorsById],
+  );
+  const shortlistCategory = useMemo(() => {
+    const firstVendor = ids.map((id) => vendorsById[id]).find((vendor) => Boolean(vendor));
+    return firstVendor?.categories?.[0] ?? null;
+  }, [ids, vendorsById]);
 
   useEffect(() => {
     const sync = () => setIds(getShortlist());
@@ -21,9 +41,11 @@ export default function ShortlistFavorites() {
   if (ids.length === 0) {
     return (
       <div className="border rounded p-4 bg-body-secondary">
-        <p className="mb-2">You haven&apos;t favorited any vendors yet.</p>
+        <p className="mb-2">{labels.empty.title}</p>
         <p className="mb-0">
-          Browse the <Link href="/vendors">vendor directory</Link> to add favorites, then request quotes when you&apos;re ready.
+          {labels.empty.descriptionBeforeLink}
+          <Link href="/vendors">{labels.empty.directoryLink}</Link>
+          {labels.empty.descriptionAfterLink}
         </p>
       </div>
     );
@@ -32,12 +54,12 @@ export default function ShortlistFavorites() {
   return (
     <div className="vstack gap-4">
       <div className="border rounded bg-body p-3">
-        <p className="fw-semibold mb-3">Favorited vendors</p>
-        {error && <div className="alert alert-warning">We couldn&apos;t load vendor details. Please try again later.</div>}
+        <p className="fw-semibold mb-3">{labels.saved.heading}</p>
+        {error && <div className="alert alert-warning">{labels.saved.loadError}</div>}
         <ul className="list-group">
           {ids.map((id) => {
             const vendor = vendorsById[id];
-            const vendorName = vendor?.business_name ?? (loading ? "Loading…" : "Vendor unavailable");
+            const vendorName = vendor?.business_name ?? (loading ? labels.saved.loading : labels.saved.unavailable);
 
             return (
               <li key={id} className="list-group-item d-flex justify-content-between align-items-center gap-3">
@@ -62,7 +84,7 @@ export default function ShortlistFavorites() {
                     setIds((current) => current.filter((value) => value !== id));
                   }}
                 >
-                  Remove
+                  {labels.saved.remove}
                 </button>
               </li>
             );
@@ -70,11 +92,18 @@ export default function ShortlistFavorites() {
         </ul>
       </div>
 
+      <ContextualSponsoredUnits
+        pageKey="shortlist"
+        headline={labels.saved.heading}
+        category={shortlistCategory}
+        keywords={shortlistAdKeywords}
+      />
+
       <div className="border rounded p-3 bg-body-secondary">
-        <p className="mb-2">Ready to contact your favorites?</p>
-        <p className="mb-3">Use the request quotes form to share your event details with these vendors.</p>
+        <p className="mb-2">{labels.cta.title}</p>
+        <p className="mb-3">{labels.cta.description}</p>
         <Link href="/rfq/new" className="btn btn-primary" role="button">
-          Request quotes
+          {labels.cta.button}
         </Link>
       </div>
     </div>

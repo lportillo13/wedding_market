@@ -2,6 +2,7 @@ export type RfqRow = {
   id: string;
   event_date: string | null;
   guest_count: number | null;
+  guest_count_range: string | null;
   budget_min: number | null;
   budget_max: number | null;
   city: string | null;
@@ -37,9 +38,19 @@ export type QuoteRow = {
   created_at: string;
 };
 
+export type QuoteMessageRow = {
+  id: string;
+  quote_id: string;
+  sender_id: string;
+  sender_role: "client" | "vendor";
+  body: string;
+  created_at: string;
+};
+
 export type VendorRfqsItem = {
   invite: InviteRow;
   rfq: RfqRow | null;
   latestQuote: QuoteRow | null;
   quotesForRfq: QuoteRow[];
+  latestQuoteMessages: QuoteMessageRow[];
 };

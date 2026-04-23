@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useMemo } from "react";
+import { resolveMediaUrl, shouldRenderUnoptimizedMedia } from "@/lib/media-url";
 import type { CloudinaryImage } from "@/types/images";
 
 type UserAvatarProps = {
@@ -27,10 +28,11 @@ export default function UserAvatar({ image, name, size = 40, className }: UserAv
   if (image?.url) {
     return (
       <Image
-        src={image.url}
+        src={resolveMediaUrl(image.url)}
         alt={displayName ? `${displayName} avatar` : "User avatar"}
         width={size}
         height={size}
+        unoptimized={shouldRenderUnoptimizedMedia(image.url)}
         className={`${mergedClasses} object-fit-cover`}
         style={{ width: size, height: size }}
       />

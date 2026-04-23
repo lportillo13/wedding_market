@@ -2,13 +2,23 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { FreeMode, Navigation, Pagination, Thumbs } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperType } from "swiper";
+import "swiper/css";
+import "swiper/css/free-mode";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/thumbs";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { resolveMediaUrl, shouldRenderUnoptimizedMedia } from "@/lib/media-url";
 import type { VendorMediaItem } from "@/types/vendor-profile";
 
-function buildCaptionTrackSrc(text: string) {
-  const sanitized = text.replace(/\s+/g, " ").trim();
-  const captionText = sanitized || "Video with descriptive audio";
-  const vtt = `WEBVTT\n\n00:00.000 --> 00:10.000\n${captionText}`;
-  return `data:text/vtt;charset=utf-8,${encodeURIComponent(vtt)}`;
+function fill(template: string, values: Record<string, string | number>) {
+  return Object.entries(values).reduce(
+    (result, [key, value]) => result.replaceAll(`{${key}}`, String(value)),
+    template,
+  );
 }
 
 type VendorGalleryProps = {
@@ -26,10 +36,20 @@ function isVideo(item: VendorMediaItem) {
 }
 
 export default function VendorGallery({ media, vendorName }: VendorGalleryProps) {
+  const { dictionary, language } = useLanguage();
+  const labels = dictionary.vendorPublic.gallery;
   const photos = useMemo(() => media.filter((item) => !isVideo(item)), [media]);
   const videos = useMemo(() => media.filter((item) => isVideo(item)), [media]);
 
+  const buildCaptionTrackSrc = (text: string) => {
+    const sanitized = text.replace(/\s+/g, " ").trim();
+    const captionText = sanitized || labels.defaultVideoCaption;
+    const vtt = `WEBVTT\n\n00:00.000 --> 00:10.000\n${captionText}`;
+    return `data:text/vtt;charset=utf-8,${encodeURIComponent(vtt)}`;
+  };
+
   const [lightbox, setLightbox] = useState<LightboxState>({ open: false, index: 0 });
+  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
 
   const openLightbox = useCallback((index: number) => {
     setLightbox({ open: true, index });
@@ -66,112 +86,156 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [closeLightbox, lightbox.open, showNext, showPrev]);
 
-  const renderLightbox = () => {
-    if (!lightbox.open || photos.length === 0) return null;
-    const photo = photos[lightbox.index] ?? photos[0]!;
-    return (
-      <div
-        role="dialog"
-        aria-modal="true"
-        className="position-fixed top-0 start-0 end-0 bottom-0 bg-dark bg-opacity-75 d-flex flex-column align-items-center justify-content-center"
-        style={{ zIndex: 1050 }}
-      >
-        <button type="button" className="btn btn-light position-absolute top-0 end-0 m-3" onClick={closeLightbox}>
-          Close
-        </button>
-        <div className="d-flex align-items-center justify-content-center gap-3 w-100 px-4">
-          <button
-            type="button"
-            className="btn btn-outline-light"
-            onClick={showPrev}
-            aria-label="Previous photo"
-          >
-            ‹
-          </button>
-          <div className="bg-white rounded overflow-hidden" style={{ maxHeight: "80vh", maxWidth: "90vw" }}>
-            <Image
-              src={photo.url}
-              alt={photo.caption || `${vendorName} photo ${lightbox.index + 1}`}
-              width={1200}
-              height={800}
-              className="img-fluid"
-            />
-          </div>
-          <button
-            type="button"
-            className="btn btn-outline-light"
-            onClick={showNext}
-            aria-label="Next photo"
-          >
-            ›
-          </button>
-        </div>
-        {photo.caption ? <p className="text-white mt-3">{photo.caption}</p> : null}
-      </div>
-    );
-  };
+  const videoSuffix = videos.length === 1 ? "" : "s";
 
   return (
-    <div>
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2 className="h3 mb-0">Photos</h2>
-        {photos.length > 0 ? <span className="text-muted">See all ({photos.length})</span> : null}
-      </div>
-      {photos.length ? (
-        <div className="row g-2">
-          {photos.slice(0, 6).map((photo, index) => (
-            <div className="col-12 col-sm-6 col-lg-4" key={photo.id}>
-              <button
-                type="button"
-                className="btn p-0 border-0 w-100 position-relative overflow-hidden"
-                onClick={() => openLightbox(index)}
-              >
-                <div className="ratio ratio-4x3 bg-light-subtle">
-                  <Image
-                    src={photo.url}
-                    alt={photo.caption || vendorName}
-                    fill
-                    sizes="(max-width: 576px) 100vw, (max-width: 992px) 50vw, 33vw"
-                    className="object-fit-cover"
-                  />
-                </div>
-              </button>
-            </div>
-          ))}
+    <div className="wm-vendor-gallery-block">
+      <div className="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+        <div>
+          <p className="wm-admin-kicker mb-1">Visual story</p>
+          <h2 className="h2 mb-0">{labels.photosHeading}</h2>
         </div>
-      ) : (
-        <p className="text-muted">No photos uploaded yet.</p>
+        {photos.length > 0 ? (
+          <button
+            type="button"
+            className="wm-vendor-gallery-link"
+            onClick={() => openLightbox(0)}
+          >
+            {fill(labels.seeAll, { count: photos.length })}
+          </button>
+        ) : null}
+      </div>
+
+      {photos.length ? (
+        <div className="wm-vendor-gallery-slider">
+          <Swiper
+            modules={[Navigation, Pagination, Thumbs]}
+            navigation
+            pagination={{ clickable: true }}
+            spaceBetween={16}
+            thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
+            className="wm-vendor-gallery-slider__main"
+          >
+            {photos.map((photo, index) => (
+              <SwiperSlide key={photo.id}>
+                <button
+                  type="button"
+                  className="wm-vendor-gallery-slider__frame"
+                  onClick={() => openLightbox(index)}
+                >
+                  <div className="wm-vendor-gallery-slider__media">
+                    <Image
+                      src={resolveMediaUrl(photo.url)}
+                      alt={photo.caption || vendorName}
+                      fill
+                      unoptimized={shouldRenderUnoptimizedMedia(photo.url)}
+                      sizes="100vw"
+                      className="object-fit-cover"
+                    />
+                  </div>
+                </button>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+
+          {photos.length > 1 ? (
+            <Swiper
+              modules={[FreeMode, Thumbs]}
+              onSwiper={setThumbsSwiper}
+              watchSlidesProgress
+              freeMode
+              spaceBetween={12}
+              slidesPerView={2.4}
+              breakpoints={{
+                576: { slidesPerView: 3.2 },
+                768: { slidesPerView: 4.2 },
+                992: { slidesPerView: 5.2 },
+              }}
+              className="wm-vendor-gallery-slider__thumbs"
+            >
+              {photos.map((photo) => (
+                <SwiperSlide key={`${photo.id}-thumb`}>
+                  <div className="wm-vendor-gallery-slider__thumb">
+                    <div className="wm-vendor-gallery-slider__thumb-media">
+                      <Image
+                        src={resolveMediaUrl(photo.url)}
+                        alt={photo.caption || vendorName}
+                        fill
+                        unoptimized={shouldRenderUnoptimizedMedia(photo.url)}
+                        sizes="240px"
+                        className="object-fit-cover"
+                      />
+                    </div>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : null}
+        </div>
+      ) : null}
+
+      {videos.length > 0 && (
+        <>
+          <div className="d-flex flex-wrap justify-content-between align-items-end mt-5 mb-3">
+            <div>
+              <p className="wm-admin-kicker mb-1">Motion</p>
+              <h3 className="h3 mb-0">{labels.videosHeading}</h3>
+            </div>
+            <span className="text-muted">{fill(labels.videoCount, { count: videos.length, suffix: videoSuffix })}</span>
+          </div>
+          <div className="row g-4">
+            {videos.map((video) => (
+              <div className="col-12 col-lg-6" key={video.id}>
+                <div className="wm-vendor-video-card">
+                  <div className="ratio ratio-16x9 overflow-hidden rounded-4 bg-black">
+                    <video controls className="w-100 h-100" preload="metadata">
+                      <source src={resolveMediaUrl(video.url)} />
+                      <track
+                        kind="captions"
+                        srcLang={language}
+                        label={labels.captionsLabel}
+                        src={buildCaptionTrackSrc(video.caption ?? `${vendorName} video`)}
+                        default
+                      />
+                      {labels.unsupportedVideo}
+                    </video>
+                  </div>
+                  {video.caption ? <p className="text-muted small mt-3 mb-0">{video.caption}</p> : null}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
 
-      <div className="d-flex justify-content-between align-items-center mt-5 mb-3">
-        <h3 className="h4 mb-0">Videos</h3>
-        {videos.length ? <span className="text-muted">{videos.length} video{videos.length > 1 ? "s" : ""}</span> : null}
-      </div>
-      {videos.length ? (
-        <div className="row g-3">
-          {videos.map((video) => (
-            <div className="col-12 col-md-6" key={video.id}>
-              <div className="ratio ratio-16x9 rounded overflow-hidden bg-black">
-                <video controls className="w-100 h-100" preload="metadata">
-                  <source src={video.url} />
-                  <track
-                    kind="captions"
-                    srcLang="en"
-                    label="English captions"
-                    src={buildCaptionTrackSrc(video.caption ?? `${vendorName} video`)}
-                    default
-                  />
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-              {video.caption ? <p className="text-muted small mt-2">{video.caption}</p> : null}
+      {lightbox.open && photos.length > 0 ? (
+        <div className="wm-vendor-lightbox" role="dialog" aria-modal="true">
+          <button type="button" className="btn btn-light position-absolute top-0 end-0 m-3" onClick={closeLightbox}>
+            {labels.close}
+          </button>
+          <div className="wm-vendor-lightbox__body">
+            <button type="button" className="btn btn-outline-light" onClick={showPrev} aria-label={labels.previousPhoto}>
+              ‹
+            </button>
+            <div className="wm-vendor-lightbox__frame">
+              <Image
+                src={resolveMediaUrl((photos[lightbox.index] ?? photos[0]!).url)}
+                alt={(photos[lightbox.index] ?? photos[0]!).caption || `${vendorName} ${labels.photosHeading.toLowerCase()} ${lightbox.index + 1}`}
+                width={1400}
+                height={1000}
+                unoptimized={shouldRenderUnoptimizedMedia((photos[lightbox.index] ?? photos[0]!).url)}
+                className="img-fluid"
+              />
             </div>
-          ))}
+            <button type="button" className="btn btn-outline-light" onClick={showNext} aria-label={labels.nextPhoto}>
+              ›
+            </button>
+          </div>
+          {(photos[lightbox.index] ?? photos[0]!).caption ? (
+            <p className="text-white mt-3 mb-0">{(photos[lightbox.index] ?? photos[0]!).caption}</p>
+          ) : null}
         </div>
-      ) : (
-        <p className="text-muted">No videos available.</p>
-      )}
-      {renderLightbox()}
+      ) : null}
     </div>
   );
 }

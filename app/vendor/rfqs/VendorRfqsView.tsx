@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import QuoteConversation from "@/components/quotes/QuoteConversation";
+import QuoteReplyForm from "@/components/quotes/QuoteReplyForm";
 import QuoteForm from "../inbox/QuoteForm";
+import { sendVendorQuoteReply } from "@/app/quote-replies/actions";
 import { useTranslation } from "@/contexts/LanguageContext";
 import type { VendorRfqsItem } from "./types";
 
@@ -46,7 +49,7 @@ export default function VendorRfqsView({ hasVendorProfile, items, vendorId, vend
   if (!hasVendorProfile) {
     return (
       <>
-        <h1 className="mb-3">{t("vendorRfqs.title")}</h1>
+        <h1 className="wm-page-title mb-3">{t("vendorRfqs.title")}</h1>
         <div className="alert alert-info">
           {t("vendorRfqs.noProfile.message")} {" "}
           <Link href="/vendor/profile">{t("vendorRfqs.noProfile.linkLabel")}</Link>.
@@ -57,14 +60,14 @@ export default function VendorRfqsView({ hasVendorProfile, items, vendorId, vend
 
   return (
     <>
-      <h1 className="mb-1">{t("vendorRfqs.title")}</h1>
+      <h1 className="wm-page-title mb-1">{t("vendorRfqs.title")}</h1>
       {vendorName && <div className="text-secondary mb-4">{vendorName}</div>}
 
       {!items.length ? (
         <div className="alert alert-info">{t("vendorRfqs.empty")}</div>
       ) : (
         <div className="vstack gap-3">
-          {items.map(({ invite, latestQuote, quotesForRfq, rfq }) => {
+          {items.map(({ invite, latestQuote, quotesForRfq, rfq, latestQuoteMessages }) => {
             const hasAcceptedQuote = Boolean(
               rfq?.accepted_quote_id &&
                 quotesForRfq.some((quote) => quote.id === rfq.accepted_quote_id)
@@ -76,6 +79,9 @@ export default function VendorRfqsView({ hasVendorProfile, items, vendorId, vend
             const revealPhone = invite.reveal_phone ?? contactRevealed;
             const statusKey = resolveStatus(invite.status, hasAcceptedQuote, Boolean(latestQuote));
             const statusLabel = t(`vendorRfqs.status.${statusKey}`);
+            const guestLabel = typeof rfq?.guest_count === "number"
+              ? `${rfq.guest_count} ${t("vendorRfqs.guestsLabel")}`
+              : rfq?.guest_count_range?.trim() || t("vendorRfqs.guestCountTbd");
 
             return (
               <div className="card" key={`${invite.rfq_id}-${invite.created_at}`}>
@@ -83,18 +89,16 @@ export default function VendorRfqsView({ hasVendorProfile, items, vendorId, vend
                   <div className="d-flex justify-content-between align-items-start">
                     <div>
                       <div className="badge text-bg-secondary mb-2">{statusLabel}</div>
-                      <h5 className="card-title mb-1">
+                      <h2 className="wm-card-title mb-1">
                         {t("vendorRfqs.rfqLabel")} {invite.rfq_id.slice(0, 8)}…
-                      </h5>
+                      </h2>
                       <div className="text-secondary small mb-3">
                         {rfq?.city || "-"}, {rfq?.state || "-"}, {rfq?.country || "-"} ·{" "}
                         {rfq?.event_date
                           ? new Date(rfq.event_date).toLocaleDateString()
                           : t("vendorRfqs.eventDateTbd")}
                         {" "}·{" "}
-                        {rfq?.guest_count
-                          ? `${rfq.guest_count} ${t("vendorRfqs.guestsLabel")}`
-                          : t("vendorRfqs.guestCountTbd")}
+                        {guestLabel}
                         {(rfq?.budget_min || rfq?.budget_max) && (
                           <>
                             {" "}· {t("vendorRfqs.budgetLabel")}: {rfq?.budget_min ?? "?"}–
@@ -156,13 +160,41 @@ export default function VendorRfqsView({ hasVendorProfile, items, vendorId, vend
                         {new Date(latestQuote.created_at).toLocaleString()}
                       </div>
                       {latestQuote.message && <div className="mt-2">{latestQuote.message}</div>}
+                      <QuoteConversation
+                        messages={latestQuoteMessages}
+                        locale={undefined as never}
+                        viewerRole="vendor"
+                        vendorLabel={t("vendorQuotes.conversation.youLabel")}
+                        clientLabel={t("vendorQuotes.conversation.clientLabel")}
+                        emptyLabel={t("vendorQuotes.conversation.empty")}
+                        heading={t("vendorQuotes.conversation.heading")}
+                      />
+                      <QuoteReplyForm
+                        action={sendVendorQuoteReply}
+                        quoteId={latestQuote.id}
+                        rfqId={latestQuote.rfq_id}
+                        vendorId={latestQuote.vendor_id}
+                        submitLabel={t("vendorQuotes.conversation.replyAction")}
+                        submittingLabel={t("vendorQuotes.conversation.replyPending")}
+                        placeholder={t("vendorQuotes.conversation.replyPlaceholder")}
+                        successLabel={t("vendorQuotes.conversation.replySuccess")}
+                      />
                     </div>
                   )}
 
-                  {vendorId && (
+                  {vendorId && !hasAcceptedQuote && (
                     <>
                       <hr />
-                      <QuoteForm rfq_id={invite.rfq_id} vendor_id={vendorId} />
+                      <QuoteForm
+                        rfq_id={invite.rfq_id}
+                        vendor_id={vendorId}
+                        initialAmountUsd={
+                          typeof latestQuote?.amount_cents === "number"
+                            ? String(latestQuote.amount_cents / 100)
+                            : ""
+                        }
+                        initialMessage={latestQuote?.message ?? ""}
+                      />
                     </>
                   )}
                 </div>

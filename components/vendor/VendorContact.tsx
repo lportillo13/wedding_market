@@ -1,11 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { buildCountryOptions } from "@/lib/countries";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
+import type { VendorContactPrefill } from "@/app/vendors/[slug]/data";
 
 type VendorContactProps = {
   vendor: VendorProfileDTO["vendor"];
+  prefill: VendorContactPrefill | null;
+  isVendor: boolean;
+  isLoggedIn: boolean;
+  loginHref: string;
 };
 
 type FormValues = {
@@ -13,7 +21,14 @@ type FormValues = {
   last_name: string;
   email: string;
   phone?: string;
-  guest_count_range: string;
+  guest_count: string;
+  city: string;
+  state: string;
+  country: string;
+  budget_min: string;
+  budget_max: string;
+  language: string;
+  theme: string;
   message: string;
   event_date?: string;
   flexible: boolean;
@@ -22,20 +37,116 @@ type FormValues = {
 
 type SubmitState = "idle" | "loading" | "success" | "error";
 
-export default function VendorContact({ vendor }: VendorContactProps) {
+function fill(template: string, values: Record<string, string | number>) {
+  return Object.entries(values).reduce(
+    (result, [key, value]) => result.replaceAll(`{${key}}`, String(value)),
+    template,
+  );
+}
+
+function buildDefaultValues(prefill: VendorContactPrefill | null): FormValues {
+  return {
+    first_name: prefill?.firstName ?? "",
+    last_name: prefill?.lastName ?? "",
+    email: prefill?.email ?? "",
+    phone: prefill?.phone ?? "",
+    guest_count: prefill?.guestCount ?? "",
+    city: prefill?.city ?? "",
+    state: prefill?.state ?? "",
+    country: prefill?.country ?? "",
+    budget_min: prefill?.budgetMin ?? "",
+    budget_max: prefill?.budgetMax ?? "",
+    language: prefill?.language ?? "es",
+    theme: prefill?.theme ?? "",
+    message: prefill?.message ?? "",
+    event_date: prefill?.eventDate ?? "",
+    flexible: prefill?.flexible ?? false,
+    honeypot: "",
+  };
+}
+
+export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, loginHref }: VendorContactProps) {
+  const { dictionary, language } = useLanguage();
+  const labels = dictionary.vendorPublic.contact;
+  const headerLabels = dictionary.vendorPublic.header;
+  const accountFormLabels = dictionary.account.profile.form;
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { register, handleSubmit, reset, formState } = useForm<FormValues>({
-    defaultValues: {
-      flexible: false,
-      guest_count_range: "",
-    },
+    defaultValues: buildDefaultValues(prefill),
   });
 
+  const countryOptions = useMemo(() => buildCountryOptions(prefill?.country ?? ""), [prefill?.country]);
+  const languageOptions = useMemo(
+    () =>
+      language === "es"
+        ? [
+            { value: "es", label: "Español" },
+            { value: "en", label: "Inglés" },
+            { value: "de", label: "Deutsch" },
+            { value: "fr", label: "Français" },
+          ]
+        : [
+            { value: "es", label: "Spanish" },
+            { value: "en", label: "English" },
+            { value: "de", label: "Deutsch" },
+            { value: "fr", label: "Français" },
+          ],
+    [language],
+  );
+  const themeOptions = useMemo(
+    () => [
+      { value: "", label: accountFormLabels.weddingTheme.options.none },
+      { value: "classic", label: accountFormLabels.weddingTheme.options.classic },
+      { value: "boho", label: accountFormLabels.weddingTheme.options.boho },
+      { value: "rustic", label: accountFormLabels.weddingTheme.options.rustic },
+      { value: "beach", label: accountFormLabels.weddingTheme.options.beach },
+      { value: "garden", label: accountFormLabels.weddingTheme.options.garden },
+      { value: "modern", label: accountFormLabels.weddingTheme.options.modern },
+      { value: "vintage", label: accountFormLabels.weddingTheme.options.vintage },
+    ],
+    [
+      accountFormLabels.weddingTheme.options.none,
+      accountFormLabels.weddingTheme.options.classic,
+      accountFormLabels.weddingTheme.options.boho,
+      accountFormLabels.weddingTheme.options.rustic,
+      accountFormLabels.weddingTheme.options.beach,
+      accountFormLabels.weddingTheme.options.garden,
+      accountFormLabels.weddingTheme.options.modern,
+      accountFormLabels.weddingTheme.options.vintage,
+    ],
+  );
+  const extraLabels =
+    language === "es"
+      ? {
+          guestCount: "Número de invitados",
+          city: "Ciudad",
+          state: "Estado/Región",
+          country: "País",
+          countryPlaceholder: "Selecciona un país",
+          budgetMin: "Presupuesto mínimo (USD)",
+          budgetMax: "Presupuesto máximo (USD)",
+          language: "Idioma",
+          theme: "Estilo de boda (opcional)",
+        }
+      : {
+          guestCount: "Number of guests",
+          city: "City",
+          state: "State/Region",
+          country: "Country",
+          countryPlaceholder: "Select a country",
+          budgetMin: "Minimum budget (USD)",
+          budgetMax: "Maximum budget (USD)",
+          language: "Language",
+          theme: "Wedding style (optional)",
+        };
+
+  useEffect(() => {
+    reset(buildDefaultValues(prefill));
+  }, [prefill, reset]);
+
   const onSubmit = handleSubmit(async (values) => {
-    if (values.honeypot) {
-      return;
-    }
+    if (values.honeypot) return;
     setSubmitState("loading");
     setErrorMessage(null);
     try {
@@ -43,192 +154,206 @@ export default function VendorContact({ vendor }: VendorContactProps) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          rfq_id: prefill?.rfqId ?? null,
           vendor_id: vendor.id,
           first_name: values.first_name,
           last_name: values.last_name,
           email: values.email,
           phone: values.phone || null,
-          guest_count_range: values.guest_count_range,
+          guest_count: values.guest_count ? Number(values.guest_count) : null,
+          budget_min: values.budget_min ? Number(values.budget_min) : null,
+          budget_max: values.budget_max ? Number(values.budget_max) : null,
+          city: values.city || null,
+          state: values.state || null,
+          country: values.country || null,
+          language: values.language || null,
+          theme: values.theme || null,
           message: values.message,
           event_date: values.event_date || null,
           flexible: values.flexible,
         }),
       });
 
-      const result = await response.json().catch(() => ({ ok: false, message: "Unexpected response." }));
+      const result = await response.json().catch(() => ({ ok: false, message: labels.unexpected }));
       if (!response.ok || !result?.ok) {
-        throw new Error(result?.message || "Failed to send your request.");
+        throw new Error(result?.message || labels.failed);
       }
       setSubmitState("success");
-      reset({
-        first_name: "",
-        last_name: "",
-        email: "",
-        phone: "",
-        guest_count_range: "",
-        message: "",
-        event_date: "",
-        flexible: false,
-      });
+      reset(buildDefaultValues(prefill));
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Something went wrong.";
+      const message = error instanceof Error ? error.message : labels.genericError;
       setErrorMessage(message);
       setSubmitState("error");
     }
   });
 
+  if (isVendor) {
+    return (
+      <div className="row g-4">
+        <div className="col-12 col-lg-7">
+          <h2 className="h3 mb-3">{labels.vendorHeading}</h2>
+          <p className="text-muted">{fill(labels.vendorIntro, { vendor: vendor.name })}</p>
+          <Link href="/vendor/inbox" className="btn btn-primary btn-lg">
+            {headerLabels.viewReceivedRequests}
+          </Link>
+        </div>
+        <div className="col-12 col-lg-5">
+          <aside className="bg-light border rounded p-4 h-100">
+            <h3 className="h5">{labels.detailsHeading}</h3>
+            <ul className="list-unstyled small mb-0">
+              {vendor.phone ? <li className="mb-2"><strong>{labels.phoneLabel}</strong> <a href={`tel:${vendor.phone}`}>{vendor.phone}</a></li> : null}
+              {vendor.websiteUrl ? <li className="mb-2"><strong>{labels.websiteLabel}</strong>{" "}<a href={vendor.websiteUrl} target="_blank" rel="noreferrer">{vendor.name}</a></li> : null}
+              {vendor.location.addressLabel ? (
+                <li className="mb-2">
+                  <strong>{labels.addressLabel}</strong> {vendor.location.addressLabel}
+                  {vendor.location.mapUrl ? (
+                    <div>
+                      <a href={vendor.location.mapUrl} target="_blank" rel="noreferrer">{labels.viewMap}</a>
+                    </div>
+                  ) : null}
+                </li>
+              ) : null}
+            </ul>
+          </aside>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isLoggedIn) {
+    return (
+      <div className="row g-4">
+        <div className="col-12 col-lg-7">
+          <h2 className="h3 mb-3">{labels.heading}</h2>
+          <p className="text-muted">{labels.loginRequired}</p>
+          <Link href={loginHref} className="btn btn-primary btn-lg">
+            {labels.logInAction}
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="row g-4">
       <div className="col-12 col-lg-7">
-        <h2 className="h3 mb-3">Request pricing & availability</h2>
-        <p className="text-muted">
-          Share a few details and {vendor.name} will reach out with tailored information.
-        </p>
+        <h2 className="h3 mb-3">{labels.heading}</h2>
+        <p className="text-muted">{fill(labels.intro, { vendor: vendor.name })}</p>
 
-        {submitState === "success" ? (
-          <div className="alert alert-success" role="status">
-            Thanks! Your request has been sent. We&apos;ll be in touch soon.
-          </div>
-        ) : null}
-        {submitState === "error" && errorMessage ? (
-          <div className="alert alert-danger" role="alert">
-            {errorMessage}
-          </div>
-        ) : null}
+        {submitState === "success" ? <div className="alert alert-success" role="status">{labels.success}</div> : null}
+        {submitState === "error" && errorMessage ? <div className="alert alert-danger" role="alert">{errorMessage}</div> : null}
 
-        <form className="row g-3" onSubmit={onSubmit} noValidate>
-          <input type="text" className="d-none" tabIndex={-1} autoComplete="off" {...register("honeypot")} />
-          <div className="col-md-6">
-            <label htmlFor="first_name" className="form-label">
-              First name
-            </label>
-            <input
-              id="first_name"
-              type="text"
-              className={`form-control ${formState.errors.first_name ? "is-invalid" : ""}`}
-              {...register("first_name", { required: "Please enter your first name." })}
-              required
-            />
-            {formState.errors.first_name ? (
-              <div className="invalid-feedback">{formState.errors.first_name.message}</div>
-            ) : null}
-          </div>
-          <div className="col-md-6">
-            <label htmlFor="last_name" className="form-label">
-              Last name
-            </label>
-            <input
-              id="last_name"
-              type="text"
-              className={`form-control ${formState.errors.last_name ? "is-invalid" : ""}`}
-              {...register("last_name", { required: "Please enter your last name." })}
-              required
-            />
-            {formState.errors.last_name ? (
-              <div className="invalid-feedback">{formState.errors.last_name.message}</div>
-            ) : null}
-          </div>
-          <div className="col-md-6">
-            <label htmlFor="email" className="form-label">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              className={`form-control ${formState.errors.email ? "is-invalid" : ""}`}
-              {...register("email", {
-                required: "Please enter your email.",
-                pattern: {
-                  value: /.+@.+\..+/,
-                  message: "Enter a valid email.",
-                },
-              })}
-              required
-            />
-            {formState.errors.email ? <div className="invalid-feedback">{formState.errors.email.message}</div> : null}
-          </div>
-          <div className="col-md-6">
-            <label htmlFor="phone" className="form-label">
-              Phone (optional)
-            </label>
-            <input id="phone" type="tel" className="form-control" {...register("phone")} />
-          </div>
-          <div className="col-md-6">
-            <label htmlFor="event_date" className="form-label">
-              Event date
-            </label>
-            <input id="event_date" type="date" className="form-control" {...register("event_date")} />
-            <div className="form-check mt-2">
-              <input id="flexible" type="checkbox" className="form-check-input" {...register("flexible")} />
-              <label htmlFor="flexible" className="form-check-label">
-                Date is flexible
-              </label>
+        {submitState !== "success" ? (
+          <form className="row g-3" onSubmit={onSubmit} noValidate>
+            <input type="text" className="d-none" tabIndex={-1} autoComplete="off" {...register("honeypot")} />
+            <div className="col-md-6">
+              <label htmlFor="first_name" className="form-label">{labels.firstName}</label>
+              <input id="first_name" type="text" className={`form-control ${formState.errors.first_name ? "is-invalid" : ""}`} {...register("first_name", { required: labels.firstNameRequired })} required />
+              {formState.errors.first_name ? <div className="invalid-feedback">{formState.errors.first_name.message}</div> : null}
             </div>
-          </div>
-          <div className="col-md-6">
-            <label htmlFor="guest_count_range" className="form-label">
-              Guest count range
-            </label>
-            <input
-              id="guest_count_range"
-              type="text"
-              className={`form-control ${formState.errors.guest_count_range ? "is-invalid" : ""}`}
-              placeholder="e.g. 100-150"
-              {...register("guest_count_range", { required: "Let us know your estimated guest count." })}
-              required
-            />
-            {formState.errors.guest_count_range ? (
-              <div className="invalid-feedback">{formState.errors.guest_count_range.message}</div>
-            ) : null}
-          </div>
-          <div className="col-12">
-            <label htmlFor="message" className="form-label">
-              Message
-            </label>
-            <textarea
-              id="message"
-              className={`form-control ${formState.errors.message ? "is-invalid" : ""}`}
-              rows={5}
-              placeholder="Share your vision, must-haves, or questions for the vendor."
-              {...register("message", { required: "Please include a short message." })}
-              required
-            />
-            {formState.errors.message ? (
-              <div className="invalid-feedback">{formState.errors.message.message}</div>
-            ) : null}
-          </div>
-          <div className="col-12">
-            <button className="btn btn-primary btn-lg" type="submit" disabled={submitState === "loading"}>
-              {submitState === "loading" ? "Sending..." : "Send request"}
-            </button>
-          </div>
-        </form>
+            <div className="col-md-6">
+              <label htmlFor="last_name" className="form-label">{labels.lastName}</label>
+              <input id="last_name" type="text" className={`form-control ${formState.errors.last_name ? "is-invalid" : ""}`} {...register("last_name", { required: labels.lastNameRequired })} required />
+              {formState.errors.last_name ? <div className="invalid-feedback">{formState.errors.last_name.message}</div> : null}
+            </div>
+            <div className="col-md-6">
+              <label htmlFor="email" className="form-label">{labels.email}</label>
+              <input id="email" type="email" className={`form-control ${formState.errors.email ? "is-invalid" : ""}`} {...register("email", { required: labels.emailRequired, pattern: { value: /.+@.+\..+/, message: labels.emailInvalid } })} required />
+              {formState.errors.email ? <div className="invalid-feedback">{formState.errors.email.message}</div> : null}
+            </div>
+            <div className="col-md-6">
+              <label htmlFor="phone" className="form-label">{labels.phoneOptional}</label>
+              <input id="phone" type="tel" className="form-control" {...register("phone")} />
+            </div>
+            <div className="col-md-6">
+              <label htmlFor="event_date" className="form-label">{labels.eventDate}</label>
+              <input id="event_date" type="date" className="form-control" {...register("event_date")} />
+              <div className="form-check mt-2">
+                <input id="flexible" type="checkbox" className="form-check-input" {...register("flexible")} />
+                <label htmlFor="flexible" className="form-check-label">{labels.flexibleDate}</label>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <label htmlFor="guest_count" className="form-label">{extraLabels.guestCount}</label>
+              <input id="guest_count" type="number" min={1} className={`form-control ${formState.errors.guest_count ? "is-invalid" : ""}`} {...register("guest_count", { required: labels.guestRangeRequired })} required />
+              {formState.errors.guest_count ? <div className="invalid-feedback">{formState.errors.guest_count.message}</div> : null}
+            </div>
+            <div className="col-md-4">
+              <label htmlFor="city" className="form-label">{extraLabels.city}</label>
+              <input id="city" type="text" className="form-control" {...register("city")} />
+            </div>
+            <div className="col-md-4">
+              <label htmlFor="state" className="form-label">{extraLabels.state}</label>
+              <input id="state" type="text" className="form-control" {...register("state")} />
+            </div>
+            <div className="col-md-4">
+              <label htmlFor="country" className="form-label">{extraLabels.country}</label>
+              <select id="country" className="form-select" {...register("country")}>
+                <option value="">{extraLabels.countryPlaceholder}</option>
+                {countryOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="col-md-4">
+              <label htmlFor="budget_min" className="form-label">{extraLabels.budgetMin}</label>
+              <input id="budget_min" type="number" min={0} className="form-control" {...register("budget_min")} />
+            </div>
+            <div className="col-md-4">
+              <label htmlFor="budget_max" className="form-label">{extraLabels.budgetMax}</label>
+              <input id="budget_max" type="number" min={0} className="form-control" {...register("budget_max")} />
+            </div>
+            <div className="col-md-4">
+              <label htmlFor="language" className="form-label">{extraLabels.language}</label>
+              <select id="language" className="form-select" {...register("language")}>
+                {languageOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="col-12">
+              <label htmlFor="theme" className="form-label">{extraLabels.theme}</label>
+              <select id="theme" className="form-select" {...register("theme")}>
+                {themeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="col-12">
+              <label htmlFor="message" className="form-label">{labels.message}</label>
+              <textarea id="message" className={`form-control ${formState.errors.message ? "is-invalid" : ""}`} rows={5} placeholder={labels.messagePlaceholder} {...register("message", { required: labels.messageRequired })} required />
+              {formState.errors.message ? <div className="invalid-feedback">{formState.errors.message.message}</div> : null}
+            </div>
+            <div className="col-12">
+              <button className="btn btn-primary btn-lg" type="submit" disabled={submitState === "loading"}>
+                {submitState === "loading"
+                  ? labels.submitting
+                  : prefill?.hasExistingRequest
+                    ? labels.update
+                    : labels.submit}
+              </button>
+            </div>
+          </form>
+        ) : null}
       </div>
       <div className="col-12 col-lg-5">
         <aside className="bg-light border rounded p-4 h-100">
-          <h3 className="h5">Vendor details</h3>
+          <h3 className="h5">{labels.detailsHeading}</h3>
           <ul className="list-unstyled small mb-0">
-            {vendor.phone ? (
-              <li className="mb-2">
-                <strong>Phone:</strong> <a href={`tel:${vendor.phone}`}>{vendor.phone}</a>
-              </li>
-            ) : null}
-            {vendor.websiteUrl ? (
-              <li className="mb-2">
-                <strong>Website:</strong>{" "}
-                <a href={vendor.websiteUrl} target="_blank" rel="noreferrer">
-                  {vendor.websiteUrl}
-                </a>
-              </li>
-            ) : null}
+            {vendor.phone ? <li className="mb-2"><strong>{labels.phoneLabel}</strong> <a href={`tel:${vendor.phone}`}>{vendor.phone}</a></li> : null}
+            {vendor.websiteUrl ? <li className="mb-2"><strong>{labels.websiteLabel}</strong>{" "}<a href={vendor.websiteUrl} target="_blank" rel="noreferrer">{vendor.name}</a></li> : null}
             {vendor.location.addressLabel ? (
               <li className="mb-2">
-                <strong>Address:</strong> {vendor.location.addressLabel}
+                <strong>{labels.addressLabel}</strong> {vendor.location.addressLabel}
                 {vendor.location.mapUrl ? (
                   <div>
-                    <a href={vendor.location.mapUrl} target="_blank" rel="noreferrer">
-                      View on map
-                    </a>
+                    <a href={vendor.location.mapUrl} target="_blank" rel="noreferrer">{labels.viewMap}</a>
                   </div>
                 ) : null}
               </li>

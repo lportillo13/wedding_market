@@ -1,9 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { UploadApiOptions, type UploadApiResponse } from "cloudinary";
-import cloudinary, { isCloudinaryConfigured } from "@/lib/cloudinary";
 import type { VendorImage } from "@/types/vendor";
+import { deleteFromR2, getR2ObjectKeyFromUrl } from "@/lib/r2";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { translateTextWithAI } from "@/lib/ai/translate";
 
@@ -86,6 +85,7 @@ type VendorRow = {
   id: string;
   slug: string;
   business_name: string;
+  logo_url: string | null;
   hero_image: VendorImage | null;
   thumbnail_image: VendorImage | null;
   gallery_images: VendorImage[] | null;
@@ -93,6 +93,12 @@ type VendorRow = {
   starting_price_currency: string | null;
   pricing_typical_spend_currency: string | null;
   pricing_peak_seasons: string[] | null;
+};
+
+type AvailabilityDatePayload = {
+  vendor_id: string;
+  available_on: string;
+  availability_status: "available" | "busy";
 };
 
 export type TranslateProfileTextInput = {
@@ -158,7 +164,7 @@ async function requireAuthVendor() {
   const { data: vendor } = await supabase
     .from("vendors")
     .select(
-      "id, slug, business_name, hero_image, thumbnail_image, gallery_images, extra_info, starting_price_currency, pricing_typical_spend_currency, pricing_peak_seasons"
+      "id, slug, business_name, logo_url, hero_image, thumbnail_image, gallery_images, extra_info, starting_price_currency, pricing_typical_spend_currency, pricing_peak_seasons"
     )
     .eq("owner_id", user.id)
     .maybeSingle<VendorRow>();
@@ -168,57 +174,6 @@ async function requireAuthVendor() {
   }
 
   return { supabase, error: null, user, vendor } as const;
-}
-
-const MAX_UPLOAD_SIZE = 12 * 1024 * 1024; // 12 MB
-
-function mapUploadResult(result: UploadApiResponse): VendorImage {
-  return {
-    url: result.secure_url ?? result.url,
-    public_id: result.public_id,
-    width: result.width,
-    height: result.height,
-    format: result.format,
-    bytes: result.bytes,
-  };
-}
-
-async function uploadImageFromFile(file: File, options: UploadApiOptions) {
-  const arrayBuffer = await file.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
-
-  return new Promise<UploadApiResponse>((resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream(options, (error, result) => {
-      if (error || !result) {
-        reject(error ?? new Error("Upload failed"));
-        return;
-      }
-      resolve(result);
-    });
-
-    uploadStream.end(buffer);
-  });
-}
-
-function validateImageFile(file: File | null): string | null {
-  if (!file) {
-    return "Please choose an image.";
-  }
-
-  if (file.size <= 0) {
-    return "The selected file is empty.";
-  }
-
-  if (!file.type.startsWith("image/")) {
-    return "Unsupported file type.";
-  }
-
-  if (file.size > MAX_UPLOAD_SIZE) {
-    const mb = Math.round(MAX_UPLOAD_SIZE / (1024 * 1024));
-    return `Image must be smaller than ${mb}MB.`;
-  }
-
-  return null;
 }
 
 export async function saveProfile(
@@ -383,6 +338,43 @@ export async function saveContact(
   revalidatePath("/vendors");
 
   return { ok: true, message: "Contact details saved." };
+}
+
+export async function removeLogoImage(
+  _state: ImageActionState
+): Promise<ImageActionState> {
+  void _state;
+  const { supabase, vendor, error } = await requireAuthVendor();
+  if (error || !vendor) {
+    return { ok: false, message: error ?? "Vendor profile not found." };
+  }
+
+  const previousKey = vendor.logo_url ? getR2ObjectKeyFromUrl(vendor.logo_url) : null;
+
+  const { error: updateError } = await supabase
+    .from("vendors")
+    .update({ logo_url: null })
+    .eq("id", vendor.id);
+
+  if (updateError) {
+    return { ok: false, message: `Remove failed: ${updateError.message}` };
+  }
+
+  if (previousKey) {
+    try {
+      await deleteFromR2(previousKey);
+    } catch (deleteError) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("Failed to remove previous logo asset", deleteError);
+      }
+    }
+  }
+
+  revalidatePath("/vendor/profile");
+  revalidatePath(`/vendors/${vendor.slug}`);
+  revalidatePath("/vendors");
+
+  return { ok: true, message: "Logo removed." };
 }
 
 type PricingItemPayload = {
@@ -657,26 +649,55 @@ export async function saveAvailability(
     return { ok: false, message: error ?? "Vendor profile not found." };
   }
 
-  const availabilityEn = String(formData.get("availability_en") ?? "");
-  const availabilityEs = String(formData.get("availability_es") ?? "");
+  const rawDates = String(formData.get("availability_dates") ?? "").trim();
 
-  const extraInfo = (vendor.extra_info ?? {}) as Record<string, unknown>;
-  const nextExtra: Record<string, unknown> = { ...extraInfo };
-  const availabilityValue = buildLocalizedPairValue(availabilityEn, availabilityEs);
-
-  if (availabilityValue) {
-    nextExtra.availability_note = availabilityValue;
-  } else {
-    delete nextExtra.availability_note;
+  let dates: AvailabilityDatePayload[] = [];
+  if (rawDates) {
+    try {
+      const value = JSON.parse(rawDates);
+      if (Array.isArray(value)) {
+        dates = value
+          .map((entry) => {
+            if (!entry || typeof entry !== "object") return null;
+            const record = entry as Record<string, unknown>;
+            const availableOn = String(record.date ?? "").trim();
+            const availabilityStatus = String(record.status ?? "").trim();
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(availableOn)) return null;
+            if (availabilityStatus !== "available" && availabilityStatus !== "busy") return null;
+            return {
+              vendor_id: vendor.id,
+              available_on: availableOn,
+              availability_status: availabilityStatus,
+            } satisfies AvailabilityDatePayload;
+          })
+          .filter((entry): entry is AvailabilityDatePayload => Boolean(entry));
+      }
+    } catch {
+      return { ok: false, message: "Invalid availability dates." };
+    }
   }
 
-  const { error: updateError } = await supabase
-    .from("vendors")
-    .update({ extra_info: nextExtra })
-    .eq("id", vendor.id);
+  const uniqueDates = Array.from(
+    new Map(dates.map((entry) => [entry.available_on, entry])).values()
+  ).sort((left, right) => left.available_on.localeCompare(right.available_on));
 
-  if (updateError) {
-    return { ok: false, message: `Save failed: ${updateError.message}` };
+  const { error: deleteDatesError } = await supabase
+    .from("vendor_availability")
+    .delete()
+    .eq("vendor_id", vendor.id);
+
+  if (deleteDatesError) {
+    return { ok: false, message: `Save failed: ${deleteDatesError.message}` };
+  }
+
+  if (uniqueDates.length) {
+    const { error: insertDatesError } = await supabase
+      .from("vendor_availability")
+      .insert(uniqueDates);
+
+    if (insertDatesError) {
+      return { ok: false, message: `Save failed: ${insertDatesError.message}` };
+    }
   }
 
   revalidatePath("/vendor/profile");
@@ -734,15 +755,16 @@ async function ensureVendorForImages() {
 }
 
 async function destroyPreviousAsset(publicId: string | undefined) {
-  if (!publicId || !isCloudinaryConfigured) {
+  if (!publicId) {
     return;
   }
 
   try {
-    await cloudinary.uploader.destroy(publicId, { invalidate: true });
+    const key = getR2ObjectKeyFromUrl(publicId) ?? publicId;
+    await deleteFromR2(key);
   } catch (err) {
     if (process.env.NODE_ENV !== "production") {
-      console.warn("Failed to delete Cloudinary asset", err);
+      console.warn("Failed to delete R2 asset", err);
     }
   }
 }
@@ -751,174 +773,86 @@ export async function uploadHeroImage(
   _prev: ImageActionState,
   formData: FormData
 ): Promise<ImageActionState> {
-  if (!isCloudinaryConfigured) {
-    return handleError("Image storage is not configured.");
-  }
-
-  const fileEntry = formData.get("hero");
-  if (!(fileEntry instanceof File)) {
-    return handleError("Please choose an image.");
-  }
-
-  const validation = validateImageFile(fileEntry);
-  if (validation) {
-    return handleError(validation);
-  }
-
-  const { supabase, vendor, error } = await ensureVendorForImages();
-  if (error || !vendor) {
-    return handleError(error ?? "Unable to load vendor profile.");
-  }
-
-  try {
-    const result = await uploadImageFromFile(fileEntry, {
-      folder: `vendors/${vendor.id}/hero`,
-      resource_type: "image",
-      format: "webp",
-      transformation: [{ width: 1920, crop: "limit" }],
-    });
-
-    const image = mapUploadResult(result);
-
-    const { error: updateError } = await supabase
-      .from("vendors")
-      .update({ hero_image: image })
-      .eq("id", vendor.id);
-
-    if (updateError) {
-      return handleError(`Save failed: ${updateError.message}`);
-    }
-
-    await destroyPreviousAsset(vendor.hero_image?.public_id);
-
-    revalidatePath("/vendor/profile");
-    revalidatePath(`/vendors/${vendor.slug}`);
-    revalidatePath("/vendors");
-
-    return { ok: true, message: "Hero image updated." };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return handleError(message);
-  }
+  void formData;
+  return handleError("Use the new upload endpoint from the profile page.");
 }
 
 export async function uploadThumbnailImage(
   _prev: ImageActionState,
   formData: FormData
 ): Promise<ImageActionState> {
-  if (!isCloudinaryConfigured) {
-    return handleError("Image storage is not configured.");
-  }
-
-  const fileEntry = formData.get("thumbnail");
-  if (!(fileEntry instanceof File)) {
-    return handleError("Please choose an image.");
-  }
-
-  const validation = validateImageFile(fileEntry);
-  if (validation) {
-    return handleError(validation);
-  }
-
-  const { supabase, vendor, error } = await ensureVendorForImages();
-  if (error || !vendor) {
-    return handleError(error ?? "Unable to load vendor profile.");
-  }
-
-  try {
-    const result = await uploadImageFromFile(fileEntry, {
-      folder: `vendors/${vendor.id}/thumbnail`,
-      resource_type: "image",
-      format: "webp",
-      transformation: [{ width: 600, height: 600, crop: "fill", gravity: "auto" }],
-    });
-
-    const image = mapUploadResult(result);
-
-    const { error: updateError } = await supabase
-      .from("vendors")
-      .update({ thumbnail_image: image })
-      .eq("id", vendor.id);
-
-    if (updateError) {
-      return handleError(`Save failed: ${updateError.message}`);
-    }
-
-    await destroyPreviousAsset(vendor.thumbnail_image?.public_id);
-
-    revalidatePath("/vendor/profile");
-    revalidatePath(`/vendors/${vendor.slug}`);
-    revalidatePath("/vendors");
-
-    return { ok: true, message: "Thumbnail image updated." };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return handleError(message);
-  }
+  void formData;
+  return handleError("Use the new upload endpoint from the profile page.");
 }
 
 export async function uploadGalleryImage(
   _prev: ImageActionState,
   formData: FormData
 ): Promise<ImageActionState> {
-  if (!isCloudinaryConfigured) {
-    return handleError("Image storage is not configured.");
-  }
+  void formData;
+  return handleError("Use the new upload endpoint from the profile page.");
+}
 
-  const fileEntries = formData
-    .getAll("gallery")
-    .filter((entry): entry is File => entry instanceof File && entry.size > 0);
-
-  if (fileEntries.length === 0) {
-    return handleError("Please choose at least one image.");
-  }
-
-  for (const file of fileEntries) {
-    const validation = validateImageFile(file);
-    if (validation) {
-      return handleError(validation);
-    }
-  }
-
+export async function removeHeroImage(
+  prev: ImageActionState,
+  formData: FormData
+): Promise<ImageActionState> {
+  void prev;
+  void formData;
   const { supabase, vendor, error } = await ensureVendorForImages();
   if (error || !vendor) {
     return handleError(error ?? "Unable to load vendor profile.");
   }
 
-  try {
-    const uploads: VendorImage[] = [];
-    for (const fileEntry of fileEntries) {
-      const result = await uploadImageFromFile(fileEntry, {
-        folder: `vendors/${vendor.id}/gallery`,
-        resource_type: "image",
-        format: "webp",
-        transformation: [{ width: 1500, crop: "limit" }],
-      });
-
-      uploads.push(mapUploadResult(result));
-    }
-    const existing = Array.isArray(vendor.gallery_images) ? vendor.gallery_images : [];
-    const updated = [...uploads, ...existing];
-
-    const { error: updateError } = await supabase
-      .from("vendors")
-      .update({ gallery_images: updated })
-      .eq("id", vendor.id);
-
-    if (updateError) {
-      return handleError(`Save failed: ${updateError.message}`);
-    }
-
-    revalidatePath("/vendor/profile");
-    revalidatePath(`/vendors/${vendor.slug}`);
-
-    const count = uploads.length;
-    const plural = count === 1 ? "image" : "images";
-    return { ok: true, message: `Gallery ${plural} added.` };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return handleError(message);
+  if (!vendor.hero_image?.public_id) {
+    return handleError("Hero image not found.");
   }
+
+  const { error: updateError } = await supabase
+    .from("vendors")
+    .update({ hero_image: null })
+    .eq("id", vendor.id);
+
+  if (updateError) {
+    return handleError(`Save failed: ${updateError.message}`);
+  }
+
+  await destroyPreviousAsset(vendor.hero_image.public_id);
+  revalidatePath("/vendor/profile");
+  revalidatePath(`/vendors/${vendor.slug}`);
+  revalidatePath("/vendors");
+  return { ok: true, message: "Hero image removed." };
+}
+
+export async function removeThumbnailImage(
+  prev: ImageActionState,
+  formData: FormData
+): Promise<ImageActionState> {
+  void prev;
+  void formData;
+  const { supabase, vendor, error } = await ensureVendorForImages();
+  if (error || !vendor) {
+    return handleError(error ?? "Unable to load vendor profile.");
+  }
+
+  if (!vendor.thumbnail_image?.public_id) {
+    return handleError("Thumbnail image not found.");
+  }
+
+  const { error: updateError } = await supabase
+    .from("vendors")
+    .update({ thumbnail_image: null })
+    .eq("id", vendor.id);
+
+  if (updateError) {
+    return handleError(`Save failed: ${updateError.message}`);
+  }
+
+  await destroyPreviousAsset(vendor.thumbnail_image.public_id);
+  revalidatePath("/vendor/profile");
+  revalidatePath(`/vendors/${vendor.slug}`);
+  revalidatePath("/vendors");
+  return { ok: true, message: "Thumbnail image removed." };
 }
 
 export async function removeGalleryImage(
@@ -951,9 +885,7 @@ export async function removeGalleryImage(
     return handleError(`Save failed: ${updateError.message}`);
   }
 
-  if (isCloudinaryConfigured) {
-    await destroyPreviousAsset(publicId);
-  }
+  await destroyPreviousAsset(publicId);
 
   revalidatePath("/vendor/profile");
   revalidatePath(`/vendors/${vendor.slug}`);

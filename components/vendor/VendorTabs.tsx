@@ -10,11 +10,12 @@ export type VendorTab = {
 
 type VendorTabsProps = {
   sections: readonly VendorTab[];
+  className?: string;
 };
 
 const SCROLL_OFFSET = 120;
 
-export default function VendorTabs({ sections }: VendorTabsProps) {
+export default function VendorTabs({ sections, className }: VendorTabsProps) {
   const [activeId, setActiveId] = useState<string>(sections[0]?.id ?? "");
 
   useEffect(() => {
@@ -54,8 +55,8 @@ export default function VendorTabs({ sections }: VendorTabsProps) {
   const tabs = useMemo(() => sections, [sections]);
 
   return (
-    <div className="container">
-      <nav className="nav nav-underline justify-content-start gap-3 py-3" aria-label="Vendor sections">
+    <div className={className}>
+      <nav className="nav nav-underline justify-content-start gap-3 py-3" aria-label="Secciones del proveedor">
         {tabs.map((section) => (
           <a
             key={section.id}

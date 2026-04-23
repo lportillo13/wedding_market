@@ -8,7 +8,7 @@ export default function VendorSignupGate() {
 
   return (
     <main className="container py-5" style={{ maxWidth: 520 }}>
-      <h1 className="mb-3">{t('signup.vendor.gate.title')}</h1>
+      <h1 className="wm-page-title mb-3">{t('signup.vendor.gate.title')}</h1>
       <p className="text-secondary mb-4">{t('signup.vendor.gate.description')}</p>
       <Link className="btn btn-primary" href="/login?next=/signup/vendor">
         {t('signup.vendor.gate.loginCta')}

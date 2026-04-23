@@ -5,7 +5,7 @@ import AdminSidebarNav from "@/components/admin/AdminSidebarNav";
 import { getUserAndRole } from "@/lib/auth/guards";
 
 export const metadata = {
-  title: "Control Room",
+  title: "Content Studio",
 };
 
 export default async function AdminLayout({ children }: { children: ReactNode }) {
@@ -24,14 +24,24 @@ export default async function AdminLayout({ children }: { children: ReactNode })
       title: "Main",
       links: [
         {
+          href: "/private-control-room-hub",
+          label: "Dashboard",
+          description: "See homepage, posts, and publishing status",
+        },
+        {
           href: "/private-control-room-hub/site-settings",
-          label: "Site Settings",
-          description: "Configure platform wide preferences",
+          label: "Page Content",
+          description: "Manage homepage and editorial content",
         },
         {
           href: "/private-control-room-hub/blog-posts",
-          label: "Blog Posts",
-          description: "Publish and curate editorial content",
+          label: "Blog Studio",
+          description: "View posts, images, and edit articles",
+        },
+        {
+          href: "/private-control-room-hub/vendor-ads",
+          label: "Vendor Ads",
+          description: "Manage sponsored vendors and campaign banners",
         },
         {
           href: "/private-control-room-hub/operations",
@@ -43,19 +53,19 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 lg:flex">
-      <aside className="hidden w-full max-w-xs flex-col border-r border-slate-800 bg-slate-900/60 backdrop-blur lg:flex">
-        <div className="border-b border-slate-800 px-6 py-8">
-          <p className="text-sm uppercase tracking-[0.35em] text-slate-400">Wedding Market</p>
-          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-white">Admin Control Room</h1>
-          <p className="mt-3 text-sm text-slate-400">Secure utilities for platform operators</p>
+    <div className="wm-admin-shell lg:flex">
+      <aside className="wm-admin-sidebar hidden w-full max-w-xs flex-col lg:flex">
+        <div className="border-b px-6 py-8">
+          <p className="wm-admin-kicker">Wedding Market</p>
+          <h1 className="wm-admin-title mt-2 text-2xl font-semibold tracking-tight">Content Studio</h1>
+          <p className="mt-3 text-sm text-[var(--wm-muted)]">Manage marketing pages, editorial posts, publishing assets, and paid placements.</p>
         </div>
         <AdminSidebarNav sections={navigation} />
       </aside>
 
-      <div className="flex-1">
+      <div className="wm-admin-main flex-1">
         <AdminMobileNav sections={navigation} />
-        <main className="mx-auto w-full max-w-4xl px-6 py-10 lg:px-12 lg:py-16">
+        <main className="mx-auto w-full max-w-6xl px-6 py-10 lg:px-12 lg:py-16">
           <div className="space-y-12 lg:space-y-16">{children}</div>
         </main>
       </div>

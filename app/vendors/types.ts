@@ -1,5 +1,10 @@
 import type { VendorImage } from "@/types/vendor";
 
+export type CategoryOption = {
+  key: string;
+  label: Record<string, unknown> | null;
+};
+
 export type VendorListItem = {
   id: string;
   slug: string;

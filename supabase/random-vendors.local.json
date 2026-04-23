@@ -1,0 +1,1185 @@
+{
+  "generated_at": "2026-04-16T20:27:22.397Z",
+  "seed_batch": "random-provider-seed-v1",
+  "vendors_per_category": 8,
+  "categories": [
+    "venues",
+    "planners",
+    "photography",
+    "videography",
+    "catering",
+    "cakes",
+    "bar",
+    "music",
+    "flowers",
+    "lighting",
+    "rentals",
+    "beauty",
+    "attire",
+    "officiants",
+    "stationery",
+    "photobooth",
+    "transport",
+    "accommodations",
+    "destination_planning"
+  ],
+  "deleted_previous_seed_vendors": 152,
+  "created_vendors": 152,
+  "created_reviews": 551,
+  "review_client": {
+    "email": "client.reviews@wedding-market.local",
+    "password": "TestPass!3001"
+  },
+  "sample_vendors": [
+    {
+      "category": "venues",
+      "business_name": "Velvet Estate 1",
+      "slug": "demo-venues-velvet-estate-1",
+      "email": "vendor.demo.demo-venues-velvet-estate-1@wedding-market.local",
+      "password": "TestPass!5000"
+    },
+    {
+      "category": "venues",
+      "business_name": "Willow Garden 2",
+      "slug": "demo-venues-willow-garden-2",
+      "email": "vendor.demo.demo-venues-willow-garden-2@wedding-market.local",
+      "password": "TestPass!5001"
+    },
+    {
+      "category": "venues",
+      "business_name": "Juniper House 3",
+      "slug": "demo-venues-juniper-house-3",
+      "email": "vendor.demo.demo-venues-juniper-house-3@wedding-market.local",
+      "password": "TestPass!5002"
+    },
+    {
+      "category": "venues",
+      "business_name": "Rose Hall 4",
+      "slug": "demo-venues-rose-hall-4",
+      "email": "vendor.demo.demo-venues-rose-hall-4@wedding-market.local",
+      "password": "TestPass!5003"
+    },
+    {
+      "category": "venues",
+      "business_name": "Modern Terrace 5",
+      "slug": "demo-venues-modern-terrace-5",
+      "email": "vendor.demo.demo-venues-modern-terrace-5@wedding-market.local",
+      "password": "TestPass!5004"
+    },
+    {
+      "category": "venues",
+      "business_name": "Meadow Club 6",
+      "slug": "demo-venues-meadow-club-6",
+      "email": "vendor.demo.demo-venues-meadow-club-6@wedding-market.local",
+      "password": "TestPass!5005"
+    },
+    {
+      "category": "venues",
+      "business_name": "Blue Villas 7",
+      "slug": "demo-venues-blue-villas-7",
+      "email": "vendor.demo.demo-venues-blue-villas-7@wedding-market.local",
+      "password": "TestPass!5006"
+    },
+    {
+      "category": "venues",
+      "business_name": "Golden Loft 8",
+      "slug": "demo-venues-golden-loft-8",
+      "email": "vendor.demo.demo-venues-golden-loft-8@wedding-market.local",
+      "password": "TestPass!5007"
+    },
+    {
+      "category": "planners",
+      "business_name": "Luna Events 1",
+      "slug": "demo-planners-luna-events-1",
+      "email": "vendor.demo.demo-planners-luna-events-1@wedding-market.local",
+      "password": "TestPass!5100"
+    },
+    {
+      "category": "planners",
+      "business_name": "Palm Planning 2",
+      "slug": "demo-planners-palm-planning-2",
+      "email": "vendor.demo.demo-planners-palm-planning-2@wedding-market.local",
+      "password": "TestPass!5101"
+    },
+    {
+      "category": "planners",
+      "business_name": "Haven Affairs 3",
+      "slug": "demo-planners-haven-affairs-3",
+      "email": "vendor.demo.demo-planners-haven-affairs-3@wedding-market.local",
+      "password": "TestPass!5102"
+    },
+    {
+      "category": "planners",
+      "business_name": "Aster Occasions 4",
+      "slug": "demo-planners-aster-occasions-4",
+      "email": "vendor.demo.demo-planners-aster-occasions-4@wedding-market.local",
+      "password": "TestPass!5103"
+    }
+  ],
+  "vendor_accounts": [
+    {
+      "category": "venues",
+      "business_name": "Velvet Estate 1",
+      "slug": "demo-venues-velvet-estate-1",
+      "email": "vendor.demo.demo-venues-velvet-estate-1@wedding-market.local",
+      "password": "TestPass!5000"
+    },
+    {
+      "category": "venues",
+      "business_name": "Willow Garden 2",
+      "slug": "demo-venues-willow-garden-2",
+      "email": "vendor.demo.demo-venues-willow-garden-2@wedding-market.local",
+      "password": "TestPass!5001"
+    },
+    {
+      "category": "venues",
+      "business_name": "Juniper House 3",
+      "slug": "demo-venues-juniper-house-3",
+      "email": "vendor.demo.demo-venues-juniper-house-3@wedding-market.local",
+      "password": "TestPass!5002"
+    },
+    {
+      "category": "venues",
+      "business_name": "Rose Hall 4",
+      "slug": "demo-venues-rose-hall-4",
+      "email": "vendor.demo.demo-venues-rose-hall-4@wedding-market.local",
+      "password": "TestPass!5003"
+    },
+    {
+      "category": "venues",
+      "business_name": "Modern Terrace 5",
+      "slug": "demo-venues-modern-terrace-5",
+      "email": "vendor.demo.demo-venues-modern-terrace-5@wedding-market.local",
+      "password": "TestPass!5004"
+    },
+    {
+      "category": "venues",
+      "business_name": "Meadow Club 6",
+      "slug": "demo-venues-meadow-club-6",
+      "email": "vendor.demo.demo-venues-meadow-club-6@wedding-market.local",
+      "password": "TestPass!5005"
+    },
+    {
+      "category": "venues",
+      "business_name": "Blue Villas 7",
+      "slug": "demo-venues-blue-villas-7",
+      "email": "vendor.demo.demo-venues-blue-villas-7@wedding-market.local",
+      "password": "TestPass!5006"
+    },
+    {
+      "category": "venues",
+      "business_name": "Golden Loft 8",
+      "slug": "demo-venues-golden-loft-8",
+      "email": "vendor.demo.demo-venues-golden-loft-8@wedding-market.local",
+      "password": "TestPass!5007"
+    },
+    {
+      "category": "planners",
+      "business_name": "Luna Events 1",
+      "slug": "demo-planners-luna-events-1",
+      "email": "vendor.demo.demo-planners-luna-events-1@wedding-market.local",
+      "password": "TestPass!5100"
+    },
+    {
+      "category": "planners",
+      "business_name": "Palm Planning 2",
+      "slug": "demo-planners-palm-planning-2",
+      "email": "vendor.demo.demo-planners-palm-planning-2@wedding-market.local",
+      "password": "TestPass!5101"
+    },
+    {
+      "category": "planners",
+      "business_name": "Haven Affairs 3",
+      "slug": "demo-planners-haven-affairs-3",
+      "email": "vendor.demo.demo-planners-haven-affairs-3@wedding-market.local",
+      "password": "TestPass!5102"
+    },
+    {
+      "category": "planners",
+      "business_name": "Aster Occasions 4",
+      "slug": "demo-planners-aster-occasions-4",
+      "email": "vendor.demo.demo-planners-aster-occasions-4@wedding-market.local",
+      "password": "TestPass!5103"
+    },
+    {
+      "category": "planners",
+      "business_name": "Coral Details 5",
+      "slug": "demo-planners-coral-details-5",
+      "email": "vendor.demo.demo-planners-coral-details-5@wedding-market.local",
+      "password": "TestPass!5104"
+    },
+    {
+      "category": "planners",
+      "business_name": "Harbor Union 6",
+      "slug": "demo-planners-harbor-union-6",
+      "email": "vendor.demo.demo-planners-harbor-union-6@wedding-market.local",
+      "password": "TestPass!5105"
+    },
+    {
+      "category": "planners",
+      "business_name": "Opal Fete 7",
+      "slug": "demo-planners-opal-fete-7",
+      "email": "vendor.demo.demo-planners-opal-fete-7@wedding-market.local",
+      "password": "TestPass!5106"
+    },
+    {
+      "category": "planners",
+      "business_name": "Cypress Moments 8",
+      "slug": "demo-planners-cypress-moments-8",
+      "email": "vendor.demo.demo-planners-cypress-moments-8@wedding-market.local",
+      "password": "TestPass!5107"
+    },
+    {
+      "category": "photography",
+      "business_name": "Solstice Lens 1",
+      "slug": "demo-photography-solstice-lens-1",
+      "email": "vendor.demo.demo-photography-solstice-lens-1@wedding-market.local",
+      "password": "TestPass!5200"
+    },
+    {
+      "category": "photography",
+      "business_name": "Vista Frame 2",
+      "slug": "demo-photography-vista-frame-2",
+      "email": "vendor.demo.demo-photography-vista-frame-2@wedding-market.local",
+      "password": "TestPass!5201"
+    },
+    {
+      "category": "photography",
+      "business_name": "Velvet Studio 3",
+      "slug": "demo-photography-velvet-studio-3",
+      "email": "vendor.demo.demo-photography-velvet-studio-3@wedding-market.local",
+      "password": "TestPass!5202"
+    },
+    {
+      "category": "photography",
+      "business_name": "Willow Collective 4",
+      "slug": "demo-photography-willow-collective-4",
+      "email": "vendor.demo.demo-photography-willow-collective-4@wedding-market.local",
+      "password": "TestPass!5203"
+    },
+    {
+      "category": "photography",
+      "business_name": "Juniper Light 5",
+      "slug": "demo-photography-juniper-light-5",
+      "email": "vendor.demo.demo-photography-juniper-light-5@wedding-market.local",
+      "password": "TestPass!5204"
+    },
+    {
+      "category": "photography",
+      "business_name": "Rose Portraits 6",
+      "slug": "demo-photography-rose-portraits-6",
+      "email": "vendor.demo.demo-photography-rose-portraits-6@wedding-market.local",
+      "password": "TestPass!5205"
+    },
+    {
+      "category": "photography",
+      "business_name": "Modern Films 7",
+      "slug": "demo-photography-modern-films-7",
+      "email": "vendor.demo.demo-photography-modern-films-7@wedding-market.local",
+      "password": "TestPass!5206"
+    },
+    {
+      "category": "photography",
+      "business_name": "Meadow Archive 8",
+      "slug": "demo-photography-meadow-archive-8",
+      "email": "vendor.demo.demo-photography-meadow-archive-8@wedding-market.local",
+      "password": "TestPass!5207"
+    },
+    {
+      "category": "videography",
+      "business_name": "Golden Lens 1",
+      "slug": "demo-videography-golden-lens-1",
+      "email": "vendor.demo.demo-videography-golden-lens-1@wedding-market.local",
+      "password": "TestPass!5300"
+    },
+    {
+      "category": "videography",
+      "business_name": "Ivory Frame 2",
+      "slug": "demo-videography-ivory-frame-2",
+      "email": "vendor.demo.demo-videography-ivory-frame-2@wedding-market.local",
+      "password": "TestPass!5301"
+    },
+    {
+      "category": "videography",
+      "business_name": "Luna Studio 3",
+      "slug": "demo-videography-luna-studio-3",
+      "email": "vendor.demo.demo-videography-luna-studio-3@wedding-market.local",
+      "password": "TestPass!5302"
+    },
+    {
+      "category": "videography",
+      "business_name": "Palm Collective 4",
+      "slug": "demo-videography-palm-collective-4",
+      "email": "vendor.demo.demo-videography-palm-collective-4@wedding-market.local",
+      "password": "TestPass!5303"
+    },
+    {
+      "category": "videography",
+      "business_name": "Haven Light 5",
+      "slug": "demo-videography-haven-light-5",
+      "email": "vendor.demo.demo-videography-haven-light-5@wedding-market.local",
+      "password": "TestPass!5304"
+    },
+    {
+      "category": "videography",
+      "business_name": "Aster Portraits 6",
+      "slug": "demo-videography-aster-portraits-6",
+      "email": "vendor.demo.demo-videography-aster-portraits-6@wedding-market.local",
+      "password": "TestPass!5305"
+    },
+    {
+      "category": "videography",
+      "business_name": "Coral Films 7",
+      "slug": "demo-videography-coral-films-7",
+      "email": "vendor.demo.demo-videography-coral-films-7@wedding-market.local",
+      "password": "TestPass!5306"
+    },
+    {
+      "category": "videography",
+      "business_name": "Harbor Archive 8",
+      "slug": "demo-videography-harbor-archive-8",
+      "email": "vendor.demo.demo-videography-harbor-archive-8@wedding-market.local",
+      "password": "TestPass!5307"
+    },
+    {
+      "category": "catering",
+      "business_name": "Cypress Table 1",
+      "slug": "demo-catering-cypress-table-1",
+      "email": "vendor.demo.demo-catering-cypress-table-1@wedding-market.local",
+      "password": "TestPass!5400"
+    },
+    {
+      "category": "catering",
+      "business_name": "Ever Kitchen 2",
+      "slug": "demo-catering-ever-kitchen-2",
+      "email": "vendor.demo.demo-catering-ever-kitchen-2@wedding-market.local",
+      "password": "TestPass!5401"
+    },
+    {
+      "category": "catering",
+      "business_name": "Solstice Harvest 3",
+      "slug": "demo-catering-solstice-harvest-3",
+      "email": "vendor.demo.demo-catering-solstice-harvest-3@wedding-market.local",
+      "password": "TestPass!5402"
+    },
+    {
+      "category": "catering",
+      "business_name": "Vista Supper 4",
+      "slug": "demo-catering-vista-supper-4",
+      "email": "vendor.demo.demo-catering-vista-supper-4@wedding-market.local",
+      "password": "TestPass!5403"
+    },
+    {
+      "category": "catering",
+      "business_name": "Velvet Cuisine 5",
+      "slug": "demo-catering-velvet-cuisine-5",
+      "email": "vendor.demo.demo-catering-velvet-cuisine-5@wedding-market.local",
+      "password": "TestPass!5404"
+    },
+    {
+      "category": "catering",
+      "business_name": "Willow Feast 6",
+      "slug": "demo-catering-willow-feast-6",
+      "email": "vendor.demo.demo-catering-willow-feast-6@wedding-market.local",
+      "password": "TestPass!5405"
+    },
+    {
+      "category": "catering",
+      "business_name": "Juniper Pantry 7",
+      "slug": "demo-catering-juniper-pantry-7",
+      "email": "vendor.demo.demo-catering-juniper-pantry-7@wedding-market.local",
+      "password": "TestPass!5406"
+    },
+    {
+      "category": "catering",
+      "business_name": "Rose Plate 8",
+      "slug": "demo-catering-rose-plate-8",
+      "email": "vendor.demo.demo-catering-rose-plate-8@wedding-market.local",
+      "password": "TestPass!5407"
+    },
+    {
+      "category": "cakes",
+      "business_name": "Meadow Table 1",
+      "slug": "demo-cakes-meadow-table-1",
+      "email": "vendor.demo.demo-cakes-meadow-table-1@wedding-market.local",
+      "password": "TestPass!5500"
+    },
+    {
+      "category": "cakes",
+      "business_name": "Blue Kitchen 2",
+      "slug": "demo-cakes-blue-kitchen-2",
+      "email": "vendor.demo.demo-cakes-blue-kitchen-2@wedding-market.local",
+      "password": "TestPass!5501"
+    },
+    {
+      "category": "cakes",
+      "business_name": "Golden Harvest 3",
+      "slug": "demo-cakes-golden-harvest-3",
+      "email": "vendor.demo.demo-cakes-golden-harvest-3@wedding-market.local",
+      "password": "TestPass!5502"
+    },
+    {
+      "category": "cakes",
+      "business_name": "Ivory Supper 4",
+      "slug": "demo-cakes-ivory-supper-4",
+      "email": "vendor.demo.demo-cakes-ivory-supper-4@wedding-market.local",
+      "password": "TestPass!5503"
+    },
+    {
+      "category": "cakes",
+      "business_name": "Luna Cuisine 5",
+      "slug": "demo-cakes-luna-cuisine-5",
+      "email": "vendor.demo.demo-cakes-luna-cuisine-5@wedding-market.local",
+      "password": "TestPass!5504"
+    },
+    {
+      "category": "cakes",
+      "business_name": "Palm Feast 6",
+      "slug": "demo-cakes-palm-feast-6",
+      "email": "vendor.demo.demo-cakes-palm-feast-6@wedding-market.local",
+      "password": "TestPass!5505"
+    },
+    {
+      "category": "cakes",
+      "business_name": "Haven Pantry 7",
+      "slug": "demo-cakes-haven-pantry-7",
+      "email": "vendor.demo.demo-cakes-haven-pantry-7@wedding-market.local",
+      "password": "TestPass!5506"
+    },
+    {
+      "category": "cakes",
+      "business_name": "Aster Plate 8",
+      "slug": "demo-cakes-aster-plate-8",
+      "email": "vendor.demo.demo-cakes-aster-plate-8@wedding-market.local",
+      "password": "TestPass!5507"
+    },
+    {
+      "category": "bar",
+      "business_name": "Harbor Table 1",
+      "slug": "demo-bar-harbor-table-1",
+      "email": "vendor.demo.demo-bar-harbor-table-1@wedding-market.local",
+      "password": "TestPass!5600"
+    },
+    {
+      "category": "bar",
+      "business_name": "Opal Kitchen 2",
+      "slug": "demo-bar-opal-kitchen-2",
+      "email": "vendor.demo.demo-bar-opal-kitchen-2@wedding-market.local",
+      "password": "TestPass!5601"
+    },
+    {
+      "category": "bar",
+      "business_name": "Cypress Harvest 3",
+      "slug": "demo-bar-cypress-harvest-3",
+      "email": "vendor.demo.demo-bar-cypress-harvest-3@wedding-market.local",
+      "password": "TestPass!5602"
+    },
+    {
+      "category": "bar",
+      "business_name": "Ever Supper 4",
+      "slug": "demo-bar-ever-supper-4",
+      "email": "vendor.demo.demo-bar-ever-supper-4@wedding-market.local",
+      "password": "TestPass!5603"
+    },
+    {
+      "category": "bar",
+      "business_name": "Solstice Cuisine 5",
+      "slug": "demo-bar-solstice-cuisine-5",
+      "email": "vendor.demo.demo-bar-solstice-cuisine-5@wedding-market.local",
+      "password": "TestPass!5604"
+    },
+    {
+      "category": "bar",
+      "business_name": "Vista Feast 6",
+      "slug": "demo-bar-vista-feast-6",
+      "email": "vendor.demo.demo-bar-vista-feast-6@wedding-market.local",
+      "password": "TestPass!5605"
+    },
+    {
+      "category": "bar",
+      "business_name": "Velvet Pantry 7",
+      "slug": "demo-bar-velvet-pantry-7",
+      "email": "vendor.demo.demo-bar-velvet-pantry-7@wedding-market.local",
+      "password": "TestPass!5606"
+    },
+    {
+      "category": "bar",
+      "business_name": "Willow Plate 8",
+      "slug": "demo-bar-willow-plate-8",
+      "email": "vendor.demo.demo-bar-willow-plate-8@wedding-market.local",
+      "password": "TestPass!5607"
+    },
+    {
+      "category": "music",
+      "business_name": "Rose Sounds 1",
+      "slug": "demo-music-rose-sounds-1",
+      "email": "vendor.demo.demo-music-rose-sounds-1@wedding-market.local",
+      "password": "TestPass!5700"
+    },
+    {
+      "category": "music",
+      "business_name": "Modern Band 2",
+      "slug": "demo-music-modern-band-2",
+      "email": "vendor.demo.demo-music-modern-band-2@wedding-market.local",
+      "password": "TestPass!5701"
+    },
+    {
+      "category": "music",
+      "business_name": "Meadow DJ Co. 3",
+      "slug": "demo-music-meadow-dj-co-3",
+      "email": "vendor.demo.demo-music-meadow-dj-co-3@wedding-market.local",
+      "password": "TestPass!5702"
+    },
+    {
+      "category": "music",
+      "business_name": "Blue Rhythm 4",
+      "slug": "demo-music-blue-rhythm-4",
+      "email": "vendor.demo.demo-music-blue-rhythm-4@wedding-market.local",
+      "password": "TestPass!5703"
+    },
+    {
+      "category": "music",
+      "business_name": "Golden Audio 5",
+      "slug": "demo-music-golden-audio-5",
+      "email": "vendor.demo.demo-music-golden-audio-5@wedding-market.local",
+      "password": "TestPass!5704"
+    },
+    {
+      "category": "music",
+      "business_name": "Ivory Groove 6",
+      "slug": "demo-music-ivory-groove-6",
+      "email": "vendor.demo.demo-music-ivory-groove-6@wedding-market.local",
+      "password": "TestPass!5705"
+    },
+    {
+      "category": "music",
+      "business_name": "Luna Strings 7",
+      "slug": "demo-music-luna-strings-7",
+      "email": "vendor.demo.demo-music-luna-strings-7@wedding-market.local",
+      "password": "TestPass!5706"
+    },
+    {
+      "category": "music",
+      "business_name": "Palm Collective 8",
+      "slug": "demo-music-palm-collective-8",
+      "email": "vendor.demo.demo-music-palm-collective-8@wedding-market.local",
+      "password": "TestPass!5707"
+    },
+    {
+      "category": "flowers",
+      "business_name": "Aster Florals 1",
+      "slug": "demo-flowers-aster-florals-1",
+      "email": "vendor.demo.demo-flowers-aster-florals-1@wedding-market.local",
+      "password": "TestPass!5800"
+    },
+    {
+      "category": "flowers",
+      "business_name": "Coral Design 2",
+      "slug": "demo-flowers-coral-design-2",
+      "email": "vendor.demo.demo-flowers-coral-design-2@wedding-market.local",
+      "password": "TestPass!5801"
+    },
+    {
+      "category": "flowers",
+      "business_name": "Harbor Blooms 3",
+      "slug": "demo-flowers-harbor-blooms-3",
+      "email": "vendor.demo.demo-flowers-harbor-blooms-3@wedding-market.local",
+      "password": "TestPass!5802"
+    },
+    {
+      "category": "flowers",
+      "business_name": "Opal Petals 4",
+      "slug": "demo-flowers-opal-petals-4",
+      "email": "vendor.demo.demo-flowers-opal-petals-4@wedding-market.local",
+      "password": "TestPass!5803"
+    },
+    {
+      "category": "flowers",
+      "business_name": "Cypress Studio 5",
+      "slug": "demo-flowers-cypress-studio-5",
+      "email": "vendor.demo.demo-flowers-cypress-studio-5@wedding-market.local",
+      "password": "TestPass!5804"
+    },
+    {
+      "category": "flowers",
+      "business_name": "Ever Installations 6",
+      "slug": "demo-flowers-ever-installations-6",
+      "email": "vendor.demo.demo-flowers-ever-installations-6@wedding-market.local",
+      "password": "TestPass!5805"
+    },
+    {
+      "category": "flowers",
+      "business_name": "Solstice Tablescape 7",
+      "slug": "demo-flowers-solstice-tablescape-7",
+      "email": "vendor.demo.demo-flowers-solstice-tablescape-7@wedding-market.local",
+      "password": "TestPass!5806"
+    },
+    {
+      "category": "flowers",
+      "business_name": "Vista House 8",
+      "slug": "demo-flowers-vista-house-8",
+      "email": "vendor.demo.demo-flowers-vista-house-8@wedding-market.local",
+      "password": "TestPass!5807"
+    },
+    {
+      "category": "lighting",
+      "business_name": "Willow Sounds 1",
+      "slug": "demo-lighting-willow-sounds-1",
+      "email": "vendor.demo.demo-lighting-willow-sounds-1@wedding-market.local",
+      "password": "TestPass!5900"
+    },
+    {
+      "category": "lighting",
+      "business_name": "Juniper Band 2",
+      "slug": "demo-lighting-juniper-band-2",
+      "email": "vendor.demo.demo-lighting-juniper-band-2@wedding-market.local",
+      "password": "TestPass!5901"
+    },
+    {
+      "category": "lighting",
+      "business_name": "Rose DJ Co. 3",
+      "slug": "demo-lighting-rose-dj-co-3",
+      "email": "vendor.demo.demo-lighting-rose-dj-co-3@wedding-market.local",
+      "password": "TestPass!5902"
+    },
+    {
+      "category": "lighting",
+      "business_name": "Modern Rhythm 4",
+      "slug": "demo-lighting-modern-rhythm-4",
+      "email": "vendor.demo.demo-lighting-modern-rhythm-4@wedding-market.local",
+      "password": "TestPass!5903"
+    },
+    {
+      "category": "lighting",
+      "business_name": "Meadow Audio 5",
+      "slug": "demo-lighting-meadow-audio-5",
+      "email": "vendor.demo.demo-lighting-meadow-audio-5@wedding-market.local",
+      "password": "TestPass!5904"
+    },
+    {
+      "category": "lighting",
+      "business_name": "Blue Groove 6",
+      "slug": "demo-lighting-blue-groove-6",
+      "email": "vendor.demo.demo-lighting-blue-groove-6@wedding-market.local",
+      "password": "TestPass!5905"
+    },
+    {
+      "category": "lighting",
+      "business_name": "Golden Strings 7",
+      "slug": "demo-lighting-golden-strings-7",
+      "email": "vendor.demo.demo-lighting-golden-strings-7@wedding-market.local",
+      "password": "TestPass!5906"
+    },
+    {
+      "category": "lighting",
+      "business_name": "Ivory Collective 8",
+      "slug": "demo-lighting-ivory-collective-8",
+      "email": "vendor.demo.demo-lighting-ivory-collective-8@wedding-market.local",
+      "password": "TestPass!5907"
+    },
+    {
+      "category": "rentals",
+      "business_name": "Palm Florals 1",
+      "slug": "demo-rentals-palm-florals-1",
+      "email": "vendor.demo.demo-rentals-palm-florals-1@wedding-market.local",
+      "password": "TestPass!6000"
+    },
+    {
+      "category": "rentals",
+      "business_name": "Haven Design 2",
+      "slug": "demo-rentals-haven-design-2",
+      "email": "vendor.demo.demo-rentals-haven-design-2@wedding-market.local",
+      "password": "TestPass!6001"
+    },
+    {
+      "category": "rentals",
+      "business_name": "Aster Blooms 3",
+      "slug": "demo-rentals-aster-blooms-3",
+      "email": "vendor.demo.demo-rentals-aster-blooms-3@wedding-market.local",
+      "password": "TestPass!6002"
+    },
+    {
+      "category": "rentals",
+      "business_name": "Coral Petals 4",
+      "slug": "demo-rentals-coral-petals-4",
+      "email": "vendor.demo.demo-rentals-coral-petals-4@wedding-market.local",
+      "password": "TestPass!6003"
+    },
+    {
+      "category": "rentals",
+      "business_name": "Harbor Studio 5",
+      "slug": "demo-rentals-harbor-studio-5",
+      "email": "vendor.demo.demo-rentals-harbor-studio-5@wedding-market.local",
+      "password": "TestPass!6004"
+    },
+    {
+      "category": "rentals",
+      "business_name": "Opal Installations 6",
+      "slug": "demo-rentals-opal-installations-6",
+      "email": "vendor.demo.demo-rentals-opal-installations-6@wedding-market.local",
+      "password": "TestPass!6005"
+    },
+    {
+      "category": "rentals",
+      "business_name": "Cypress Tablescape 7",
+      "slug": "demo-rentals-cypress-tablescape-7",
+      "email": "vendor.demo.demo-rentals-cypress-tablescape-7@wedding-market.local",
+      "password": "TestPass!6006"
+    },
+    {
+      "category": "rentals",
+      "business_name": "Ever House 8",
+      "slug": "demo-rentals-ever-house-8",
+      "email": "vendor.demo.demo-rentals-ever-house-8@wedding-market.local",
+      "password": "TestPass!6007"
+    },
+    {
+      "category": "beauty",
+      "business_name": "Vista Beauty 1",
+      "slug": "demo-beauty-vista-beauty-1",
+      "email": "vendor.demo.demo-beauty-vista-beauty-1@wedding-market.local",
+      "password": "TestPass!6100"
+    },
+    {
+      "category": "beauty",
+      "business_name": "Velvet Atelier 2",
+      "slug": "demo-beauty-velvet-atelier-2",
+      "email": "vendor.demo.demo-beauty-velvet-atelier-2@wedding-market.local",
+      "password": "TestPass!6101"
+    },
+    {
+      "category": "beauty",
+      "business_name": "Willow Glam 3",
+      "slug": "demo-beauty-willow-glam-3",
+      "email": "vendor.demo.demo-beauty-willow-glam-3@wedding-market.local",
+      "password": "TestPass!6102"
+    },
+    {
+      "category": "beauty",
+      "business_name": "Juniper Glow 4",
+      "slug": "demo-beauty-juniper-glow-4",
+      "email": "vendor.demo.demo-beauty-juniper-glow-4@wedding-market.local",
+      "password": "TestPass!6103"
+    },
+    {
+      "category": "beauty",
+      "business_name": "Rose Brush 5",
+      "slug": "demo-beauty-rose-brush-5",
+      "email": "vendor.demo.demo-beauty-rose-brush-5@wedding-market.local",
+      "password": "TestPass!6104"
+    },
+    {
+      "category": "beauty",
+      "business_name": "Modern Suite 6",
+      "slug": "demo-beauty-modern-suite-6",
+      "email": "vendor.demo.demo-beauty-modern-suite-6@wedding-market.local",
+      "password": "TestPass!6105"
+    },
+    {
+      "category": "beauty",
+      "business_name": "Meadow Luxe 7",
+      "slug": "demo-beauty-meadow-luxe-7",
+      "email": "vendor.demo.demo-beauty-meadow-luxe-7@wedding-market.local",
+      "password": "TestPass!6106"
+    },
+    {
+      "category": "beauty",
+      "business_name": "Blue Artists 8",
+      "slug": "demo-beauty-blue-artists-8",
+      "email": "vendor.demo.demo-beauty-blue-artists-8@wedding-market.local",
+      "password": "TestPass!6107"
+    },
+    {
+      "category": "attire",
+      "business_name": "Ivory Beauty 1",
+      "slug": "demo-attire-ivory-beauty-1",
+      "email": "vendor.demo.demo-attire-ivory-beauty-1@wedding-market.local",
+      "password": "TestPass!6200"
+    },
+    {
+      "category": "attire",
+      "business_name": "Luna Atelier 2",
+      "slug": "demo-attire-luna-atelier-2",
+      "email": "vendor.demo.demo-attire-luna-atelier-2@wedding-market.local",
+      "password": "TestPass!6201"
+    },
+    {
+      "category": "attire",
+      "business_name": "Palm Glam 3",
+      "slug": "demo-attire-palm-glam-3",
+      "email": "vendor.demo.demo-attire-palm-glam-3@wedding-market.local",
+      "password": "TestPass!6202"
+    },
+    {
+      "category": "attire",
+      "business_name": "Haven Glow 4",
+      "slug": "demo-attire-haven-glow-4",
+      "email": "vendor.demo.demo-attire-haven-glow-4@wedding-market.local",
+      "password": "TestPass!6203"
+    },
+    {
+      "category": "attire",
+      "business_name": "Aster Brush 5",
+      "slug": "demo-attire-aster-brush-5",
+      "email": "vendor.demo.demo-attire-aster-brush-5@wedding-market.local",
+      "password": "TestPass!6204"
+    },
+    {
+      "category": "attire",
+      "business_name": "Coral Suite 6",
+      "slug": "demo-attire-coral-suite-6",
+      "email": "vendor.demo.demo-attire-coral-suite-6@wedding-market.local",
+      "password": "TestPass!6205"
+    },
+    {
+      "category": "attire",
+      "business_name": "Harbor Luxe 7",
+      "slug": "demo-attire-harbor-luxe-7",
+      "email": "vendor.demo.demo-attire-harbor-luxe-7@wedding-market.local",
+      "password": "TestPass!6206"
+    },
+    {
+      "category": "attire",
+      "business_name": "Opal Artists 8",
+      "slug": "demo-attire-opal-artists-8",
+      "email": "vendor.demo.demo-attire-opal-artists-8@wedding-market.local",
+      "password": "TestPass!6207"
+    },
+    {
+      "category": "officiants",
+      "business_name": "Ever Events 1",
+      "slug": "demo-officiants-ever-events-1",
+      "email": "vendor.demo.demo-officiants-ever-events-1@wedding-market.local",
+      "password": "TestPass!6300"
+    },
+    {
+      "category": "officiants",
+      "business_name": "Solstice Planning 2",
+      "slug": "demo-officiants-solstice-planning-2",
+      "email": "vendor.demo.demo-officiants-solstice-planning-2@wedding-market.local",
+      "password": "TestPass!6301"
+    },
+    {
+      "category": "officiants",
+      "business_name": "Vista Affairs 3",
+      "slug": "demo-officiants-vista-affairs-3",
+      "email": "vendor.demo.demo-officiants-vista-affairs-3@wedding-market.local",
+      "password": "TestPass!6302"
+    },
+    {
+      "category": "officiants",
+      "business_name": "Velvet Occasions 4",
+      "slug": "demo-officiants-velvet-occasions-4",
+      "email": "vendor.demo.demo-officiants-velvet-occasions-4@wedding-market.local",
+      "password": "TestPass!6303"
+    },
+    {
+      "category": "officiants",
+      "business_name": "Willow Details 5",
+      "slug": "demo-officiants-willow-details-5",
+      "email": "vendor.demo.demo-officiants-willow-details-5@wedding-market.local",
+      "password": "TestPass!6304"
+    },
+    {
+      "category": "officiants",
+      "business_name": "Juniper Union 6",
+      "slug": "demo-officiants-juniper-union-6",
+      "email": "vendor.demo.demo-officiants-juniper-union-6@wedding-market.local",
+      "password": "TestPass!6305"
+    },
+    {
+      "category": "officiants",
+      "business_name": "Rose Fete 7",
+      "slug": "demo-officiants-rose-fete-7",
+      "email": "vendor.demo.demo-officiants-rose-fete-7@wedding-market.local",
+      "password": "TestPass!6306"
+    },
+    {
+      "category": "officiants",
+      "business_name": "Modern Moments 8",
+      "slug": "demo-officiants-modern-moments-8",
+      "email": "vendor.demo.demo-officiants-modern-moments-8@wedding-market.local",
+      "password": "TestPass!6307"
+    },
+    {
+      "category": "stationery",
+      "business_name": "Blue Events 1",
+      "slug": "demo-stationery-blue-events-1",
+      "email": "vendor.demo.demo-stationery-blue-events-1@wedding-market.local",
+      "password": "TestPass!6400"
+    },
+    {
+      "category": "stationery",
+      "business_name": "Golden Planning 2",
+      "slug": "demo-stationery-golden-planning-2",
+      "email": "vendor.demo.demo-stationery-golden-planning-2@wedding-market.local",
+      "password": "TestPass!6401"
+    },
+    {
+      "category": "stationery",
+      "business_name": "Ivory Affairs 3",
+      "slug": "demo-stationery-ivory-affairs-3",
+      "email": "vendor.demo.demo-stationery-ivory-affairs-3@wedding-market.local",
+      "password": "TestPass!6402"
+    },
+    {
+      "category": "stationery",
+      "business_name": "Luna Occasions 4",
+      "slug": "demo-stationery-luna-occasions-4",
+      "email": "vendor.demo.demo-stationery-luna-occasions-4@wedding-market.local",
+      "password": "TestPass!6403"
+    },
+    {
+      "category": "stationery",
+      "business_name": "Palm Details 5",
+      "slug": "demo-stationery-palm-details-5",
+      "email": "vendor.demo.demo-stationery-palm-details-5@wedding-market.local",
+      "password": "TestPass!6404"
+    },
+    {
+      "category": "stationery",
+      "business_name": "Haven Union 6",
+      "slug": "demo-stationery-haven-union-6",
+      "email": "vendor.demo.demo-stationery-haven-union-6@wedding-market.local",
+      "password": "TestPass!6405"
+    },
+    {
+      "category": "stationery",
+      "business_name": "Aster Fete 7",
+      "slug": "demo-stationery-aster-fete-7",
+      "email": "vendor.demo.demo-stationery-aster-fete-7@wedding-market.local",
+      "password": "TestPass!6406"
+    },
+    {
+      "category": "stationery",
+      "business_name": "Coral Moments 8",
+      "slug": "demo-stationery-coral-moments-8",
+      "email": "vendor.demo.demo-stationery-coral-moments-8@wedding-market.local",
+      "password": "TestPass!6407"
+    },
+    {
+      "category": "photobooth",
+      "business_name": "Opal Lens 1",
+      "slug": "demo-photobooth-opal-lens-1",
+      "email": "vendor.demo.demo-photobooth-opal-lens-1@wedding-market.local",
+      "password": "TestPass!6500"
+    },
+    {
+      "category": "photobooth",
+      "business_name": "Cypress Frame 2",
+      "slug": "demo-photobooth-cypress-frame-2",
+      "email": "vendor.demo.demo-photobooth-cypress-frame-2@wedding-market.local",
+      "password": "TestPass!6501"
+    },
+    {
+      "category": "photobooth",
+      "business_name": "Ever Studio 3",
+      "slug": "demo-photobooth-ever-studio-3",
+      "email": "vendor.demo.demo-photobooth-ever-studio-3@wedding-market.local",
+      "password": "TestPass!6502"
+    },
+    {
+      "category": "photobooth",
+      "business_name": "Solstice Collective 4",
+      "slug": "demo-photobooth-solstice-collective-4",
+      "email": "vendor.demo.demo-photobooth-solstice-collective-4@wedding-market.local",
+      "password": "TestPass!6503"
+    },
+    {
+      "category": "photobooth",
+      "business_name": "Vista Light 5",
+      "slug": "demo-photobooth-vista-light-5",
+      "email": "vendor.demo.demo-photobooth-vista-light-5@wedding-market.local",
+      "password": "TestPass!6504"
+    },
+    {
+      "category": "photobooth",
+      "business_name": "Velvet Portraits 6",
+      "slug": "demo-photobooth-velvet-portraits-6",
+      "email": "vendor.demo.demo-photobooth-velvet-portraits-6@wedding-market.local",
+      "password": "TestPass!6505"
+    },
+    {
+      "category": "photobooth",
+      "business_name": "Willow Films 7",
+      "slug": "demo-photobooth-willow-films-7",
+      "email": "vendor.demo.demo-photobooth-willow-films-7@wedding-market.local",
+      "password": "TestPass!6506"
+    },
+    {
+      "category": "photobooth",
+      "business_name": "Juniper Archive 8",
+      "slug": "demo-photobooth-juniper-archive-8",
+      "email": "vendor.demo.demo-photobooth-juniper-archive-8@wedding-market.local",
+      "password": "TestPass!6507"
+    },
+    {
+      "category": "transport",
+      "business_name": "Modern Rides 1",
+      "slug": "demo-transport-modern-rides-1",
+      "email": "vendor.demo.demo-transport-modern-rides-1@wedding-market.local",
+      "password": "TestPass!6600"
+    },
+    {
+      "category": "transport",
+      "business_name": "Meadow Cars 2",
+      "slug": "demo-transport-meadow-cars-2",
+      "email": "vendor.demo.demo-transport-meadow-cars-2@wedding-market.local",
+      "password": "TestPass!6601"
+    },
+    {
+      "category": "transport",
+      "business_name": "Blue Transit 3",
+      "slug": "demo-transport-blue-transit-3",
+      "email": "vendor.demo.demo-transport-blue-transit-3@wedding-market.local",
+      "password": "TestPass!6602"
+    },
+    {
+      "category": "transport",
+      "business_name": "Golden Valet 4",
+      "slug": "demo-transport-golden-valet-4",
+      "email": "vendor.demo.demo-transport-golden-valet-4@wedding-market.local",
+      "password": "TestPass!6603"
+    },
+    {
+      "category": "transport",
+      "business_name": "Ivory Fleet 5",
+      "slug": "demo-transport-ivory-fleet-5",
+      "email": "vendor.demo.demo-transport-ivory-fleet-5@wedding-market.local",
+      "password": "TestPass!6604"
+    },
+    {
+      "category": "transport",
+      "business_name": "Luna Coach 6",
+      "slug": "demo-transport-luna-coach-6",
+      "email": "vendor.demo.demo-transport-luna-coach-6@wedding-market.local",
+      "password": "TestPass!6605"
+    },
+    {
+      "category": "transport",
+      "business_name": "Palm Routes 7",
+      "slug": "demo-transport-palm-routes-7",
+      "email": "vendor.demo.demo-transport-palm-routes-7@wedding-market.local",
+      "password": "TestPass!6606"
+    },
+    {
+      "category": "transport",
+      "business_name": "Haven Chauffeurs 8",
+      "slug": "demo-transport-haven-chauffeurs-8",
+      "email": "vendor.demo.demo-transport-haven-chauffeurs-8@wedding-market.local",
+      "password": "TestPass!6607"
+    },
+    {
+      "category": "accommodations",
+      "business_name": "Coral Estate 1",
+      "slug": "demo-accommodations-coral-estate-1",
+      "email": "vendor.demo.demo-accommodations-coral-estate-1@wedding-market.local",
+      "password": "TestPass!6700"
+    },
+    {
+      "category": "accommodations",
+      "business_name": "Harbor Garden 2",
+      "slug": "demo-accommodations-harbor-garden-2",
+      "email": "vendor.demo.demo-accommodations-harbor-garden-2@wedding-market.local",
+      "password": "TestPass!6701"
+    },
+    {
+      "category": "accommodations",
+      "business_name": "Opal House 3",
+      "slug": "demo-accommodations-opal-house-3",
+      "email": "vendor.demo.demo-accommodations-opal-house-3@wedding-market.local",
+      "password": "TestPass!6702"
+    },
+    {
+      "category": "accommodations",
+      "business_name": "Cypress Hall 4",
+      "slug": "demo-accommodations-cypress-hall-4",
+      "email": "vendor.demo.demo-accommodations-cypress-hall-4@wedding-market.local",
+      "password": "TestPass!6703"
+    },
+    {
+      "category": "accommodations",
+      "business_name": "Ever Terrace 5",
+      "slug": "demo-accommodations-ever-terrace-5",
+      "email": "vendor.demo.demo-accommodations-ever-terrace-5@wedding-market.local",
+      "password": "TestPass!6704"
+    },
+    {
+      "category": "accommodations",
+      "business_name": "Solstice Club 6",
+      "slug": "demo-accommodations-solstice-club-6",
+      "email": "vendor.demo.demo-accommodations-solstice-club-6@wedding-market.local",
+      "password": "TestPass!6705"
+    },
+    {
+      "category": "accommodations",
+      "business_name": "Vista Villas 7",
+      "slug": "demo-accommodations-vista-villas-7",
+      "email": "vendor.demo.demo-accommodations-vista-villas-7@wedding-market.local",
+      "password": "TestPass!6706"
+    },
+    {
+      "category": "accommodations",
+      "business_name": "Velvet Loft 8",
+      "slug": "demo-accommodations-velvet-loft-8",
+      "email": "vendor.demo.demo-accommodations-velvet-loft-8@wedding-market.local",
+      "password": "TestPass!6707"
+    },
+    {
+      "category": "destination_planning",
+      "business_name": "Juniper Events 1",
+      "slug": "demo-destination-planning-juniper-events-1",
+      "email": "vendor.demo.demo-destination-planning-juniper-events-1@wedding-market.local",
+      "password": "TestPass!6800"
+    },
+    {
+      "category": "destination_planning",
+      "business_name": "Rose Planning 2",
+      "slug": "demo-destination-planning-rose-planning-2",
+      "email": "vendor.demo.demo-destination-planning-rose-planning-2@wedding-market.local",
+      "password": "TestPass!6801"
+    },
+    {
+      "category": "destination_planning",
+      "business_name": "Modern Affairs 3",
+      "slug": "demo-destination-planning-modern-affairs-3",
+      "email": "vendor.demo.demo-destination-planning-modern-affairs-3@wedding-market.local",
+      "password": "TestPass!6802"
+    },
+    {
+      "category": "destination_planning",
+      "business_name": "Meadow Occasions 4",
+      "slug": "demo-destination-planning-meadow-occasions-4",
+      "email": "vendor.demo.demo-destination-planning-meadow-occasions-4@wedding-market.local",
+      "password": "TestPass!6803"
+    },
+    {
+      "category": "destination_planning",
+      "business_name": "Blue Details 5",
+      "slug": "demo-destination-planning-blue-details-5",
+      "email": "vendor.demo.demo-destination-planning-blue-details-5@wedding-market.local",
+      "password": "TestPass!6804"
+    },
+    {
+      "category": "destination_planning",
+      "business_name": "Golden Union 6",
+      "slug": "demo-destination-planning-golden-union-6",
+      "email": "vendor.demo.demo-destination-planning-golden-union-6@wedding-market.local",
+      "password": "TestPass!6805"
+    },
+    {
+      "category": "destination_planning",
+      "business_name": "Ivory Fete 7",
+      "slug": "demo-destination-planning-ivory-fete-7",
+      "email": "vendor.demo.demo-destination-planning-ivory-fete-7@wedding-market.local",
+      "password": "TestPass!6806"
+    },
+    {
+      "category": "destination_planning",
+      "business_name": "Luna Moments 8",
+      "slug": "demo-destination-planning-luna-moments-8",
+      "email": "vendor.demo.demo-destination-planning-luna-moments-8@wedding-market.local",
+      "password": "TestPass!6807"
+    }
+  ]
+}

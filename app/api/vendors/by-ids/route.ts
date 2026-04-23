@@ -17,7 +17,7 @@ export async function GET(req: Request) {
     const supabase = supabasePublic();
     const { data, error } = await supabase
       .from("vendor_public_search")
-      .select("id, slug, business_name")
+      .select("id, slug, business_name, categories")
       .in("id", ids);
 
     if (error) return NextResponse.json({ items: [], error: error.message }, { status: 500 });

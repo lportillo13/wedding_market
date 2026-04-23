@@ -62,7 +62,20 @@ create table if not exists public.vendor_pricing (
 );
 create unique index if not exists idx_vendor_pricing_vendor_item on public.vendor_pricing(vendor_id, item_key);
 
--- 7) Optional vendor metadata surfaced on the profile page.
+-- 7) Vendor availability dates surfaced on the profile page.
+create table if not exists public.vendor_availability (
+  id uuid primary key default gen_random_uuid(),
+  vendor_id uuid not null references public.vendors (id) on delete cascade,
+  available_on date not null,
+  availability_status text not null default 'available',
+  created_at timestamptz not null default now(),
+  unique (vendor_id, available_on),
+  constraint vendor_availability_status_check check (availability_status in ('available', 'busy'))
+);
+create index if not exists idx_vendor_availability_vendor_date
+  on public.vendor_availability(vendor_id, available_on);
+
+-- 8) Optional vendor metadata surfaced on the profile page.
 alter table public.vendors
   add column if not exists address_label text,
   add column if not exists map_url text,
@@ -81,7 +94,7 @@ alter table public.vendors
   add column if not exists pricing_peak_seasons text[] default '{}',
   add column if not exists review_ai_summary text;
 
--- 8) RFQ guest support + metadata captured by the public contact form.
+-- 9) RFQ guest support + metadata captured by the public contact form.
 alter table public.rfqs
   add column if not exists flexible_date boolean default false,
   add column if not exists guest_count_range text,
@@ -92,7 +105,7 @@ alter table public.rfqs
   add column if not exists vendor_id uuid,
   alter column owner_id drop not null;
 
--- 9) Materialized JSON view used by the Next.js page. Recreate for the new shape.
+-- 10) Materialized JSON view used by the Next.js page. Recreate for the new shape.
 create or replace view public.vendor_profile_view as
 select
   v.id,
@@ -182,17 +195,61 @@ select
   coalesce((
     select json_agg(json_build_object(
       'id', c.id,
+      'key', c.key,
       'slug', c.slug,
       'label', c.label
     ))
     from public.vendor_categories vc
     join public.categories c on c.id = vc.category_id
     where vc.vendor_id = v.id
-  ), '[]'::json) as categories
+  ), '[]'::json) as categories,
+  coalesce((
+    select json_agg(json_build_object(
+      'id', a.id,
+      'available_on', a.available_on,
+      'availability_status', a.availability_status
+    ) order by a.available_on)
+    from public.vendor_availability a
+    where a.vendor_id = v.id
+  ), '[]'::json) as availability_dates
 from public.vendors v
 left join public.vendor_locations vl on vl.vendor_id = v.id
 where coalesce(v.is_published, false) = true;
 
--- 10) Ensure helper index for vendor_media ordering.
+alter table public.vendor_availability enable row level security;
+
+create policy vendor_availability_owner_crud on public.vendor_availability
+using (
+  exists (
+    select 1
+    from public.vendors v
+    where v.id = vendor_availability.vendor_id
+      and v.owner_id = auth.uid()
+  )
+)
+with check (
+  exists (
+    select 1
+    from public.vendors v
+    where v.id = vendor_availability.vendor_id
+      and v.owner_id = auth.uid()
+  )
+);
+
+create policy vendor_availability_public_read on public.vendor_availability
+for select
+using (
+  exists (
+    select 1
+    from public.vendors v
+    where v.id = vendor_availability.vendor_id
+      and v.is_published = true
+  )
+);
+
+grant select on public.vendor_availability to anon;
+grant select, insert, update, delete on public.vendor_availability to authenticated;
+
+-- 11) Ensure helper index for vendor_media ordering.
 create index if not exists idx_vendor_media_vendor_sort on public.vendor_media(vendor_id, sort_order);
 

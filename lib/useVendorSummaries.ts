@@ -6,6 +6,7 @@ export type VendorSummary = {
   id: string;
   slug: string | null;
   business_name: string;
+  categories?: string[] | null;
 };
 
 type VendorsResponse = {

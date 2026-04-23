@@ -9,6 +9,9 @@ export const dictionaries = {
 export type SupportedLanguage = keyof typeof dictionaries;
 
 export const supportedLanguages = Object.keys(dictionaries) as SupportedLanguage[];
+export const DEFAULT_LANGUAGE: SupportedLanguage = "es";
+export const LANGUAGE_STORAGE_KEY = "wm-language";
+export const LANGUAGE_COOKIE_NAME = "wm-language";
 
 export type CommonDictionary = (typeof dictionaries)[SupportedLanguage];
 
@@ -55,4 +58,15 @@ export function translate(dictionary: CommonDictionary, key: TranslationKey): st
 
 export function isSupportedLanguage(value: string | null | undefined): value is SupportedLanguage {
   return value === "en" || value === "es";
+}
+
+export function getLanguageLocale(language: SupportedLanguage) {
+  return language === "es" ? "es-ES" : "en-US";
+}
+
+export function fillTemplate(template: string, values: Record<string, string | number>) {
+  return Object.entries(values).reduce(
+    (result, [key, value]) => result.replaceAll(`{${key}}`, String(value)),
+    template
+  );
 }

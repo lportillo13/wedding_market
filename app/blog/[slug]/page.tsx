@@ -1,30 +1,19 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import ContextualSponsoredUnits from "@/components/ads/ContextualSponsoredUnits";
 import BlogPostContent from "@/components/blog/BlogPostContent";
-import { parseBlogBody, estimateReadingMinutes, type BlogPostRecord } from "@/lib/blog/blocks";
-import { getSupabaseForBlog } from "@/lib/blog/supabase";
+import { fillTemplate, getLanguageLocale } from "@/lib/i18n";
+import { getRequestI18n } from "@/lib/i18n/server";
+import { estimateReadingMinutes, parseBlogBody } from "@/lib/blog/blocks";
+import { loadPost } from "@/lib/blog/content";
 
-async function loadPost(slug: string): Promise<BlogPostRecord | null> {
-  const supabase = await getSupabaseForBlog();
-  const { data, error } = await supabase
-    .from("blog_posts")
-    .select("id, title, slug, status, excerpt, hero_image_url, published_at, updated_at, body")
-    .eq("slug", slug)
-    .eq("status", "published")
-    .maybeSingle<BlogPostRecord>();
-
-  if (error) {
-    console.error("Unable to load blog post", error.message);
-    return null;
+function formatPublishedDate(value: string | null, locale: string): string {
+  if (!value) {
+    return "";
   }
 
-  return data ?? null;
-}
-
-function formatPublishedDate(value: string | null): string {
-  if (!value) return "";
   try {
-    return new Intl.DateTimeFormat("en-US", {
+    return new Intl.DateTimeFormat(locale, {
       dateStyle: "long",
     }).format(new Date(value));
   } catch {
@@ -44,47 +33,56 @@ export default async function BlogPostPage({
     notFound();
   }
 
-  const resolvedPost = post;
-  const blocks = parseBlogBody(resolvedPost.body);
+  const { dictionary, language } = await getRequestI18n();
+  const labels = dictionary.blog.postPage;
+  const locale = getLanguageLocale(language);
+  const blocks = parseBlogBody(post.body);
   const readingMinutes = estimateReadingMinutes(blocks);
-  const publishedDate = formatPublishedDate(resolvedPost.published_at);
+  const publishedDate = formatPublishedDate(post.published_at, locale);
 
   return (
-    <main className="py-5">
-      <div className="container">
-        <nav className="mb-4" aria-label="Breadcrumb">
+    <main className="wm-blog-post-page">
+      <section className="wm-blog-post-shell container">
+        <nav className="mb-4" aria-label={labels.breadcrumbAria}>
           <ol className="breadcrumb mb-0">
             <li className="breadcrumb-item">
-              <Link href="/blog">Blog</Link>
+              <Link href="/blog">{dictionary.nav.blog}</Link>
             </li>
             <li className="breadcrumb-item active" aria-current="page">
-              {resolvedPost.title}
+              {post.title}
             </li>
           </ol>
         </nav>
 
-        <article className="mx-auto" style={{ maxWidth: "720px" }}>
-          <header className="mb-5 text-center">
-            <h1 className="display-4 fw-bold mb-3">{resolvedPost.title}</h1>
+        <article className="wm-blog-post-article mx-auto">
+          <header className="wm-blog-post-header">
+            <p className="wm-blog-kicker mb-3">{labels.kicker}</p>
+            <h1 className="wm-blog-post-title">{post.title}</h1>
             <div className="d-flex flex-column flex-sm-row justify-content-center gap-2 text-secondary">
               {publishedDate && <span>{publishedDate}</span>}
-              {readingMinutes > 0 && <span>{readingMinutes} min read</span>}
+              {readingMinutes > 0 && <span>{fillTemplate(labels.minutesToRead, { count: readingMinutes })}</span>}
             </div>
+            {post.excerpt && <p className="wm-blog-post-dek">{post.excerpt}</p>}
           </header>
 
-          {resolvedPost.hero_image_url && (
-            <figure className="mb-5">
+          {post.hero_image_url && (
+            <figure className="wm-blog-post-hero">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={resolvedPost.hero_image_url} alt={resolvedPost.title} className="img-fluid rounded-4 shadow-sm" />
-              {resolvedPost.excerpt && (
-                <figcaption className="mt-2 text-secondary small">{resolvedPost.excerpt}</figcaption>
-              )}
+              <img src={post.hero_image_url} alt={post.title} className="img-fluid rounded-4 shadow-sm" />
             </figure>
           )}
 
-          <BlogPostContent body={resolvedPost.body} />
+          <ContextualSponsoredUnits
+            pageKey="blog-post"
+            headline={post.title}
+            keywords={post.excerpt ? [post.excerpt] : []}
+          />
+
+          <div className="wm-blog-post-content-wrap">
+            <BlogPostContent body={post.body} emptyMessage={labels.emptyContent} />
+          </div>
         </article>
-      </div>
+      </section>
     </main>
   );
 }

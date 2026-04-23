@@ -1,16 +1,58 @@
 "use client";
 
-import { useTranslation } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import VendorSignUpForm from './VendorSignUpForm';
 
-export default function VendorSignupPageContent() {
-  const t = useTranslation();
+type CategoryOption = {
+  key: string;
+  label: Record<string, unknown> | null;
+};
+
+export default function VendorSignupPageContent({
+  categories,
+  requiresAccount,
+}: {
+  categories: CategoryOption[];
+  requiresAccount: boolean;
+}) {
+  const { dictionary } = useLanguage();
+  const page = dictionary.signup.vendor.formPage;
 
   return (
-    <main className="container py-5" style={{ maxWidth: 520 }}>
-      <h1 className="mb-3">{t('signup.vendor.formPage.title')}</h1>
-      <p className="text-secondary mb-4">{t('signup.vendor.formPage.description')}</p>
-      <VendorSignUpForm />
+    <main className="container py-5 wm-onboarding-page">
+      <section className="wm-onboarding-hero">
+        <div className="wm-onboarding-hero__copy">
+          <p className="wm-onboarding-hero__eyebrow">{page.eyebrow}</p>
+          <h1 className="wm-page-title mb-3">{page.title}</h1>
+          <p className="text-secondary mb-0">{page.description}</p>
+        </div>
+        <div className="wm-onboarding-hero__highlights">
+          {Object.values(page.highlights).map((item) => (
+            <article key={item.title} className="wm-onboarding-highlight">
+              <strong>{item.title}</strong>
+              <span>{item.description}</span>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="wm-onboarding-layout">
+        <aside className="wm-onboarding-aside">
+          <div className="wm-onboarding-aside__card">
+            <p className="wm-onboarding-aside__eyebrow">{page.sidebar.eyebrow}</p>
+            <h2 className="wm-card-title">{page.sidebar.title}</h2>
+            <ul className="wm-onboarding-aside__list">
+              {Object.values(page.sidebar.points).map((point) => (
+                <li key={point}>{point}</li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+
+        <div className="wm-onboarding-main">
+          <VendorSignUpForm categories={categories} requiresAccount={requiresAccount} />
+        </div>
+      </section>
     </main>
   );
 }

@@ -1,26 +1,37 @@
+"use client";
+
 import Link from "next/link";
+import { useMemo } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import type { VendorBreadcrumb } from "@/types/vendor-profile";
 
 type BreadcrumbsProps = {
   categories: VendorBreadcrumb[];
-  location: {
-    city: string | null;
-    region: string | null;
-    country: string | null;
-  };
   vendorName: string;
 };
 
-export default function Breadcrumbs({ categories, location, vendorName }: BreadcrumbsProps) {
-  const homeCrumb = { href: "/", label: "Home" };
-  const vendorsCrumb = { href: "/vendors", label: "Vendors" };
+export default function Breadcrumbs({ categories, vendorName }: BreadcrumbsProps) {
+  const { dictionary, language } = useLanguage();
+  const homeCrumb = { href: "/", label: language === "es" ? "Inicio" : "Home" };
+  const vendorsCrumb = { href: "/vendors", label: dictionary.nav.vendors };
 
-  const categoryCrumbs = categories.map((category) => ({
-    href: category.slug ? `/vendors/category/${category.slug}` : undefined,
-    label: category.label,
-  }));
+  const categoryLabelsByKey = useMemo(
+    () =>
+      new Map(
+        dictionary.home.categories.items.map((item) => [item.slug.toLowerCase(), item.label]),
+      ),
+    [dictionary.home.categories.items],
+  );
 
-  const regionCrumbs = [location.region, location.city].filter(Boolean) as string[];
+  const categoryCrumbs = categories.map((category) => {
+    const key = category.key?.trim().toLowerCase() ?? null;
+    const label = key ? categoryLabelsByKey.get(key) ?? category.label : category.label;
+
+    return {
+      href: key ? `/vendors?category=${encodeURIComponent(key)}` : undefined,
+      label,
+    };
+  });
 
   return (
     <nav aria-label="breadcrumb">
@@ -34,11 +45,6 @@ export default function Breadcrumbs({ categories, location, vendorName }: Breadc
         {categoryCrumbs.map((crumb, index) => (
           <li className="breadcrumb-item" key={`category-${index}`}>
             {crumb.href ? <Link href={crumb.href}>{crumb.label}</Link> : crumb.label}
-          </li>
-        ))}
-        {regionCrumbs.map((crumb, index) => (
-          <li className="breadcrumb-item text-capitalize" key={`region-${index}`}>
-            {crumb}
           </li>
         ))}
         <li className="breadcrumb-item active" aria-current="page">

@@ -1,0 +1,71 @@
+// ─── Light luxury: White + Gold + Dark Blue + Black ──────────────────────────
+
+$body-bg:    #ffffff !default;
+$body-color: #09090f !default;
+$border-color: rgba(9, 9, 15, 0.1) !default;
+$text-muted:   rgba(9, 9, 15, 0.52) !default;
+$headings-color: #09090f !default;
+
+// ── Gray scale (light end) ──────────────────────────────────────────────────
+$gray-100: #f5f5f3 !default;
+$gray-200: #ededeb !default;
+$gray-300: #dededd !default;
+$gray-400: #c4c4c2 !default;
+$gray-500: #9a9a98 !default;
+$gray-600: #6e6e6c !default;
+$gray-700: #4a4a48 !default;
+$gray-800: #2e2e2c !default;
+$gray-900: #16161a !default;
+
+// ── Brand palette ──────────────────────────────────────────────────────────
+$primary:   #b8922a !default;   // warm gold (works on white)
+$secondary: #1c1c1c !default;   // dark navy blue
+$success:   #2d6a4f !default;
+$info:      #1a4d8f !default;
+$warning:   #b8922a !default;
+$danger:    #b93c3c !default;
+$light:     #f5f5f3 !default;
+$dark:      #09090f !default;
+
+$primary-light:   rgba(184, 146, 42, 0.1)  !default;
+$secondary-light: rgba(28, 28, 28, 0.08)   !default;
+$success-light:   rgba(45, 106, 79, 0.1)   !default;
+$info-light:      rgba(26, 77, 143, 0.1)   !default;
+$warning-light:   rgba(184, 146, 42, 0.1)  !default;
+$danger-light:    rgba(185, 60, 60, 0.1)   !default;
+$light-light:     #ffffff                  !default;
+
+$primary-dark:    #9a7820 !default;
+$secondary-dark:  #060e22 !default;
+$success-dark:    #1b4332 !default;
+$info-dark:       #0f2d5a !default;
+$warning-dark:    #7d6018 !default;
+$danger-dark:     #7a2020 !default;
+$light-dark:      #ededeb !default;
+
+// ── Links ──────────────────────────────────────────────────────────────────
+$link-color:       #b8922a !default;
+$link-hover-color: #9a7820 !default;
+
+// ── Fonts ──────────────────────────────────────────────────────────────────
+$font-family-base:     "Google Sans", var(--font-geist-sans), "Inter", "Segoe UI", Arial, sans-serif !default;
+$headings-font-family: "Playfair Display", Georgia, serif !default;
+
+// ── Shadows ────────────────────────────────────────────────────────────────
+$box-shadow:    0 1rem 2.5rem rgba(9, 9, 15, 0.08) !default;
+$box-shadow-sm: 0 0.4rem 1rem  rgba(9, 9, 15, 0.06) !default;
+$box-shadow-lg: 0 1.5rem 3.5rem rgba(9, 9, 15, 0.12) !default;
+
+// ── Border radius ──────────────────────────────────────────────────────────
+$border-radius-sm:   0.75rem !default;
+$border-radius:      1rem    !default;
+$border-radius-lg:   1.25rem !default;
+$border-radius-xl:   1.5rem  !default;
+$border-radius-xxl:  2rem    !default;
+$border-radius-pill: 9999px  !default;
+
+// ── Buttons ────────────────────────────────────────────────────────────────
+$btn-border-radius:   $border-radius-pill !default;
+$btn-font-weight:     600                 !default;
+$input-border-radius: $border-radius-sm   !default;
+$alert-border-radius: $border-radius      !default;

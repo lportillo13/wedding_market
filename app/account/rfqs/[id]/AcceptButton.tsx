@@ -1,11 +1,15 @@
 "use client";
+
 import { useActionState, useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { acceptQuote } from "./actions";
 
 export default function AcceptButton({ rfq_id, quote_id }: { rfq_id: string; quote_id: string }) {
   const [state, action, pending] = useActionState(acceptQuote, { ok: false });
   const [revealEmail, setRevealEmail] = useState(true);
   const [revealPhone, setRevealPhone] = useState(false);
+  const { dictionary } = useLanguage();
+  const labels = dictionary.account.rfqsPage.acceptQuote;
 
   return (
     <form action={action} className="vstack gap-2">
@@ -19,10 +23,10 @@ export default function AcceptButton({ rfq_id, quote_id }: { rfq_id: string; quo
           id={`reveal_email_${quote_id}`}
           name="reveal_email"
           checked={revealEmail}
-          onChange={(e) => setRevealEmail(e.target.checked)}
+          onChange={(event) => setRevealEmail(event.target.checked)}
         />
         <label className="form-check-label" htmlFor={`reveal_email_${quote_id}`}>
-          Reveal my email
+          {labels.shareEmail}
         </label>
       </div>
 
@@ -33,15 +37,15 @@ export default function AcceptButton({ rfq_id, quote_id }: { rfq_id: string; quo
           id={`reveal_phone_${quote_id}`}
           name="reveal_phone"
           checked={revealPhone}
-          onChange={(e) => setRevealPhone(e.target.checked)}
+          onChange={(event) => setRevealPhone(event.target.checked)}
         />
         <label className="form-check-label" htmlFor={`reveal_phone_${quote_id}`}>
-          Reveal my phone
+          {labels.sharePhone}
         </label>
       </div>
 
       <button className="btn btn-success btn-sm align-self-start" disabled={pending}>
-        {pending ? "Accepting…" : "Accept quote"}
+        {pending ? labels.submitting : labels.submit}
       </button>
 
       {!state.ok && state.message && <div className="small text-danger">{state.message}</div>}

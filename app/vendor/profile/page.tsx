@@ -15,6 +15,7 @@ type VendorRow = {
   business_name: string | null;
   bio: Record<string, unknown> | null;
   extra_info: Record<string, unknown> | null;
+  logo_url: string | null;
   hero_image: VendorImage | null;
   thumbnail_image: VendorImage | null;
   gallery_images: VendorImage[] | null;
@@ -60,6 +61,12 @@ type TeamRow = {
   created_at: string | null;
 };
 
+type AvailabilityRow = {
+  id: string;
+  available_on: string;
+  availability_status: "available" | "busy";
+};
+
 type LocalizedPair = { en: string; es: string };
 
 function resolveLocalizedInput(value: unknown, locale: "en" | "es"): string {
@@ -102,6 +109,7 @@ export default async function ProfilePage() {
         "business_name",
         "bio",
         "extra_info",
+        "logo_url",
         "hero_image",
         "thumbnail_image",
         "gallery_images",
@@ -156,6 +164,7 @@ export default async function ProfilePage() {
           "business_name",
           "bio",
           "extra_info",
+          "logo_url",
           "hero_image",
           "thumbnail_image",
           "gallery_images",
@@ -208,6 +217,7 @@ export default async function ProfilePage() {
   };
 
   const contactInitial = {
+    logo_url: v.logo_url ?? "",
     phone: v.phone ?? "",
     website_url: v.website_url ?? "",
     map_url: v.map_url ?? "",
@@ -285,7 +295,13 @@ export default async function ProfilePage() {
       : "",
   }));
 
-  const availabilityInitial = parseLocalizedPair(extraInfo["availability_note"]);
+  const { data: availabilityData } = await supabase
+    .from("vendor_availability")
+    .select("id, available_on, availability_status")
+    .eq("vendor_id", v.id)
+    .order("available_on", { ascending: true });
+
+  const availabilityRows = (availabilityData ?? []) as AvailabilityRow[];
 
   const googleBusinessProfileUrl =
     typeof extraInfo["google_business_profile_url"] === "string"
@@ -300,8 +316,8 @@ export default async function ProfilePage() {
   const heroImage = v.hero_image?.url ? v.hero_image : null;
   const thumbnailImage = v.thumbnail_image?.url ? v.thumbnail_image : null;
   const galleryImages = Array.isArray(v.gallery_images)
-    ? (v.gallery_images as VendorImage[]).filter((img) =>
-        Boolean(img && typeof img.url === "string" && img.url.length > 0)
+    ? (v.gallery_images as VendorImage[]).filter((asset) =>
+        Boolean(asset && typeof asset.url === "string" && asset.url.length > 0)
       )
     : [];
 
@@ -319,7 +335,12 @@ export default async function ProfilePage() {
       amenitiesInitial={amenitiesInitial}
       amenityOptions={amenityOptions}
       teamInitial={teamInitial}
-      availabilityInitial={availabilityInitial}
+      availabilityInitial={{
+        dates: availabilityRows.map((row) => ({
+          date: row.available_on,
+          status: row.availability_status,
+        })),
+      }}
       reviewsInitial={reviewsInitial}
     />
   );

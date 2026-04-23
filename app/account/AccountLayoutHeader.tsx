@@ -1,31 +1,38 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function AccountLayoutHeader() {
   const { dictionary } = useLanguage();
   const labels = dictionary.account.layout;
+  const pathname = usePathname();
 
   const tabs = [
     { href: "/account/profile", label: labels.tabs.profile },
-    { href: "/account/rfqs", label: labels.tabs.rfqs },
-    { href: "/account/quotes", label: labels.tabs.quotes },
+    { href: "/account/inbox", label: labels.tabs.inbox ?? "Inbox" },
     { href: "/account/reviews", label: labels.tabs.reviews },
   ];
 
   return (
-    <div className="container py-4" style={{ maxWidth: 960 }}>
-      <h1 className="mb-3">{labels.heading}</h1>
-      <ul className="nav nav-tabs mb-4">
-        {tabs.map((tab) => (
-          <li className="nav-item" key={tab.href}>
-            <Link className="nav-link" href={tab.href}>
-              {tab.label}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <header className="wm-account-header">
+      <div className="container">
+        <p className="wm-account-header__eyebrow">{labels.heading}</p>
+        <h1 className="wm-account-header__title">My Account</h1>
+        <nav aria-label="Account sections">
+          <ul className="wm-account-tabs">
+            {tabs.map((tab) => (
+              <li
+                key={tab.href}
+                className={`wm-account-tab${pathname === tab.href ? " is-active" : ""}`}
+              >
+                <Link href={tab.href}>{tab.label}</Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </header>
   );
 }

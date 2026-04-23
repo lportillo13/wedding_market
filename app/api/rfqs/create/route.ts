@@ -1,20 +1,33 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { createVendorNewRequestNotification } from "@/lib/notifications";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 
 const payloadSchema = z.object({
+  rfq_id: z.string().uuid().optional().nullable(),
   vendor_id: z.string().uuid(),
   first_name: z.string().min(1),
   last_name: z.string().min(1),
   email: z.string().email(),
   phone: z.string().optional().nullable(),
-  guest_count_range: z.string().min(1),
+  guest_count: z.number().int().positive().optional().nullable(),
+  guest_count_range: z.string().optional().nullable(),
+  budget_min: z.number().int().nonnegative().optional().nullable(),
+  budget_max: z.number().int().nonnegative().optional().nullable(),
+  city: z.string().optional().nullable(),
+  state: z.string().optional().nullable(),
+  country: z.string().optional().nullable(),
+  language: z.string().optional().nullable(),
+  theme: z.string().optional().nullable(),
   message: z.string().min(1),
   event_date: z.string().optional().nullable(),
   flexible: z.boolean().optional(),
+}).refine((input) => input.guest_count !== null && input.guest_count !== undefined || Boolean(input.guest_count_range?.trim()), {
+  message: "Please fill in the required fields.",
+  path: ["guest_count"],
 });
 
 const QUOTE_EXPIRES_DAYS = 14;
@@ -39,12 +52,24 @@ export async function POST(request: Request) {
   const { data: authData } = await supabase.auth.getUser();
   const user = authData?.user ?? null;
 
+  if (!user) {
+    return NextResponse.json({ ok: false, message: "Please log in to send a request." }, { status: 401 });
+  }
+
   const eventDate = input.event_date ? new Date(input.event_date).toISOString().slice(0, 10) : null;
 
   const basePayload = {
     event_date: eventDate,
     flexible_date: input.flexible ?? false,
-    guest_count_range: input.guest_count_range,
+    guest_count: input.guest_count ?? null,
+    guest_count_range: input.guest_count_range?.trim() || (input.guest_count ? String(input.guest_count) : null),
+    budget_min: input.budget_min ?? null,
+    budget_max: input.budget_max ?? null,
+    city: input.city?.trim() || null,
+    state: input.state?.trim() || null,
+    country: input.country?.trim() || null,
+    language: input.language?.trim() || null,
+    theme: input.theme?.trim() || null,
     notes: input.message,
     contact_email: input.email,
     contact_phone: input.phone ?? null,
@@ -54,6 +79,33 @@ export async function POST(request: Request) {
     guest_phone: input.phone ?? null,
     vendor_id: input.vendor_id,
   } as const;
+
+  const loadExistingEditableRfq = async (client: SupabaseClient, ownerId: string, rfqId?: string | null) => {
+    let query = client
+      .from("rfqs")
+      .select("id")
+      .eq("owner_id", ownerId)
+      .eq("vendor_id", input.vendor_id)
+      .is("accepted_quote_id", null)
+      .order("created_at", { ascending: false })
+      .limit(1);
+
+    if (rfqId) {
+      query = query.eq("id", rfqId);
+    }
+
+    return query.maybeSingle();
+  };
+
+  const hasVendorResponse = async (client: SupabaseClient, rfqId: string) => {
+    const result = await client
+      .from("quotes")
+      .select("id", { count: "exact", head: true })
+      .eq("rfq_id", rfqId)
+      .eq("vendor_id", input.vendor_id);
+
+    return { count: result.count ?? 0, error: result.error };
+  };
 
   const ownerColumns: OwnerColumn[] = ["owner_id", "owner_uuid"];
 
@@ -76,26 +128,68 @@ export async function POST(request: Request) {
   let rfqId: string | null = null;
   let insertError: { message?: string } | null = null;
 
-  if (user) {
-    const attempt = await insertRfq(supabase, user.id);
-    rfqId = attempt.data?.id ?? null;
-    insertError = attempt.error;
+  let existingEditableRfq: { id: string } | null = null;
+  let existingEditableRfqError: { message?: string } | null = null;
 
-    if (insertError && supabaseAdmin && /policy/i.test(insertError.message ?? "")) {
-      const retry = await insertRfq(supabaseAdmin, user.id);
-      rfqId = retry.data?.id ?? null;
-      insertError = retry.error;
-    }
-  } else {
-    const guestAttempt = await insertRfq(supabase, null);
-    rfqId = guestAttempt.data?.id ?? null;
-    insertError = guestAttempt.error;
+  const existingAttempt = await loadExistingEditableRfq(supabase, user.id, input.rfq_id);
+  existingEditableRfq = existingAttempt.data;
+  existingEditableRfqError = existingAttempt.error;
 
-    if ((insertError || !rfqId) && supabaseAdmin) {
-      const retry = await insertRfq(supabaseAdmin, null);
-      rfqId = retry.data?.id ?? null;
-      insertError = retry.error;
+  if (existingEditableRfqError && supabaseAdmin && /policy/i.test(existingEditableRfqError.message ?? "")) {
+    const retry = await loadExistingEditableRfq(supabaseAdmin, user.id, input.rfq_id);
+    existingEditableRfq = retry.data;
+    existingEditableRfqError = retry.error;
+  }
+
+  if (existingEditableRfqError) {
+    return NextResponse.json({ ok: false, message: existingEditableRfqError.message || "Unable to load request." }, { status: 500 });
+  }
+
+  if (existingEditableRfq?.id) {
+    let vendorReplyCheck = await hasVendorResponse(supabase, existingEditableRfq.id);
+
+    if (vendorReplyCheck.error && supabaseAdmin && /policy/i.test(vendorReplyCheck.error.message ?? "")) {
+      vendorReplyCheck = await hasVendorResponse(supabaseAdmin, existingEditableRfq.id);
     }
+
+    if (vendorReplyCheck.error) {
+      return NextResponse.json({ ok: false, message: vendorReplyCheck.error.message || "Unable to load request." }, { status: 500 });
+    }
+
+    if (vendorReplyCheck.count === 0) {
+      const updatePayload = { ...basePayload, updated_at: new Date().toISOString() };
+      let updateError = await supabase
+        .from("rfqs")
+        .update(updatePayload)
+        .eq("id", existingEditableRfq.id)
+        .eq("owner_id", user.id)
+        .then((res) => res.error);
+
+      if (updateError && supabaseAdmin && /policy/i.test(updateError.message ?? "")) {
+        const retry = await supabaseAdmin
+          .from("rfqs")
+          .update(updatePayload)
+          .eq("id", existingEditableRfq.id)
+          .eq("owner_id", user.id);
+        updateError = retry.error;
+      }
+
+      if (updateError) {
+        return NextResponse.json({ ok: false, message: updateError.message || "Unable to update request." }, { status: 500 });
+      }
+
+      return NextResponse.json({ ok: true, rfq_id: existingEditableRfq.id, updated: true });
+    }
+  }
+
+  const attempt = await insertRfq(supabase, user.id);
+  rfqId = attempt.data?.id ?? null;
+  insertError = attempt.error;
+
+  if (insertError && supabaseAdmin && /policy/i.test(insertError.message ?? "")) {
+    const retry = await insertRfq(supabaseAdmin, user.id);
+    rfqId = retry.data?.id ?? null;
+    insertError = retry.error;
   }
 
   if (insertError || !rfqId) {
@@ -115,6 +209,32 @@ export async function POST(request: Request) {
 
   if (inviteError) {
     return NextResponse.json({ ok: false, message: inviteError.message || "Failed to notify vendor." }, { status: 500 });
+  }
+
+  const vendorLookupClient = supabaseAdmin ?? supabase;
+  const { data: vendorRecipient } = await vendorLookupClient
+    .from("vendors")
+    .select("id, owner_id")
+    .eq("id", input.vendor_id)
+    .maybeSingle();
+
+  if (vendorRecipient?.owner_id) {
+    const requesterName = `${input.first_name} ${input.last_name}`.trim() || null;
+    const { error: notificationError } = await createVendorNewRequestNotification(vendorLookupClient, {
+      recipientId: vendorRecipient.owner_id,
+      actorId: user?.id ?? null,
+      rfqId,
+      vendorId: input.vendor_id,
+      requesterName,
+      city: basePayload.city,
+      state: basePayload.state,
+      country: basePayload.country,
+      eventDate,
+    });
+
+    if (notificationError && process.env.NODE_ENV !== "production") {
+      console.warn("Failed to create vendor request notification", notificationError.message);
+    }
   }
 
   return NextResponse.json({ ok: true, rfq_id: rfqId });

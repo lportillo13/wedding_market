@@ -1,6 +1,6 @@
-import type { CloudinaryImage } from "@/types/images";
+import type { MediaAsset } from "@/types/images";
 
-export function isCloudinaryImage(value: unknown): value is CloudinaryImage {
+export function isMediaAsset(value: unknown): value is MediaAsset {
   if (!value || typeof value !== "object") {
     return false;
   }
@@ -16,12 +16,12 @@ export function isCloudinaryImage(value: unknown): value is CloudinaryImage {
   );
 }
 
-export function parseCloudinaryImage(value: unknown): CloudinaryImage | null {
-  if (!isCloudinaryImage(value)) {
+export function parseMediaAsset(value: unknown): MediaAsset | null {
+  if (!isMediaAsset(value)) {
     return null;
   }
 
-  const { url, public_id, width, height, format, bytes } = value as CloudinaryImage;
+  const { url, public_id, width, height, format, bytes, type } = value as MediaAsset;
   return {
     url,
     public_id,
@@ -29,5 +29,9 @@ export function parseCloudinaryImage(value: unknown): CloudinaryImage | null {
     height,
     format,
     ...(typeof bytes === "number" ? { bytes } : {}),
+    ...(type === "video" || type === "image" ? { type } : {}),
   };
 }
+
+export const isCloudinaryImage = isMediaAsset;
+export const parseCloudinaryImage = parseMediaAsset;

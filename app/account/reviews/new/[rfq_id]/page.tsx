@@ -1,11 +1,12 @@
-import { revalidatePath } from "next/cache";
 import Link from "next/link";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 import { createReview, type CreateReviewState } from "@/app/account/reviews/actions";
+import { getRequestI18n } from "@/lib/i18n/server";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 import ReviewForm from "./ReviewForm";
 
 export default async function NewReviewPage({
@@ -14,6 +15,8 @@ export default async function NewReviewPage({
   params: Promise<{ rfq_id: string }>;
 }) {
   const { rfq_id } = await params;
+  const { dictionary } = await getRequestI18n();
+  const labels = dictionary.account.reviewsPage;
   const supabase = await createSupabaseServerClient();
 
   const {
@@ -43,10 +46,7 @@ export default async function NewReviewPage({
       .maybeSingle<{ id: string; accepted_quote_id: string | null; owner_id: string }>();
 
   let ownerColumn: OwnerColumn = "owner_id";
-  let {
-    data: rfq,
-    error: rfqErr,
-  } = await selectRfq(supabase, ownerColumn);
+  let { data: rfq, error: rfqErr } = await selectRfq(supabase, ownerColumn);
 
   if (isMissingOwnerColumnError(rfqErr, ownerColumn)) {
     ownerColumn = "owner_uuid";
@@ -61,38 +61,44 @@ export default async function NewReviewPage({
     rfqErr = retry.error;
   }
 
-  if (rfqErr) throw new Error(rfqErr.message);
+  if (rfqErr) {
+    throw new Error(rfqErr.message);
+  }
+
   if (!rfq || rfq.owner_id !== user.id) {
     return (
       <main className="container py-4" style={{ maxWidth: 720 }}>
-        <h1 className="mb-3">Write a review</h1>
-        <div className="alert alert-warning">You can only review your own RFQs.</div>
+        <h1 className="mb-3">{labels.newTitle}</h1>
+        <div className="alert alert-warning">{labels.messages.ownRequestOnly}</div>
         <Link className="btn btn-outline-secondary mt-3" href="/account/rfqs">
-          Back to my RFQs
+          {labels.actions.backToRequests}
         </Link>
       </main>
     );
   }
 
   let vendorId: string | null = null;
-  if (rfq?.accepted_quote_id) {
+  if (rfq.accepted_quote_id) {
     const { data: quote, error: quoteErr } = await supabase
       .from("quotes")
       .select("vendor_id")
       .eq("id", rfq.accepted_quote_id)
       .maybeSingle<{ vendor_id: string }>();
 
-    if (quoteErr) throw new Error(quoteErr.message);
+    if (quoteErr) {
+      throw new Error(quoteErr.message);
+    }
+
     vendorId = quote?.vendor_id ?? null;
   }
 
   if (!vendorId) {
     return (
       <main className="container py-4" style={{ maxWidth: 720 }}>
-        <h1 className="mb-3">Write a review</h1>
-        <div className="alert alert-warning">You can only review vendors you hired.</div>
+        <h1 className="mb-3">{labels.newTitle}</h1>
+        <div className="alert alert-warning">{labels.messages.hiredOnly}</div>
         <Link className="btn btn-outline-secondary mt-3" href="/account/rfqs">
-          Back to my RFQs
+          {labels.actions.backToRequests}
         </Link>
       </main>
     );
@@ -103,43 +109,47 @@ export default async function NewReviewPage({
     _vendor_id: vendorId,
     _rfq_id: rfq_id,
   });
-  if (allowedErr) throw new Error(allowedErr.message);
+
+  if (allowedErr) {
+    throw new Error(allowedErr.message);
+  }
 
   const { data: done, error: doneErr } = await supabase.rpc("has_user_reviewed", {
     _uid: user.id,
     _vendor_id: vendorId,
     _rfq_id: rfq_id,
   });
-  if (doneErr) throw new Error(doneErr.message);
 
-  const hasReviewed = !!done;
-  const canWrite = !!allowed && !hasReviewed;
+  if (doneErr) {
+    throw new Error(doneErr.message);
+  }
+
+  const hasReviewed = Boolean(done);
+  const canWrite = Boolean(allowed) && !hasReviewed;
 
   if (!canWrite) {
     return (
       <main className="container py-4" style={{ maxWidth: 720 }}>
-        <h1 className="mb-3">Write a review</h1>
-        <div className="alert alert-info">
-          You can only review vendors you hired and haven’t already reviewed.
-        </div>
+        <h1 className="mb-3">{labels.newTitle}</h1>
+        <div className="alert alert-info">{labels.messages.alreadyReviewed}</div>
         <Link className="btn btn-outline-secondary mt-3" href="/account/reviews">
-          See my reviews
+          {labels.actions.viewMyReviews}
         </Link>
       </main>
     );
   }
 
   async function action(prev: CreateReviewState, fd: FormData): Promise<CreateReviewState> {
-    const res = await createReview(prev, fd);
-    if (res.ok) {
+    const result = await createReview(prev, fd);
+    if (result.ok) {
       revalidatePath("/vendors");
     }
-    return res;
+    return result;
   }
 
   return (
     <main className="container py-4" style={{ maxWidth: 720 }}>
-      <h1 className="mb-3">Write a review</h1>
+      <h1 className="mb-3">{labels.newTitle}</h1>
       <ReviewForm rfq_id={rfq_id} vendor_id={vendorId} action={action} />
     </main>
   );

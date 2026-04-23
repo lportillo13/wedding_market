@@ -7,8 +7,23 @@ import { usePathname } from "next/navigation";
 import { getShortlistCount } from "@/lib/shortlist";
 import { useTranslation } from "@/contexts/LanguageContext";
 import LanguageDropdown from "@/components/LanguageDropdown";
+import VendorsMegaMenu, { type HeaderVendorCategory } from "@/components/VendorsMegaMenu";
 
-export default function NavBar({ authMenu }: { authMenu?: ReactNode }) {
+type NavBarProps = {
+  authMenu?: ReactNode;
+  isAuthenticated?: boolean;
+  isVendor?: boolean;
+  notificationLink?: ReactNode;
+  vendorCategories: HeaderVendorCategory[];
+};
+
+export default function NavBar({
+  authMenu,
+  isAuthenticated = false,
+  isVendor = false,
+  notificationLink,
+  vendorCategories,
+}: NavBarProps) {
   const [count, setCount] = useState(() => (typeof window !== "undefined" ? getShortlistCount() : 0));
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -56,10 +71,11 @@ export default function NavBar({ authMenu }: { authMenu?: ReactNode }) {
 
   const navExpanded = isLargeScreen || isOpen;
   const t = useTranslation();
+  const closeMobileNav = () => setIsOpen(false);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
-      <div className="container">
+    <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm wm-navbar-shell wm-site-navbar">
+      <div className="container position-relative">
         <Link href="/" className="navbar-brand">{t("nav.brand")}</Link>
 
         <button
@@ -75,26 +91,56 @@ export default function NavBar({ authMenu }: { authMenu?: ReactNode }) {
 
         <div className={`collapse navbar-collapse${navExpanded ? " show" : ""}`} id="wmNav">
           <ul className="navbar-nav me-auto">
-            <li className="nav-item"><Link href="/vendors" className="nav-link">{t("nav.vendors")}</Link></li>
+            <VendorsMegaMenu categories={vendorCategories} closeMobileNav={closeMobileNav} />
+            <li className="nav-item"><Link href="/about" className="nav-link">{t("nav.about")}</Link></li>
             <li className="nav-item"><Link href="/blog" className="nav-link">{t("nav.blog")}</Link></li>
-            <li className="nav-item"><Link href="/account/rfqs" className="nav-link">{t("nav.myRequests")}</Link></li>
+            {isAuthenticated && !isVendor && (
+              <li className="nav-item"><Link href="/account/inbox" className="nav-link">{t("nav.myRequests")}</Link></li>
+            )}
+            {isAuthenticated && isVendor && (
+              <li className="nav-item"><Link href="/vendor/inbox" className="nav-link">{t("vendorRfqs.title")}</Link></li>
+            )}
           </ul>
 
-          <div className="d-flex align-items-center gap-2 flex-wrap flex-lg-nowrap ms-lg-auto">
-            <Link href="/rfq/new" className="btn btn-primary btn-sm">
-              {t("nav.requestQuotes")}
-            </Link>
-            <Link href="/shortlist" className="btn btn-outline-secondary btn-sm position-relative">
-              {t("nav.shortlist")}
-              {/* render badge after mount to avoid hydration mismatch */}
-              {mounted && (
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                  {count}
-                  <span className="visually-hidden">{t("nav.shortlistCountLabel")}</span>
-                </span>
-              )}
-            </Link>
-            <LanguageDropdown />
+          <div className="wm-navbar-actions d-flex align-items-center gap-2 flex-wrap flex-lg-nowrap ms-lg-auto">
+            {!isVendor && (
+              <Link href="/rfq/new" className="btn btn-primary btn-sm wm-header-action">
+                {t("nav.requestQuotes")}
+              </Link>
+            )}
+            {notificationLink}
+            {isAuthenticated && !isVendor && (
+              <Link
+                href="/shortlist"
+                className="btn btn-outline-secondary btn-sm position-relative d-inline-flex align-items-center justify-content-center wm-header-action wm-header-action--icon"
+                aria-label={t("nav.shortlist")}
+                title={t("nav.shortlist")}
+                style={{ padding: 0 }}
+              >
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  width="18"
+                  height="18"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="m12 21-1.4-1.3C5.4 14.9 2 11.8 2 8a5 5 0 0 1 9.1-2.9L12 6.3l.9-1.2A5 5 0 0 1 22 8c0 3.8-3.4 6.9-8.6 11.7z" />
+                </svg>
+                <span className="visually-hidden">{t("nav.shortlist")}</span>
+                {/* render badge after mount to avoid hydration mismatch */}
+                {mounted && (
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {count}
+                    <span className="visually-hidden">{t("nav.shortlistCountLabel")}</span>
+                  </span>
+                )}
+              </Link>
+            )}
+            {!isAuthenticated && <LanguageDropdown />}
             {authMenu}
           </div>
         </div>

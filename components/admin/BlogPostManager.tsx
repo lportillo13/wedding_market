@@ -7,6 +7,8 @@ import {
   useMemo,
   useState,
 } from "react";
+import { useSearchParams } from "next/navigation";
+import { uploadWithProgress } from "@/lib/client/uploads";
 import {
   DndContext,
   DragEndEvent,
@@ -537,6 +539,31 @@ type BlockFieldsProps = {
 };
 
 function BlockFields({ block, onChange }: BlockFieldsProps) {
+  const [imageUploadPending, setImageUploadPending] = useState(false);
+  const [imageUploadProgress, setImageUploadProgress] = useState(0);
+
+  async function handleBlockImageUpload(file: File | null) {
+    if (!file || block.type !== "image") return;
+
+    try {
+      setImageUploadPending(true);
+      setImageUploadProgress(0);
+      const payload = new FormData();
+      payload.set("target", "website-blog-block-image");
+      payload.set("file", file);
+      const response = await uploadWithProgress<{ asset: { url: string } }>("/api/uploads", payload, setImageUploadProgress);
+      onChange({
+        ...block,
+        data: {
+          ...block.data,
+          url: response.asset.url,
+        },
+      });
+    } finally {
+      setImageUploadPending(false);
+    }
+  }
+
   switch (block.type) {
     case "heading":
       return (
@@ -655,6 +682,23 @@ function BlockFields({ block, onChange }: BlockFieldsProps) {
               className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white focus:border-emerald-400 focus:outline-none"
             />
           </label>
+          <label className="grid gap-2 text-sm text-slate-200">
+            Upload image
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(event) => handleBlockImageUpload(event.target.files?.[0] ?? null)}
+              disabled={imageUploadPending}
+              className="rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-white focus:border-emerald-400 focus:outline-none"
+            />
+          </label>
+          {imageUploadPending ? (
+            <div className="progress" role="progressbar" aria-valuenow={imageUploadProgress} aria-valuemin={0} aria-valuemax={100}>
+              <div className="progress-bar progress-bar-striped progress-bar-animated" style={{ width: `${imageUploadProgress}%` }}>
+                {imageUploadProgress}%
+              </div>
+            </div>
+          ) : null}
           <label className="flex items-center gap-3 text-sm text-slate-200">
             <input
               type="checkbox"
@@ -890,10 +934,13 @@ function palettePlaceholder(onAdd: (type: BlockType) => void): ReactNode {
 }
 
 export default function BlogPostManager({ initialPosts, errorMessage }: Props) {
+  const searchParams = useSearchParams();
   const [posts, setPosts] = useState<AdminPost[]>(initialPosts);
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState<string | null>(errorMessage ?? null);
   const [busyPostId, setBusyPostId] = useState<string | null>(null);
+  const [heroUploadProgress, setHeroUploadProgress] = useState(0);
+  const [heroUploadPending, setHeroUploadPending] = useState(false);
   const [editor, setEditor] = useState<EditorState>(createEmptyEditor);
   const [editorMode, setEditorMode] = useState<"create" | "edit">("create");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -948,11 +995,45 @@ export default function BlogPostManager({ initialPosts, errorMessage }: Props) {
     []
   );
 
+  useEffect(() => {
+    const editId = searchParams.get("edit");
+    if (!editId || editingId === editId) {
+      return;
+    }
+
+    const requestedPost = posts.find((post) => post.id === editId);
+    if (requestedPost) {
+      handleSelectPost(requestedPost);
+    }
+  }, [editingId, handleSelectPost, posts, searchParams]);
+
   const handleAddBlock = useCallback((type: BlockType) => {
     setEditor((prev) => ({
       ...prev,
       blocks: [...prev.blocks, createBlock(type)],
     }));
+  }, []);
+
+  const handleBlogHeroUpload = useCallback(async (file: File | null) => {
+    if (!file) return;
+
+    try {
+      setHeroUploadPending(true);
+      setHeroUploadProgress(0);
+      setMessage(null);
+      const payload = new FormData();
+      payload.set("target", "website-blog-hero");
+      payload.set("file", file);
+      const response = await uploadWithProgress<{ asset: { url: string } }>("/api/uploads", payload, setHeroUploadProgress);
+      setEditor((prev) => ({ ...prev, hero_image_url: response.asset.url }));
+      setStatus("success");
+      setMessage("Blog hero image uploaded");
+    } catch (error) {
+      setStatus("error");
+      setMessage(error instanceof Error ? error.message : "Unable to upload image");
+    } finally {
+      setHeroUploadPending(false);
+    }
   }, []);
 
   const handleChangeBlock = useCallback((updated: BuilderBlock) => {
@@ -1146,14 +1227,14 @@ export default function BlogPostManager({ initialPosts, errorMessage }: Props) {
   const hasPosts = posts.length > 0;
 
   return (
-    <section className="rounded-3xl border border-slate-800 bg-slate-900/40 p-8 shadow-xl shadow-slate-900/20">
-      <header className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+    <section id="studio" className="wm-admin-surface wm-admin-studio p-8">
+      <header className="mb-8 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-sm uppercase tracking-[0.3em] text-slate-500">Publishing</p>
-          <h2 className="text-2xl font-semibold text-white">Blog post studio</h2>
+          <p className="wm-admin-kicker">Publishing</p>
+          <h2 className="mt-2 text-[2rem] font-semibold text-white">Blog post studio</h2>
         </div>
-        <p className="max-w-xl text-sm text-slate-400">
-          Draft, design, and publish beautiful editorial content with drag-and-drop blocks, inline editing, and live previews.
+        <p className="max-w-2xl text-sm leading-7 text-slate-400">
+          Draft, design, and publish editorial content with drag-and-drop blocks, inline editing, and a visual preview.
         </p>
       </header>
 
@@ -1170,7 +1251,7 @@ export default function BlogPostManager({ initialPosts, errorMessage }: Props) {
       )}
 
       <form onSubmit={submitEditor} className="grid gap-6">
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-4">
           <label className="grid gap-2 text-sm text-slate-200">
             Title
             <input
@@ -1202,7 +1283,7 @@ export default function BlogPostManager({ initialPosts, errorMessage }: Props) {
               className="rounded-2xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-sm text-white focus:border-emerald-400 focus:outline-none"
             />
           </label>
-          <label className="grid gap-2 text-sm text-slate-200 sm:col-span-2">
+          <label className="grid gap-2 text-sm text-slate-200 xl:col-span-2">
             Excerpt
             <textarea
               value={editor.excerpt}
@@ -1217,7 +1298,7 @@ export default function BlogPostManager({ initialPosts, errorMessage }: Props) {
               className="rounded-2xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-sm text-white focus:border-emerald-400 focus:outline-none"
             />
           </label>
-          <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400">
+          <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 xl:col-span-2">
             <button
               type="button"
               onClick={() =>
@@ -1246,6 +1327,25 @@ export default function BlogPostManager({ initialPosts, errorMessage }: Props) {
               className="rounded-2xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-sm text-white focus:border-emerald-400 focus:outline-none"
             />
           </label>
+          <label className="grid gap-2 text-sm text-slate-200">
+            Upload hero image
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(event) => handleBlogHeroUpload(event.target.files?.[0] ?? null)}
+              disabled={heroUploadPending}
+              className="rounded-2xl border border-slate-700 bg-slate-950/80 px-4 py-3 text-sm text-white focus:border-emerald-400 focus:outline-none"
+            />
+          </label>
+          {heroUploadPending ? (
+            <div className="xl:col-span-2">
+              <div className="progress" role="progressbar" aria-valuenow={heroUploadProgress} aria-valuemin={0} aria-valuemax={100}>
+                <div className="progress-bar progress-bar-striped progress-bar-animated" style={{ width: `${heroUploadProgress}%` }}>
+                  {heroUploadProgress}%
+                </div>
+              </div>
+            </div>
+          ) : null}
           <label className="flex items-center gap-3 text-sm text-slate-200">
             <input
               type="checkbox"
@@ -1262,15 +1362,21 @@ export default function BlogPostManager({ initialPosts, errorMessage }: Props) {
           </label>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
+        <div className="grid gap-6 xl:grid-cols-[300px_minmax(0,1fr)]">
           <aside className="space-y-3">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Block library</h3>
+            <div>
+              <p className="wm-admin-kicker whitespace-nowrap">Block library</p>
+              <p className="mt-2 text-sm text-slate-400">Choose a content block and add it to the post canvas.</p>
+            </div>
             {PALETTE.map((item) => (
               <PaletteButton key={item.type} item={item} onAdd={handleAddBlock} />
             ))}
           </aside>
           <div className="space-y-4">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Canvas</h3>
+            <div>
+              <p className="wm-admin-kicker">Canvas</p>
+              <p className="mt-2 text-sm text-slate-400">Arrange and edit the blocks that will appear in the article.</p>
+            </div>
             <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
               <SortableContext items={editor.blocks.map((block) => block.id)}>
                 <div className="grid gap-4">
@@ -1290,9 +1396,9 @@ export default function BlogPostManager({ initialPosts, errorMessage }: Props) {
           </div>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,1.15fr)_20rem]">
           <div className="rounded-2xl border border-slate-800 bg-slate-950/60 p-5">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Live preview</h3>
+            <p className="wm-admin-kicker">Live preview</p>
             <div className="mt-4 space-y-4">
               <article
                 className="prose prose-invert max-w-none space-y-4 text-slate-100"
@@ -1301,7 +1407,7 @@ export default function BlogPostManager({ initialPosts, errorMessage }: Props) {
             </div>
           </div>
           <div className="rounded-2xl border border-slate-800 bg-slate-950/60 p-5 text-sm text-slate-300">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">Content checklist</h3>
+            <p className="wm-admin-kicker">Content checklist</p>
             <ul className="mt-4 space-y-3">
               <li>Word count: {wordCount} words</li>
               <li>{editor.hero_image_url ? "Hero image added" : "Add a hero image for richer previews"}</li>

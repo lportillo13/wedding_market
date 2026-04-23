@@ -1,9 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import VendorAbout from "@/components/vendor/VendorAbout";
 import VendorAmenities from "@/components/vendor/VendorAmenities";
 import VendorPricing from "@/components/vendor/VendorPricing";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
 
 const vendor: VendorProfileDTO["vendor"] = {
@@ -39,10 +41,15 @@ const vendor: VendorProfileDTO["vendor"] = {
     },
 };
 
+function renderWithLanguage(element: ReactElement) {
+  return renderToStaticMarkup(<LanguageProvider initialLanguage="en">{element}</LanguageProvider>);
+}
+
 test("renders vendor summary and spaces", () => {
-  const html = renderToStaticMarkup(
+  const html = renderWithLanguage(
     <VendorAbout
       vendor={vendor}
+      categoryKeys={["venues"]}
       spaces={[
         { id: "space-1", name: "Great Room", description: "Ideal for receptions", capacityMin: 50, capacityMax: 180 },
       ]}
@@ -54,25 +61,46 @@ test("renders vendor summary and spaces", () => {
 });
 
 test("renders pricing rows", () => {
-  const html = renderToStaticMarkup(
+  const html = renderWithLanguage(
     <VendorPricing
       vendor={vendor}
       pricing={[
-        { itemKey: "reception", priceCents: 450000, currency: "USD", contactForPrice: false, notes: "Includes tables" },
-        { itemKey: "ceremony", priceCents: null, currency: "USD", contactForPrice: true, notes: null },
-        { itemKey: "bar", priceCents: 85000, currency: "USD", contactForPrice: false, notes: "Open bar" },
-        { itemKey: "catering", priceCents: 150000, currency: "USD", contactForPrice: false, notes: "Plated dinner" },
+        { itemKey: "venue_rental", priceCents: 450000, currency: "USD", contactForPrice: false, notes: "Includes tables" },
+        { itemKey: "ceremony_site", priceCents: null, currency: "USD", contactForPrice: true, notes: null },
+        { itemKey: "bar_package", priceCents: 85000, currency: "USD", contactForPrice: false, notes: "Open bar" },
       ]}
+      isLoggedIn
+      loginHref="/login?next=%2Fvendors%2Fvendor-1"
+      categoryKeys={["venues"]}
     />
   );
 
-  assert.ok(html.includes("Reception"));
+  assert.ok(html.includes("Venue Rental"));
   assert.ok(html.includes("Couples usually spend"));
   assert.ok(html.includes("Contact for price"));
 });
 
+test("filters legacy catering rows from photographer pricing", () => {
+  const html = renderWithLanguage(
+    <VendorPricing
+      vendor={{ ...vendor, capacityMax: null }}
+      pricing={[
+        { itemKey: "photo_coverage", priceCents: 320000, currency: "USD", contactForPrice: false, notes: "8 hours" },
+        { itemKey: "engagement_session", priceCents: 60000, currency: "USD", contactForPrice: false, notes: null },
+        { itemKey: "catering", priceCents: 150000, currency: "USD", contactForPrice: false, notes: "Legacy wrong row" },
+      ]}
+      isLoggedIn
+      loginHref="/login?next=%2Fvendors%2Fvendor-1"
+      categoryKeys={["photography"]}
+    />
+  );
+
+  assert.ok(html.includes("Wedding Photo Coverage"));
+  assert.ok(!html.includes("Catering"));
+});
+
 test("renders amenity groups", () => {
-  const html = renderToStaticMarkup(
+  const html = renderWithLanguage(
     <VendorAmenities
       amenities={{
         amenities: [
@@ -84,9 +112,29 @@ test("renders amenity groups", () => {
         services: [{ key: "cleanup", label: "Cleanup" }],
       }}
       capacityMax={vendor.capacityMax}
+      categoryKeys={["venues"]}
     />
   );
 
   assert.ok(html.includes("Parking"));
-  assert.ok(html.includes("Maximum capacity: 180 guests"));
+  assert.ok(html.includes("Guest count supported: up to 180"));
+});
+
+test("does not show capacity for photo details", () => {
+  const html = renderWithLanguage(
+    <VendorAmenities
+      amenities={{
+        amenities: [{ key: "digital_files", label: "Digital files" }],
+        ceremonyTypes: [{ key: "engagement", label: "Engagement sessions" }],
+        settings: [{ key: "documentary", label: "Documentary" }],
+        services: [{ key: "second_photographer", label: "Second photographer" }],
+      }}
+      capacityMax={180}
+      categoryKeys={["photography"]}
+    />
+  );
+
+  assert.ok(html.includes("Photo Details"));
+  assert.ok(html.includes("Deliverables"));
+  assert.ok(!html.includes("Guest count supported"));
 });

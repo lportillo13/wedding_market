@@ -1,32 +1,35 @@
-// app/rfq/sent/page.tsx
 import Link from "next/link";
+import { fillTemplate } from "@/lib/i18n";
+import { getRequestI18n } from "@/lib/i18n/server";
 
 export default async function SentPage({
   searchParams,
 }: {
   searchParams: Promise<{ rfq?: string; count?: string }>;
 }) {
-  const sp = await searchParams;
-  const rfq = sp.rfq ?? "";
-  const count = Number(sp.count || 0);
+  const params = await searchParams;
+  const { dictionary } = await getRequestI18n();
+  const labels = dictionary.rfq.sentPage;
+  const rfq = params.rfq ?? "";
+  const count = Number(params.count || 0);
 
   return (
     <main className="container py-4" style={{ maxWidth: 720 }}>
-      <h1>Request sent ✅</h1>
-      <p className="lead">We’ve notified {count} vendor(s).</p>
+      <h1>{labels.title}</h1>
+      <p className="lead">{fillTemplate(labels.lead, { count })}</p>
       <div className="alert alert-info">
-        Your RFQ ID: <code>{rfq}</code>
+        {labels.requestIdLabel} <code>{rfq}</code>
       </div>
       <Link className="btn btn-primary me-2" href="/vendors">
-        Find more vendors
+        {labels.findMoreVendors}
       </Link>
       {rfq ? (
         <Link className="btn btn-outline-secondary" href={`/account/rfqs/${rfq}`}>
-          View this RFQ
+          {labels.viewRequest}
         </Link>
       ) : (
         <Link className="btn btn-outline-secondary" href="/rfq/new">
-          Send another RFQ
+          {labels.sendAnother}
         </Link>
       )}
     </main>

@@ -1,24 +1,38 @@
+"use client";
+
 import Image from "next/image";
+import { resolveMediaUrl, shouldRenderUnoptimizedMedia } from "@/lib/media-url";
+import { useLanguage } from "@/contexts/LanguageContext";
 import type { VendorTeamMember } from "@/types/vendor-profile";
 
 type VendorTeamProps = {
   team: VendorTeamMember[];
 };
 
-function formatResponseTime(hours: number | null): string | null {
-  if (!hours) return null;
-  if (hours <= 24) return "Typically responds within 24 hours";
-  return `Typically responds within ${hours} hours`;
+function fill(template: string, values: Record<string, string | number>) {
+  return Object.entries(values).reduce(
+    (result, [key, value]) => result.replaceAll(`{${key}}`, String(value)),
+    template,
+  );
 }
 
 export default function VendorTeam({ team }: VendorTeamProps) {
+  const { dictionary } = useLanguage();
+  const labels = dictionary.vendorPublic.team;
+
+  const formatResponseTime = (hours: number | null): string | null => {
+    if (!hours) return null;
+    if (hours <= 24) return labels.respondsWithin24;
+    return fill(labels.respondsWithin, { hours });
+  };
+
   if (!team.length) {
-    return <p className="text-muted mb-0">Team information coming soon.</p>;
+    return <p className="text-muted mb-0">{labels.empty}</p>;
   }
 
   return (
     <div>
-      <h2 className="h3 mb-4">Meet the Team</h2>
+      <h2 className="h3 mb-4">{labels.heading}</h2>
       <div className="row g-4">
         {team.map((member) => {
           const responseText = formatResponseTime(member.respondsWithinHours);
@@ -28,9 +42,10 @@ export default function VendorTeam({ team }: VendorTeamProps) {
                 {member.headshotUrl ? (
                   <div className="position-relative" style={{ height: "220px" }}>
                     <Image
-                      src={member.headshotUrl}
+                      src={resolveMediaUrl(member.headshotUrl)}
                       alt={member.name}
                       fill
+                      unoptimized={shouldRenderUnoptimizedMedia(member.headshotUrl)}
                       className="object-fit-cover rounded-top"
                     />
                   </div>
