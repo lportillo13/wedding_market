@@ -153,7 +153,7 @@ export default function HeroNavActions() {
   return (
     <div className="wm-founders-hero__actions d-flex align-items-center gap-2">
       <LanguageDropdown />
-      <Link href="/login" className="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2">
+      <Link href="/login" className="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2 wm-founders-hero__login-link">
         <span className="wm-founders-hero__login-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" focusable="false">
             <circle cx="12" cy="8" r="3.25" />
@@ -162,7 +162,7 @@ export default function HeroNavActions() {
         </span>
         <span>{t("nav.logIn")}</span>
       </Link>
-      <Link href="/signup" className="btn btn-primary btn-sm">
+      <Link href="/signup" className="btn btn-primary btn-sm wm-founders-hero__signup-link">
         {t("nav.signUp")}
       </Link>
     </div>

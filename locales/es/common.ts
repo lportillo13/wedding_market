@@ -342,6 +342,8 @@ const common = {
   },
   "vendorsPage": {
     "title": "Proveedores",
+    "eyebrow": "Directorio de proveedores",
+    "description": "Descubre profesionales de bodas destacados y busca por nombre, estilo o categoria.",
     "searchForm": {
       "queryPlaceholder": "Busca proveedores (nombre, biografía)",
       "categoryPlaceholder": "Filtra por categoría",

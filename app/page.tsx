@@ -186,6 +186,21 @@ type VendorLogoItem = {
   imageUrl?: string | null;
 };
 
+function getVendorLogoInitials(label: string) {
+  const words = label
+    .replace(/\d+/g, "")
+    .split(/\s+/)
+    .map((word) => word.trim())
+    .filter(Boolean);
+
+  const initials = words.slice(0, 2).map((word) => word[0]?.toUpperCase()).join("");
+  return initials || label.slice(0, 2).toUpperCase();
+}
+
+function shouldRenderLogoAsText(imageUrl: string | null | undefined) {
+  return !imageUrl || imageUrl.includes("api.dicebear.com");
+}
+
 export default function Home() {
   const { dictionary, language } = useLanguage();
   const fallbackContent = useMemo(() => getDefaultHomepageContent(language), [language]);
@@ -195,6 +210,7 @@ export default function Home() {
   } | null>(null);
   const [vendorLogos, setVendorLogos] = useState<VendorLogoItem[]>([]);
   const [isHeroNavScrolled, setIsHeroNavScrolled] = useState(false);
+  const [isHeroNavOpen, setIsHeroNavOpen] = useState(false);
   const [activeProcessIndex, setActiveProcessIndex] = useState(0);
 
   useEffect(() => {
@@ -209,6 +225,25 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 992px)");
+    const syncNavMode = (event: MediaQueryList | MediaQueryListEvent) => {
+      if (event.matches) {
+        setIsHeroNavOpen(false);
+      }
+    };
+
+    syncNavMode(mediaQuery);
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", syncNavMode);
+      return () => mediaQuery.removeEventListener("change", syncNavMode);
+    }
+
+    mediaQuery.addListener(syncNavMode);
+    return () => mediaQuery.removeListener(syncNavMode);
+  }, []);
+
+  useEffect(() => {
     async function loadVendorLogos() {
       try {
         const res = await fetch("/api/vendors?pageSize=14", { cache: "no-store" });
@@ -217,13 +252,15 @@ export default function Home() {
           items: Array<{
             id: string;
             business_name: string;
+            logo_url?: string | null;
+            logo_image?: { url?: string } | null;
             thumbnail_image?: { url?: string } | null;
           }>;
         };
         const logos: VendorLogoItem[] = data.items.map((v) => ({
           id: v.id,
           label: v.business_name,
-          imageUrl: v.thumbnail_image?.url ?? null,
+          imageUrl: v.logo_url ?? v.logo_image?.url ?? null,
         }));
         if (logos.length > 0) setVendorLogos(logos);
       } catch {
@@ -299,18 +336,36 @@ export default function Home() {
         and always appears above all page content.
       */}
       <nav
-        className={`wm-founders-hero__nav${isHeroNavScrolled ? " wm-founders-hero__nav--scrolled" : ""}`}
+        className={`wm-founders-hero__nav${isHeroNavScrolled ? " wm-founders-hero__nav--scrolled" : ""}${isHeroNavOpen ? " is-open" : ""}`}
         aria-label="Primary navigation"
       >
-        <ul className="wm-founders-hero__nav-links">
-          <VendorsMegaMenu categories={homeVendorCategories} />
+        <button
+          type="button"
+          className="wm-founders-hero__mobile-toggle"
+          aria-controls="wmHeroNavLinks"
+          aria-expanded={isHeroNavOpen}
+          aria-label="Toggle navigation"
+          onClick={() => setIsHeroNavOpen((current) => !current)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+        <ul
+          id="wmHeroNavLinks"
+          className={`wm-founders-hero__nav-links${isHeroNavOpen ? " is-open" : ""}`}
+        >
+          <VendorsMegaMenu
+            categories={homeVendorCategories}
+            closeMobileNav={() => setIsHeroNavOpen(false)}
+          />
           <li className="nav-item">
-            <Link href="/about" className="nav-link">
+            <Link href="/about" className="nav-link" onClick={() => setIsHeroNavOpen(false)}>
               {dictionary.nav.about}
             </Link>
           </li>
           <li className="nav-item">
-            <Link href="/blog" className="nav-link">
+            <Link href="/blog" className="nav-link" onClick={() => setIsHeroNavOpen(false)}>
               {dictionary.nav.blog}
             </Link>
           </li>
@@ -363,7 +418,11 @@ export default function Home() {
                   className="wm-founders-hero__logo wm-founders-hero__logo--vendor"
                   aria-hidden={index >= vendorLogos.length}
                 >
-                  {logo.imageUrl ? (
+                  {shouldRenderLogoAsText(logo.imageUrl) ? (
+                    <span className="wm-founders-hero__vendor-initials" aria-label={logo.label}>
+                      {getVendorLogoInitials(logo.label)}
+                    </span>
+                  ) : logo.imageUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={resolveMediaUrl(logo.imageUrl)}
@@ -371,7 +430,7 @@ export default function Home() {
                       className="wm-founders-hero__vendor-img"
                     />
                   ) : (
-                    logo.label
+                    null
                   )}
                 </span>
               ))}

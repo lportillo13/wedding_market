@@ -1,9 +1,11 @@
 import "../styles/bootstrap-theme.scss";
 import type { Metadata } from "next";
+import type { Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBarContainer from "@/components/NavBarContainer";
 import AuthStateSync from "@/components/AuthStateSync";
+import PwaServiceWorkerRegistration from "@/components/PwaServiceWorkerRegistration";
 import SiteFooter from "@/components/SiteFooter";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -15,8 +17,30 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  applicationName: "Wedding Market",
   title: "Wedding Market",
   description: "Encuentra y compara proveedores para bodas",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Wedding Market",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: "/icon-192.png",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#b8922a",
 };
 
 function getFallbackVendorCategories(): HeaderVendorCategory[] {
@@ -96,6 +120,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthStateSync />
+        <PwaServiceWorkerRegistration />
         <LanguageProvider initialLanguage={resolvedLanguage}>
           <div className="wm-site-shell">
             <NavBarContainer vendorCategories={vendorCategories} />

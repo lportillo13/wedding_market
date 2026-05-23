@@ -342,6 +342,8 @@ const common = {
   },
   "vendorsPage": {
     "title": "Vendors",
+    "eyebrow": "Vendor directory",
+    "description": "Discover top-rated wedding professionals and browse by name, style, or category.",
     "searchForm": {
       "queryPlaceholder": "Search vendors (name, bio)…",
       "categoryPlaceholder": "Filter by category",

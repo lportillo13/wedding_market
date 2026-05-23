@@ -114,13 +114,11 @@ export default function VendorsPageContent({
       {/* ── Hero / Search ── */}
       <section className="wm-vendors-hero">
         <div className="container">
-          <p className="wm-vendors-hero__eyebrow">Curated directory</p>
+          <p className="wm-vendors-hero__eyebrow">{labels.eyebrow}</p>
           <h1 className="wm-vendors-hero__title">
             {labels.title}
           </h1>
-          <p className="wm-vendors-hero__sub">
-            Discover top-rated wedding professionals — browse by name, style, or category.
-          </p>
+          <p className="wm-vendors-hero__sub">{labels.description}</p>
 
           <form action="/vendors" method="get">
             <div className="wm-vendors-search">

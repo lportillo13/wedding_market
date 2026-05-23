@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { parseMediaAsset } from "@/lib/images";
 
 // Public (anon) Supabase client – no cookies needed for public search
 function supabasePublic() {
@@ -42,7 +43,47 @@ export async function GET(req: Request) {
       );
     }
 
-    return NextResponse.json({ items: data ?? [], total: count ?? 0, page, pageSize });
+    const vendorRows = data ?? [];
+    const vendorIds = vendorRows.flatMap((row) => (typeof row.id === "string" ? [row.id] : []));
+    let logoByVendorId = new Map<string, string | null>();
+
+    if (vendorIds.length > 0) {
+      const { data: logoRows } = await supabase
+        .from("vendors")
+        .select("id, logo_url")
+        .in("id", vendorIds);
+
+      logoByVendorId = new Map(
+        (logoRows ?? []).flatMap((row) => {
+          const id = typeof row.id === "string" ? row.id : null;
+          if (!id) {
+            return [];
+          }
+
+          return [[id, typeof row.logo_url === "string" && row.logo_url.trim() ? row.logo_url : null]];
+        }),
+      );
+    }
+
+    const items = vendorRows.map((row) => {
+      const logoUrl = typeof row.id === "string" ? logoByVendorId.get(row.id) ?? null : null;
+      return {
+        ...row,
+        logo_url: logoUrl,
+        logo_image: logoUrl
+          ? {
+              url: logoUrl,
+              public_id: logoUrl,
+              width: 160,
+              height: 160,
+              format: logoUrl.toLowerCase().split(/[?#]/, 1)[0]?.endsWith(".svg") ? "svg" : "image",
+            }
+          : null,
+        thumbnail_image: parseMediaAsset(row.thumbnail_image),
+      };
+    });
+
+    return NextResponse.json({ items, total: count ?? 0, page, pageSize });
   } catch (e: unknown) {
     const message = e instanceof Error ? e.message : String(e);
     return NextResponse.json({ items: [], total: 0, error: message }, { status: 500 });
