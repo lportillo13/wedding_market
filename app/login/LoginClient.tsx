@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabaseBrowser } from "@/lib/supabase/client";
@@ -54,7 +55,7 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
     <main className="wm-auth-shell">
       <div className="wm-auth-card">
         <div className="wm-auth-card__header">
-          <a href="/" className="wm-auth-card__brand">Wedding Market</a>
+          <Link href="/" className="wm-auth-card__brand">Wedding Market</Link>
           <p className="wm-auth-card__eyebrow">Welcome back</p>
           <h1 className="wm-auth-card__title">{labels.title}</h1>
         </div>
@@ -105,7 +106,7 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
 
         <div className="wm-auth-footer">
           Don&apos;t have an account?{" "}
-          <a href="/signup">Create one</a>
+          <Link href="/signup">Create one</Link>
         </div>
       </div>
     </main>

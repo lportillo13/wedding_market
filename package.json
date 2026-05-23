@@ -14,7 +14,7 @@
     "seed:random-vendors": "node ./scripts/seed-random-vendors.js",
     "test": "npm run test:build && npm run test:run",
     "test:build": "tsc -p tsconfig.test.json",
-    "test:run": "node --require ./scripts/register-test-paths.cjs --test dist-tests/**/*.test.js"
+    "test:run": "node --require ./scripts/register-test-paths.cjs --test dist-tests"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1017.0",

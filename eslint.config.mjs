@@ -16,6 +16,7 @@ export default [
   {
     ignores: [
       "**/node_modules/**",
+      "**/.claude/**",
       "**/.next/**",
       "**/dist-tests/**",
       "out/**",

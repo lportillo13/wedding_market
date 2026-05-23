@@ -11,7 +11,7 @@ import type { MediaAsset } from "@/types/images";
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
 const MAX_IMAGE_WIDTH = 1920;
-const require = createRequire(import.meta.url);
+const packageRequire = createRequire(__filename);
 
 function makeId() {
   return crypto.randomUUID();
@@ -32,7 +32,7 @@ function resolveFfmpegBinary() {
   }
 
   try {
-    const packageEntry = require.resolve("ffmpeg-static");
+    const packageEntry = packageRequire.resolve("ffmpeg-static");
     const packageDir = path.dirname(packageEntry);
     const binaryName = process.platform === "win32" ? "ffmpeg.exe" : "ffmpeg";
     return path.join(packageDir, binaryName);
