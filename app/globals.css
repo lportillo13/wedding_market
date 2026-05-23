@@ -1333,12 +1333,21 @@ select:focus {
 
 @media (max-width: 767.98px) {
   .wm-founders-hero {
-    min-height: max(100svh, 650px);
-    padding-bottom: 2.4rem;
+    display: block;
+    min-height: 0;
+    overflow: hidden;
+    padding: 7rem 1rem 1.5rem;
   }
 
   .wm-founders-hero__brand {
-    display: none;
+    display: inline-flex;
+    font-size: 1.05rem;
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .wm-founders-hero__login-icon {
@@ -1356,7 +1365,13 @@ select:focus {
   }
 
   .wm-founders-hero__content {
-    top: 8.6rem;
+    left: auto;
+    margin: 0 auto;
+    max-width: 32rem;
+    position: relative;
+    top: auto;
+    transform: none;
+    width: 100%;
   }
 
   .wm-founders-hero__content h1 {
@@ -1375,25 +1390,35 @@ select:focus {
   }
 
   .wm-founders-hero__logo-slider {
-    bottom: 4.8rem;
+    bottom: auto;
+    left: auto;
+    margin: 3rem -1rem 0;
+    max-width: none;
+    position: relative;
+    top: auto;
+    transform: none;
+    width: calc(100% + 2rem);
+  }
+
+  .wm-founders-hero__scroll-cue {
+    display: none;
   }
 }
 
 @media (max-width: 479.98px) {
   .wm-founders-hero__nav {
     gap: 0.55rem;
-    grid-template-columns: 2.35rem auto;
-    justify-content: space-between;
+    grid-template-columns: 2.35rem minmax(0, 1fr) auto;
     padding: 0.55rem;
   }
 
   .wm-founders-hero__actions {
     gap: 0.35rem;
-    grid-column: 2;
+    grid-column: 3;
   }
 
   .wm-founders-hero__content {
-    top: 7.75rem;
+    max-width: 26rem;
   }
 
   .wm-founders-hero__content h1 {
