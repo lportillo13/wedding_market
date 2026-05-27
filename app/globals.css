@@ -6906,7 +6906,7 @@ select:focus {
   display: grid;
   gap: clamp(1.5rem, 3vw, 3rem);
   margin: 0 auto;
-  max-width: 94rem;
+  max-width: 1156px;
   min-height: calc(100vh - 6rem);
   width: 100%;
 }
@@ -6972,7 +6972,7 @@ select:focus {
 
 .wm-onboarding-page .wm-onboarding-main {
   margin: 0 auto;
-  max-width: 78rem;
+  max-width: 1156px;
   min-height: 0;
   width: 100%;
 }
