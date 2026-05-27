@@ -24,18 +24,6 @@ export default function SignUpPageContent() {
         </section>
 
         <section className="wm-onboarding-layout">
-          <aside className="wm-onboarding-aside" aria-label={page.sidebar.title}>
-            <div className="wm-onboarding-aside__card">
-              <p className="wm-onboarding-aside__eyebrow">{page.sidebar.eyebrow}</p>
-              <h2 className="wm-card-title">{page.sidebar.title}</h2>
-              <ul className="wm-onboarding-aside__list">
-                {Object.values(page.sidebar.points).map((point) => (
-                  <li key={point}>{point}</li>
-                ))}
-              </ul>
-            </div>
-          </aside>
-
           <div className="wm-onboarding-main">
             <SignUpForm />
           </div>

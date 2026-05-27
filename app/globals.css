@@ -1333,10 +1333,12 @@ select:focus {
 
 @media (max-width: 767.98px) {
   .wm-founders-hero {
-    display: block;
-    min-height: 0;
+    align-items: center;
+    display: grid;
+    grid-template-rows: 1fr;
+    min-height: calc(100svh - 1.1rem);
     overflow: hidden;
-    padding: 7rem 1rem 1.5rem;
+    padding: 5.25rem 1rem 1.5rem;
   }
 
   .wm-founders-hero__brand {
@@ -1365,13 +1367,13 @@ select:focus {
   }
 
   .wm-founders-hero__content {
-    left: auto;
+    left: 50%;
     margin: 0 auto;
     max-width: 32rem;
-    position: relative;
-    top: auto;
-    transform: none;
-    width: 100%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(32rem, calc(100% - 2rem));
   }
 
   .wm-founders-hero__content h1 {
@@ -1390,13 +1392,13 @@ select:focus {
   }
 
   .wm-founders-hero__logo-slider {
-    bottom: auto;
-    left: auto;
-    margin: 3rem -1rem 0;
+    bottom: 1.25rem;
+    left: 50%;
+    margin: 0;
     max-width: none;
-    position: relative;
+    position: absolute;
     top: auto;
-    transform: none;
+    transform: translateX(-50%);
     width: calc(100% + 2rem);
   }
 
@@ -6894,18 +6896,19 @@ select:focus {
 
 .wm-onboarding-page {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(248, 246, 241, 0.96)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 246, 241, 0.98)),
     var(--wm-bg-secondary);
   min-height: calc(100vh - 4rem);
-  padding: clamp(1rem, 2vw, 1.8rem);
+  padding: clamp(1rem, 2.4vw, 2.5rem);
 }
 
 .wm-onboarding-shell {
   display: grid;
-  gap: clamp(1rem, 2vw, 1.5rem);
+  gap: clamp(1.5rem, 3vw, 3rem);
   margin: 0 auto;
-  max-width: 92rem;
+  max-width: none;
   min-height: calc(100vh - 6rem);
+  width: min(100%, 108rem);
 }
 
 .wm-onboarding-page .wm-onboarding-hero {
@@ -6915,7 +6918,7 @@ select:focus {
   border-radius: 0;
   box-shadow: none;
   grid-template-columns: minmax(0, 1fr) auto;
-  padding: 0.75rem 0 0;
+  padding: clamp(1rem, 2vw, 2rem) 0 0;
 }
 
 .wm-onboarding-page .wm-onboarding-hero::after,
@@ -6924,15 +6927,15 @@ select:focus {
 }
 
 .wm-onboarding-page .wm-page-title {
-  font-size: clamp(2.15rem, 4vw, 4.7rem);
+  font-size: clamp(2.4rem, 5.6vw, 6.6rem);
   letter-spacing: 0;
   line-height: 0.98;
   margin-bottom: 0.75rem !important;
-  max-width: 56rem;
+  max-width: 78rem;
 }
 
 .wm-onboarding-page .wm-onboarding-hero__copy {
-  max-width: 62rem;
+  max-width: 82rem;
 }
 
 .wm-onboarding-login-link {
@@ -6954,40 +6957,28 @@ select:focus {
 }
 
 .wm-onboarding-page .wm-onboarding-layout {
-  align-items: stretch;
-  grid-template-columns: minmax(15rem, 0.32fr) minmax(0, 1fr);
-  min-height: min(48rem, calc(100vh - 17rem));
+  align-items: start;
+  display: block;
+  min-height: auto;
+  width: 100%;
 }
 
-.wm-onboarding-page .wm-onboarding-aside__card,
 .wm-onboarding-page .wm-onboarding-card {
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(28, 28, 28, 0.08);
-  border-radius: 1rem;
-  box-shadow: 0 1.5rem 3.8rem rgba(14, 14, 18, 0.12);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
-.wm-onboarding-page .wm-onboarding-aside__card {
-  align-content: center;
-  height: 100%;
-  padding: clamp(1.15rem, 2vw, 1.8rem);
-  position: static;
-}
-
-.wm-onboarding-page .wm-onboarding-aside__list {
-  line-height: 1.55;
-  padding-left: 1rem;
-}
-
-.wm-onboarding-page .wm-onboarding-main,
-.wm-onboarding-page .wm-onboarding-card {
-  min-height: 100%;
+.wm-onboarding-page .wm-onboarding-main {
+  min-height: 0;
+  width: 100%;
 }
 
 .wm-onboarding-page .wm-onboarding-card {
   align-content: start;
-  gap: clamp(1rem, 1.8vw, 1.5rem);
-  padding: clamp(1.25rem, 2.6vw, 2.6rem);
+  gap: clamp(1.15rem, 2.4vw, 2rem);
+  padding: 0;
 }
 
 .wm-onboarding-page .wm-onboarding-card__header {
@@ -7003,7 +6994,7 @@ select:focus {
 .wm-onboarding-page .wm-onboarding-card__description {
   font-size: 1rem;
   line-height: 1.6;
-  max-width: 56rem;
+  max-width: 64rem;
 }
 
 .wm-onboarding-page .wm-onboarding-meter {
@@ -7011,11 +7002,13 @@ select:focus {
 }
 
 .wm-onboarding-page .wm-onboarding-stepper {
-  gap: 0.6rem;
+  gap: 0.7rem;
 }
 
 .wm-onboarding-page .wm-onboarding-stepper__item {
-  border-radius: 0.65rem;
+  background: transparent;
+  border-color: rgba(28, 28, 28, 0.12);
+  border-radius: 999px;
   cursor: pointer;
   min-height: 3.35rem;
   transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
@@ -7033,6 +7026,7 @@ select:focus {
 
 .wm-onboarding-panels {
   overflow: hidden;
+  width: 100%;
 }
 
 .wm-onboarding-panel:not([hidden]) {
@@ -7044,11 +7038,14 @@ select:focus {
 }
 
 .wm-onboarding-page .wm-onboarding-panel {
-  gap: 1.25rem;
+  gap: clamp(1rem, 2vw, 1.5rem);
 }
 
 .wm-onboarding-page .wm-onboarding-question {
-  border-radius: 0.8rem;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
 }
 
 .wm-onboarding-page .form-control,
@@ -7064,10 +7061,17 @@ select:focus {
 }
 
 .wm-onboarding-page .wm-onboarding-chip,
-.wm-onboarding-page .wm-onboarding-choice,
+.wm-onboarding-page .wm-onboarding-choice {
+  border-radius: 0.75rem;
+}
+
 .wm-onboarding-page .wm-onboarding-summary,
 .wm-onboarding-page .wm-onboarding-note {
-  border-radius: 0.75rem;
+  background: transparent;
+  border-color: rgba(28, 28, 28, 0.1);
+  border-radius: 0;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .wm-onboarding-page .wm-onboarding-actions {
@@ -7146,12 +7150,8 @@ select:focus {
     grid-template-columns: 1fr;
   }
 
-  .wm-onboarding-page .wm-onboarding-aside {
-    display: none;
-  }
-
   .wm-onboarding-page .wm-onboarding-card {
-    padding: 1rem;
+    padding: 0;
   }
 
   .wm-onboarding-page .wm-onboarding-actions .btn {
