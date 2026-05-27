@@ -36,6 +36,18 @@ function buildPageHref(searchParams: Record<string, string>, page: number) {
   return query ? `/vendors?${query}` : "/vendors";
 }
 
+function getVendorInitials(name: string) {
+  const initials = name
+    .split(/\s+/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
+
+  return initials || name.slice(0, 2).toUpperCase();
+}
+
 export default function VendorsPageContent({
   items,
   isVendor,
@@ -193,6 +205,7 @@ export default function VendorsPageContent({
                   return categoryLabelsByKey.get(key) ?? category;
                 });
                 const sponsoredBadge = sponsoredBadgeByVendorId.get(vendor.id);
+                const logoUrl = vendor.logo_image?.url ?? vendor.logo_url ?? null;
 
                 return (
                   <article className="wm-vendor-card" key={vendor.id}>
@@ -212,9 +225,25 @@ export default function VendorsPageContent({
                       {sponsoredBadge ? (
                         <span className="wm-vendor-card__badge">{sponsoredBadge}</span>
                       ) : null}
-                      <a href={`/vendors/${vendor.slug}`} className="wm-vendor-card__name">
-                        {vendor.business_name}
-                      </a>
+                      <div className="wm-vendor-card__heading">
+                        <a href={`/vendors/${vendor.slug}`} className="wm-vendor-card__name">
+                          {vendor.business_name}
+                        </a>
+                        <span className="wm-vendor-card__logo" aria-hidden="true">
+                          {logoUrl ? (
+                            <Image
+                              src={resolveMediaUrl(logoUrl)}
+                              alt=""
+                              fill
+                              unoptimized={shouldRenderUnoptimizedMedia(logoUrl)}
+                              sizes="44px"
+                              style={{ objectFit: "contain" }}
+                            />
+                          ) : (
+                            <span>{getVendorInitials(vendor.business_name)}</span>
+                          )}
+                        </span>
+                      </div>
                       {localizedCategories.length > 0 ? (
                         <div className="wm-vendor-card__cats">{localizedCategories.join(" · ")}</div>
                       ) : null}
