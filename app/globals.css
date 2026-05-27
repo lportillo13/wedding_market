@@ -1157,11 +1157,10 @@ select:focus {
 
 .wm-founders-hero__vendor-img {
   display: block;
-  filter: brightness(0) invert(1);
   height: 3.15rem;
   max-width: 7rem;
   object-fit: contain;
-  opacity: 0.82;
+  opacity: 0.95;
   width: auto;
 }
 
