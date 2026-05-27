@@ -1115,13 +1115,12 @@ select:focus {
 
 .wm-founders-hero__logo-slider {
   background: none;
-  bottom: auto;
+  bottom: clamp(5.5rem, 9vh, 8.5rem);
   left: 50%;
   margin-bottom: 0;
   max-width: min(100%, 78rem);
   overflow: hidden;
   position: absolute;
-  top: 780px;
   transform: translateX(-50%);
   width: 100%;
 }
