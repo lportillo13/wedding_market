@@ -3,7 +3,7 @@ import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 import { z } from 'zod';
 import { parseMediaAsset } from '@/lib/images';
-import { buildStorageKey, processImageUpload, validateImageUpload } from '@/lib/media-processing';
+import { buildStorageKey, processCarouselLogoUpload, processImageUpload, validateImageUpload } from '@/lib/media-processing';
 import { deleteFromR2, getR2ObjectKeyFromUrl, isR2Configured, uploadToR2 } from '@/lib/r2';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
@@ -45,6 +45,7 @@ export type VendorSignUpState =
 type UploadedVendorAssets = {
   hero: MediaAsset;
   logo: MediaAsset;
+  carouselLogo: MediaAsset;
 };
 
 function parseInteger(value: FormDataEntryValue | null, fallback: number | null = null): number | null {
@@ -114,6 +115,23 @@ async function uploadVendorImage(parts: string[], file: File): Promise<MediaAsse
   };
 }
 
+async function uploadVendorCarouselLogo(parts: string[], file: File): Promise<MediaAsset> {
+  const processed = await processCarouselLogoUpload(file);
+  const key = buildStorageKey(parts, processed.extension);
+  const uploaded = await uploadToR2({
+    key,
+    body: processed.buffer,
+    contentType: processed.contentType,
+  });
+
+  return {
+    ...processed.asset,
+    type: 'image',
+    url: uploaded.url,
+    public_id: key,
+  };
+}
+
 async function cleanupUploadedAssets(assets: MediaAsset[]) {
   await Promise.all(
     assets
@@ -131,10 +149,15 @@ async function cleanupUploadedAssets(assets: MediaAsset[]) {
   );
 }
 
-async function removePreviousVendorAssets(previousLogoUrl: string | null | undefined, previousHero: unknown) {
+async function removePreviousVendorAssets(
+  previousLogoUrl: string | null | undefined,
+  previousCarouselLogoUrl: string | null | undefined,
+  previousHero: unknown,
+) {
   const previousHeroAsset = parseMediaAsset(previousHero);
   const keys = [
     previousLogoUrl ? getR2ObjectKeyFromUrl(previousLogoUrl) : null,
+    previousCarouselLogoUrl ? getR2ObjectKeyFromUrl(previousCarouselLogoUrl) : null,
     previousHeroAsset?.url ? getR2ObjectKeyFromUrl(previousHeroAsset.url) : null,
   ]
     .filter((value): value is string => Boolean(value))
@@ -160,12 +183,13 @@ async function uploadRequiredVendorAssets(params: {
   logoFile: File;
 }) {
   const vendorFolder = slugify(params.businessName || params.slug) || params.slug;
-  const [hero, logo] = await Promise.all([
+  const [hero, logo, carouselLogo] = await Promise.all([
     uploadVendorImage(['vendors', vendorFolder, 'hero'], params.heroFile),
     uploadVendorImage(['vendors', vendorFolder, 'logo'], params.logoFile),
+    uploadVendorCarouselLogo(['vendors', vendorFolder, 'carousel-logo'], params.logoFile),
   ]);
 
-  return { hero, logo } satisfies UploadedVendorAssets;
+  return { hero, logo, carouselLogo } satisfies UploadedVendorAssets;
 }
 
 export async function createVendor(_: VendorSignUpState, formData: FormData): Promise<VendorSignUpState> {
@@ -374,13 +398,14 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
 
   const { data: existingVendor, error: existingVendorErr } = await supabase
     .from('vendors')
-    .select('id, bio, extra_info, logo_url, hero_image')
+    .select('id, bio, extra_info, logo_url, carousel_logo_url, hero_image')
     .eq('owner_id', user.id)
     .maybeSingle<{
       id: string;
       bio: Record<string, unknown> | null;
       extra_info: Record<string, unknown> | null;
       logo_url: string | null;
+      carousel_logo_url: string | null;
       hero_image: MediaAsset | null;
     }>();
 
@@ -435,6 +460,7 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
     pricing_peak_seasons: peak_seasons,
     hero_image: uploadedAssets.hero,
     logo_url: uploadedAssets.logo.url,
+    carousel_logo_url: uploadedAssets.carouselLogo.url,
     is_published: false,
   };
 
@@ -451,7 +477,7 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
       .single();
 
     if (insertErr) {
-      await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo]);
+      await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo]);
       return { ok: false, message: insertErr.message };
     }
 
@@ -462,13 +488,13 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
       .update(vendorPayload)
       .eq('id', vendorId);
     if (updateErr) {
-      await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo]);
+      await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo]);
       return { ok: false, message: updateErr.message };
     }
   }
 
   if (!vendorId) {
-    await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo]);
+    await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo]);
     return { ok: false, message: 'Could not determine vendor profile.' };
   }
 
@@ -489,7 +515,7 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
     );
 
   if (locationErr) {
-    await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo]);
+    await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo]);
     return { ok: false, message: locationErr.message };
   }
 
@@ -501,7 +527,7 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
       .in('key', categories);
 
     if (categoryErr) {
-      await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo]);
+      await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo]);
       return { ok: false, message: categoryErr.message };
     }
 
@@ -514,7 +540,7 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
     .eq('vendor_id', vendorId);
 
   if (deleteCategoryErr) {
-    await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo]);
+    await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo]);
     return { ok: false, message: deleteCategoryErr.message };
   }
 
@@ -524,7 +550,7 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
       .insert(categoryRows.map((category) => ({ vendor_id: vendorId, category_id: category.id })));
 
     if (insertCategoryErr) {
-      await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo]);
+      await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo]);
       return { ok: false, message: insertCategoryErr.message };
     }
   }
@@ -539,12 +565,12 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
       { onConflict: 'id' },
     );
   if (profileErr) {
-    await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo]);
+    await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo]);
     return { ok: false, message: profileErr.message };
   }
 
-  if (existingVendor?.logo_url || existingVendor?.hero_image) {
-    await removePreviousVendorAssets(existingVendor.logo_url, existingVendor.hero_image);
+  if (existingVendor?.logo_url || existingVendor?.carousel_logo_url || existingVendor?.hero_image) {
+    await removePreviousVendorAssets(existingVendor.logo_url, existingVendor.carousel_logo_url, existingVendor.hero_image);
   }
 
   revalidatePath('/vendor/profile');

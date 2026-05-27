@@ -184,6 +184,7 @@ type VendorLogoItem = {
   id: string;
   label: string;
   slug?: string | null;
+  carouselImageUrl?: string | null;
   imageUrl?: string | null;
 };
 
@@ -284,6 +285,7 @@ export default function Home() {
       id: string;
       business_name: string;
       slug?: string | null;
+      carousel_logo_url?: string | null;
       logo_url?: string | null;
       logo_image?: { url?: string } | null;
     }>) =>
@@ -291,6 +293,7 @@ export default function Home() {
         id: v.id,
         label: v.business_name,
         slug: v.slug,
+        carouselImageUrl: v.carousel_logo_url,
         imageUrl: v.logo_url ?? v.logo_image?.url ?? null,
       }));
 
@@ -306,6 +309,7 @@ export default function Home() {
             id: string;
             business_name: string;
             slug?: string | null;
+            carousel_logo_url?: string | null;
             logo_url?: string | null;
             logo_image?: { url?: string } | null;
             thumbnail_image?: { url?: string } | null;
@@ -474,14 +478,14 @@ export default function Home() {
                   className="wm-founders-hero__logo wm-founders-hero__logo--vendor"
                   aria-hidden={index >= vendorLogos.length}
                 >
-                  {shouldRenderLogoAsText(logo.imageUrl) ? (
+                  {shouldRenderLogoAsText(logo.carouselImageUrl ?? logo.imageUrl) ? (
                     <span className="wm-founders-hero__vendor-initials" aria-label={logo.label}>
                       {getVendorLogoInitials(logo.label)}
                     </span>
-                  ) : logo.imageUrl ? (
+                  ) : logo.carouselImageUrl ?? logo.imageUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={resolveMediaUrl(logo.imageUrl)}
+                      src={resolveMediaUrl(logo.carouselImageUrl ?? logo.imageUrl)}
                       alt={logo.label}
                       className="wm-founders-hero__vendor-img"
                     />

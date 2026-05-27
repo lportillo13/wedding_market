@@ -45,12 +45,12 @@ export async function GET(req: Request) {
 
     const vendorRows = data ?? [];
     const vendorIds = vendorRows.flatMap((row) => (typeof row.id === "string" ? [row.id] : []));
-    let logoByVendorId = new Map<string, string | null>();
+    let logoByVendorId = new Map<string, { logoUrl: string | null; carouselLogoUrl: string | null }>();
 
     if (vendorIds.length > 0) {
       const { data: logoRows } = await supabase
         .from("vendors")
-        .select("id, logo_url")
+        .select("id, logo_url, carousel_logo_url")
         .in("id", vendorIds);
 
       logoByVendorId = new Map(
@@ -60,16 +60,28 @@ export async function GET(req: Request) {
             return [];
           }
 
-          return [[id, typeof row.logo_url === "string" && row.logo_url.trim() ? row.logo_url : null]];
+          return [[
+            id,
+            {
+              logoUrl: typeof row.logo_url === "string" && row.logo_url.trim() ? row.logo_url : null,
+              carouselLogoUrl:
+                typeof row.carousel_logo_url === "string" && row.carousel_logo_url.trim()
+                  ? row.carousel_logo_url
+                  : null,
+            },
+          ]];
         }),
       );
     }
 
     const items = vendorRows.map((row) => {
-      const logoUrl = typeof row.id === "string" ? logoByVendorId.get(row.id) ?? null : null;
+      const logoAssets = typeof row.id === "string" ? logoByVendorId.get(row.id) ?? null : null;
+      const logoUrl = logoAssets?.logoUrl ?? null;
+      const carouselLogoUrl = logoAssets?.carouselLogoUrl ?? null;
       return {
         ...row,
         logo_url: logoUrl,
+        carousel_logo_url: carouselLogoUrl,
         logo_image: logoUrl
           ? {
               url: logoUrl,

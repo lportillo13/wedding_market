@@ -18,6 +18,7 @@ export type VendorListItem = {
   rating_count: number;
   created_at: string;
   logo_url?: string | null;
+  carousel_logo_url?: string | null;
   logo_image?: VendorImage | null;
   hero_image?: VendorImage | null;
   thumbnail_image?: VendorImage | null;

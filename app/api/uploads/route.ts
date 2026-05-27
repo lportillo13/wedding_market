@@ -5,6 +5,7 @@ import { parseMediaAsset } from "@/lib/images";
 import { slugify } from "@/lib/slugify";
 import {
   buildStorageKey,
+  processCarouselLogoUpload,
   processImageUpload,
   processVideoUpload,
   validateImageUpload,
@@ -41,7 +42,7 @@ async function requireVendor() {
 
   const { data: vendor, error: vendorError } = await supabase
     .from("vendors")
-    .select("id, slug, business_name, logo_url, hero_image, thumbnail_image, gallery_images")
+    .select("id, slug, business_name, logo_url, carousel_logo_url, hero_image, thumbnail_image, gallery_images")
     .eq("owner_id", user.id)
     .maybeSingle();
 
@@ -169,12 +170,14 @@ export async function POST(request: Request) {
       }
 
       const processed = await processImageUpload(file);
+      const processedCarouselLogo = await processCarouselLogoUpload(file);
       const vendorFolder = slugify(vendor.business_name || vendor.slug || vendor.id);
       const asset = await uploadProcessedAsset(["vendors", vendorFolder, "logo"], processed);
+      const carouselAsset = await uploadProcessedAsset(["vendors", vendorFolder, "carousel-logo"], processedCarouselLogo);
 
       const { error: updateError } = await supabase
         .from("vendors")
-        .update({ logo_url: asset.url })
+        .update({ logo_url: asset.url, carousel_logo_url: carouselAsset.url })
         .eq("id", vendor.id);
 
       if (updateError) {
@@ -182,6 +185,7 @@ export async function POST(request: Request) {
       }
 
       await replaceOldUrl(vendor.logo_url);
+      await replaceOldUrl(vendor.carousel_logo_url);
 
       revalidatePath("/vendor/profile");
       revalidatePath(`/vendors/${vendor.slug}`);

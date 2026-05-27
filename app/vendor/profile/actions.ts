@@ -86,6 +86,7 @@ type VendorRow = {
   slug: string;
   business_name: string;
   logo_url: string | null;
+  carousel_logo_url: string | null;
   hero_image: VendorImage | null;
   thumbnail_image: VendorImage | null;
   gallery_images: VendorImage[] | null;
@@ -164,7 +165,7 @@ async function requireAuthVendor() {
   const { data: vendor } = await supabase
     .from("vendors")
     .select(
-      "id, slug, business_name, logo_url, hero_image, thumbnail_image, gallery_images, extra_info, starting_price_currency, pricing_typical_spend_currency, pricing_peak_seasons"
+      "id, slug, business_name, logo_url, carousel_logo_url, hero_image, thumbnail_image, gallery_images, extra_info, starting_price_currency, pricing_typical_spend_currency, pricing_peak_seasons"
     )
     .eq("owner_id", user.id)
     .maybeSingle<VendorRow>();
@@ -350,19 +351,20 @@ export async function removeLogoImage(
   }
 
   const previousKey = vendor.logo_url ? getR2ObjectKeyFromUrl(vendor.logo_url) : null;
+  const previousCarouselKey = vendor.carousel_logo_url ? getR2ObjectKeyFromUrl(vendor.carousel_logo_url) : null;
 
   const { error: updateError } = await supabase
     .from("vendors")
-    .update({ logo_url: null })
+    .update({ logo_url: null, carousel_logo_url: null })
     .eq("id", vendor.id);
 
   if (updateError) {
     return { ok: false, message: `Remove failed: ${updateError.message}` };
   }
 
-  if (previousKey) {
+  for (const key of [previousKey, previousCarouselKey].filter((value): value is string => Boolean(value))) {
     try {
-      await deleteFromR2(previousKey);
+      await deleteFromR2(key);
     } catch (deleteError) {
       if (process.env.NODE_ENV !== "production") {
         console.warn("Failed to remove previous logo asset", deleteError);
