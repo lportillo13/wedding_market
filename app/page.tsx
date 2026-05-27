@@ -210,6 +210,32 @@ function shuffleVendorLogos(logos: VendorLogoItem[]) {
   return shuffled;
 }
 
+function mergeVendorLogos(...logoGroups: VendorLogoItem[][]) {
+  const logosById = new Map<string, VendorLogoItem>();
+  for (const group of logoGroups) {
+    for (const logo of group) {
+      logosById.set(logo.id, logo);
+    }
+  }
+  return Array.from(logosById.values());
+}
+
+function pickCarouselLogos(logos: VendorLogoItem[], preferredVendorName: string) {
+  const preferredLogo = logos.find((logo) =>
+    logo.label.toLowerCase().includes(preferredVendorName.toLowerCase()),
+  );
+  const randomLogos = shuffleVendorLogos(
+    preferredLogo ? logos.filter((logo) => logo.id !== preferredLogo.id) : logos,
+  ).slice(0, preferredLogo ? 13 : 14);
+
+  if (!preferredLogo) {
+    return randomLogos;
+  }
+
+  const insertAt = Math.floor(Math.random() * (randomLogos.length + 1));
+  return [...randomLogos.slice(0, insertAt), preferredLogo, ...randomLogos.slice(insertAt)];
+}
+
 export default function Home() {
   const { dictionary, language } = useLanguage();
   const fallbackContent = useMemo(() => getDefaultHomepageContent(language), [language]);
@@ -253,11 +279,26 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    const mapVendorLogos = (items: Array<{
+      id: string;
+      business_name: string;
+      logo_url?: string | null;
+      logo_image?: { url?: string } | null;
+    }>) =>
+      items.map((v) => ({
+        id: v.id,
+        label: v.business_name,
+        imageUrl: v.logo_url ?? v.logo_image?.url ?? null,
+      }));
+
     async function loadVendorLogos() {
       try {
-        const res = await fetch("/api/vendors?pageSize=50", { cache: "no-store" });
-        if (!res.ok) return;
-        const data = (await res.json()) as {
+        const [vendorPoolResponse, preferredVendorResponse] = await Promise.all([
+          fetch("/api/vendors?pageSize=50", { cache: "no-store" }),
+          fetch("/api/vendors?q=blue%20photography&pageSize=5", { cache: "no-store" }),
+        ]);
+        if (!vendorPoolResponse.ok) return;
+        const vendorPoolData = (await vendorPoolResponse.json()) as {
           items: Array<{
             id: string;
             business_name: string;
@@ -266,12 +307,14 @@ export default function Home() {
             thumbnail_image?: { url?: string } | null;
           }>;
         };
-        const logos: VendorLogoItem[] = data.items.map((v) => ({
-          id: v.id,
-          label: v.business_name,
-          imageUrl: v.logo_url ?? v.logo_image?.url ?? null,
-        }));
-        if (logos.length > 0) setVendorLogos(shuffleVendorLogos(logos).slice(0, 14));
+        const preferredVendorData = preferredVendorResponse.ok
+          ? ((await preferredVendorResponse.json()) as typeof vendorPoolData)
+          : { items: [] };
+        const logos = mergeVendorLogos(
+          mapVendorLogos(vendorPoolData.items),
+          mapVendorLogos(preferredVendorData.items),
+        );
+        if (logos.length > 0) setVendorLogos(pickCarouselLogos(logos, "blue photography"));
       } catch {
         // Keep empty – slider will be hidden
       }
