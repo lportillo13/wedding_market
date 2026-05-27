@@ -1046,7 +1046,7 @@ select:focus {
 .wm-founders-hero__content h1 {
   color: #f2ede0;
   font-family: var(--wm-font-display);
-  font-size: 7.25rem;
+  font-size: 4.25rem;
   font-weight: 400;
   letter-spacing: -0.01em;
   line-height: 0.88;
@@ -1222,7 +1222,7 @@ select:focus {
 
 @media (max-width: 1199.98px) {
   .wm-founders-hero__content h1 {
-    font-size: 5.8rem;
+    font-size: 4.25rem;
   }
 
   .wm-founders-hero__content p {

@@ -201,6 +201,15 @@ function shouldRenderLogoAsText(imageUrl: string | null | undefined) {
   return !imageUrl || imageUrl.includes("api.dicebear.com");
 }
 
+function shuffleVendorLogos(logos: VendorLogoItem[]) {
+  const shuffled = [...logos];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+  }
+  return shuffled;
+}
+
 export default function Home() {
   const { dictionary, language } = useLanguage();
   const fallbackContent = useMemo(() => getDefaultHomepageContent(language), [language]);
@@ -246,7 +255,7 @@ export default function Home() {
   useEffect(() => {
     async function loadVendorLogos() {
       try {
-        const res = await fetch("/api/vendors?pageSize=14", { cache: "no-store" });
+        const res = await fetch("/api/vendors?pageSize=50", { cache: "no-store" });
         if (!res.ok) return;
         const data = (await res.json()) as {
           items: Array<{
@@ -262,7 +271,7 @@ export default function Home() {
           label: v.business_name,
           imageUrl: v.logo_url ?? v.logo_image?.url ?? null,
         }));
-        if (logos.length > 0) setVendorLogos(logos);
+        if (logos.length > 0) setVendorLogos(shuffleVendorLogos(logos).slice(0, 14));
       } catch {
         // Keep empty – slider will be hidden
       }
