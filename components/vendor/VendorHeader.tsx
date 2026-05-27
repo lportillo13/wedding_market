@@ -51,6 +51,11 @@ export default function VendorHeader({ vendor, media, isVendor, isLoggedIn, logi
     .filter(Boolean)
     .join(", ");
   const heroPhoto = media.find((item) => item.type === "photo" && isPhoto(item.url)) ?? null;
+  const galleryCtaLabel = language === "es" ? "Ver fotos" : "View photos";
+  const galleryCountLabel =
+    language === "es"
+      ? `${media.length} fotos y videos`
+      : `${media.length} photos and videos`;
 
   return (
     <header className="wm-vendor-hero">
@@ -66,6 +71,12 @@ export default function VendorHeader({ vendor, media, isVendor, isLoggedIn, logi
               sizes="100vw"
               priority
             />
+            {media.length > 0 ? (
+              <a href="#photos" className="wm-vendor-hero__media-badge">
+                <span>{galleryCountLabel}</span>
+                <strong>{galleryCtaLabel}</strong>
+              </a>
+            ) : null}
           </div>
         ) : (
           <div className="wm-vendor-hero__spotlight wm-vendor-hero__spotlight--empty" />
