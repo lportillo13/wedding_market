@@ -47,6 +47,7 @@ export default function SignUpForm() {
   const labels = dictionary.signup.form;
   const profileLabels = dictionary.account.profile.form;
   const [step, setStep] = useState(0);
+  const [stepDirection, setStepDirection] = useState<'forward' | 'back'>('forward');
   const [localError, setLocalError] = useState<string | null>(null);
   const [form, setForm] = useState<FormShape>(() => ({
     full_name: '',
@@ -148,6 +149,11 @@ export default function SignUpForm() {
     return null;
   }
 
+  function goToStep(nextStep: number) {
+    setStepDirection(nextStep > step ? 'forward' : 'back');
+    setStep(nextStep);
+  }
+
   function goNext() {
     const error = validateCurrentStep();
     if (error) {
@@ -156,7 +162,7 @@ export default function SignUpForm() {
     }
 
     setLocalError(null);
-    setStep((current) => Math.min(current + 1, steps.length - 1));
+    goToStep(Math.min(step + 1, steps.length - 1));
   }
 
   const summaryValues = {
@@ -198,9 +204,11 @@ export default function SignUpForm() {
             onClick={() => {
               if (index <= step) {
                 setLocalError(null);
-                setStep(index);
+                goToStep(index);
               }
             }}
+            aria-current={index === step ? 'step' : undefined}
+            disabled={index > step}
           >
             <span className="wm-onboarding-stepper__index">{index + 1}</span>
             <span>{item.shortLabel}</span>
@@ -208,6 +216,7 @@ export default function SignUpForm() {
         ))}
       </div>
 
+      <div className="wm-onboarding-panels" data-direction={stepDirection}>
       <section hidden={step !== 0} className="wm-onboarding-panel">
         <div className="row g-3">
           <div className="col-12">
@@ -489,6 +498,7 @@ export default function SignUpForm() {
           <p>{labels.finishCard.description}</p>
         </div>
       </section>
+      </div>
 
       <input type="hidden" name="wedding_theme" value={form.wedding_theme} />
       <input type="hidden" name="planning_stage" value={form.planning_stage} />
@@ -507,7 +517,7 @@ export default function SignUpForm() {
           className="btn btn-outline-secondary"
           onClick={() => {
             setLocalError(null);
-            setStep((current) => Math.max(current - 1, 0));
+            goToStep(Math.max(step - 1, 0));
           }}
           disabled={step === 0 || pending}
         >

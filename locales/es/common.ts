@@ -313,7 +313,9 @@ const common = {
     "passwordLabel": "Contraseña",
     "submit": "Entrar",
     "submitting": "Entrando...",
-    "google": "Continuar con Google"
+    "google": "Continuar con Google",
+    "registerPrompt": "¿Eres nuevo?",
+    "registerLink": "Crea tu cuenta"
   },
   "shortlistButton": {
     "add": "Agregar a favoritos",
