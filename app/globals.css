@@ -3486,13 +3486,37 @@ select:focus {
 }
 
 .wm-site-footer__col-heading {
+  align-items: center;
+  background: transparent;
+  border: 0;
   color: var(--wm-accent);
+  display: flex;
   font-family: var(--wm-font-body);
   font-size: 0.68rem;
   font-weight: 600;
+  gap: 0.55rem;
+  justify-content: flex-start;
   letter-spacing: 0.2em;
   margin: 0 0 1.1rem;
+  padding: 0;
+  text-align: left;
   text-transform: uppercase;
+  width: 100%;
+}
+
+.wm-site-footer__col-heading:focus-visible {
+  outline: 2px solid var(--wm-accent);
+  outline-offset: 0.25rem;
+}
+
+.wm-site-footer__col-caret {
+  border-bottom: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  display: none;
+  height: 0.45rem;
+  transform: rotate(45deg);
+  transition: transform 0.18s ease;
+  width: 0.45rem;
 }
 
 .wm-site-footer__col-links {
@@ -3618,12 +3642,82 @@ select:focus {
 }
 
 @media (max-width: 767.98px) {
+  .wm-site-footer {
+    text-align: center;
+  }
+
+  .wm-site-footer__newsletter {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+  }
+
+  .wm-site-footer__newsletter-form {
+    width: 100%;
+  }
+
+  .wm-site-footer__app-btns {
+    justify-content: center;
+  }
+
   .wm-site-footer__cols {
+    gap: 0.75rem;
     grid-template-columns: 1fr 1fr;
+  }
+
+  .wm-site-footer__col {
+    border: 1px solid var(--wm-gold-border);
+    border-radius: 0.75rem;
+    overflow: hidden;
   }
 
   .wm-site-footer__col:last-child {
     grid-column: 1 / -1;
+  }
+
+  .wm-site-footer__col-heading {
+    color: var(--wm-ink);
+    cursor: pointer;
+    justify-content: center;
+    margin: 0;
+    min-height: 3.15rem;
+    padding: 0.85rem 1rem;
+    text-align: center;
+  }
+
+  .wm-site-footer__col-heading:hover,
+  .wm-site-footer__col-heading:focus-visible {
+    background: var(--wm-accent-soft);
+    color: var(--wm-accent);
+  }
+
+  .wm-site-footer__col-caret {
+    display: inline-block;
+    flex: 0 0 auto;
+  }
+
+  .wm-site-footer__col.is-open .wm-site-footer__col-caret {
+    transform: translateY(0.15rem) rotate(225deg);
+  }
+
+  .wm-site-footer__col-links,
+  .wm-site-footer__socials {
+    align-items: center;
+    display: none;
+    padding: 0 1rem 1rem;
+  }
+
+  .wm-site-footer__col.is-open .wm-site-footer__col-links,
+  .wm-site-footer__col.is-open .wm-site-footer__socials {
+    display: flex;
+  }
+
+  .wm-site-footer__col-links a,
+  .wm-site-footer__col-links span,
+  .wm-site-footer__social-link {
+    justify-content: center;
+    width: 100%;
   }
 
   .wm-site-footer__newsletter-form {

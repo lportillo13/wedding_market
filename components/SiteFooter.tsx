@@ -10,6 +10,8 @@ type SiteFooterProps = {
   vendorCategories: HeaderVendorCategory[];
 };
 
+type FooterMenuId = "navigation" | "contact" | "socials";
+
 function IconInstagram() {
   return (
     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -60,6 +62,11 @@ export default function SiteFooter({ vendorCategories }: SiteFooterProps) {
   const { language } = useLanguage();
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [openFooterMenus, setOpenFooterMenus] = useState<Record<FooterMenuId, boolean>>({
+    navigation: false,
+    contact: false,
+    socials: false,
+  });
 
   if (pathname.startsWith("/private-control-room-hub")) {
     return null;
@@ -73,6 +80,13 @@ export default function SiteFooter({ vendorCategories }: SiteFooterProps) {
     if (email.trim()) {
       setSubscribed(true);
     }
+  };
+
+  const toggleFooterMenu = (menu: FooterMenuId) => {
+    setOpenFooterMenus((current) => ({
+      ...current,
+      [menu]: !current[menu],
+    }));
   };
 
   return (
@@ -138,11 +152,18 @@ export default function SiteFooter({ vendorCategories }: SiteFooterProps) {
           <div className="wm-site-footer__cols">
 
             {/* Navigation */}
-            <div className="wm-site-footer__col">
-              <h3 className="wm-site-footer__col-heading">
-                {t("footer.sections.navigation")}
-              </h3>
-              <nav className="wm-site-footer__col-links">
+            <div className={`wm-site-footer__col${openFooterMenus.navigation ? " is-open" : ""}`}>
+              <button
+                type="button"
+                className="wm-site-footer__col-heading"
+                aria-expanded={openFooterMenus.navigation}
+                aria-controls="footer-navigation-menu"
+                onClick={() => toggleFooterMenu("navigation")}
+              >
+                <span>{t("footer.sections.navigation")}</span>
+                <span className="wm-site-footer__col-caret" aria-hidden="true" />
+              </button>
+              <nav className="wm-site-footer__col-links" id="footer-navigation-menu">
                 <Link href="/about">{t("nav.about")}</Link>
                 <Link href="/vendors">{t("nav.vendors")}</Link>
                 <Link href="/blog">{t("nav.blog")}</Link>
@@ -158,11 +179,18 @@ export default function SiteFooter({ vendorCategories }: SiteFooterProps) {
             </div>
 
             {/* Contact */}
-            <div className="wm-site-footer__col">
-              <h3 className="wm-site-footer__col-heading">
-                {t("footer.sections.contact")}
-              </h3>
-              <address className="wm-site-footer__col-links wm-site-footer__contact">
+            <div className={`wm-site-footer__col${openFooterMenus.contact ? " is-open" : ""}`}>
+              <button
+                type="button"
+                className="wm-site-footer__col-heading"
+                aria-expanded={openFooterMenus.contact}
+                aria-controls="footer-contact-menu"
+                onClick={() => toggleFooterMenu("contact")}
+              >
+                <span>{t("footer.sections.contact")}</span>
+                <span className="wm-site-footer__col-caret" aria-hidden="true" />
+              </button>
+              <address className="wm-site-footer__col-links wm-site-footer__contact" id="footer-contact-menu">
                 <a href={`mailto:${t("footer.contact.email")}`}>
                   {t("footer.contact.email")}
                 </a>
@@ -174,11 +202,18 @@ export default function SiteFooter({ vendorCategories }: SiteFooterProps) {
             </div>
 
             {/* Socials */}
-            <div className="wm-site-footer__col">
-              <h3 className="wm-site-footer__col-heading">
-                {t("footer.sections.socials")}
-              </h3>
-              <div className="wm-site-footer__socials">
+            <div className={`wm-site-footer__col${openFooterMenus.socials ? " is-open" : ""}`}>
+              <button
+                type="button"
+                className="wm-site-footer__col-heading"
+                aria-expanded={openFooterMenus.socials}
+                aria-controls="footer-socials-menu"
+                onClick={() => toggleFooterMenu("socials")}
+              >
+                <span>{t("footer.sections.socials")}</span>
+                <span className="wm-site-footer__col-caret" aria-hidden="true" />
+              </button>
+              <div className="wm-site-footer__socials" id="footer-socials-menu">
                 <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="wm-site-footer__social-link" aria-label="Instagram">
                   <IconInstagram />
                   <span>Instagram</span>
