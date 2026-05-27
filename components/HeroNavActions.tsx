@@ -162,9 +162,6 @@ export default function HeroNavActions() {
         </span>
         <span>{t("nav.logIn")}</span>
       </Link>
-      <Link href="/signup" className="btn btn-primary btn-sm wm-founders-hero__signup-link">
-        {t("nav.signUp")}
-      </Link>
     </div>
   );
 }
