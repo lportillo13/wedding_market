@@ -183,6 +183,7 @@ const PROCESS_PANEL_COPY = {
 type VendorLogoItem = {
   id: string;
   label: string;
+  slug?: string | null;
   imageUrl?: string | null;
 };
 
@@ -220,9 +221,9 @@ function mergeVendorLogos(...logoGroups: VendorLogoItem[][]) {
   return Array.from(logosById.values());
 }
 
-function pickCarouselLogos(logos: VendorLogoItem[], preferredVendorName: string) {
+function pickCarouselLogos(logos: VendorLogoItem[], preferredVendorId: string) {
   const preferredLogo = logos.find((logo) =>
-    logo.label.toLowerCase().includes(preferredVendorName.toLowerCase()),
+    [logo.slug, logo.label].some((value) => value?.toLowerCase().includes(preferredVendorId.toLowerCase())),
   );
   const randomLogos = shuffleVendorLogos(
     preferredLogo ? logos.filter((logo) => logo.id !== preferredLogo.id) : logos,
@@ -282,12 +283,14 @@ export default function Home() {
     const mapVendorLogos = (items: Array<{
       id: string;
       business_name: string;
+      slug?: string | null;
       logo_url?: string | null;
       logo_image?: { url?: string } | null;
     }>) =>
       items.map((v) => ({
         id: v.id,
         label: v.business_name,
+        slug: v.slug,
         imageUrl: v.logo_url ?? v.logo_image?.url ?? null,
       }));
 
@@ -295,13 +298,14 @@ export default function Home() {
       try {
         const [vendorPoolResponse, preferredVendorResponse] = await Promise.all([
           fetch("/api/vendors?pageSize=50", { cache: "no-store" }),
-          fetch("/api/vendors?q=blue%20photography&pageSize=5", { cache: "no-store" }),
+          fetch("/api/vendors?q=blue-sky-photography&pageSize=5", { cache: "no-store" }),
         ]);
         if (!vendorPoolResponse.ok) return;
         const vendorPoolData = (await vendorPoolResponse.json()) as {
           items: Array<{
             id: string;
             business_name: string;
+            slug?: string | null;
             logo_url?: string | null;
             logo_image?: { url?: string } | null;
             thumbnail_image?: { url?: string } | null;
@@ -314,7 +318,7 @@ export default function Home() {
           mapVendorLogos(vendorPoolData.items),
           mapVendorLogos(preferredVendorData.items),
         );
-        if (logos.length > 0) setVendorLogos(pickCarouselLogos(logos, "blue photography"));
+        if (logos.length > 0) setVendorLogos(pickCarouselLogos(logos, "blue-sky-photography"));
       } catch {
         // Keep empty – slider will be hidden
       }
