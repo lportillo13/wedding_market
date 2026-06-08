@@ -7233,7 +7233,7 @@ select:focus {
   border-radius: 0;
   box-shadow: none;
   min-height: 0;
-  padding: clamp(1rem, 4.6svh, 3.25rem) 0 clamp(0.5rem, 1.8svh, 1.25rem);
+  padding: clamp(0.75rem, 3.2svh, 2.25rem) 0 clamp(0.35rem, 1.4svh, 1rem);
   text-align: center;
 }
 
@@ -7245,29 +7245,29 @@ select:focus {
 
 .wm-signup-kicker {
   color: var(--wm-accent-strong);
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.08em;
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.4rem;
   text-transform: uppercase;
 }
 
 .wm-signup-step-title {
   color: #1c1c1c;
   font-family: var(--wm-font-display);
-  font-size: clamp(2.25rem, 5vw, 3.2rem);
+  font-size: clamp(1.9rem, 4vw, 2.75rem);
   letter-spacing: 0;
-  line-height: 1;
+  line-height: 0.98;
   margin: 0;
 }
 
 .wm-signup-step-body {
   color: var(--wm-muted);
-  font-size: 1rem;
-  line-height: 1.65;
-  margin: clamp(0.7rem, 1.8svh, 1rem) auto 0;
-  max-width: 42rem;
-  min-height: 3.25rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: clamp(0.55rem, 1.4svh, 0.85rem) auto 0;
+  max-width: 38rem;
+  min-height: 2.75rem;
 }
 
 .wm-signup-field-stack {
@@ -7278,7 +7278,7 @@ select:focus {
 
 .wm-signup-fields {
   animation: wm-signup-fields-in 220ms ease both;
-  margin-top: clamp(1rem, 2.4svh, 1.35rem);
+  margin-top: clamp(0.75rem, 1.8svh, 1.15rem);
   text-align: left;
   width: 100%;
 }
@@ -7290,10 +7290,14 @@ select:focus {
 }
 
 .wm-signup-style-grid {
-  display: grid;
-  gap: 0.8rem;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-top: 0.7rem;
+  display: flex;
+  gap: 0.85rem;
+  margin-top: 0.65rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.15rem 0 0.65rem;
+  scroll-padding-inline: 0.15rem;
+  scroll-snap-type: x mandatory;
 }
 
 .wm-signup-style-card {
@@ -7304,9 +7308,11 @@ select:focus {
   color: #fff;
   cursor: pointer;
   display: grid;
+  flex: 0 0 clamp(13rem, 31vw, 18rem);
   overflow: hidden;
   padding: 0;
   position: relative;
+  scroll-snap-align: start;
   text-align: left;
 }
 
@@ -7415,6 +7421,56 @@ select:focus {
   text-align: center;
 }
 
+.wm-signup-dialog {
+  align-items: center;
+  background: rgba(248, 248, 252, 0.72);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 1.25rem;
+  position: absolute;
+  z-index: 2;
+}
+
+.wm-signup-dialog__panel {
+  background: #fff;
+  border: 1px solid rgba(28, 28, 28, 0.1);
+  border-radius: 1.1rem;
+  box-shadow: 0 1.5rem 5rem rgba(28, 28, 28, 0.16);
+  max-width: 25rem;
+  padding: 1.35rem;
+  text-align: center;
+  width: min(100%, 25rem);
+}
+
+.wm-signup-dialog__panel h3 {
+  color: #1c1c1c;
+  font-family: var(--wm-font-display);
+  font-size: 1.55rem;
+  letter-spacing: 0;
+  line-height: 1.05;
+  margin: 0;
+}
+
+.wm-signup-dialog__panel p {
+  color: var(--wm-muted);
+  line-height: 1.55;
+  margin: 0.7rem 0 0;
+}
+
+.wm-signup-dialog__actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 1.15rem;
+}
+
+.wm-signup-dialog__actions .btn {
+  border-radius: 999px;
+  min-height: 2.75rem;
+  min-width: 7.5rem;
+}
+
 .wm-signup-account-save {
   margin-top: 0.8rem;
 }
@@ -7519,7 +7575,19 @@ select:focus {
   }
 
   .wm-signup-style-grid {
-    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  .wm-signup-style-card {
+    flex-basis: min(74vw, 16rem);
+  }
+
+  .wm-signup-dialog__actions {
+    flex-direction: column-reverse;
+  }
+
+  .wm-signup-dialog__actions .btn {
+    width: 100%;
   }
 
   .wm-signup-step-card {

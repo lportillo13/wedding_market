@@ -57,6 +57,11 @@ type FormShape = {
   priority_services: ['venue'];
 };
 
+type SignupDialog =
+  | { kind: 'confirm-close' }
+  | { kind: 'message'; message: string }
+  | null;
+
 function formatDateValue(year: number, month: number, day: number) {
   return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
@@ -127,7 +132,8 @@ export default function SignUpForm() {
   const [step, setStep] = useState(0);
   const [stepDirection, setStepDirection] = useState<'forward' | 'back'>('forward');
   const [completedCopyStep, setCompletedCopyStep] = useState<number | null>(null);
-  const [localError, setLocalError] = useState<string | null>(null);
+  const [dialog, setDialog] = useState<SignupDialog>(null);
+  const [dismissedActionMessage, setDismissedActionMessage] = useState<string | null>(null);
   const [datePickerMonth, setDatePickerMonth] = useState(() => {
     const today = new Date();
     return new Date(today.getFullYear(), today.getMonth(), 1);
@@ -192,7 +198,8 @@ export default function SignUpForm() {
   }, [isModalOpen]);
 
   function updateField(name: keyof FormShape, value: string) {
-    setLocalError(null);
+    setDialog(null);
+    setDismissedActionMessage(null);
     setForm((current) => ({ ...current, [name]: value }));
   }
 
@@ -200,15 +207,23 @@ export default function SignUpForm() {
     setStep(0);
     setStepDirection('forward');
     setCompletedCopyStep(null);
-    setLocalError(null);
+    setDialog(null);
+    setDismissedActionMessage(null);
     setIsModalOpen(true);
   }
 
   function requestCloseSignupModal() {
-    if (window.confirm(modal.stopBody)) {
-      setLocalError(null);
-      setIsModalOpen(false);
-    }
+    setDialog({ kind: 'confirm-close' });
+  }
+
+  function confirmCloseSignupModal() {
+    setDialog(null);
+    setIsModalOpen(false);
+  }
+
+  function showMessage(message: string) {
+    setDismissedActionMessage(null);
+    setDialog({ kind: 'message', message });
   }
 
   function validateStep(targetStep = step) {
@@ -249,7 +264,7 @@ export default function SignUpForm() {
     for (let index = 1; index < stepCount; index += 1) {
       const error = validateStep(index);
       if (error) {
-        setLocalError(error);
+        showMessage(error);
         setStepDirection(index > step ? 'forward' : 'back');
         setCompletedCopyStep(null);
         setStep(index);
@@ -257,14 +272,14 @@ export default function SignUpForm() {
       }
     }
 
-    setLocalError(null);
+    setDialog(null);
     return true;
   }
 
   function showStep(nextStep: number) {
     const boundedStep = Math.max(0, Math.min(stepCount - 1, nextStep));
     if (boundedStep === step) return;
-    setLocalError(null);
+    setDialog(null);
     setStepDirection(boundedStep > step ? 'forward' : 'back');
     setCompletedCopyStep(null);
     setStep(boundedStep);
@@ -273,7 +288,7 @@ export default function SignUpForm() {
   function goNext() {
     const error = validateStep();
     if (error) {
-      setLocalError(error);
+      showMessage(error);
       return;
     }
 
@@ -295,11 +310,23 @@ export default function SignUpForm() {
 
   const copy = stepCopy();
   const actionMessage = state.ok ? undefined : state.message;
+  const visibleDialog =
+    dialog ?? (actionMessage && dismissedActionMessage !== actionMessage ? { kind: 'message' as const, message: actionMessage } : null);
   const isStepCopyComplete = completedCopyStep === step;
   const fieldsVisible = isStepCopyComplete;
   const handleCopyComplete = useCallback((completedStep: number) => {
     setCompletedCopyStep(completedStep);
   }, []);
+  const dismissDialog = useCallback(() => {
+    if (dialog) {
+      setDialog(null);
+      return;
+    }
+
+    if (actionMessage) {
+      setDismissedActionMessage(actionMessage);
+    }
+  }, [actionMessage, dialog]);
 
   return (
     <>
@@ -619,9 +646,6 @@ export default function SignUpForm() {
               <input type="hidden" name="celebration_city" value={form.celebration_city} />
               <input type="hidden" name="celebration_region" value={form.celebration_region} />
 
-              {(localError || actionMessage) && (
-                <div className="alert alert-danger mt-3">{localError ?? actionMessage}</div>
-              )}
             </div>
 
             <footer className="wm-signup-modal__footer">
@@ -647,6 +671,37 @@ export default function SignUpForm() {
               )}
             </footer>
           </form>
+
+          {visibleDialog ? (
+            <div className="wm-signup-dialog" role="dialog" aria-modal="true" aria-labelledby="wm-signup-dialog-title">
+              <div className="wm-signup-dialog__panel">
+                {visibleDialog.kind === 'confirm-close' ? (
+                  <>
+                    <h3 id="wm-signup-dialog-title">{modal.stopTitle}</h3>
+                    <p>{modal.stopBody}</p>
+                    <div className="wm-signup-dialog__actions">
+                      <button type="button" className="btn btn-outline-secondary" onClick={dismissDialog}>
+                        {modal.keepPlanning}
+                      </button>
+                      <button type="button" className="btn btn-primary" onClick={confirmCloseSignupModal}>
+                        {modal.stopPlanning}
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <h3 id="wm-signup-dialog-title">{modal.messageTitle}</h3>
+                    <p>{visibleDialog.message}</p>
+                    <div className="wm-signup-dialog__actions">
+                      <button type="button" className="btn btn-primary" onClick={dismissDialog}>
+                        {modal.messageCta}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          ) : null}
         </div>
       ) : null}
     </>

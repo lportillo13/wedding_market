@@ -1208,7 +1208,12 @@ const common = {
       "modal": {
         "startPlanning": "Empezar a planificar",
         "closeLabel": "Cerrar registro",
+        "stopTitle": "Detener la creacion de la cuenta?",
         "stopBody": "Detener la creacion de la cuenta? Tus respuestas todavia no estan guardadas.",
+        "keepPlanning": "Seguir planificando",
+        "stopPlanning": "Detener",
+        "messageTitle": "Revisa este paso",
+        "messageCta": "Entendido",
         "stepOf": "Paso",
         "chooseWeddingStyle": "Que estilo se parece mas a tu boda?",
         "selectedDate": "Fecha seleccionada",
