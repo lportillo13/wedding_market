@@ -1205,6 +1205,45 @@ const common = {
         "back": "Back",
         "next": "Continue"
       },
+      "modal": {
+        "startPlanning": "Start planning now",
+        "closeLabel": "Close signup",
+        "stopBody": "Stop creating your account? Your answers are not saved yet.",
+        "stepOf": "Step",
+        "chooseWeddingStyle": "Which style feels most like your wedding?",
+        "selectedDate": "Selected date",
+        "previousMonth": "Previous month",
+        "nextMonth": "Next month",
+        "weddingDate": "Wedding date",
+        "phoneRequired": "Please add your phone number before moving on.",
+        "styleRequired": "Choose a wedding style before moving on.",
+        "accountTitle": "Now let us save your plan.",
+        "accountBody": "Choose a password so you can come back to your favorites, quotes, and messages anytime.",
+        "welcome": {
+          "title": "Hi, I am happy you are here.",
+          "body": "I will help you start your wedding plan without making it feel overwhelming. I just need a few details first."
+        },
+        "contact": {
+          "title": "First, tell me who I am helping.",
+          "body": "I will keep this simple. Your name, email, and phone help keep your quotes and saved vendors connected to you."
+        },
+        "style": {
+          "title": "What kind of wedding are you picturing?",
+          "body": "Pick the style that feels closest. It does not have to be perfect; we can adjust it later."
+        },
+        "date": {
+          "title": "Do you already have a date in mind?",
+          "body": "Choose the date you are planning around. If it changes later, that is completely okay."
+        },
+        "guests": {
+          "title": "How many people should we plan for?",
+          "body": "An estimate is enough for now. This helps vendors understand the size of your celebration."
+        },
+        "budget": {
+          "title": "Where are we planning this wedding?",
+          "body": "Choose your country and share a rough budget so I can help organize better vendor matches."
+        }
+      },
       "steps": {
         "account": {
           "shortLabel": "You",

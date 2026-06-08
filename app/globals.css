@@ -7087,6 +7087,325 @@ select:focus {
   padding-right: 1.4rem;
 }
 
+.wm-signup-modal-is-open {
+  overflow: hidden;
+}
+
+.wm-signup-launch {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  min-height: 18rem;
+  padding: clamp(2rem, 6vw, 5rem) 0;
+}
+
+.wm-signup-launch__button {
+  border-radius: 999px;
+  font-size: 1rem;
+  min-height: 3.35rem;
+  padding-inline: 2rem;
+}
+
+.wm-signup-launch .wm-onboarding-login-link {
+  margin: 0;
+  text-align: center;
+  width: 100%;
+}
+
+.wm-signup-modal {
+  background: #fbfaf6;
+  color: #1c1c1c;
+  inset: 0;
+  overflow: hidden;
+  position: fixed;
+  z-index: 2147483100;
+}
+
+.wm-signup-modal__form {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100%;
+  width: 100%;
+}
+
+.wm-signup-modal__header,
+.wm-signup-modal__footer {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1rem clamp(1rem, 4vw, 2.5rem);
+}
+
+.wm-signup-modal__header {
+  border-bottom: 1px solid rgba(28, 28, 28, 0.08);
+}
+
+.wm-signup-modal__footer {
+  border-top: 1px solid rgba(28, 28, 28, 0.08);
+}
+
+.wm-signup-modal__footer .btn {
+  border-radius: 999px;
+  min-height: 3rem;
+  min-width: 9.5rem;
+}
+
+.wm-signup-modal__footer .wm-signup-next--full {
+  width: 100%;
+}
+
+.wm-signup-modal__logo,
+.wm-signup-intro-icon {
+  align-items: center;
+  background: #1c1c1c;
+  border-radius: 999px;
+  color: #f7efe2;
+  display: inline-flex;
+  font-family: var(--wm-font-display);
+  font-weight: 700;
+  justify-content: center;
+}
+
+.wm-signup-modal__logo {
+  height: 2.65rem;
+  width: 2.65rem;
+}
+
+.wm-signup-modal__close {
+  align-items: center;
+  background: #fff;
+  border: 1px solid rgba(28, 28, 28, 0.12);
+  border-radius: 999px;
+  color: #1c1c1c;
+  display: inline-flex;
+  font-size: 1.2rem;
+  height: 2.65rem;
+  justify-content: center;
+  line-height: 1;
+  width: 2.65rem;
+}
+
+.wm-signup-modal__body {
+  margin: 0 auto;
+  max-width: 46rem;
+  overflow-y: auto;
+  padding: clamp(1rem, 4vw, 2.5rem);
+  width: 100%;
+}
+
+.wm-signup-progress {
+  background: rgba(28, 28, 28, 0.08);
+  border-radius: 999px;
+  height: 0.45rem;
+  margin-bottom: clamp(1.25rem, 3vw, 2rem);
+  overflow: hidden;
+}
+
+.wm-signup-progress span {
+  background: var(--wm-accent);
+  border-radius: inherit;
+  display: block;
+  height: 100%;
+  transition: width 220ms ease;
+}
+
+.wm-signup-step-card {
+  background: #fff;
+  border: 1px solid rgba(28, 28, 28, 0.08);
+  border-radius: 1.25rem;
+  box-shadow: 0 1.25rem 4rem rgba(28, 28, 28, 0.08);
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.wm-signup-intro-icon {
+  height: 4rem;
+  margin-bottom: 1.5rem;
+  width: 4rem;
+}
+
+.wm-signup-kicker {
+  color: var(--wm-accent-strong);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+}
+
+.wm-signup-step-title {
+  color: #1c1c1c;
+  font-family: var(--wm-font-display);
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  letter-spacing: 0;
+  line-height: 1;
+  margin: 0;
+}
+
+.wm-signup-step-body {
+  color: var(--wm-muted);
+  font-size: 1rem;
+  line-height: 1.65;
+  margin: 1rem 0 0;
+}
+
+.wm-signup-field-stack {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 1.35rem;
+}
+
+.wm-signup-modal .form-control,
+.wm-signup-modal .form-select {
+  border-radius: 0.9rem;
+  min-height: 3.2rem;
+}
+
+.wm-signup-style-grid {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 0.7rem;
+}
+
+.wm-signup-style-card {
+  aspect-ratio: 1.25;
+  background: #1c1c1c;
+  border: 2px solid transparent;
+  border-radius: 1rem;
+  color: #fff;
+  cursor: pointer;
+  display: grid;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+  text-align: left;
+}
+
+.wm-signup-style-card img {
+  filter: brightness(0.72) saturate(0.95);
+  grid-area: 1 / 1;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.wm-signup-style-card span,
+.wm-signup-style-card strong {
+  grid-area: 1 / 1;
+  position: relative;
+  z-index: 1;
+}
+
+.wm-signup-style-card span {
+  align-self: end;
+  font-weight: 800;
+  padding: 1rem;
+}
+
+.wm-signup-style-card strong {
+  align-self: start;
+  background: var(--wm-accent);
+  border-radius: 999px;
+  color: #1c1c1c;
+  font-size: 0.7rem;
+  justify-self: end;
+  margin: 0.75rem;
+  padding: 0.35rem 0.55rem;
+}
+
+.wm-signup-style-card.is-active {
+  border-color: var(--wm-accent);
+  box-shadow: 0 0 0 0.2rem rgba(184, 146, 42, 0.18);
+}
+
+.wm-signup-calendar {
+  background: #fff;
+  border: 1px solid rgba(28, 28, 28, 0.1);
+  border-radius: 1rem;
+  margin-top: 0.7rem;
+  padding: 1rem;
+}
+
+.wm-signup-calendar__header,
+.wm-signup-calendar__week,
+.wm-signup-calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+
+.wm-signup-calendar__header {
+  align-items: center;
+  grid-template-columns: 2.5rem 1fr 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.wm-signup-calendar__header strong {
+  text-align: center;
+}
+
+.wm-signup-calendar__header button,
+.wm-signup-calendar__grid button {
+  align-items: center;
+  background: #f8f5ee;
+  border: 1px solid rgba(28, 28, 28, 0.08);
+  border-radius: 999px;
+  color: #1c1c1c;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.wm-signup-calendar__header button {
+  height: 2.35rem;
+  width: 2.35rem;
+}
+
+.wm-signup-calendar__week {
+  color: var(--wm-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  margin-bottom: 0.45rem;
+  text-align: center;
+}
+
+.wm-signup-calendar__grid button,
+.wm-signup-calendar__grid span {
+  aspect-ratio: 1;
+  min-width: 0;
+}
+
+.wm-signup-calendar__grid button.is-selected {
+  background: #1c1c1c;
+  color: #fff;
+}
+
+.wm-signup-selected-date {
+  color: var(--wm-accent-strong);
+  font-weight: 800;
+  margin: 0.9rem 0 0;
+  text-align: center;
+}
+
+.wm-signup-account-save {
+  margin-top: 0.8rem;
+}
+
+.wm-signup-account-save h3 {
+  font-family: var(--wm-font-display);
+  font-size: 1.35rem;
+  letter-spacing: 0;
+  margin: 0;
+}
+
+.wm-signup-account-save p {
+  color: var(--wm-muted);
+  line-height: 1.55;
+  margin: 0.35rem 0 0;
+}
+
 @keyframes wm-onboarding-panel-in {
   from {
     opacity: 0;
@@ -7154,6 +7473,31 @@ select:focus {
 
   .wm-onboarding-page .wm-onboarding-actions .btn {
     width: 100%;
+  }
+
+  .wm-signup-launch {
+    justify-content: stretch;
+  }
+
+  .wm-signup-launch__button {
+    width: 100%;
+  }
+
+  .wm-signup-modal__footer {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  .wm-signup-modal__footer .btn {
+    width: 100%;
+  }
+
+  .wm-signup-style-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wm-signup-step-card {
+    border-radius: 1rem;
   }
 }
 

@@ -1205,6 +1205,45 @@ const common = {
         "back": "Atrás",
         "next": "Continuar"
       },
+      "modal": {
+        "startPlanning": "Empezar a planificar",
+        "closeLabel": "Cerrar registro",
+        "stopBody": "Detener la creacion de la cuenta? Tus respuestas todavia no estan guardadas.",
+        "stepOf": "Paso",
+        "chooseWeddingStyle": "Que estilo se parece mas a tu boda?",
+        "selectedDate": "Fecha seleccionada",
+        "previousMonth": "Mes anterior",
+        "nextMonth": "Mes siguiente",
+        "weddingDate": "Fecha de boda",
+        "phoneRequired": "Agrega tu telefono antes de continuar.",
+        "styleRequired": "Elige un estilo de boda antes de continuar.",
+        "accountTitle": "Ahora guardemos tu plan.",
+        "accountBody": "Elige una contrasena para volver a tus favoritos, cotizaciones y mensajes cuando quieras.",
+        "welcome": {
+          "title": "Hola, me alegra que estes aqui.",
+          "body": "Voy a ayudarte a empezar tu plan de boda sin que se sienta abrumador. Solo necesito algunos datos primero."
+        },
+        "contact": {
+          "title": "Primero, dime a quien estoy ayudando.",
+          "body": "Lo mantendre simple. Tu nombre, correo y telefono ayudan a conectar tus cotizaciones y proveedores guardados contigo."
+        },
+        "style": {
+          "title": "Que tipo de boda estas imaginando?",
+          "body": "Elige el estilo que se sienta mas cercano. No tiene que ser perfecto; lo podemos ajustar despues."
+        },
+        "date": {
+          "title": "Ya tienes una fecha en mente?",
+          "body": "Escoge la fecha que estas planeando. Si cambia despues, no pasa nada."
+        },
+        "guests": {
+          "title": "Para cuantas personas estamos planificando?",
+          "body": "Un estimado esta bien por ahora. Esto ayuda a los proveedores a entender el tamano de tu celebracion."
+        },
+        "budget": {
+          "title": "Donde estamos planificando esta boda?",
+          "body": "Elige tu pais y comparte un presupuesto aproximado para ayudarte a organizar mejores opciones."
+        }
+      },
       "steps": {
         "account": {
           "shortLabel": "Tú",
