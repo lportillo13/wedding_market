@@ -106,7 +106,7 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
 
         <div className="wm-auth-footer">
           {labels.registerPrompt}{" "}
-          <Link href="/signup">{labels.registerLink}</Link>
+          <Link href="/signup?modal=create-account">{labels.registerLink}</Link>
         </div>
       </div>
     </main>

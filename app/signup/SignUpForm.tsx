@@ -121,14 +121,14 @@ function TypewriterCopy({
   );
 }
 
-export default function SignUpForm() {
+export default function SignUpForm({ openModalOnLoad = false }: { openModalOnLoad?: boolean }) {
   const [state, action, pending] = useActionState(signUp, initialState);
   const { dictionary, language } = useLanguage();
   const labels = dictionary.signup.form;
   const page = dictionary.signup.page;
   const modal = labels.modal;
   const profileLabels = dictionary.account.profile.form;
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(openModalOnLoad);
   const [step, setStep] = useState(0);
   const [stepDirection, setStepDirection] = useState<'forward' | 'back'>('forward');
   const [completedCopyStep, setCompletedCopyStep] = useState<number | null>(null);

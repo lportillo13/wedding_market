@@ -3,7 +3,7 @@
 import { useLanguage } from '@/contexts/LanguageContext';
 import SignUpForm from './SignUpForm';
 
-export default function SignUpPageContent() {
+export default function SignUpPageContent({ openModalOnLoad = false }: { openModalOnLoad?: boolean }) {
   const { dictionary } = useLanguage();
   const page = dictionary.signup.page;
 
@@ -20,7 +20,7 @@ export default function SignUpPageContent() {
 
         <section className="wm-onboarding-layout">
           <div className="wm-onboarding-main">
-            <SignUpForm />
+            <SignUpForm openModalOnLoad={openModalOnLoad} />
           </div>
         </section>
       </div>
