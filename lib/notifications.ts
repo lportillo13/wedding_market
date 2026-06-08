@@ -6,6 +6,7 @@ import {
   getLanguageLocale,
   isSupportedLanguage,
 } from "@/lib/i18n";
+import { sendMobilePushNotification } from "@/lib/push-notifications";
 
 export type NotificationType =
   | "quote_answered"
@@ -103,6 +104,46 @@ async function getRecipientLanguage(client: SupabaseClient, recipientId: string)
   return isSupportedLanguage(data?.language) ? data.language : DEFAULT_LANGUAGE;
 }
 
+async function insertNotification(
+  client: SupabaseClient,
+  input: {
+    recipientId: string;
+    actorId: string | null;
+    type: NotificationType;
+    title: string;
+    body: string;
+    data: unknown;
+  }
+) {
+  const result = await client
+    .from("notifications")
+    .insert([
+      {
+        recipient_id: input.recipientId,
+        actor_id: input.actorId,
+        type: input.type,
+        title: input.title,
+        body: input.body,
+        data: input.data,
+      },
+    ])
+    .select("id")
+    .single<{ id: string }>();
+
+  if (!result.error && result.data?.id) {
+    await sendMobilePushNotification(client, {
+      notificationId: result.data.id,
+      recipientId: input.recipientId,
+      type: input.type,
+      title: input.title,
+      body: input.body,
+      data: input.data,
+    });
+  }
+
+  return { data: result.data, error: result.error };
+}
+
 function formatAmount(amountCents: number | null, language: "en" | "es") {
   if (typeof amountCents !== "number") {
     return null;
@@ -138,16 +179,14 @@ export async function createQuoteAnsweredNotification(
     isUpdate: input.isUpdate,
   };
 
-  return client.from("notifications").insert([
-    {
-      recipient_id: input.recipientId,
-      actor_id: input.actorId,
-      type: "quote_answered" satisfies NotificationType,
-      title,
-      body,
-      data,
-    },
-  ]);
+  return insertNotification(client, {
+    recipientId: input.recipientId,
+    actorId: input.actorId,
+    type: "quote_answered",
+    title,
+    body,
+    data,
+  });
 }
 
 function formatLocation(city: string | null, state: string | null, country: string | null) {
@@ -177,16 +216,14 @@ export async function createVendorNewRequestNotification(
     eventDate: input.eventDate,
   };
 
-  return client.from("notifications").insert([
-    {
-      recipient_id: input.recipientId,
-      actor_id: input.actorId,
-      type: "vendor_new_request" satisfies NotificationType,
-      title,
-      body,
-      data,
-    },
-  ]);
+  return insertNotification(client, {
+    recipientId: input.recipientId,
+    actorId: input.actorId,
+    type: "vendor_new_request",
+    title,
+    body,
+    data,
+  });
 }
 
 export async function createVendorQuoteAcceptedNotification(
@@ -216,16 +253,14 @@ export async function createVendorQuoteAcceptedNotification(
     revealPhone: input.revealPhone,
   };
 
-  return client.from("notifications").insert([
-    {
-      recipient_id: input.recipientId,
-      actor_id: input.actorId,
-      type: "vendor_quote_accepted" satisfies NotificationType,
-      title,
-      body,
-      data,
-    },
-  ]);
+  return insertNotification(client, {
+    recipientId: input.recipientId,
+    actorId: input.actorId,
+    type: "vendor_quote_accepted",
+    title,
+    body,
+    data,
+  });
 }
 
 export async function createThreadReplyNotification(
@@ -268,16 +303,14 @@ export async function createThreadReplyNotification(
     messagePreview: input.messagePreview,
   };
 
-  return client.from("notifications").insert([
-    {
-      recipient_id: input.recipientId,
-      actor_id: input.actorId,
-      type: "thread_reply" satisfies NotificationType,
-      title,
-      body,
-      data,
-    },
-  ]);
+  return insertNotification(client, {
+    recipientId: input.recipientId,
+    actorId: input.actorId,
+    type: "thread_reply",
+    title,
+    body,
+    data,
+  });
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

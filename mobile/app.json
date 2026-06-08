@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "The Wedding Market",
+    "slug": "the-wedding-market",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "theweddingmarket",
+    "plugins": [
+      "expo-notifications"
+    ],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.theweddingmarket.app"
+    },
+    "android": {
+      "package": "com.theweddingmarket.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#F8F8F6"
+      }
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "extra": {
+      "appName": "The Wedding Market"
+    }
+  }
+}

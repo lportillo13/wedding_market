@@ -2,7 +2,7 @@ create table if not exists public.notifications (
   id uuid primary key default gen_random_uuid(),
   recipient_id uuid not null references public.profiles (id) on delete cascade,
   actor_id uuid references public.profiles (id) on delete set null,
-  type text not null check (type in ('quote_answered', 'vendor_new_request', 'vendor_quote_accepted')),
+  type text not null check (type in ('quote_answered', 'vendor_new_request', 'vendor_quote_accepted', 'thread_reply')),
   title text not null,
   body text,
   data jsonb not null default '{}'::jsonb,
@@ -22,7 +22,7 @@ alter table public.notifications
 
 alter table public.notifications
   add constraint notifications_type_check
-  check (type in ('quote_answered', 'vendor_new_request', 'vendor_quote_accepted'));
+  check (type in ('quote_answered', 'vendor_new_request', 'vendor_quote_accepted', 'thread_reply'));
 
 grant select, insert, update, delete on public.notifications to authenticated;
 grant select, insert, update, delete on public.notifications to service_role;
@@ -66,3 +66,52 @@ create policy notifications_recipient_update
   to authenticated
   using (recipient_id = auth.uid())
   with check (recipient_id = auth.uid());
+
+create table if not exists public.user_push_tokens (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references public.profiles (id) on delete cascade,
+  token text not null unique,
+  platform text not null check (platform in ('ios', 'android', 'web', 'unknown')),
+  device_id text,
+  is_active boolean not null default true,
+  last_seen_at timestamp with time zone not null default now(),
+  created_at timestamp with time zone not null default now(),
+  updated_at timestamp with time zone not null default now()
+);
+
+grant select, insert, update, delete on public.user_push_tokens to authenticated;
+grant select, insert, update, delete on public.user_push_tokens to service_role;
+
+create index if not exists user_push_tokens_user_active_idx
+  on public.user_push_tokens using btree (user_id, is_active, last_seen_at desc);
+
+alter table public.user_push_tokens enable row level security;
+
+drop policy if exists user_push_tokens_owner_select on public.user_push_tokens;
+create policy user_push_tokens_owner_select
+  on public.user_push_tokens
+  for select
+  to authenticated
+  using (user_id = auth.uid());
+
+drop policy if exists user_push_tokens_owner_insert on public.user_push_tokens;
+create policy user_push_tokens_owner_insert
+  on public.user_push_tokens
+  for insert
+  to authenticated
+  with check (user_id = auth.uid());
+
+drop policy if exists user_push_tokens_owner_update on public.user_push_tokens;
+create policy user_push_tokens_owner_update
+  on public.user_push_tokens
+  for update
+  to authenticated
+  using (user_id = auth.uid())
+  with check (user_id = auth.uid());
+
+drop policy if exists user_push_tokens_owner_delete on public.user_push_tokens;
+create policy user_push_tokens_owner_delete
+  on public.user_push_tokens
+  for delete
+  to authenticated
+  using (user_id = auth.uid());
