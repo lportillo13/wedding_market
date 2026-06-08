@@ -1821,8 +1821,7 @@ select:focus {
 
 .wm-home-premium-benefits,
 .wm-home-premium-categories,
-.wm-home-premium-process,
-.wm-home-premium-final {
+.wm-home-premium-process {
   padding: 5rem 0;
 }
 
@@ -1840,8 +1839,7 @@ select:focus {
 }
 
 .wm-home-premium-section-head h2,
-.wm-home-premium-process h2,
-.wm-home-premium-final h2 {
+.wm-home-premium-process h2 {
   color: var(--wm-premium-black);
   font-size: 3rem;
   line-height: 1.03;
@@ -2170,28 +2168,6 @@ select:focus {
   color: #10100e;
 }
 
-.wm-home-premium-final {
-  background: #f8f7f5;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  color: var(--wm-premium-black);
-  padding: 4rem 0;
-}
-
-.wm-home-premium-final__inner {
-  align-items: center;
-  display: flex;
-  gap: 1.5rem;
-  justify-content: space-between;
-}
-
-.wm-home-premium-final .wm-home-premium-eyebrow {
-  margin-bottom: 0.6rem;
-}
-
-.wm-home-premium-final h2 {
-  color: var(--wm-premium-black);
-}
-
 @media (max-width: 991.98px) {
   .wm-home-premium-hero {
     padding: 4rem 0 3.5rem;
@@ -2224,8 +2200,7 @@ select:focus {
     grid-column: span 2;
   }
 
-  .wm-home-premium-section-head--split,
-  .wm-home-premium-final__inner {
+  .wm-home-premium-section-head--split {
     align-items: start;
     flex-direction: column;
   }
@@ -2241,15 +2216,13 @@ select:focus {
   }
 
   .wm-home-premium-section-head h2,
-  .wm-home-premium-process h2,
-  .wm-home-premium-final h2 {
+  .wm-home-premium-process h2 {
     font-size: 2.25rem;
   }
 
   .wm-home-premium-benefits,
   .wm-home-premium-categories,
-  .wm-home-premium-process,
-  .wm-home-premium-final {
+  .wm-home-premium-process {
     padding: 3.5rem 0;
   }
 

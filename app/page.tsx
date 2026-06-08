@@ -47,7 +47,6 @@ const HOME_REFERENCE_COPY = {
       "Send one request to the vendors you want to compare.",
       "Track replies, quotes, and favorites from your account.",
     ],
-    finalEyebrow: "Ready when you are",
   },
   es: {
     searchEyebrow: "Acceso privado de planeacion",
@@ -71,7 +70,6 @@ const HOME_REFERENCE_COPY = {
       "Envia una solicitud a los proveedores que quieres comparar.",
       "Sigue respuestas, cotizaciones y favoritos desde tu cuenta.",
     ],
-    finalEyebrow: "Listo cuando ustedes lo esten",
   },
 } as const;
 
@@ -647,17 +645,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="wm-home-premium-final">
-        <div className="container">
-          <div className="wm-home-premium-final__inner">
-            <p className="wm-home-premium-eyebrow">{referenceCopy.finalEyebrow}</p>
-            <h2>{plan.heading}</h2>
-            <Link href={hero.primaryCtaHref} className="wm-home-premium-button wm-home-premium-button--light">
-              {hero.primaryCtaLabel}
-            </Link>
-          </div>
-        </div>
-      </section>
     </main>
   );
 }
