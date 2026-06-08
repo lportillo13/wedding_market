@@ -1,16 +1,36 @@
 import { Platform } from "react-native";
-import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
 import { mobileConfig } from "./config";
 import { supabase } from "./supabase";
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
-});
+type NotificationsModule = typeof import("expo-notifications");
+type NotificationSubscription = { remove: () => void };
+
+let notificationsModulePromise: Promise<NotificationsModule | null> | null = null;
+
+function isRunningInExpoGo() {
+  return Constants.appOwnership === "expo";
+}
+
+async function getNotificationsModule() {
+  if (isRunningInExpoGo()) {
+    return null;
+  }
+
+  notificationsModulePromise ??= import("expo-notifications").then((module) => {
+    module.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+        shouldShowBanner: true,
+        shouldShowList: true,
+      }),
+    });
+    return module;
+  });
+
+  return notificationsModulePromise;
+}
 
 export type PushRegistrationResult =
   | { ok: true; token: string }
@@ -22,6 +42,11 @@ function allowsNotifications(value: unknown) {
 }
 
 export async function registerForPushNotifications(): Promise<PushRegistrationResult> {
+  const Notifications = await getNotificationsModule();
+  if (!Notifications) {
+    return { ok: false, reason: "Push notifications require a development build or production app." };
+  }
+
   if (!supabase) {
     return { ok: false, reason: "Supabase is not configured." };
   }
@@ -78,6 +103,11 @@ export async function registerForPushNotifications(): Promise<PushRegistrationRe
 }
 
 export async function unregisterPushNotifications() {
+  const Notifications = await getNotificationsModule();
+  if (!Notifications) {
+    return;
+  }
+
   if (!supabase || !mobileConfig.webApiUrl) {
     return;
   }
@@ -107,7 +137,29 @@ export async function unregisterPushNotifications() {
 }
 
 export function addNotificationTapListener(onOpenInbox: () => void) {
-  return Notifications.addNotificationResponseReceivedListener(() => {
-    onOpenInbox();
+  let subscription: NotificationSubscription | null = null;
+  let isRemoved = false;
+
+  void getNotificationsModule().then((Notifications) => {
+    if (!Notifications || isRemoved) {
+      return;
+    }
+
+    subscription = Notifications.addNotificationResponseReceivedListener(() => {
+      onOpenInbox();
+    });
+
+    if (isRemoved) {
+      subscription.remove();
+      subscription = null;
+    }
   });
+
+  return {
+    remove: () => {
+      isRemoved = true;
+      subscription?.remove();
+      subscription = null;
+    },
+  };
 }
