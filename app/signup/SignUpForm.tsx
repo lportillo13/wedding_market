@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useEffect, useMemo, useState } from 'react';
+import { useActionState, useCallback, useEffect, useMemo, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { buildCountryOptions } from '@/lib/countries';
 import { signUp, type SignUpState } from './actions';
@@ -61,6 +61,61 @@ function formatDateValue(year: number, month: number, day: number) {
   return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 
+function TypewriterCopy({
+  body,
+  step,
+  title,
+  titleId,
+  onComplete,
+}: {
+  body: string;
+  step: number;
+  title: string;
+  titleId?: string;
+  onComplete: (step: number) => void;
+}) {
+  const [typedTitle, setTypedTitle] = useState('');
+  const [typedBody, setTypedBody] = useState('');
+
+  useEffect(() => {
+    let titleIndex = 0;
+    let bodyIndex = 0;
+    let isTypingBody = false;
+
+    const timer = window.setInterval(() => {
+      if (!isTypingBody) {
+        titleIndex += 1;
+        setTypedTitle(title.slice(0, titleIndex));
+
+        if (titleIndex >= title.length) {
+          isTypingBody = true;
+        }
+
+        return;
+      }
+
+      bodyIndex += 1;
+      setTypedBody(body.slice(0, bodyIndex));
+
+      if (bodyIndex >= body.length) {
+        window.clearInterval(timer);
+        onComplete(step);
+      }
+    }, isTypingBody ? 12 : 22);
+
+    return () => window.clearInterval(timer);
+  }, [body, onComplete, step, title]);
+
+  return (
+    <>
+      <h2 id={titleId} className="wm-signup-step-title">
+        {typedTitle}
+      </h2>
+      <p className="wm-signup-step-body">{typedBody}</p>
+    </>
+  );
+}
+
 export default function SignUpForm() {
   const [state, action, pending] = useActionState(signUp, initialState);
   const { dictionary, language } = useLanguage();
@@ -71,6 +126,7 @@ export default function SignUpForm() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [step, setStep] = useState(0);
   const [stepDirection, setStepDirection] = useState<'forward' | 'back'>('forward');
+  const [completedCopyStep, setCompletedCopyStep] = useState<number | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);
   const [datePickerMonth, setDatePickerMonth] = useState(() => {
     const today = new Date();
@@ -143,6 +199,7 @@ export default function SignUpForm() {
   function openSignupModal() {
     setStep(0);
     setStepDirection('forward');
+    setCompletedCopyStep(null);
     setLocalError(null);
     setIsModalOpen(true);
   }
@@ -194,6 +251,7 @@ export default function SignUpForm() {
       if (error) {
         setLocalError(error);
         setStepDirection(index > step ? 'forward' : 'back');
+        setCompletedCopyStep(null);
         setStep(index);
         return false;
       }
@@ -208,6 +266,7 @@ export default function SignUpForm() {
     if (boundedStep === step) return;
     setLocalError(null);
     setStepDirection(boundedStep > step ? 'forward' : 'back');
+    setCompletedCopyStep(null);
     setStep(boundedStep);
   }
 
@@ -236,6 +295,11 @@ export default function SignUpForm() {
 
   const copy = stepCopy();
   const actionMessage = state.ok ? undefined : state.message;
+  const isStepCopyComplete = completedCopyStep === step;
+  const fieldsVisible = isStepCopyComplete;
+  const handleCopyComplete = useCallback((completedStep: number) => {
+    setCompletedCopyStep(completedStep);
+  }, []);
 
   return (
     <>
@@ -285,211 +349,265 @@ export default function SignUpForm() {
 
               <div className="wm-onboarding-panels" data-direction={stepDirection}>
                 <section hidden={step !== 0} className="wm-onboarding-panel wm-signup-step-card">
-                  <div className="wm-signup-intro-icon" aria-hidden="true">
-                    TWM
-                  </div>
-                  <h2 id="wm-signup-modal-title" className="wm-signup-step-title">
-                    {copy.title}
-                  </h2>
-                  <p className="wm-signup-step-body">{copy.body}</p>
+                  {step === 0 ? (
+                    <TypewriterCopy
+                      key={`copy-${step}-${language}`}
+                      body={copy.body}
+                      step={step}
+                      title={copy.title}
+                      titleId="wm-signup-modal-title"
+                      onComplete={handleCopyComplete}
+                    />
+                  ) : null}
                 </section>
 
                 <section hidden={step !== 1} className="wm-onboarding-panel wm-signup-step-card">
                   <p className="wm-signup-kicker">{modal.stepOf} 1 / 5</p>
-                  <h2 className="wm-signup-step-title">{copy.title}</h2>
-                  <p className="wm-signup-step-body">{copy.body}</p>
-                  <div className="wm-signup-field-stack">
-                    <label className="form-label" htmlFor="signup-full-name">
-                      {labels.fields.fullNameLabel}
-                    </label>
-                    <input
-                      id="signup-full-name"
-                      className="form-control"
-                      name="full_name"
-                      value={form.full_name}
-                      onChange={(event) => updateField('full_name', event.target.value)}
-                      autoComplete="name"
+                  {step === 1 ? (
+                    <TypewriterCopy
+                      key={`copy-${step}-${language}`}
+                      body={copy.body}
+                      step={step}
+                      title={copy.title}
+                      onComplete={handleCopyComplete}
                     />
-                    <label className="form-label" htmlFor="signup-email">
-                      {labels.emailLabel}
-                    </label>
-                    <input
-                      id="signup-email"
-                      className="form-control"
-                      type="email"
-                      name="email"
-                      value={form.email}
-                      onChange={(event) => updateField('email', event.target.value)}
-                      autoComplete="email"
-                    />
-                    <label className="form-label" htmlFor="signup-phone">
-                      {labels.fields.phoneLabel}
-                    </label>
-                    <input
-                      id="signup-phone"
-                      className="form-control"
-                      type="tel"
-                      name="phone"
-                      value={form.phone}
-                      onChange={(event) => updateField('phone', event.target.value)}
-                      autoComplete="tel"
-                      placeholder={labels.fields.phonePlaceholder}
-                    />
-                  </div>
+                  ) : null}
+                  {step === 1 && fieldsVisible ? (
+                    <div className="wm-signup-field-stack wm-signup-fields">
+                      <label className="form-label" htmlFor="signup-full-name">
+                        {labels.fields.fullNameLabel}
+                      </label>
+                      <input
+                        id="signup-full-name"
+                        className="form-control"
+                        name="full_name"
+                        value={form.full_name}
+                        onChange={(event) => updateField('full_name', event.target.value)}
+                        autoComplete="name"
+                      />
+                      <label className="form-label" htmlFor="signup-email">
+                        {labels.emailLabel}
+                      </label>
+                      <input
+                        id="signup-email"
+                        className="form-control"
+                        type="email"
+                        name="email"
+                        value={form.email}
+                        onChange={(event) => updateField('email', event.target.value)}
+                        autoComplete="email"
+                      />
+                      <label className="form-label" htmlFor="signup-phone">
+                        {labels.fields.phoneLabel}
+                      </label>
+                      <input
+                        id="signup-phone"
+                        className="form-control"
+                        type="tel"
+                        name="phone"
+                        value={form.phone}
+                        onChange={(event) => updateField('phone', event.target.value)}
+                        autoComplete="tel"
+                        placeholder={labels.fields.phonePlaceholder}
+                      />
+                    </div>
+                  ) : null}
                 </section>
 
                 <section hidden={step !== 2} className="wm-onboarding-panel wm-signup-step-card">
                   <p className="wm-signup-kicker">{modal.stepOf} 2 / 5</p>
-                  <h2 className="wm-signup-step-title">{copy.title}</h2>
-                  <p className="wm-signup-step-body">{copy.body}</p>
-                  <label className="form-label">{modal.chooseWeddingStyle}</label>
-                  <div className="wm-signup-style-grid">
-                    {weddingStyleCards.map((style) => {
-                      const isSelected = form.wedding_theme === style.value;
-                      return (
-                        <button
-                          key={style.value}
-                          type="button"
-                          className={`wm-signup-style-card${isSelected ? ' is-active' : ''}`}
-                          onClick={() => updateField('wedding_theme', style.value)}
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={style.image} alt="" />
-                          <span>{themeLabels[style.value]}</span>
-                          {isSelected ? <strong aria-hidden="true">Selected</strong> : null}
-                        </button>
-                      );
-                    })}
-                  </div>
+                  {step === 2 ? (
+                    <TypewriterCopy
+                      key={`copy-${step}-${language}`}
+                      body={copy.body}
+                      step={step}
+                      title={copy.title}
+                      onComplete={handleCopyComplete}
+                    />
+                  ) : null}
+                  {step === 2 && fieldsVisible ? (
+                    <div className="wm-signup-fields">
+                      <label className="form-label">{modal.chooseWeddingStyle}</label>
+                      <div className="wm-signup-style-grid">
+                        {weddingStyleCards.map((style) => {
+                          const isSelected = form.wedding_theme === style.value;
+                          return (
+                            <button
+                              key={style.value}
+                              type="button"
+                              className={`wm-signup-style-card${isSelected ? ' is-active' : ''}`}
+                              onClick={() => updateField('wedding_theme', style.value)}
+                            >
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={style.image} alt="" />
+                              <span>{themeLabels[style.value]}</span>
+                              {isSelected ? <strong aria-hidden="true">Selected</strong> : null}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ) : null}
                 </section>
 
                 <section hidden={step !== 3} className="wm-onboarding-panel wm-signup-step-card">
                   <p className="wm-signup-kicker">{modal.stepOf} 3 / 5</p>
-                  <h2 className="wm-signup-step-title">{copy.title}</h2>
-                  <p className="wm-signup-step-body">{copy.body}</p>
-                  <label className="form-label">{modal.weddingDate}</label>
-                  <div className="wm-signup-calendar">
-                    <div className="wm-signup-calendar__header">
-                      <button type="button" onClick={() => moveDatePickerMonth(-1)} aria-label={modal.previousMonth}>
-                        {'<'}
-                      </button>
-                      <strong>{monthLabel}</strong>
-                      <button type="button" onClick={() => moveDatePickerMonth(1)} aria-label={modal.nextMonth}>
-                        {'>'}
-                      </button>
-                    </div>
-                    <div className="wm-signup-calendar__week">
-                      {weekDays.map((day, index) => (
-                        <span key={`${day}-${index}`}>{day}</span>
-                      ))}
-                    </div>
-                    <div className="wm-signup-calendar__grid">
-                      {calendarDays.map((day, index) => {
-                        if (!day) return <span key={`blank-${index}`} />;
-                        const value = formatDateValue(
-                          datePickerMonth.getFullYear(),
-                          datePickerMonth.getMonth(),
-                          day,
-                        );
-                        const isSelected = form.tentative_wedding_date === value;
-                        return (
-                          <button
-                            key={value}
-                            type="button"
-                            className={isSelected ? 'is-selected' : ''}
-                            onClick={() => updateField('tentative_wedding_date', value)}
-                          >
-                            {day}
+                  {step === 3 ? (
+                    <TypewriterCopy
+                      key={`copy-${step}-${language}`}
+                      body={copy.body}
+                      step={step}
+                      title={copy.title}
+                      onComplete={handleCopyComplete}
+                    />
+                  ) : null}
+                  {step === 3 && fieldsVisible ? (
+                    <div className="wm-signup-fields">
+                      <label className="form-label">{modal.weddingDate}</label>
+                      <div className="wm-signup-calendar">
+                        <div className="wm-signup-calendar__header">
+                          <button type="button" onClick={() => moveDatePickerMonth(-1)} aria-label={modal.previousMonth}>
+                            {'<'}
                           </button>
-                        );
-                      })}
+                          <strong>{monthLabel}</strong>
+                          <button type="button" onClick={() => moveDatePickerMonth(1)} aria-label={modal.nextMonth}>
+                            {'>'}
+                          </button>
+                        </div>
+                        <div className="wm-signup-calendar__week">
+                          {weekDays.map((day, index) => (
+                            <span key={`${day}-${index}`}>{day}</span>
+                          ))}
+                        </div>
+                        <div className="wm-signup-calendar__grid">
+                          {calendarDays.map((day, index) => {
+                            if (!day) return <span key={`blank-${index}`} />;
+                            const value = formatDateValue(
+                              datePickerMonth.getFullYear(),
+                              datePickerMonth.getMonth(),
+                              day,
+                            );
+                            const isSelected = form.tentative_wedding_date === value;
+                            return (
+                              <button
+                                key={value}
+                                type="button"
+                                className={isSelected ? 'is-selected' : ''}
+                                onClick={() => updateField('tentative_wedding_date', value)}
+                              >
+                                {day}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {form.tentative_wedding_date ? (
+                          <p className="wm-signup-selected-date">
+                            {modal.selectedDate}: {form.tentative_wedding_date}
+                          </p>
+                        ) : null}
+                      </div>
                     </div>
-                    {form.tentative_wedding_date ? (
-                      <p className="wm-signup-selected-date">
-                        {modal.selectedDate}: {form.tentative_wedding_date}
-                      </p>
-                    ) : null}
-                  </div>
+                  ) : null}
                 </section>
 
                 <section hidden={step !== 4} className="wm-onboarding-panel wm-signup-step-card">
                   <p className="wm-signup-kicker">{modal.stepOf} 4 / 5</p>
-                  <h2 className="wm-signup-step-title">{copy.title}</h2>
-                  <p className="wm-signup-step-body">{copy.body}</p>
-                  <label className="form-label" htmlFor="signup-guests">
-                    {profileLabels.guestCountLabel}
-                  </label>
-                  <input
-                    id="signup-guests"
-                    className="form-control"
-                    type="number"
-                    min={1}
-                    name="guest_count"
-                    value={form.guest_count}
-                    onChange={(event) => updateField('guest_count', event.target.value)}
-                    placeholder="120"
-                  />
+                  {step === 4 ? (
+                    <TypewriterCopy
+                      key={`copy-${step}-${language}`}
+                      body={copy.body}
+                      step={step}
+                      title={copy.title}
+                      onComplete={handleCopyComplete}
+                    />
+                  ) : null}
+                  {step === 4 && fieldsVisible ? (
+                    <div className="wm-signup-fields">
+                      <label className="form-label" htmlFor="signup-guests">
+                        {profileLabels.guestCountLabel}
+                      </label>
+                      <input
+                        id="signup-guests"
+                        className="form-control"
+                        type="number"
+                        min={1}
+                        name="guest_count"
+                        value={form.guest_count}
+                        onChange={(event) => updateField('guest_count', event.target.value)}
+                        placeholder="120"
+                      />
+                    </div>
+                  ) : null}
                 </section>
 
                 <section hidden={step !== 5} className="wm-onboarding-panel wm-signup-step-card">
                   <p className="wm-signup-kicker">{modal.stepOf} 5 / 5</p>
-                  <h2 className="wm-signup-step-title">{copy.title}</h2>
-                  <p className="wm-signup-step-body">{copy.body}</p>
-                  <div className="wm-signup-field-stack">
-                    <label className="form-label" htmlFor="signup-country">
-                      {profileLabels.countryLabel}
-                    </label>
-                    <select
-                      id="signup-country"
-                      className="form-select"
-                      name="country"
-                      value={form.country}
-                      onChange={(event) => updateField('country', event.target.value)}
-                      autoComplete="country-name"
-                    >
-                      <option value="">{profileLabels.countryPlaceholder}</option>
-                      {countryOptions.map((country) => (
-                        <option key={country} value={country}>
-                          {country}
-                        </option>
-                      ))}
-                    </select>
-
-                    <label className="form-label" htmlFor="signup-budget">
-                      {profileLabels.budgetLabel}
-                    </label>
-                    <input
-                      id="signup-budget"
-                      className="form-control"
-                      type="number"
-                      min={0}
-                      step="0.01"
-                      name="wedding_budget"
-                      value={form.wedding_budget}
-                      onChange={(event) => updateField('wedding_budget', event.target.value)}
-                      placeholder="25000"
+                  {step === 5 ? (
+                    <TypewriterCopy
+                      key={`copy-${step}-${language}`}
+                      body={copy.body}
+                      step={step}
+                      title={copy.title}
+                      onComplete={handleCopyComplete}
                     />
+                  ) : null}
+                  {step === 5 && fieldsVisible ? (
+                    <div className="wm-signup-field-stack wm-signup-fields">
+                      <label className="form-label" htmlFor="signup-country">
+                        {profileLabels.countryLabel}
+                      </label>
+                      <select
+                        id="signup-country"
+                        className="form-select"
+                        name="country"
+                        value={form.country}
+                        onChange={(event) => updateField('country', event.target.value)}
+                        autoComplete="country-name"
+                      >
+                        <option value="">{profileLabels.countryPlaceholder}</option>
+                        {countryOptions.map((country) => (
+                          <option key={country} value={country}>
+                            {country}
+                          </option>
+                        ))}
+                      </select>
 
-                    <div className="wm-signup-account-save">
-                      <h3>{modal.accountTitle}</h3>
-                      <p>{modal.accountBody}</p>
+                      <label className="form-label" htmlFor="signup-budget">
+                        {profileLabels.budgetLabel}
+                      </label>
+                      <input
+                        id="signup-budget"
+                        className="form-control"
+                        type="number"
+                        min={0}
+                        step="0.01"
+                        name="wedding_budget"
+                        value={form.wedding_budget}
+                        onChange={(event) => updateField('wedding_budget', event.target.value)}
+                        placeholder="25000"
+                      />
+
+                      <div className="wm-signup-account-save">
+                        <h3>{modal.accountTitle}</h3>
+                        <p>{modal.accountBody}</p>
+                      </div>
+
+                      <label className="form-label" htmlFor="signup-password">
+                        {labels.passwordLabel}
+                      </label>
+                      <input
+                        id="signup-password"
+                        className="form-control"
+                        type="password"
+                        name="password"
+                        value={form.password}
+                        onChange={(event) => updateField('password', event.target.value)}
+                        autoComplete="new-password"
+                        minLength={6}
+                      />
+                      <div className="form-text">{labels.passwordHelp}</div>
                     </div>
-
-                    <label className="form-label" htmlFor="signup-password">
-                      {labels.passwordLabel}
-                    </label>
-                    <input
-                      id="signup-password"
-                      className="form-control"
-                      type="password"
-                      name="password"
-                      value={form.password}
-                      onChange={(event) => updateField('password', event.target.value)}
-                      autoComplete="new-password"
-                      minLength={6}
-                    />
-                    <div className="form-text">{labels.passwordHelp}</div>
-                  </div>
+                  ) : null}
                 </section>
               </div>
 
@@ -518,12 +636,12 @@ export default function SignUpForm() {
                   type="button"
                   className={`btn btn-primary${step === 0 ? ' wm-signup-next--full' : ''}`}
                   onClick={goNext}
-                  disabled={pending}
+                  disabled={pending || !isStepCopyComplete}
                 >
                   {step === 0 ? modal.startPlanning : labels.actions.next}
                 </button>
               ) : (
-                <button className="btn btn-primary" disabled={pending}>
+                <button className="btn btn-primary" disabled={pending || !isStepCopyComplete}>
                   {pending ? labels.submitting : labels.submit}
                 </button>
               )}

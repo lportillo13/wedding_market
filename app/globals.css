@@ -7115,7 +7115,7 @@ select:focus {
 }
 
 .wm-signup-modal {
-  background: #fbfaf6;
+  background: #f8f8fc;
   color: #1c1c1c;
   inset: 0;
   overflow: hidden;
@@ -7135,12 +7135,14 @@ select:focus {
   align-items: center;
   display: flex;
   gap: 1rem;
-  justify-content: space-between;
+  justify-content: center;
   padding: 1rem clamp(1rem, 4vw, 2.5rem);
+  position: relative;
 }
 
 .wm-signup-modal__header {
-  border-bottom: 1px solid rgba(28, 28, 28, 0.08);
+  border-bottom: 0;
+  min-height: 6rem;
 }
 
 .wm-signup-modal__footer {
@@ -7153,6 +7155,10 @@ select:focus {
   min-width: 9.5rem;
 }
 
+.wm-signup-modal__footer .btn:disabled {
+  opacity: 0.42;
+}
+
 .wm-signup-modal__footer .wm-signup-next--full {
   width: 100%;
 }
@@ -7160,24 +7166,26 @@ select:focus {
 .wm-signup-modal__logo,
 .wm-signup-intro-icon {
   align-items: center;
-  background: #1c1c1c;
-  border-radius: 999px;
-  color: #f7efe2;
+  background: transparent;
+  border-radius: 0;
+  color: #1c1c1c;
   display: inline-flex;
   font-family: var(--wm-font-display);
-  font-weight: 700;
+  font-weight: 500;
   justify-content: center;
 }
 
 .wm-signup-modal__logo {
-  height: 2.65rem;
-  width: 2.65rem;
+  font-size: 1.55rem;
+  height: auto;
+  letter-spacing: 0;
+  width: auto;
 }
 
 .wm-signup-modal__close {
   align-items: center;
-  background: #fff;
-  border: 1px solid rgba(28, 28, 28, 0.12);
+  background: transparent;
+  border: 0;
   border-radius: 999px;
   color: #1c1c1c;
   display: inline-flex;
@@ -7185,6 +7193,9 @@ select:focus {
   height: 2.65rem;
   justify-content: center;
   line-height: 1;
+  position: absolute;
+  right: clamp(0.85rem, 3vw, 1.5rem);
+  top: 0.85rem;
   width: 2.65rem;
 }
 
@@ -7197,15 +7208,15 @@ select:focus {
 }
 
 .wm-signup-progress {
-  background: rgba(28, 28, 28, 0.08);
+  background: #e2e4ec;
   border-radius: 999px;
-  height: 0.45rem;
+  height: 4px;
   margin-bottom: clamp(1.25rem, 3vw, 2rem);
   overflow: hidden;
 }
 
 .wm-signup-progress span {
-  background: var(--wm-accent);
+  background: #1c1c1c;
   border-radius: inherit;
   display: block;
   height: 100%;
@@ -7213,11 +7224,14 @@ select:focus {
 }
 
 .wm-signup-step-card {
-  background: #fff;
-  border: 1px solid rgba(28, 28, 28, 0.08);
-  border-radius: 1.25rem;
-  box-shadow: 0 1.25rem 4rem rgba(28, 28, 28, 0.08);
-  padding: clamp(1.25rem, 4vw, 2rem);
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  min-height: min(42rem, calc(100svh - 16rem));
+  padding: clamp(3rem, 8vw, 7rem) 0 2rem;
+  text-align: center;
 }
 
 .wm-signup-intro-icon {
@@ -7238,7 +7252,7 @@ select:focus {
 .wm-signup-step-title {
   color: #1c1c1c;
   font-family: var(--wm-font-display);
-  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-size: clamp(2.25rem, 5vw, 3.2rem);
   letter-spacing: 0;
   line-height: 1;
   margin: 0;
@@ -7249,12 +7263,20 @@ select:focus {
   font-size: 1rem;
   line-height: 1.65;
   margin: 1rem 0 0;
+  min-height: 3.3rem;
 }
 
 .wm-signup-field-stack {
   display: grid;
   gap: 0.7rem;
   margin-top: 1.35rem;
+}
+
+.wm-signup-fields {
+  animation: wm-signup-fields-in 220ms ease both;
+  margin-top: 1.35rem;
+  text-align: left;
+  width: 100%;
 }
 
 .wm-signup-modal .form-control,
@@ -7498,6 +7520,18 @@ select:focus {
 
   .wm-signup-step-card {
     border-radius: 1rem;
+  }
+}
+
+@keyframes wm-signup-fields-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
