@@ -1038,8 +1038,8 @@ select:focus {
   max-width: 58rem;
   position: absolute;
   text-align: center;
-  top: 12.9rem;
-  transform: translateX(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
   width: min(58rem, calc(100% - 2rem));
   z-index: 1;
 }
@@ -1309,10 +1309,6 @@ select:focus {
   .wm-founders-hero__actions {
     grid-column: 3;
     grid-row: 1;
-  }
-
-  .wm-founders-hero__content {
-    top: 10.25rem;
   }
 
   .wm-founders-hero__logo-track {
