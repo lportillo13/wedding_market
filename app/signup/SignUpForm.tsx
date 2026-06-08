@@ -380,7 +380,7 @@ export default function SignUpForm({
               </button>
             </header>
 
-            <div className="wm-signup-modal__body">
+            <div className={`wm-signup-modal__body${step === 2 ? ' wm-signup-modal__body--style' : ''}`}>
               <div className="wm-signup-progress" aria-hidden="true">
                 <span style={{ width: `${progress}%` }} />
               </div>
@@ -466,20 +466,23 @@ export default function SignUpForm({
                   {step === 2 && fieldsVisible ? (
                     <div className="wm-signup-fields">
                       <label className="form-label">{modal.chooseWeddingStyle}</label>
-                      <div className="wm-signup-style-grid">
+                      <div className="wm-signup-style-grid" role="radiogroup" aria-label={modal.chooseWeddingStyle}>
                         {weddingStyleCards.map((style) => {
                           const isSelected = form.wedding_theme === style.value;
                           return (
                             <button
                               key={style.value}
                               type="button"
+                              role="radio"
                               className={`wm-signup-style-card${isSelected ? ' is-active' : ''}`}
                               onClick={() => updateField('wedding_theme', style.value)}
+                              aria-checked={isSelected}
                             >
                               {/* eslint-disable-next-line @next/next/no-img-element */}
                               <img src={style.image} alt="" />
-                              <span>{themeLabels[style.value]}</span>
-                              {isSelected ? <strong aria-hidden="true">Selected</strong> : null}
+                              <span>
+                                <strong>{themeLabels[style.value]}</strong>
+                              </span>
                             </button>
                           );
                         })}
