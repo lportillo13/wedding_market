@@ -17,5 +17,7 @@ export default async function SignUpPage({
     redirect('/');
   }
 
-  return <SignUpPageContent openModalOnLoad={params?.modal === 'create-account'} />;
+  const openModalOnLoad = params?.modal === 'create-account';
+
+  return <SignUpPageContent closeHref={openModalOnLoad ? '/login' : undefined} openModalOnLoad={openModalOnLoad} />;
 }

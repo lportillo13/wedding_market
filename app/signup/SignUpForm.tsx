@@ -121,7 +121,13 @@ function TypewriterCopy({
   );
 }
 
-export default function SignUpForm({ openModalOnLoad = false }: { openModalOnLoad?: boolean }) {
+export default function SignUpForm({
+  closeHref,
+  openModalOnLoad = false,
+}: {
+  closeHref?: string;
+  openModalOnLoad?: boolean;
+}) {
   const [state, action, pending] = useActionState(signUp, initialState);
   const { dictionary, language } = useLanguage();
   const labels = dictionary.signup.form;
@@ -218,6 +224,11 @@ export default function SignUpForm({ openModalOnLoad = false }: { openModalOnLoa
 
   function confirmCloseSignupModal() {
     setDialog(null);
+    if (closeHref) {
+      window.location.replace(closeHref);
+      return;
+    }
+
     setIsModalOpen(false);
   }
 
