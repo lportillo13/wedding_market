@@ -6922,11 +6922,11 @@ select:focus {
 }
 
 .wm-onboarding-page .wm-page-title {
-  font-size: clamp(2.4rem, 5.6vw, 6.6rem);
+  font-size: clamp(1.2rem, 2.8vw, 3.3rem);
   letter-spacing: 0;
   line-height: 0.98;
   margin-bottom: 0.75rem !important;
-  max-width: 39rem;
+  max-width: 78rem;
 }
 
 .wm-onboarding-page .wm-onboarding-hero__copy {
@@ -7200,13 +7200,12 @@ select:focus {
 }
 
 .wm-signup-modal__body {
-  align-content: start;
-  display: grid;
+  display: block;
   margin: 0 auto;
-  max-width: 46rem;
+  max-width: min(46rem, calc(100vw - 2rem));
   min-height: 0;
   overflow-y: auto;
-  padding: clamp(0.75rem, 2.2svh, 1.5rem) clamp(1rem, 4vw, 2.5rem);
+  padding: clamp(0.65rem, 1.8svh, 1.25rem) clamp(1rem, 4vw, 2.5rem) clamp(1.25rem, 3svh, 2rem);
   width: 100%;
 }
 
@@ -7292,12 +7291,16 @@ select:focus {
 .wm-signup-style-grid {
   display: flex;
   gap: 0.85rem;
+  margin-inline: 50%;
   margin-top: 0.65rem;
   overflow-x: auto;
   overflow-y: hidden;
   padding: 0.15rem 0 0.65rem;
   scroll-padding-inline: 0.15rem;
   scroll-snap-type: x mandatory;
+  transform: translateX(-50%);
+  width: min(100vw, calc(100vw - 2rem));
+  -webkit-overflow-scrolling: touch;
 }
 
 .wm-signup-style-card {
@@ -7308,7 +7311,7 @@ select:focus {
   color: #fff;
   cursor: pointer;
   display: grid;
-  flex: 0 0 clamp(13rem, 31vw, 18rem);
+  flex: 0 0 clamp(12.5rem, 24vw, 17rem);
   overflow: hidden;
   padding: 0;
   position: relative;
@@ -7358,7 +7361,7 @@ select:focus {
   border: 1px solid rgba(28, 28, 28, 0.1);
   border-radius: 1rem;
   margin-top: 0.7rem;
-  padding: 1rem;
+  padding: 0.8rem;
 }
 
 .wm-signup-calendar__header,
@@ -7372,7 +7375,7 @@ select:focus {
 .wm-signup-calendar__header {
   align-items: center;
   grid-template-columns: 2.5rem 1fr 2.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
 }
 
 .wm-signup-calendar__header strong {
@@ -7397,9 +7400,9 @@ select:focus {
 
 .wm-signup-calendar__week {
   color: var(--wm-muted);
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 800;
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.35rem;
   text-align: center;
 }
 
@@ -7579,7 +7582,7 @@ select:focus {
   }
 
   .wm-signup-style-card {
-    flex-basis: min(74vw, 16rem);
+    flex-basis: min(72vw, 15rem);
   }
 
   .wm-signup-dialog__actions {
