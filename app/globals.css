@@ -7136,13 +7136,13 @@ select:focus {
   display: flex;
   gap: 1rem;
   justify-content: center;
-  padding: 1rem clamp(1rem, 4vw, 2.5rem);
+  padding: clamp(0.65rem, 1.8svh, 1rem) clamp(1rem, 4vw, 2.5rem);
   position: relative;
 }
 
 .wm-signup-modal__header {
   border-bottom: 0;
-  min-height: 6rem;
+  min-height: clamp(4.25rem, 8svh, 5.5rem);
 }
 
 .wm-signup-modal__footer {
@@ -7151,7 +7151,7 @@ select:focus {
 
 .wm-signup-modal__footer .btn {
   border-radius: 999px;
-  min-height: 3rem;
+  min-height: 2.85rem;
   min-width: 9.5rem;
 }
 
@@ -7200,10 +7200,13 @@ select:focus {
 }
 
 .wm-signup-modal__body {
+  align-content: start;
+  display: grid;
   margin: 0 auto;
   max-width: 46rem;
+  min-height: 0;
   overflow-y: auto;
-  padding: clamp(1rem, 4vw, 2.5rem);
+  padding: clamp(0.75rem, 2.2svh, 1.5rem) clamp(1rem, 4vw, 2.5rem);
   width: 100%;
 }
 
@@ -7211,7 +7214,7 @@ select:focus {
   background: #e2e4ec;
   border-radius: 999px;
   height: 4px;
-  margin-bottom: clamp(1.25rem, 3vw, 2rem);
+  margin-bottom: clamp(1.25rem, 3.6svh, 2.35rem);
   overflow: hidden;
 }
 
@@ -7229,8 +7232,8 @@ select:focus {
   border: 0;
   border-radius: 0;
   box-shadow: none;
-  min-height: min(42rem, calc(100svh - 16rem));
-  padding: clamp(3rem, 8vw, 7rem) 0 2rem;
+  min-height: 0;
+  padding: clamp(1rem, 4.6svh, 3.25rem) 0 clamp(0.5rem, 1.8svh, 1.25rem);
   text-align: center;
 }
 
@@ -7262,8 +7265,9 @@ select:focus {
   color: var(--wm-muted);
   font-size: 1rem;
   line-height: 1.65;
-  margin: 1rem 0 0;
-  min-height: 3.3rem;
+  margin: clamp(0.7rem, 1.8svh, 1rem) auto 0;
+  max-width: 42rem;
+  min-height: 3.25rem;
 }
 
 .wm-signup-field-stack {
@@ -7274,7 +7278,7 @@ select:focus {
 
 .wm-signup-fields {
   animation: wm-signup-fields-in 220ms ease both;
-  margin-top: 1.35rem;
+  margin-top: clamp(1rem, 2.4svh, 1.35rem);
   text-align: left;
   width: 100%;
 }
@@ -7282,7 +7286,7 @@ select:focus {
 .wm-signup-modal .form-control,
 .wm-signup-modal .form-select {
   border-radius: 0.9rem;
-  min-height: 3.2rem;
+  min-height: 3rem;
 }
 
 .wm-signup-style-grid {
