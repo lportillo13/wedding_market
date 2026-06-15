@@ -43,7 +43,7 @@ The production EAS profile builds an Android App Bundle (`.aab`) for Google Play
 
 ```powershell
 cd C:\wedding-market\mobile
-eas build --platform android --profile production
+npm run build:android:production
 ```
 
 Before submitting, confirm the production EAS environment points to the deployed Supabase project and deployed Wedding Market web/API host.
