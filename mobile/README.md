@@ -25,13 +25,17 @@ For Play Store builds, configure these values in the EAS production environment 
 3. Copy `mobile/.env.example` to `mobile/.env`.
 4. Put the local Supabase anon key in `EXPO_PUBLIC_SUPABASE_ANON_KEY`.
 5. Install mobile dependencies inside `mobile`.
-6. Run the Expo app.
+6. Build and install a development client on your Android device.
+7. Start Metro for the development client.
 
 ```powershell
 cd C:\wedding-market\mobile
 npm install
+npm run build:android:dev
 npm run start
 ```
+
+This project targets Expo SDK 56 and includes native modules used by the production app. Use a development build instead of Expo Go. If Expo Go shows "Project is incompatible with this version of Expo Go", install the Android development build from EAS and then run `npm run start`.
 
 ## Android Release Build
 
