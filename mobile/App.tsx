@@ -30,6 +30,7 @@ import {
 } from "@expo-google-fonts/playfair-display";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { supabase } from "./src/lib/supabase";
+import { mobileConfig } from "./src/lib/config";
 import {
   type AppRole,
   type AuthProfile,
@@ -132,24 +133,6 @@ const categories = [
     label: "Decor",
     slug: "decor",
     image: "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?auto=format&fit=crop&w=900&q=80",
-  },
-];
-
-const workflowSteps = [
-  {
-    label: "Shortlist",
-    title: "Save the vendors that fit",
-    description: "Keep your strongest options in one place while you compare style, reviews, and budget.",
-  },
-  {
-    label: "Request",
-    title: "Send one clear brief",
-    description: "Share your date, guest count, location, and priorities without repeating the same message.",
-  },
-  {
-    label: "Track",
-    title: "Follow every reply",
-    description: "Keep quotes, messages, and next steps organized from your account.",
   },
 ];
 
@@ -587,6 +570,9 @@ const copy = {
     saveProfile: "Save Profile",
     saving: "Saving...",
     saveChanges: "Save changes",
+    accountControls: "Account controls",
+    deleteAccount: "Delete account",
+    deleteAccountHelp: "Request deletion of your Wedding Market account and associated data.",
     saved: "Saved.",
     saveFailed: "Save failed.",
     draft: "Draft",
@@ -854,6 +840,9 @@ const copy = {
     saveProfile: "Guardar perfil",
     saving: "Guardando...",
     saveChanges: "Guardar cambios",
+    accountControls: "Controles de cuenta",
+    deleteAccount: "Eliminar cuenta",
+    deleteAccountHelp: "Solicita la eliminacion de tu cuenta de Wedding Market y los datos asociados.",
     saved: "Guardado.",
     saveFailed: "Error al guardar.",
     draft: "Borrador",
@@ -1036,6 +1025,15 @@ function roleTabs(role: AppRole) {
   if (role === "vendor") return vendorTabs;
   if (role === "guest") return guestTabs;
   return clientTabs;
+}
+
+function publicWebUrl() {
+  const rawUrl = (mobileConfig.webUrl || mobileConfig.webApiUrl || "https://theweddingmarket.com").trim();
+  return rawUrl.replace(/\/+$/, "");
+}
+
+function openPublicWebPath(path: string) {
+  return Linking.openURL(`${publicWebUrl()}${path}`);
 }
 
 function AuthScreen({
@@ -2883,6 +2881,20 @@ function AccountProfileScreen({
           <Text style={styles.primaryButtonText}>{isSaving ? copy[form.language].saving : copy[form.language].saveProfile}</Text>
         </TouchableOpacity>
       </View>
+
+      <View style={styles.formSection}>
+        <Text style={styles.sectionTitle}>{copy[form.language].accountControls}</Text>
+        <Text style={styles.body}>{copy[form.language].deleteAccountHelp}</Text>
+        <TouchableOpacity
+          onPress={() => {
+            void openPublicWebPath("/account-deletion");
+          }}
+          style={styles.secondaryButton}
+        >
+          <Ionicons name="trash-outline" size={17} color="#B42318" />
+          <Text style={[styles.secondaryButtonText, styles.accountMenuDanger]}>{copy[form.language].deleteAccount}</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -3247,7 +3259,8 @@ function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
 
   const vendor = data.vendor;
   const gallery = Array.isArray(vendor.gallery_images) ? vendor.gallery_images : [];
-  const firstGalleryUrl = gallery.map((item) => imageUrlFromAsset(item)).find(Boolean) ?? null;
+  const galleryWithUrls = gallery.filter((item): item is { url: string } => typeof item.url === "string" && item.url.trim().length > 0);
+  const firstGalleryUrl = galleryWithUrls.map((item) => item.url).find(Boolean) ?? null;
   const logoUrl = typeof vendor.logo_url === "string" ? vendor.logo_url : null;
   const heroUrl = imageUrlFromAsset(vendor.hero_image) ?? imageUrlFromAsset(vendor.thumbnail_image) ?? firstGalleryUrl ?? logoUrl;
   const businessName = String(vendor.business_name ?? "Vendor");
@@ -3448,9 +3461,9 @@ function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
               </View>
             ) : null}
             <Text style={styles.kicker}>{labels.currentGallery}</Text>
-            {gallery.filter((item) => item?.url).length ? (
+            {galleryWithUrls.length ? (
               <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.galleryStrip}>
-                {gallery.filter((item) => item?.url).map((item, index) => (
+                {galleryWithUrls.map((item, index) => (
                   <Image key={`${item.url}-${index}`} source={{ uri: item.url }} style={styles.galleryImage} />
                 ))}
               </ScrollView>
@@ -3956,12 +3969,14 @@ function dateKey(date: Date) {
 function AvailabilityPreview({ dates, language }: { dates: NonNullable<VendorDetail["availability"]>; language: "en" | "es" }) {
   const labels = copy[language];
   const { width } = useWindowDimensions();
+  const [referenceDate] = useState(() => new Date());
+  const referenceTime = referenceDate.getTime();
   const upcoming = dates
     .map((date) => ({ ...date, parsed: parseDateValue(date.date) }))
-    .filter((date) => date.parsed.getTime() >= Date.now() - 24 * 60 * 60 * 1000)
+    .filter((date) => date.parsed.getTime() >= referenceTime - 24 * 60 * 60 * 1000)
     .sort((left, right) => left.parsed.getTime() - right.parsed.getTime());
   const statusByDate = new Map(upcoming.map((date) => [dateKey(date.parsed), date.status]));
-  const startSource = new Date();
+  const startSource = referenceDate;
   const calendarWidth = Math.max(280, width - 104);
   const monthStarts = Array.from({ length: 12 }, (_, offset) =>
     new Date(startSource.getFullYear(), startSource.getMonth() + offset, 1),
@@ -4057,11 +4072,13 @@ function VendorDetailScreen({
   showBack?: boolean;
 }) {
   const labels = copy[language];
-  const [vendor, setVendor] = useState<VendorDetail | null>(initialVendor as VendorDetail | null);
+  const [loadedVendor, setLoadedVendor] = useState<{ slug: string; vendor: VendorDetail } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [activeGalleryImage, setActiveGalleryImage] = useState<string | null>(null);
   const sectionPositions = useRef<Record<string, number>>({});
+  const initialDetailVendor = initialVendor?.slug === slug ? (initialVendor as VendorDetail) : null;
+  const vendor = loadedVendor?.slug === slug ? loadedVendor.vendor : initialDetailVendor;
 
   function registerSection(key: string) {
     return (event: LayoutChangeEvent) => {
@@ -4095,24 +4112,26 @@ function VendorDetailScreen({
   useEffect(() => {
     let isMounted = true;
 
-    setVendor(initialVendor as VendorDetail | null);
-    setIsLoading(true);
-    setMessage("");
-    fetchVendorDetail(slug)
-      .then((detail) => {
-        if (isMounted) setVendor(detail);
-      })
-      .catch((error) => {
+    async function loadVendorDetail() {
+      setIsLoading(true);
+      setMessage("");
+
+      try {
+        const detail = await fetchVendorDetail(slug);
+        if (isMounted) setLoadedVendor({ slug, vendor: detail });
+      } catch (error) {
         if (isMounted) setMessage(error instanceof Error ? error.message : "Unable to load vendor.");
-      })
-      .finally(() => {
+      } finally {
         if (isMounted) setIsLoading(false);
-      });
+      }
+    }
+
+    void loadVendorDetail();
 
     return () => {
       isMounted = false;
     };
-  }, [slug, initialVendor?.id]);
+  }, [slug]);
 
   if (isLoading && !vendor) {
     return (
@@ -4930,10 +4949,22 @@ export default function App() {
                 <Text style={styles.accountMenuText}>{userEmail ? copy[language].profile : copy[language].logIn}</Text>
               </TouchableOpacity>
               {userEmail ? (
-                <TouchableOpacity onPress={handleSignOut} style={styles.accountMenuItem}>
-                  <Ionicons name="log-out-outline" size={18} color="#B42318" />
-                  <Text style={[styles.accountMenuText, styles.accountMenuDanger]}>{copy[language].logOut}</Text>
-                </TouchableOpacity>
+                <>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setIsAccountMenuOpen(false);
+                      void openPublicWebPath("/account-deletion");
+                    }}
+                    style={styles.accountMenuItem}
+                  >
+                    <Ionicons name="trash-outline" size={18} color="#B42318" />
+                    <Text style={[styles.accountMenuText, styles.accountMenuDanger]}>{copy[language].deleteAccount}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={handleSignOut} style={styles.accountMenuItem}>
+                    <Ionicons name="log-out-outline" size={18} color="#B42318" />
+                    <Text style={[styles.accountMenuText, styles.accountMenuDanger]}>{copy[language].logOut}</Text>
+                  </TouchableOpacity>
+                </>
               ) : null}
             </View>
           ) : null}
@@ -5260,7 +5291,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   weddingStyleOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     backgroundColor: "rgba(0,0,0,0.24)",
   },
   weddingStyleLabel: {

@@ -4,10 +4,25 @@
     "slug": "the-wedding-market",
     "version": "0.1.0",
     "orientation": "portrait",
+    "icon": "../public/icon-512.png",
     "userInterfaceStyle": "light",
     "scheme": "theweddingmarket",
     "plugins": [
-      "expo-notifications"
+      [
+        "expo-notifications",
+        {
+          "icon": "../public/icon-192.png",
+          "color": "#1D7A72"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow The Wedding Market to access images you choose for profile and vendor media."
+        }
+      ],
+      "expo-font",
+      "expo-status-bar"
     ],
     "assetBundlePatterns": [
       "**/*"
@@ -18,7 +33,16 @@
     },
     "android": {
       "package": "com.theweddingmarket.app",
+      "versionCode": 1,
+      "permissions": [
+        "INTERNET",
+        "POST_NOTIFICATIONS"
+      ],
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
       "adaptiveIcon": {
+        "foregroundImage": "../public/icon-512.png",
         "backgroundColor": "#F8F8F6"
       }
     },

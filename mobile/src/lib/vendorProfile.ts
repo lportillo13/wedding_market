@@ -11,13 +11,81 @@ export type VendorEditorTab =
   | "reviews"
   | "images";
 
+type LocalizedValue = string | { en?: unknown; es?: unknown } | null;
+type MediaAsset = {
+  url?: string | null;
+  public_id?: string | null;
+  width?: number | null;
+  height?: number | null;
+  format?: string | null;
+  type?: string | null;
+};
+
+export type VendorEditorVendor = {
+  id: string;
+  slug?: string | null;
+  business_name?: string | null;
+  is_published?: boolean | null;
+  bio?: LocalizedValue;
+  extra_info?: Record<string, unknown> | null;
+  logo_url?: string | null;
+  hero_image?: MediaAsset | null;
+  thumbnail_image?: MediaAsset | null;
+  gallery_images?: MediaAsset[] | null;
+  phone?: string | null;
+  website_url?: string | null;
+  map_url?: string | null;
+  address_label?: string | null;
+  starting_price_cents?: number | null;
+  starting_price_currency?: string | null;
+  event_types?: string[] | null;
+  years_in_business?: number | null;
+  languages?: string[] | null;
+  team_size_range?: string | null;
+  pricing_typical_spend_cents?: number | null;
+  pricing_typical_spend_currency?: string | null;
+  pricing_peak_seasons?: string[] | null;
+  capacity_max?: number | null;
+  review_ai_summary?: string | null;
+};
+
+export type VendorEditorPricingRow = {
+  item_key: string;
+  price_cents: number | null;
+  currency?: string | null;
+  contact_for_price?: boolean | null;
+  notes?: LocalizedValue;
+};
+
+export type VendorAmenityOption = {
+  key: string;
+  group_key?: string | null;
+  label?: LocalizedValue;
+};
+
+export type VendorEditorTeamMember = {
+  id?: string;
+  name?: string | null;
+  title?: LocalizedValue;
+  bio?: LocalizedValue;
+  headshot_url?: string | null;
+  responds_within_hours?: number | null;
+  sort_order?: number | null;
+};
+
+export type VendorEditorAvailabilityRow = {
+  id?: string;
+  available_on?: string | null;
+  availability_status?: "available" | "busy" | string | null;
+};
+
 export type VendorEditorData = {
-  vendor: Record<string, any>;
-  pricing: Record<string, any>[];
-  amenityOptions: Record<string, any>[];
+  vendor: VendorEditorVendor;
+  pricing: VendorEditorPricingRow[];
+  amenityOptions: VendorAmenityOption[];
   selectedAmenities: string[];
-  team: Record<string, any>[];
-  availability: Record<string, any>[];
+  team: VendorEditorTeamMember[];
+  availability: VendorEditorAvailabilityRow[];
 };
 
 function client() {
@@ -78,7 +146,7 @@ export async function loadVendorEditorData(): Promise<VendorEditorData | null> {
       "id, slug, business_name, is_published, bio, extra_info, logo_url, hero_image, thumbnail_image, gallery_images, phone, website_url, map_url, address_label, starting_price_cents, starting_price_currency, event_types, years_in_business, languages, team_size_range, pricing_typical_spend_cents, pricing_typical_spend_currency, pricing_peak_seasons, capacity_max, review_ai_summary"
     )
     .eq("owner_id", user.id)
-    .maybeSingle<Record<string, any>>();
+    .maybeSingle<VendorEditorVendor>();
 
   if (error) throw new Error(error.message);
   if (!vendor) return null;

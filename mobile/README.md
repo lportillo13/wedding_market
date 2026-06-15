@@ -2,14 +2,21 @@
 
 Expo React Native app for the full The Wedding Market platform.
 
-## Local Backend
+## Environments
 
-This app is designed to run against the existing local stack first:
+For local development, the app can run against the existing local stack:
 
 - Supabase local API: `http://127.0.0.1:54321`
 - Next.js API server: `http://127.0.0.1:3000`
 
 For Android emulator networking, use `10.0.2.2` instead of `127.0.0.1`.
+
+For Play Store builds, configure these values in the EAS production environment instead of shipping local URLs:
+
+- `EXPO_PUBLIC_SUPABASE_URL`
+- `EXPO_PUBLIC_SUPABASE_ANON_KEY`
+- `EXPO_PUBLIC_WEB_URL`
+- `EXPO_PUBLIC_WEB_API_URL`
 
 ## Setup
 
@@ -26,9 +33,20 @@ npm install
 npm run start
 ```
 
-## Build Order
+## Android Release Build
 
-The full platform will be built in this order:
+The production EAS profile builds an Android App Bundle (`.aab`) for Google Play:
+
+```powershell
+cd C:\wedding-market\mobile
+eas build --platform android --profile production
+```
+
+Before submitting, confirm the production EAS environment points to the deployed Supabase project and deployed Wedding Market web/API host.
+
+## Implemented Mobile Surface
+
+The mobile app currently includes:
 
 1. Auth/session foundation with Supabase.
 2. Customer vendor search and vendor profile screens.
@@ -38,7 +56,7 @@ The full platform will be built in this order:
 6. Vendor request inbox and quote sending.
 7. Vendor profile editor, media, availability, pricing, amenities, team, and reviews.
 8. Notifications.
-9. Admin operations.
+9. Admin operations overview.
 
 ## Backend Strategy
 
@@ -47,5 +65,3 @@ No new server is planned. The native app will reuse:
 - Supabase database and auth.
 - Existing Next.js API routes.
 - Cloudflare R2 media handling through the current upload API.
-
-Some Next server actions need mobile API route equivalents before the native app can use them.

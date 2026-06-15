@@ -254,6 +254,7 @@ export default function SiteFooter({ vendorCategories }: SiteFooterProps) {
           <div className="wm-site-footer__legal-links">
             <Link href="/terms">{t("footer.legal.terms")}</Link>
             <Link href="/privacy">{t("footer.legal.privacy")}</Link>
+            <Link href="/account-deletion">{language === "es" ? "Eliminar cuenta" : "Account deletion"}</Link>
           </div>
         </div>
 
