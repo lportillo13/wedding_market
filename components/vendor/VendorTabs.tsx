@@ -19,28 +19,36 @@ export default function VendorTabs({ sections, className }: VendorTabsProps) {
   const [activeId, setActiveId] = useState<string>(sections[0]?.id ?? "");
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible.length > 0) {
-          setActiveId(visible[0]!.target.id);
-        }
-      },
-      {
-        rootMargin: `-${SCROLL_OFFSET}px 0px -60% 0px`,
-        threshold: [0, 0.25, 0.5, 1],
-      }
-    );
+    let animationFrame = 0;
 
-    sections.forEach((section) => {
-      const element = document.getElementById(section.id);
-      if (element) observer.observe(element);
-    });
+    const updateActiveSection = () => {
+      const activationLine = SCROLL_OFFSET + 24;
+      let nextActiveId = sections[0]?.id ?? "";
+
+      sections.forEach((section) => {
+        const element = document.getElementById(section.id);
+        if (element && element.getBoundingClientRect().top <= activationLine) {
+          nextActiveId = section.id;
+        }
+      });
+
+      setActiveId(nextActiveId);
+      animationFrame = 0;
+    };
+
+    const handleScroll = () => {
+      if (animationFrame) return;
+      animationFrame = window.requestAnimationFrame(updateActiveSection);
+    };
+
+    updateActiveSection();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
 
     return () => {
-      observer.disconnect();
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+      if (animationFrame) window.cancelAnimationFrame(animationFrame);
     };
   }, [sections]);
 
@@ -48,6 +56,7 @@ export default function VendorTabs({ sections, className }: VendorTabsProps) {
     event.preventDefault();
     const el = document.getElementById(id);
     if (!el) return;
+    setActiveId(id);
     const y = el.getBoundingClientRect().top + window.scrollY - (SCROLL_OFFSET - 20);
     window.scrollTo({ top: y, behavior: "smooth" });
   };
