@@ -2306,7 +2306,7 @@ select:focus {
 .wm-home-premium-process {
   background: linear-gradient(180deg, #f5efe5 0%, #faf8f3 44%, #f8f7f5 100%);
   border-top: 0;
-  padding: clamp(3.75rem, 5vw, 4.75rem) 0.55rem;
+  padding: clamp(3.75rem, 5vw, 4.75rem) 0.55rem 0.55rem;
 }
 
 .wm-home-premium-process .container {
@@ -2559,6 +2559,7 @@ select:focus {
   }
 
   .wm-home-premium-process {
+    padding-bottom: 0.55rem;
     padding-inline: 0.55rem;
   }
 
@@ -3598,6 +3599,11 @@ select:focus {
   margin-right: 0.55rem;
   overflow: hidden;
   position: relative;
+}
+
+/* Let the homepage's warm final section flow directly into the footer. */
+.wm-site-footer.wm-site-footer--home {
+  margin-top: 0;
 }
 
 @media (min-width: 992px) {

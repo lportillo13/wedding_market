@@ -89,8 +89,10 @@ export default function SiteFooter({ vendorCategories }: SiteFooterProps) {
     }));
   };
 
+  const footerClassName = `wm-site-footer${pathname === "/" ? " wm-site-footer--home" : ""}`;
+
   return (
-    <footer className="wm-site-footer">
+    <footer className={footerClassName}>
       <div className="container">
 
         {/* ── Main grid ── */}
