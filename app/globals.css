@@ -1943,10 +1943,6 @@ select:focus {
   color: var(--wm-premium-black);
 }
 
-.wm-home-premium-category--featured {
-  grid-column: span 2;
-}
-
 .wm-home-premium-category__image {
   display: block;
   min-height: 15rem;
@@ -2196,10 +2192,6 @@ select:focus {
     grid-template-columns: 1fr 1fr;
   }
 
-  .wm-home-premium-category--featured {
-    grid-column: span 2;
-  }
-
   .wm-home-premium-section-head--split {
     align-items: start;
     flex-direction: column;
@@ -2229,10 +2221,6 @@ select:focus {
   .wm-home-premium-benefit-grid,
   .wm-home-premium-category-grid {
     grid-template-columns: 1fr;
-  }
-
-  .wm-home-premium-category--featured {
-    grid-column: span 1;
   }
 
   .wm-home-premium-category,

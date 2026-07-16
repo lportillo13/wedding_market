@@ -575,7 +575,7 @@ export default function Home() {
               <Link
                 key={category.slug}
                 href={`/vendors?category=${encodeURIComponent(category.slug)}`}
-                className={`wm-home-premium-category ${index === 0 ? "wm-home-premium-category--featured" : ""}`}
+                className="wm-home-premium-category"
               >
                 <span className="wm-home-premium-category__image">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
