@@ -1987,6 +1987,284 @@ select:focus {
   font-size: 0.92rem;
 }
 
+/* ── Digital magazine feature ───────────────────────────────────────────── */
+
+.wm-home-magazine {
+  background:
+    radial-gradient(circle at 84% 16%, rgba(184, 146, 42, 0.14), transparent 30rem),
+    #0b0b0c;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  color: #f5f3ee;
+  overflow: hidden;
+  padding: clamp(4.5rem, 8vw, 7.5rem) 0;
+  position: relative;
+}
+
+.wm-home-magazine::before {
+  border: 1px solid rgba(184, 146, 42, 0.12);
+  border-radius: 50%;
+  content: "";
+  height: 34rem;
+  left: -22rem;
+  pointer-events: none;
+  position: absolute;
+  top: -17rem;
+  width: 34rem;
+}
+
+.wm-home-magazine__layout {
+  align-items: center;
+  display: grid;
+  gap: clamp(3rem, 7vw, 7rem);
+  grid-template-columns: minmax(18rem, 0.76fr) minmax(0, 1.24fr);
+}
+
+.wm-home-magazine__copy {
+  max-width: 31rem;
+  position: relative;
+  z-index: 1;
+}
+
+.wm-home-magazine__eyebrow {
+  color: #d0ac58;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  margin: 0 0 2.5rem;
+  text-transform: uppercase;
+}
+
+.wm-home-magazine__issue {
+  align-items: center;
+  color: rgba(245, 243, 238, 0.58);
+  display: flex;
+  font-size: 0.7rem;
+  font-weight: 600;
+  gap: 0.9rem;
+  letter-spacing: 0.16em;
+  margin: 0 0 1.1rem;
+  text-transform: uppercase;
+}
+
+.wm-home-magazine__issue::before {
+  background: #d0ac58;
+  content: "";
+  height: 1px;
+  width: 2.75rem;
+}
+
+.wm-home-magazine__copy h2 {
+  color: #f5f3ee;
+  font-size: clamp(3rem, 5vw, 5.25rem);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 0.96;
+  margin: 0;
+}
+
+.wm-home-magazine__copy h2 em {
+  color: #d7bb78;
+  display: block;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.wm-home-magazine__description {
+  color: rgba(245, 243, 238, 0.66);
+  font-size: 1rem;
+  line-height: 1.75;
+  margin: 1.75rem 0 0;
+  max-width: 29rem;
+}
+
+.wm-home-magazine__cta {
+  align-items: center;
+  background: #f5f3ee;
+  border: 1px solid #f5f3ee;
+  border-radius: var(--wm-radius-control);
+  color: #111112;
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 750;
+  gap: 1.5rem;
+  justify-content: space-between;
+  letter-spacing: 0.11em;
+  margin-top: 2rem;
+  min-height: 3.25rem;
+  padding: 0.75rem 0.9rem 0.75rem 1.25rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.wm-home-magazine__cta svg {
+  height: 1.1rem;
+  transition: transform 180ms ease;
+  width: 1.1rem;
+}
+
+.wm-home-magazine__cta:hover,
+.wm-home-magazine__cta:focus-visible {
+  background: #d0ac58;
+  border-color: #d0ac58;
+  color: #0b0b0c;
+  outline: none;
+  transform: translateY(-2px);
+}
+
+.wm-home-magazine__cta:hover svg,
+.wm-home-magazine__cta:focus-visible svg {
+  transform: translateX(3px);
+}
+
+.wm-home-magazine__media {
+  aspect-ratio: 3 / 2;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--wm-radius-surface);
+  box-shadow: 0 2.5rem 6rem rgba(0, 0, 0, 0.34);
+  color: #ffffff;
+  display: block;
+  isolation: isolate;
+  overflow: hidden;
+  position: relative;
+}
+
+.wm-home-magazine__media::after {
+  background: linear-gradient(180deg, transparent 48%, rgba(8, 8, 9, 0.62) 100%);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 1;
+}
+
+.wm-home-magazine__media img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 700ms cubic-bezier(0.2, 0.75, 0.2, 1), filter 350ms ease;
+  width: 100%;
+}
+
+.wm-home-magazine__media:hover,
+.wm-home-magazine__media:focus-visible {
+  color: #ffffff;
+  outline: 2px solid rgba(215, 187, 120, 0.9);
+  outline-offset: 5px;
+}
+
+.wm-home-magazine__media:hover img,
+.wm-home-magazine__media:focus-visible img {
+  filter: saturate(1.04) contrast(1.02);
+  transform: scale(1.025);
+}
+
+.wm-home-magazine__cover-mark {
+  bottom: 1.5rem;
+  display: grid;
+  gap: 0.35rem;
+  left: 1.5rem;
+  position: absolute;
+  z-index: 2;
+}
+
+.wm-home-magazine__cover-mark span {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.wm-home-magazine__cover-mark strong {
+  color: #ffffff;
+  font-family: var(--wm-font-display);
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+.wm-home-magazine__media-arrow {
+  align-items: center;
+  backdrop-filter: blur(12px);
+  background: rgba(11, 11, 12, 0.52);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  bottom: 1.3rem;
+  display: flex;
+  font-size: 1.1rem;
+  height: 2.7rem;
+  justify-content: center;
+  position: absolute;
+  right: 1.3rem;
+  transition: background 180ms ease, transform 180ms ease;
+  width: 2.7rem;
+  z-index: 2;
+}
+
+.wm-home-magazine__media:hover .wm-home-magazine__media-arrow,
+.wm-home-magazine__media:focus-visible .wm-home-magazine__media-arrow {
+  background: #d0ac58;
+  color: #0b0b0c;
+  transform: translate(2px, -2px);
+}
+
+@media (max-width: 991.98px) {
+  .wm-home-magazine__layout {
+    gap: 3rem;
+    grid-template-columns: 1fr;
+  }
+
+  .wm-home-magazine__copy {
+    max-width: 39rem;
+  }
+
+  .wm-home-magazine__description {
+    max-width: 36rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .wm-home-magazine {
+    padding: 4.25rem 0;
+  }
+
+  .wm-home-magazine__eyebrow {
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .wm-home-magazine__copy h2 {
+    font-size: clamp(2.65rem, 13vw, 3.8rem);
+  }
+
+  .wm-home-magazine__cta {
+    width: 100%;
+  }
+
+  .wm-home-magazine__media {
+    aspect-ratio: 4 / 3;
+  }
+
+  .wm-home-magazine__cover-mark {
+    bottom: 1rem;
+    left: 1rem;
+  }
+
+  .wm-home-magazine__media-arrow {
+    bottom: 0.9rem;
+    right: 0.9rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wm-home-magazine__cta,
+  .wm-home-magazine__cta svg,
+  .wm-home-magazine__media img,
+  .wm-home-magazine__media-arrow {
+    transition: none;
+  }
+}
+
 .wm-home-premium-process {
   background: #ffffff;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
