@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { usePathname } from "next/navigation";
 
 const REVEAL_SELECTOR = "main > section, main > article, [data-scroll-reveal]";
 const REVEAL_ATTRIBUTE = "data-wm-scroll-reveal";
@@ -27,8 +26,6 @@ function getRevealTargets(): HTMLElement[] {
 }
 
 export default function ScrollReveal() {
-  const pathname = usePathname();
-
   useEffect(() => {
     const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     let observer: IntersectionObserver | null = null;
@@ -41,10 +38,18 @@ export default function ScrollReveal() {
 
     const observeNewTargets = () => {
       getRevealTargets().forEach((element) => {
-        if (element.hasAttribute(REVEAL_ATTRIBUTE)) return;
+        if (element.getAttribute(REVEAL_ATTRIBUTE) === "visible") return;
 
         if (reducedMotionQuery.matches) {
-          element.setAttribute(REVEAL_ATTRIBUTE, "visible");
+          show(element);
+          return;
+        }
+
+        const bounds = element.getBoundingClientRect();
+        const isInInitialViewport = bounds.bottom > 0 && bounds.top < window.innerHeight * 0.9;
+
+        if (isInInitialViewport) {
+          show(element);
           return;
         }
 
@@ -91,7 +96,7 @@ export default function ScrollReveal() {
       observer?.disconnect();
       mutationObserver?.disconnect();
     };
-  }, [pathname]);
+  }, []);
 
   return null;
 }
