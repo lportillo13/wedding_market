@@ -77,23 +77,31 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
 
   useEffect(() => {
     if (!lightbox.open) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") closeLightbox();
       if (event.key === "ArrowRight") showNext();
       if (event.key === "ArrowLeft") showPrev();
     };
     document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+    };
   }, [closeLightbox, lightbox.open, showNext, showPrev]);
 
   const videoSuffix = videos.length === 1 ? "" : "s";
 
   return (
     <div className="wm-vendor-gallery-block">
-      <div className="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
-        <div>
-          <p className="wm-admin-kicker mb-1">Visual story</p>
-          <h2 className="h2 mb-0">{labels.photosHeading}</h2>
+      <div className="wm-vendor-gallery-heading">
+        <div className="wm-vendor-gallery-heading__title">
+          <span className="wm-vendor-gallery-heading__mark" aria-hidden="true" />
+          <div>
+            <p className="wm-admin-kicker mb-1">{vendorName}</p>
+            <h2 className="mb-0">{labels.photosHeading}</h2>
+          </div>
         </div>
         {photos.length > 0 ? (
           <button
@@ -101,7 +109,10 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
             className="wm-vendor-gallery-link"
             onClick={() => openLightbox(0)}
           >
-            {fill(labels.seeAll, { count: photos.length })}
+            <span>{fill(labels.seeAll, { count: photos.length })}</span>
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M7 4h9v9M16 4 5 15" />
+            </svg>
           </button>
         ) : null}
       </div>
@@ -122,6 +133,7 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
                   type="button"
                   className="wm-vendor-gallery-slider__frame"
                   onClick={() => openLightbox(index)}
+                  aria-label={`${labels.photosHeading} ${index + 1}: ${photo.caption || vendorName}`}
                 >
                   <div className="wm-vendor-gallery-slider__media">
                     <Image
@@ -132,6 +144,19 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
                       sizes="100vw"
                       className="object-fit-cover"
                     />
+                    <span className="wm-vendor-gallery-slider__scrim" aria-hidden="true" />
+                    <div className="wm-vendor-gallery-slider__meta">
+                      <span className="wm-vendor-gallery-slider__count">
+                        {String(index + 1).padStart(2, "0")}
+                        <span>/ {String(photos.length).padStart(2, "0")}</span>
+                      </span>
+                      <p>{photo.caption || vendorName}</p>
+                    </div>
+                    <span className="wm-vendor-gallery-slider__expand" aria-hidden="true">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M8.5 3.5h-5v5M15.5 3.5h5v5M20.5 15.5v5h-5M3.5 15.5v5h5" />
+                      </svg>
+                    </span>
                   </div>
                 </button>
               </SwiperSlide>
@@ -153,9 +178,13 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
               }}
               className="wm-vendor-gallery-slider__thumbs"
             >
-              {photos.map((photo) => (
+              {photos.map((photo, index) => (
                 <SwiperSlide key={`${photo.id}-thumb`}>
-                  <div className="wm-vendor-gallery-slider__thumb">
+                  <button
+                    type="button"
+                    className="wm-vendor-gallery-slider__thumb"
+                    aria-label={`${labels.photosHeading} ${index + 1}`}
+                  >
                     <div className="wm-vendor-gallery-slider__thumb-media">
                       <Image
                         src={resolveMediaUrl(photo.url)}
@@ -166,7 +195,8 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
                         className="object-fit-cover"
                       />
                     </div>
-                  </div>
+                    <span>{String(index + 1).padStart(2, "0")}</span>
+                  </button>
                 </SwiperSlide>
               ))}
             </Swiper>
@@ -209,13 +239,22 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
       )}
 
       {lightbox.open && photos.length > 0 ? (
-        <div className="wm-vendor-lightbox" role="dialog" aria-modal="true">
-          <button type="button" className="btn btn-light position-absolute top-0 end-0 m-3" onClick={closeLightbox}>
-            {labels.close}
-          </button>
+        <div className="wm-vendor-lightbox" role="dialog" aria-modal="true" aria-label={labels.photosHeading}>
+          <div className="wm-vendor-lightbox__topbar">
+            <span>
+              {String(lightbox.index + 1).padStart(2, "0")} / {String(photos.length).padStart(2, "0")}
+            </span>
+            <button type="button" className="wm-vendor-lightbox__close" onClick={closeLightbox} aria-label={labels.close}>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m5 5 14 14M19 5 5 19" />
+              </svg>
+            </button>
+          </div>
           <div className="wm-vendor-lightbox__body">
-            <button type="button" className="btn btn-outline-light" onClick={showPrev} aria-label={labels.previousPhoto}>
-              ‹
+            <button type="button" className="wm-vendor-lightbox__arrow" onClick={showPrev} aria-label={labels.previousPhoto}>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m15 5-7 7 7 7" />
+              </svg>
             </button>
             <div className="wm-vendor-lightbox__frame">
               <Image
@@ -227,12 +266,14 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
                 className="img-fluid"
               />
             </div>
-            <button type="button" className="btn btn-outline-light" onClick={showNext} aria-label={labels.nextPhoto}>
-              ›
+            <button type="button" className="wm-vendor-lightbox__arrow" onClick={showNext} aria-label={labels.nextPhoto}>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m9 5 7 7-7 7" />
+              </svg>
             </button>
           </div>
           {(photos[lightbox.index] ?? photos[0]!).caption ? (
-            <p className="text-white mt-3 mb-0">{(photos[lightbox.index] ?? photos[0]!).caption}</p>
+            <p className="wm-vendor-lightbox__caption">{(photos[lightbox.index] ?? photos[0]!).caption}</p>
           ) : null}
         </div>
       ) : null}
