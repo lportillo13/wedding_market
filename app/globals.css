@@ -2019,8 +2019,8 @@ select:focus {
 .wm-home-magazine__layout {
   align-items: center;
   display: grid;
-  gap: clamp(2.25rem, 4vw, 4rem);
-  grid-template-columns: minmax(17rem, 0.65fr) minmax(0, 1.35fr);
+  gap: clamp(2.5rem, 5vw, 5rem);
+  grid-template-columns: minmax(18rem, 0.76fr) minmax(0, 1.24fr);
 }
 
 .wm-home-magazine__copy {
@@ -2122,13 +2122,15 @@ select:focus {
 }
 
 .wm-home-magazine__media {
-  aspect-ratio: 4 / 3;
+  align-self: stretch;
+  aspect-ratio: auto;
   border: 1px solid rgba(138, 106, 34, 0.2);
   border-radius: var(--wm-radius-surface);
   box-shadow: 0 2.25rem 5rem rgba(79, 58, 29, 0.18);
   color: #ffffff;
   display: block;
   isolation: isolate;
+  min-height: 31rem;
   overflow: hidden;
   position: relative;
 }
@@ -2224,6 +2226,12 @@ select:focus {
 
   .wm-home-magazine__description {
     max-width: 36rem;
+  }
+
+  .wm-home-magazine__media {
+    align-self: auto;
+    aspect-ratio: 4 / 3;
+    min-height: 0;
   }
 }
 
