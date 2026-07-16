@@ -2597,30 +2597,30 @@ select:focus {
 }
 
 /* =====================================================
-   BLOG — FoundersCard-inspired redesign
-   Deep black canvas, champagne gold, modern sans editorial.
+   BLOG — light romantic editorial
+   Warm ivory canvas, soft rose accents, and generous reading space.
    ===================================================== */
 
 .wm-blog-page,
 .wm-blog-post-page {
-  --fc-bg: #0b0b0c;
-  --fc-bg-2: #111113;
-  --fc-surface: #141417;
-  --fc-surface-hi: #1a1a1e;
-  --fc-border: rgba(201, 169, 97, 0.18);
-  --fc-border-soft: rgba(255, 255, 255, 0.06);
-  --fc-gold: #c9a961;
-  --fc-gold-hi: #e6c98a;
-  --fc-gold-dim: rgba(201, 169, 97, 0.14);
-  --fc-ink: #f5f3ee;
-  --fc-muted: rgba(245, 243, 238, 0.62);
-  --fc-faint: rgba(245, 243, 238, 0.42);
+  --fc-bg: #fffaf6;
+  --fc-bg-2: #f9f0eb;
+  --fc-surface: #ffffff;
+  --fc-surface-hi: #fff4f1;
+  --fc-border: rgba(141, 73, 96, 0.22);
+  --fc-border-soft: rgba(72, 47, 55, 0.1);
+  --fc-gold: #a64f6d;
+  --fc-gold-hi: #7b304b;
+  --fc-gold-dim: rgba(166, 79, 109, 0.1);
+  --fc-ink: #2d2025;
+  --fc-muted: #716267;
+  --fc-faint: #96868b;
   --fc-sans: var(--wm-font-body), "Inter", "Helvetica Neue", Arial, sans-serif;
 
   background:
-    radial-gradient(1200px 600px at 85% -10%, rgba(201, 169, 97, 0.10), transparent 60%),
-    radial-gradient(900px 500px at -10% 10%, rgba(201, 169, 97, 0.06), transparent 55%),
-    linear-gradient(180deg, #0b0b0c 0%, #0e0e10 100%);
+    radial-gradient(50rem 28rem at 92% 2%, rgba(218, 160, 174, 0.17), transparent 64%),
+    radial-gradient(42rem 24rem at -8% 14%, rgba(230, 197, 173, 0.22), transparent 62%),
+    linear-gradient(180deg, #fffaf6 0%, #fffdfb 50%, #fff8f4 100%);
   color: var(--fc-ink);
   position: relative;
 }
@@ -2630,14 +2630,12 @@ select:focus {
   content: "";
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-  background-size: 80px 80px;
-  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 80%);
-  -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 80%);
+  background-image: radial-gradient(rgba(166, 79, 109, 0.12) 0.75px, transparent 0.75px);
+  background-size: 18px 18px;
+  mask-image: linear-gradient(to bottom, #000, transparent 38%);
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent 38%);
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 0.45;
   z-index: 0;
 }
 
@@ -2647,10 +2645,39 @@ select:focus {
   z-index: 1;
 }
 
+.wm-blog-page > .container {
+  padding-top: 4rem;
+}
+
+.wm-blog-page a:focus-visible,
+.wm-blog-post-page a:focus-visible {
+  border-radius: 0.35rem;
+  outline: 3px solid rgba(166, 79, 109, 0.3);
+  outline-offset: 4px;
+}
+
+.wm-blog-post-page .breadcrumb {
+  color: var(--fc-faint);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.wm-blog-post-page .breadcrumb a {
+  color: var(--fc-gold-hi);
+  text-decoration: none;
+}
+
+.wm-blog-post-page .breadcrumb-item.active,
+.wm-blog-post-page .wm-blog-post-header .text-secondary {
+  color: var(--fc-muted) !important;
+}
+
 /* ---------- HERO ---------- */
 
 .wm-blog-hero {
-  padding: 7.5rem 0 4.5rem;
+  overflow: hidden;
+  padding: 6.5rem 0 4.25rem;
   position: relative;
 }
 
@@ -2661,7 +2688,7 @@ select:focus {
   right: 0;
   bottom: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--fc-border) 20%, var(--fc-border) 80%, transparent);
+  background: linear-gradient(90deg, transparent, var(--fc-border) 18%, var(--fc-border) 82%, transparent);
 }
 
 .wm-blog-kicker {
@@ -2669,8 +2696,8 @@ select:focus {
   color: var(--fc-gold);
   display: inline-flex;
   font-family: var(--fc-sans);
-  font-size: 0.72rem;
-  font-weight: 600;
+  font-size: 0.7rem;
+  font-weight: 700;
   gap: 0.75rem;
   letter-spacing: 0.34em;
   margin-bottom: 1.5rem;
@@ -2687,11 +2714,11 @@ select:focus {
 
 .wm-blog-title {
   color: var(--fc-ink);
-  font-family: var(--fc-sans);
-  font-size: clamp(2.75rem, 2rem + 3.8vw, 5.25rem);
-  font-weight: 300;
-  letter-spacing: -0.035em;
-  line-height: 0.98;
+  font-family: var(--wm-font-display);
+  font-size: clamp(3rem, 2rem + 4vw, 5.75rem);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
   margin: 0 0 1.5rem;
   max-width: 14ch;
   text-transform: none;
@@ -2706,7 +2733,7 @@ select:focus {
 .wm-blog-subtitle {
   color: var(--fc-muted);
   font-family: var(--fc-sans);
-  font-size: 1.075rem;
+  font-size: 1.1rem;
   font-weight: 400;
   line-height: 1.7;
   margin: 0;
@@ -2716,13 +2743,15 @@ select:focus {
 /* ---------- STATS CARD ---------- */
 
 .wm-blog-stats-card {
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  background:
+    radial-gradient(circle at 90% 0, rgba(255, 255, 255, 0.86), transparent 34%),
+    linear-gradient(145deg, #fff0ef 0%, #f8e8e4 100%);
   border: 1px solid var(--fc-border);
-  border-radius: 2px;
+  border-radius: 1.5rem;
   box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  padding: 2rem 1.75rem;
+    0 1.25rem 3rem rgba(87, 51, 63, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  padding: 2rem;
   position: relative;
   backdrop-filter: blur(8px);
 }
@@ -2731,11 +2760,13 @@ select:focus {
   content: "";
   position: absolute;
   top: -1px;
-  left: 1.5rem;
-  right: 1.5rem;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--fc-gold) 50%, transparent);
-  opacity: 0.8;
+  left: 2rem;
+  right: auto;
+  height: 4px;
+  width: 4rem;
+  background: var(--fc-gold);
+  border-radius: 999px;
+  opacity: 1;
 }
 
 .wm-blog-stats-label {
@@ -2756,7 +2787,7 @@ select:focus {
 
 .wm-blog-stats-grid > div {
   padding: 0 1rem;
-  border-left: 1px solid var(--fc-border-soft);
+  border-left: 1px solid var(--fc-border);
 }
 
 .wm-blog-stats-grid > div:first-child {
@@ -2771,9 +2802,9 @@ select:focus {
 
 .wm-blog-stats-grid strong {
   color: var(--fc-ink);
-  font-family: var(--fc-sans);
-  font-size: 1.75rem;
-  font-weight: 300;
+  font-family: var(--wm-font-display);
+  font-size: 2rem;
+  font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1;
   margin-bottom: 0.45rem;
@@ -2784,7 +2815,7 @@ select:focus {
   font-family: var(--fc-sans);
   font-size: 0.7rem;
   font-weight: 500;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.16em;
   line-height: 1.4;
   text-transform: uppercase;
 }
@@ -2792,17 +2823,19 @@ select:focus {
 /* ---------- FEATURED ARTICLE ---------- */
 
 .wm-blog-featured {
-  background: linear-gradient(180deg, var(--fc-surface) 0%, var(--fc-bg-2) 100%);
+  background: var(--fc-surface);
   border: 1px solid var(--fc-border);
-  border-radius: 2px;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  border-radius: 1.75rem;
+  box-shadow: 0 1.75rem 4rem rgba(87, 51, 63, 0.13);
   overflow: hidden;
   position: relative;
   transition: border-color 0.3s ease, transform 0.3s ease;
 }
 
 .wm-blog-featured:hover {
-  border-color: rgba(201, 169, 97, 0.4);
+  border-color: rgba(166, 79, 109, 0.4);
+  box-shadow: 0 2rem 4.5rem rgba(87, 51, 63, 0.17);
+  transform: translateY(-3px);
 }
 
 .wm-blog-featured::before {
@@ -2811,8 +2844,11 @@ select:focus {
   top: 1.5rem;
   left: 1.5rem;
   z-index: 2;
-  background: var(--fc-gold);
-  color: #0b0b0c;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(166, 79, 109, 0.18);
+  border-radius: 999px;
+  box-shadow: 0 0.65rem 1.5rem rgba(64, 39, 47, 0.14);
+  color: var(--fc-gold-hi);
   font-family: var(--fc-sans);
   font-size: 0.65rem;
   font-weight: 700;
@@ -2823,8 +2859,8 @@ select:focus {
 
 .wm-blog-featured-media {
   background:
-    linear-gradient(135deg, rgba(201, 169, 97, 0.18) 0%, rgba(11, 11, 12, 0.6) 100%),
-    #1a1a1e;
+    linear-gradient(135deg, rgba(218, 160, 174, 0.24) 0%, rgba(255, 250, 246, 0.1) 100%),
+    #f4e8e3;
   height: 100%;
   min-height: 28rem;
   position: relative;
@@ -2832,12 +2868,12 @@ select:focus {
 }
 
 .wm-blog-featured-media img {
-  filter: saturate(0.9) contrast(1.05);
+  filter: saturate(0.96) contrast(1.01);
   transition: transform 0.6s ease, filter 0.6s ease;
 }
 
 .wm-blog-featured:hover .wm-blog-featured-media img {
-  filter: saturate(1) contrast(1.08);
+  filter: saturate(1.04) contrast(1.02);
   transform: scale(1.03);
 }
 
@@ -2845,7 +2881,7 @@ select:focus {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent 60%, rgba(11, 11, 12, 0.5) 100%);
+  background: linear-gradient(90deg, transparent 72%, rgba(255, 255, 255, 0.2) 100%);
   pointer-events: none;
 }
 
@@ -2865,9 +2901,9 @@ select:focus {
 
 .wm-blog-featured-body h2 {
   color: var(--fc-ink);
-  font-family: var(--fc-sans);
+  font-family: var(--wm-font-display);
   font-size: clamp(1.9rem, 1.5rem + 1.6vw, 2.75rem);
-  font-weight: 300;
+  font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.05;
   margin: 0;
@@ -2890,9 +2926,9 @@ select:focus {
 
 .wm-blog-chip {
   align-items: center;
-  background: transparent;
+  background: var(--fc-gold-dim);
   border: 1px solid var(--fc-border);
-  border-radius: 0;
+  border-radius: 999px;
   color: var(--fc-gold);
   display: inline-flex;
   font-family: var(--fc-sans);
@@ -2909,7 +2945,7 @@ select:focus {
   font-family: var(--fc-sans);
   font-size: 0.7rem;
   font-weight: 500;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.14em;
   margin: 0;
   text-transform: uppercase;
 }
@@ -2955,18 +2991,18 @@ select:focus {
 
 .wm-section-title {
   color: var(--fc-ink);
-  font-family: var(--fc-sans);
+  font-family: var(--wm-font-display);
   font-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.4rem);
-  font-weight: 300;
+  font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.1;
 }
 
 .wm-blog-card {
-  background: linear-gradient(180deg, var(--fc-surface) 0%, var(--fc-bg-2) 100%);
+  background: var(--fc-surface);
   border: 1px solid var(--fc-border-soft);
-  border-radius: 2px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.45);
+  border-radius: 1.5rem;
+  box-shadow: 0 1rem 2.6rem rgba(87, 51, 63, 0.1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -2976,8 +3012,8 @@ select:focus {
 
 .wm-blog-card:hover {
   border-color: var(--fc-border);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
-  transform: translateY(-4px);
+  box-shadow: 0 1.6rem 3.5rem rgba(87, 51, 63, 0.15);
+  transform: translateY(-6px);
 }
 
 .wm-blog-card::before {
@@ -2986,8 +3022,8 @@ select:focus {
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--fc-gold), transparent);
+  height: 4px;
+  background: linear-gradient(90deg, var(--fc-gold), #d9a4b4);
   opacity: 0;
   transition: opacity 0.35s ease;
 }
@@ -2998,15 +3034,15 @@ select:focus {
 
 .wm-blog-card-media {
   background:
-    linear-gradient(135deg, rgba(201, 169, 97, 0.22) 0%, rgba(11, 11, 12, 0.55) 100%),
-    #1a1a1e;
+    linear-gradient(135deg, rgba(218, 160, 174, 0.24) 0%, rgba(255, 250, 246, 0.1) 100%),
+    #f4e8e3;
   aspect-ratio: 16 / 10;
   overflow: hidden;
   position: relative;
 }
 
 .wm-blog-card-media img {
-  filter: saturate(0.9) contrast(1.05);
+  filter: saturate(0.96) contrast(1.01);
   transition: transform 0.6s ease;
 }
 
@@ -3021,9 +3057,9 @@ select:focus {
 
 .wm-blog-card-body h2 {
   color: var(--fc-ink);
-  font-family: var(--fc-sans);
-  font-size: 1.4rem;
-  font-weight: 400;
+  font-family: var(--wm-font-display);
+  font-size: 1.55rem;
+  font-weight: 600;
   letter-spacing: -0.015em;
   line-height: 1.25;
   margin: 0;
@@ -3036,11 +3072,11 @@ select:focus {
 /* ---------- SINGLE POST PAGE ---------- */
 
 .wm-blog-post-shell {
-  padding: 5rem 0 6rem;
+  padding: 4.5rem 0 6.5rem;
 }
 
 .wm-blog-post-article {
-  max-width: 56rem;
+  max-width: 60rem;
 }
 
 .wm-blog-post-header {
@@ -3051,9 +3087,9 @@ select:focus {
 
 .wm-blog-post-title {
   color: var(--fc-ink);
-  font-family: var(--fc-sans);
-  font-size: clamp(2.25rem, 1.8rem + 2.6vw, 4rem);
-  font-weight: 300;
+  font-family: var(--wm-font-display);
+  font-size: clamp(2.5rem, 1.8rem + 3vw, 4.75rem);
+  font-weight: 600;
   letter-spacing: -0.035em;
   line-height: 1;
   margin: 0 0 1.5rem;
@@ -3074,33 +3110,34 @@ select:focus {
 }
 
 .wm-blog-post-hero img {
-  background: #1a1a1e;
-  border: 1px solid var(--fc-border-soft);
-  border-radius: 2px;
+  background: #f4e8e3;
+  border: 1px solid var(--fc-border);
+  border-radius: 1.5rem;
+  box-shadow: 0 1.5rem 3.5rem rgba(87, 51, 63, 0.13);
   max-height: 36rem;
   object-fit: cover;
   width: 100%;
 }
 
 .wm-blog-post-content-wrap {
-  background: linear-gradient(180deg, var(--fc-surface) 0%, var(--fc-bg-2) 100%);
+  background: rgba(255, 255, 255, 0.94);
   border: 1px solid var(--fc-border-soft);
-  border-radius: 2px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-  padding: 3rem 2.5rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 1.5rem 3.5rem rgba(87, 51, 63, 0.1);
+  padding: clamp(2rem, 4vw, 4rem);
 }
 
 .wm-blog-content {
   margin: 0 auto;
-  max-width: 44rem;
+  max-width: 46rem;
 }
 
 .wm-blog-heading-two,
 .wm-blog-heading-three,
 .wm-blog-heading-four {
   color: var(--fc-ink);
-  font-family: var(--fc-sans);
-  font-weight: 400;
+  font-family: var(--wm-font-display);
+  font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.15;
   margin: 1.5rem 0 0;
@@ -3108,7 +3145,7 @@ select:focus {
 
 .wm-blog-heading-two {
   font-size: clamp(1.85rem, 3vw, 2.5rem);
-  font-weight: 300;
+  font-weight: 600;
 }
 
 .wm-blog-heading-three {
@@ -3124,14 +3161,14 @@ select:focus {
 .wm-blog-paragraph,
 .wm-blog-list,
 .wm-blog-caption {
-  color: rgba(245, 243, 238, 0.78);
+  color: #55484c;
   font-family: var(--fc-sans);
 }
 
 .wm-blog-paragraph,
 .wm-blog-list li {
-  font-size: 1.05rem;
-  line-height: 1.85;
+  font-size: 1.075rem;
+  line-height: 1.9;
 }
 
 .wm-blog-list {
@@ -3151,8 +3188,8 @@ select:focus {
 }
 
 .wm-blog-figure img {
-  background: #1a1a1e;
-  border-radius: 2px;
+  background: #f4e8e3;
+  border-radius: 1.25rem;
   width: 100%;
 }
 
@@ -3166,20 +3203,20 @@ select:focus {
 }
 
 .wm-blog-quote {
-  background: transparent;
-  border: 0;
-  border-left: 2px solid var(--fc-gold);
-  border-radius: 0;
+  background: linear-gradient(135deg, #fff2f1, #f9e9e5);
+  border: 1px solid var(--fc-border);
+  border-left: 4px solid var(--fc-gold);
+  border-radius: 1rem;
   margin: 1rem 0;
-  padding: 0.5rem 0 0.5rem 2rem;
+  padding: 1.6rem 1.75rem;
   position: relative;
 }
 
 .wm-blog-quote p {
   color: var(--fc-ink);
-  font-family: var(--fc-sans);
+  font-family: var(--wm-font-display);
   font-size: 1.45rem;
-  font-weight: 300;
+  font-weight: 500;
   font-style: italic;
   letter-spacing: -0.015em;
   line-height: 1.5;
@@ -3199,9 +3236,9 @@ select:focus {
 .wm-blog-cta {
   background: var(--fc-gold);
   border: 1px solid var(--fc-gold);
-  border-radius: 0;
-  box-shadow: 0 10px 30px rgba(201, 169, 97, 0.18);
-  color: #0b0b0c;
+  border-radius: 999px;
+  box-shadow: 0 0.75rem 1.75rem rgba(166, 79, 109, 0.22);
+  color: #ffffff;
   display: inline-flex;
   font-family: var(--fc-sans);
   font-size: 0.78rem;
@@ -3215,9 +3252,9 @@ select:focus {
 
 .wm-blog-cta:hover,
 .wm-blog-cta:focus-visible {
-  background: transparent;
-  box-shadow: 0 14px 36px rgba(201, 169, 97, 0.32);
-  color: var(--fc-gold-hi);
+  background: var(--fc-gold-hi);
+  box-shadow: 0 1rem 2.1rem rgba(123, 48, 75, 0.28);
+  color: #ffffff;
   transform: translateY(-2px);
 }
 
@@ -4096,6 +4133,10 @@ select:focus {
     padding: 4.5rem 0 2.5rem;
   }
 
+  .wm-blog-page > .container {
+    padding-top: 2.5rem;
+  }
+
   .wm-blog-stats-grid {
     grid-template-columns: 1fr;
     gap: 1.25rem;
@@ -4149,6 +4190,35 @@ select:focus {
 
   .wm-blog-post-shell {
     padding: 3rem 0 4rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .wm-blog-hero {
+    padding: 3.75rem 0 2.25rem;
+  }
+
+  .wm-blog-title {
+    font-size: clamp(2.65rem, 14vw, 3.8rem);
+  }
+
+  .wm-blog-stats-card {
+    padding: 1.5rem;
+  }
+
+  .wm-blog-featured,
+  .wm-blog-card,
+  .wm-blog-post-content-wrap,
+  .wm-blog-post-hero img {
+    border-radius: 1.2rem;
+  }
+
+  .wm-blog-post-header {
+    margin-bottom: 2.25rem;
+  }
+
+  .wm-blog-post-content-wrap {
+    padding: 1.5rem 1.25rem;
   }
 }
 
@@ -8627,8 +8697,6 @@ select:focus {
 
 /* Shared radius corrections for editorial surfaces that previously used square corners. */
 .wm-home-premium-process__panel,
-.wm-blog-stats-card,
-.wm-blog-featured,
 .wm-vendor-hero__card,
 .wm-vendor-hero__logo {
   border-radius: var(--wm-radius-surface);
