@@ -1,15 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { FreeMode, Navigation, Pagination, Thumbs } from "swiper/modules";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
-import "swiper/css/free-mode";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import "swiper/css/thumbs";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { resolveMediaUrl, shouldRenderUnoptimizedMedia } from "@/lib/media-url";
 import type { VendorMediaItem } from "@/types/vendor-profile";
@@ -49,7 +44,38 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
   };
 
   const [lightbox, setLightbox] = useState<LightboxState>({ open: false, index: 0 });
-  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
+  const [mainSwiper, setMainSwiper] = useState<SwiperType | null>(null);
+  const [activePhoto, setActivePhoto] = useState(0);
+  const thumbnailRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const hasGalleryMounted = useRef(false);
+
+  const showGalleryPrev = useCallback(() => {
+    if (!mainSwiper || photos.length < 2) return;
+    const previousIndex = mainSwiper.activeIndex <= 0 ? photos.length - 1 : mainSwiper.activeIndex - 1;
+    mainSwiper.slideTo(previousIndex);
+  }, [mainSwiper, photos.length]);
+
+  const showGalleryNext = useCallback(() => {
+    if (!mainSwiper || photos.length < 2) return;
+    const nextIndex = mainSwiper.activeIndex >= photos.length - 1 ? 0 : mainSwiper.activeIndex + 1;
+    mainSwiper.slideTo(nextIndex);
+  }, [mainSwiper, photos.length]);
+
+  const selectGalleryPhoto = useCallback((index: number) => {
+    mainSwiper?.slideTo(index);
+  }, [mainSwiper]);
+
+  useEffect(() => {
+    if (!hasGalleryMounted.current) {
+      hasGalleryMounted.current = true;
+      return;
+    }
+    thumbnailRefs.current[activePhoto]?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "nearest",
+    });
+  }, [activePhoto]);
 
   const openLightbox = useCallback((index: number) => {
     setLightbox({ open: true, index });
@@ -98,10 +124,7 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
       <div className="wm-vendor-gallery-heading">
         <div className="wm-vendor-gallery-heading__title">
           <span className="wm-vendor-gallery-heading__mark" aria-hidden="true" />
-          <div>
-            <p className="wm-admin-kicker mb-1">{vendorName}</p>
-            <h2 className="mb-0">{labels.photosHeading}</h2>
-          </div>
+          <h2 className="mb-0">{labels.photosHeading}</h2>
         </div>
         {photos.length > 0 ? (
           <button
@@ -119,87 +142,93 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
 
       {photos.length ? (
         <div className="wm-vendor-gallery-slider">
-          <Swiper
-            modules={[Navigation, Pagination, Thumbs]}
-            navigation
-            pagination={{ clickable: true }}
-            spaceBetween={16}
-            thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
-            className="wm-vendor-gallery-slider__main"
-          >
-            {photos.map((photo, index) => (
-              <SwiperSlide key={photo.id}>
-                <button
-                  type="button"
-                  className="wm-vendor-gallery-slider__frame"
-                  onClick={() => openLightbox(index)}
-                  aria-label={`${labels.photosHeading} ${index + 1}: ${photo.caption || vendorName}`}
-                >
-                  <div className="wm-vendor-gallery-slider__media">
-                    <Image
-                      src={resolveMediaUrl(photo.url)}
-                      alt={photo.caption || vendorName}
-                      fill
-                      unoptimized={shouldRenderUnoptimizedMedia(photo.url)}
-                      sizes="100vw"
-                      className="object-fit-cover"
-                    />
-                    <span className="wm-vendor-gallery-slider__scrim" aria-hidden="true" />
-                    <div className="wm-vendor-gallery-slider__meta">
-                      <span className="wm-vendor-gallery-slider__count">
-                        {String(index + 1).padStart(2, "0")}
-                        <span>/ {String(photos.length).padStart(2, "0")}</span>
-                      </span>
-                      <p>{photo.caption || vendorName}</p>
-                    </div>
-                    <span className="wm-vendor-gallery-slider__expand" aria-hidden="true">
-                      <svg viewBox="0 0 24 24">
-                        <path d="M8.5 3.5h-5v5M15.5 3.5h5v5M20.5 15.5v5h-5M3.5 15.5v5h5" />
-                      </svg>
-                    </span>
-                  </div>
-                </button>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-
-          {photos.length > 1 ? (
+          <div className="wm-vendor-gallery-slider__stage">
             <Swiper
-              modules={[FreeMode, Thumbs]}
-              onSwiper={setThumbsSwiper}
-              watchSlidesProgress
-              freeMode
-              spaceBetween={12}
-              slidesPerView={2.4}
-              breakpoints={{
-                576: { slidesPerView: 3.2 },
-                768: { slidesPerView: 4.2 },
-                992: { slidesPerView: 5.2 },
+              spaceBetween={0}
+              onSwiper={(swiper) => {
+                setMainSwiper(swiper);
+                setActivePhoto(swiper.activeIndex);
               }}
-              className="wm-vendor-gallery-slider__thumbs"
+              onSlideChange={(swiper) => setActivePhoto(swiper.activeIndex)}
+              className="wm-vendor-gallery-slider__main"
             >
               {photos.map((photo, index) => (
-                <SwiperSlide key={`${photo.id}-thumb`}>
+                <SwiperSlide key={photo.id}>
                   <button
                     type="button"
-                    className="wm-vendor-gallery-slider__thumb"
+                    className="wm-vendor-gallery-slider__frame"
+                    onClick={() => openLightbox(index)}
                     aria-label={`${labels.photosHeading} ${index + 1}`}
                   >
-                    <div className="wm-vendor-gallery-slider__thumb-media">
+                    <div className="wm-vendor-gallery-slider__media">
                       <Image
                         src={resolveMediaUrl(photo.url)}
-                        alt={photo.caption || vendorName}
+                        alt={photo.caption || `${vendorName} ${labels.photosHeading.toLowerCase()} ${index + 1}`}
                         fill
                         unoptimized={shouldRenderUnoptimizedMedia(photo.url)}
-                        sizes="240px"
+                        sizes="(max-width: 767px) 100vw, 84vw"
                         className="object-fit-cover"
                       />
                     </div>
-                    <span>{String(index + 1).padStart(2, "0")}</span>
                   </button>
                 </SwiperSlide>
               ))}
             </Swiper>
+
+            {photos.length > 1 ? (
+              <>
+                <button
+                  type="button"
+                  className="wm-vendor-gallery-slider__arrow wm-vendor-gallery-slider__arrow--prev"
+                  onClick={showGalleryPrev}
+                  aria-label={labels.previousPhoto}
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m15 5-7 7 7 7" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  className="wm-vendor-gallery-slider__arrow wm-vendor-gallery-slider__arrow--next"
+                  onClick={showGalleryNext}
+                  aria-label={labels.nextPhoto}
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m9 5 7 7-7 7" />
+                  </svg>
+                </button>
+              </>
+            ) : null}
+          </div>
+
+          {photos.length > 1 ? (
+            <div className="wm-vendor-gallery-slider__thumbs" role="tablist" aria-label={labels.photosHeading}>
+              {photos.map((photo, index) => (
+                <button
+                  key={`${photo.id}-thumb`}
+                  ref={(node) => {
+                    thumbnailRefs.current[index] = node;
+                  }}
+                  type="button"
+                  role="tab"
+                  className={`wm-vendor-gallery-slider__thumb${activePhoto === index ? " is-active" : ""}`}
+                  onClick={() => selectGalleryPhoto(index)}
+                  aria-label={`${labels.photosHeading} ${index + 1}`}
+                  aria-selected={activePhoto === index}
+                >
+                  <span className="wm-vendor-gallery-slider__thumb-media">
+                    <Image
+                      src={resolveMediaUrl(photo.url)}
+                      alt=""
+                      fill
+                      unoptimized={shouldRenderUnoptimizedMedia(photo.url)}
+                      sizes="180px"
+                      className="object-fit-cover"
+                    />
+                  </span>
+                </button>
+              ))}
+            </div>
           ) : null}
         </div>
       ) : null}
@@ -272,9 +301,6 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
               </svg>
             </button>
           </div>
-          {(photos[lightbox.index] ?? photos[0]!).caption ? (
-            <p className="wm-vendor-lightbox__caption">{(photos[lightbox.index] ?? photos[0]!).caption}</p>
-          ) : null}
         </div>
       ) : null}
     </div>
