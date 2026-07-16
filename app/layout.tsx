@@ -6,6 +6,7 @@ import "./globals.css";
 import NavBarContainer from "@/components/NavBarContainer";
 import AuthStateSync from "@/components/AuthStateSync";
 import PwaServiceWorkerRegistration from "@/components/PwaServiceWorkerRegistration";
+import ScrollReveal from "@/components/ScrollReveal";
 import SiteFooter from "@/components/SiteFooter";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -121,6 +122,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthStateSync />
         <PwaServiceWorkerRegistration />
+        <ScrollReveal />
         <LanguageProvider initialLanguage={resolvedLanguage}>
           <div className="wm-site-shell">
             <NavBarContainer vendorCategories={vendorCategories} />
