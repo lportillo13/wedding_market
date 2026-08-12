@@ -117,7 +117,7 @@ export default async function AccountInboxPage({
     locationTbd: dictionary.account.rfqsPage.formatting.locationTbd,
     updated: language === "es" ? "Actualizado" : "Updated",
     notesFallback: language === "es" ? "Sin mensaje de propuesta." : "No proposal note yet.",
-    active: language === "es" ? "Activas" : "Active",
+    active: language === "es" ? "Conversaciones" : "Conversations",
     deleted: dictionary.account.notificationsPage.deletedTitle,
     searchPlaceholder: language === "es" ? "Buscar proveedor, solicitud o mensaje" : "Search vendor, request, or message",
     searchButton: language === "es" ? "Buscar" : "Search",
@@ -147,9 +147,10 @@ export default async function AccountInboxPage({
   const items = await loadClientInboxThreads(user.id, params?.rfq ?? null);
   const deletedView = params?.view === "deleted";
   const query = params?.q?.trim().toLowerCase() ?? "";
-  const activeCount = items.filter((item) => !item.invite.closed_at).length;
-  const deletedCount = items.filter((item) => Boolean(item.invite.closed_at)).length;
-  const scopeItems = items.filter((item) => (deletedView ? Boolean(item.invite.closed_at) : !item.invite.closed_at));
+  const isArchived = (item: (typeof items)[number]) => item.invite.closed_reason === "archived_by_client";
+  const activeCount = items.filter((item) => !isArchived(item)).length;
+  const deletedCount = items.filter(isArchived).length;
+  const scopeItems = items.filter((item) => (deletedView ? isArchived(item) : !isArchived(item)));
   const visibleItems = scopeItems.filter((item) => {
     const location =
       [item.rfq?.city, item.rfq?.state, item.rfq?.country].filter(Boolean).join(", ") || labels.locationTbd;

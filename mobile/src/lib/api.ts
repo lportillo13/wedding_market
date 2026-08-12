@@ -1,4 +1,5 @@
 import { mobileConfig } from "./config";
+import { requestJson } from "./http";
 
 export type VendorImage = {
   url?: string | null;
@@ -128,13 +129,7 @@ export async function fetchVendors(params: VendorSearchParams = {}): Promise<Ven
   if (params.pageSize) searchParams.set("pageSize", String(params.pageSize));
 
   const query = searchParams.toString();
-  const response = await fetch(`${mobileConfig.webApiUrl}/api/vendors${query ? `?${query}` : ""}`);
-
-  if (!response.ok) {
-    throw new Error(`Vendor search failed with status ${response.status}.`);
-  }
-
-  return response.json() as Promise<VendorsResponse>;
+  return requestJson<VendorsResponse>(`${mobileConfig.webApiUrl}/api/vendors${query ? `?${query}` : ""}`);
 }
 
 export async function fetchVendorDetail(slug: string): Promise<VendorDetail> {
@@ -142,13 +137,9 @@ export async function fetchVendorDetail(slug: string): Promise<VendorDetail> {
     throw new Error("EXPO_PUBLIC_WEB_API_URL is not configured.");
   }
 
-  const response = await fetch(`${mobileConfig.webApiUrl}/api/vendors/${encodeURIComponent(slug)}`);
-
-  if (!response.ok) {
-    throw new Error(`Vendor detail failed with status ${response.status}.`);
-  }
-
-  const payload = (await response.json()) as { vendor?: VendorDetail | null; error?: string };
+  const payload = await requestJson<{ vendor?: VendorDetail | null; error?: string }>(
+    `${mobileConfig.webApiUrl}/api/vendors/${encodeURIComponent(slug)}`,
+  );
   if (!payload.vendor) {
     throw new Error(payload.error ?? "Vendor not found.");
   }

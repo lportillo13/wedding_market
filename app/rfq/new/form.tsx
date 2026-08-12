@@ -248,6 +248,7 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
                 className="form-control"
                 name="notes"
                 rows={4}
+                maxLength={2000}
                 onChange={(event) => setAdNotes(event.target.value)}
               />
             </div>

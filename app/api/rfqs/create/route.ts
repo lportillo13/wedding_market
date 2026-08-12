@@ -2,17 +2,18 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createVendorNewRequestNotification } from "@/lib/notifications";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
+import { createAuthenticatedRequestClient } from "@/lib/supabase/request";
 
 const payloadSchema = z.object({
   rfq_id: z.string().uuid().optional().nullable(),
-  vendor_id: z.string().uuid(),
-  first_name: z.string().min(1),
-  last_name: z.string().min(1),
+  vendor_id: z.string().uuid().optional(),
+  vendor_ids: z.array(z.string().uuid()).min(1).max(10).optional(),
+  first_name: z.string().trim().min(1).max(100),
+  last_name: z.string().trim().min(1).max(100),
   email: z.string().email(),
-  phone: z.string().optional().nullable(),
+  phone: z.string().trim().max(50).optional().nullable(),
   guest_count: z.number().int().positive().optional().nullable(),
   guest_count_range: z.string().optional().nullable(),
   budget_min: z.number().int().nonnegative().optional().nullable(),
@@ -22,18 +23,34 @@ const payloadSchema = z.object({
   country: z.string().optional().nullable(),
   language: z.string().optional().nullable(),
   theme: z.string().optional().nullable(),
-  message: z.string().min(1),
-  event_date: z.string().optional().nullable(),
+  message: z.string().trim().min(1).max(2000),
+  event_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().nullable(),
   flexible: z.boolean().optional(),
-}).refine((input) => input.guest_count !== null && input.guest_count !== undefined || Boolean(input.guest_count_range?.trim()), {
-  message: "Please fill in the required fields.",
-  path: ["guest_count"],
-});
+})
+  .refine((input) => Boolean(input.vendor_id) || Boolean(input.vendor_ids?.length), {
+    message: "Select at least one vendor.",
+    path: ["vendor_ids"],
+  })
+  .refine(
+    (input) => new Set([...(input.vendor_ids ?? []), ...(input.vendor_id ? [input.vendor_id] : [])]).size <= 10,
+    {
+      message: "You can request quotes from up to 10 vendors at a time.",
+      path: ["vendor_ids"],
+    },
+  )
+  .refine((input) => input.guest_count !== null && input.guest_count !== undefined || Boolean(input.guest_count_range?.trim()), {
+    message: "Please fill in the required fields.",
+    path: ["guest_count"],
+  })
+  .refine((input) => input.budget_min == null || input.budget_max == null || input.budget_min <= input.budget_max, {
+    message: "Minimum budget cannot exceed maximum budget.",
+    path: ["budget_max"],
+  });
 
 const QUOTE_EXPIRES_DAYS = 14;
 
 export async function POST(request: Request) {
-  const supabase = await createSupabaseServerClient();
+  const supabase = await createAuthenticatedRequestClient(request);
   const supabaseAdmin = createSupabaseAdminClient();
 
   let json: unknown;
@@ -49,6 +66,8 @@ export async function POST(request: Request) {
   }
 
   const input = parsed.data;
+  const vendorIds = Array.from(new Set([...(input.vendor_ids ?? []), ...(input.vendor_id ? [input.vendor_id] : [])]));
+  const isMultiQuote = vendorIds.length > 1;
   const { data: authData } = await supabase.auth.getUser();
   const user = authData?.user ?? null;
 
@@ -56,7 +75,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, message: "Please log in to send a request." }, { status: 401 });
   }
 
-  const eventDate = input.event_date ? new Date(input.event_date).toISOString().slice(0, 10) : null;
+  const eventDate = input.event_date ?? null;
 
   const basePayload = {
     event_date: eventDate,
@@ -77,7 +96,8 @@ export async function POST(request: Request) {
     guest_last_name: input.last_name,
     guest_lead_email: input.email,
     guest_phone: input.phone ?? null,
-    vendor_id: input.vendor_id,
+    // The legacy vendor_id shortcut is only meaningful for single-vendor requests.
+    vendor_id: isMultiQuote ? null : vendorIds[0],
   } as const;
 
   const loadExistingEditableRfq = async (client: SupabaseClient, ownerId: string, rfqId?: string | null) => {
@@ -85,7 +105,7 @@ export async function POST(request: Request) {
       .from("rfqs")
       .select("id")
       .eq("owner_id", ownerId)
-      .eq("vendor_id", input.vendor_id)
+      .eq("vendor_id", vendorIds[0])
       .is("accepted_quote_id", null)
       .order("created_at", { ascending: false })
       .limit(1);
@@ -102,7 +122,7 @@ export async function POST(request: Request) {
       .from("quotes")
       .select("id", { count: "exact", head: true })
       .eq("rfq_id", rfqId)
-      .eq("vendor_id", input.vendor_id);
+      .eq("vendor_id", vendorIds[0]);
 
     return { count: result.count ?? 0, error: result.error };
   };
@@ -131,9 +151,11 @@ export async function POST(request: Request) {
   let existingEditableRfq: { id: string } | null = null;
   let existingEditableRfqError: { message?: string } | null = null;
 
-  const existingAttempt = await loadExistingEditableRfq(supabase, user.id, input.rfq_id);
-  existingEditableRfq = existingAttempt.data;
-  existingEditableRfqError = existingAttempt.error;
+  if (!isMultiQuote) {
+    const existingAttempt = await loadExistingEditableRfq(supabase, user.id, input.rfq_id);
+    existingEditableRfq = existingAttempt.data;
+    existingEditableRfqError = existingAttempt.error;
+  }
 
   if (existingEditableRfqError && supabaseAdmin && /policy/i.test(existingEditableRfqError.message ?? "")) {
     const retry = await loadExistingEditableRfq(supabaseAdmin, user.id, input.rfq_id);
@@ -198,33 +220,35 @@ export async function POST(request: Request) {
 
   const expires_at = new Date(Date.now() + QUOTE_EXPIRES_DAYS * 24 * 60 * 60 * 1000).toISOString();
 
-  const invitePayload = { rfq_id: rfqId, vendor_id: input.vendor_id, expires_at };
+  const invitePayload = vendorIds.map((vendorId) => ({ rfq_id: rfqId, vendor_id: vendorId, expires_at }));
 
-  let inviteError = await supabase.from("rfq_invites").insert([invitePayload]).then((res) => res.error);
+  let inviteError = await supabase.from("rfq_invites").insert(invitePayload).then((res) => res.error);
 
   if (inviteError && supabaseAdmin && /policy/i.test(inviteError.message ?? "")) {
-    const retry = await supabaseAdmin.from("rfq_invites").insert([invitePayload]);
+    const retry = await supabaseAdmin.from("rfq_invites").insert(invitePayload);
     inviteError = retry.error;
   }
 
   if (inviteError) {
+    // Avoid leaving an orphan request when the invite batch fails atomically.
+    await (supabaseAdmin ?? supabase).from("rfqs").delete().eq("id", rfqId);
     return NextResponse.json({ ok: false, message: inviteError.message || "Failed to notify vendor." }, { status: 500 });
   }
 
   const vendorLookupClient = supabaseAdmin ?? supabase;
-  const { data: vendorRecipient } = await vendorLookupClient
+  const { data: vendorRecipients } = await vendorLookupClient
     .from("vendors")
     .select("id, owner_id")
-    .eq("id", input.vendor_id)
-    .maybeSingle();
+    .in("id", vendorIds);
 
-  if (vendorRecipient?.owner_id) {
+  for (const vendorRecipient of vendorRecipients ?? []) {
+    if (!vendorRecipient.owner_id) continue;
     const requesterName = `${input.first_name} ${input.last_name}`.trim() || null;
     const { error: notificationError } = await createVendorNewRequestNotification(vendorLookupClient, {
       recipientId: vendorRecipient.owner_id,
       actorId: user?.id ?? null,
       rfqId,
-      vendorId: input.vendor_id,
+      vendorId: vendorRecipient.id,
       requesterName,
       city: basePayload.city,
       state: basePayload.state,
@@ -237,5 +261,5 @@ export async function POST(request: Request) {
     }
   }
 
-  return NextResponse.json({ ok: true, rfq_id: rfqId });
+  return NextResponse.json({ ok: true, rfq_id: rfqId, vendor_count: vendorIds.length });
 }

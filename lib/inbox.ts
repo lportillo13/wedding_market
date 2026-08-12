@@ -27,7 +27,6 @@ export type InboxInviteRow = {
   closed_reason?: string | null;
   reveal_email?: boolean | null;
   reveal_phone?: boolean | null;
-  contact_revealed?: boolean | null;
 };
 
 export type InboxRfqRow = {
@@ -131,6 +130,31 @@ function shouldUseAdminFallback(message: string | undefined) {
 
 function normalizeInviteStatus(status: string | null | undefined) {
   return status?.toLowerCase().trim() ?? null;
+}
+
+function effectiveInviteStatus(
+  invite: InboxInviteRow,
+  rfq: InboxRfqRow | null,
+  quotes: InboxQuoteRow[],
+): InboxInviteRow {
+  if (rfq?.accepted_quote_id) {
+    const acceptedHere = quotes.some((quote) => quote.id === rfq.accepted_quote_id);
+    return {
+      ...invite,
+      status: acceptedHere ? "accepted" : "declined",
+      closed_reason: acceptedHere ? invite.closed_reason : invite.closed_reason ?? "accepted_other_vendor",
+    };
+  }
+
+  const normalized = normalizeInviteStatus(invite.status);
+  if (normalized === "accepted" || normalized === "declined" || normalized === "expired" || !invite.expires_at) {
+    return invite;
+  }
+
+  const expiresAt = Date.parse(invite.expires_at);
+  return Number.isFinite(expiresAt) && expiresAt <= Date.now()
+    ? { ...invite, status: "expired" }
+    : invite;
 }
 
 export function buildThreadKey(rfqId: string, vendorId: string) {
@@ -368,37 +392,13 @@ async function loadInvitesForRfqs(client: SupabaseClient, rfqIds: string[]) {
   }
 
   const fields =
-    "rfq_id, vendor_id, status, expires_at, created_at, updated_at, viewed_at, last_activity_at, client_last_read_at, vendor_last_read_at, closed_at, closed_reason, reveal_email, reveal_phone, contact_revealed";
+    "rfq_id, vendor_id, status, expires_at, created_at, updated_at, viewed_at, last_activity_at, client_last_read_at, vendor_last_read_at, closed_at, closed_reason, reveal_email, reveal_phone";
 
-  let { data, error } = await client
+  const { data, error } = await client
     .from("rfq_invites")
     .select(fields)
     .in("rfq_id", rfqIds)
     .order("created_at", { ascending: false });
-
-  if (error && /contact_revealed/.test(error.message ?? "")) {
-    const fallback = await client
-      .from("rfq_invites")
-      .select("rfq_id, vendor_id, status, expires_at, created_at, updated_at")
-      .in("rfq_id", rfqIds)
-      .order("created_at", { ascending: false });
-    data = ((fallback.data ?? []) as InboxInviteRow[]).map((invite) => {
-      const accepted = normalizeInviteStatus(invite.status) === "accepted";
-      return {
-        ...invite,
-        viewed_at: invite.viewed_at ?? null,
-        last_activity_at: invite.last_activity_at ?? invite.updated_at ?? invite.created_at,
-        client_last_read_at: invite.client_last_read_at ?? null,
-        vendor_last_read_at: invite.vendor_last_read_at ?? null,
-        closed_at: invite.closed_at ?? null,
-        closed_reason: invite.closed_reason ?? null,
-        contact_revealed: accepted,
-        reveal_email: accepted,
-        reveal_phone: accepted,
-      };
-    });
-    error = fallback.error;
-  }
 
   return { data: (data ?? []) as InboxInviteRow[], error };
 }
@@ -508,20 +508,21 @@ export async function loadClientInboxThreads(userId: string, filterRfqId?: strin
     const threadKey = buildThreadKey(invite.rfq_id, invite.vendor_id);
     const quotes = quotesByThread.get(threadKey) ?? [];
     const rfq = rfqsById.get(invite.rfq_id) ?? null;
-    const lastActivityAt = threadLastActivity(invite, quotes);
+    const effectiveInvite = effectiveInviteStatus(invite, rfq, quotes);
+    const lastActivityAt = threadLastActivity(effectiveInvite, quotes);
     const messages = quotes.flatMap((quote) => messagesByQuoteId.get(quote.id) ?? []);
-    const unreadActivityAt = threadUnreadActivityAt("client", invite, quotes, messages);
+    const unreadActivityAt = threadUnreadActivityAt("client", effectiveInvite, quotes, messages);
 
     return {
       threadKey,
-      invite,
+      invite: effectiveInvite,
       rfq,
       vendor: vendorsById.get(invite.vendor_id) ?? null,
       latestQuote: quotes[0] ?? null,
       quoteCount: quotes.length,
       lastActivityAt,
-      isUnread: unreadActivityAt ? isUnreadSince(unreadActivityAt, invite.client_last_read_at) : false,
-      statusKey: resolveClientStatus(invite, rfq, quotes),
+      isUnread: unreadActivityAt ? isUnreadSince(unreadActivityAt, effectiveInvite.client_last_read_at) : false,
+      statusKey: resolveClientStatus(effectiveInvite, rfq, quotes),
     } satisfies ClientInboxThreadListItem;
   });
 }
@@ -549,59 +550,17 @@ export async function loadVendorInboxThreads(userId: string) {
 
   const initialInvitesResult = await supabase
     .from("rfq_invites")
-    .select("rfq_id, vendor_id, status, expires_at, created_at, updated_at, viewed_at, last_activity_at, client_last_read_at, vendor_last_read_at, closed_at, closed_reason, reveal_email, reveal_phone, contact_revealed")
+    .select("rfq_id, vendor_id, status, expires_at, created_at, updated_at, viewed_at, last_activity_at, client_last_read_at, vendor_last_read_at, closed_at, closed_reason, reveal_email, reveal_phone")
     .eq("vendor_id", vendor.id)
     .order("created_at", { ascending: false });
 
   let invites = (initialInvitesResult.data ?? []) as InboxInviteRow[];
   let inviteError = initialInvitesResult.error;
 
-  if (inviteError && /contact_revealed/.test(inviteError.message ?? "")) {
-    const fallbackInvitesResult = await supabase
-      .from("rfq_invites")
-      .select("rfq_id, vendor_id, status, expires_at, created_at, updated_at")
-      .eq("vendor_id", vendor.id)
-      .order("created_at", { ascending: false });
-    invites = ((fallbackInvitesResult.data ?? []) as InboxInviteRow[]).map((invite) => {
-      const accepted = normalizeInviteStatus(invite.status) === "accepted";
-      return {
-        ...invite,
-        viewed_at: invite.viewed_at ?? null,
-        last_activity_at: invite.last_activity_at ?? invite.updated_at ?? invite.created_at,
-        client_last_read_at: invite.client_last_read_at ?? null,
-        vendor_last_read_at: invite.vendor_last_read_at ?? null,
-        closed_at: invite.closed_at ?? null,
-        closed_reason: invite.closed_reason ?? null,
-        contact_revealed: accepted,
-        reveal_email: accepted,
-        reveal_phone: accepted,
-      };
-    });
-    inviteError = fallbackInvitesResult.error;
-  }
-
-  if (!inviteError && !invites.some((invite) => typeof invite.reveal_email === "boolean")) {
-    invites = invites.map((invite) => {
-      const accepted = normalizeInviteStatus(invite.status) === "accepted";
-      return {
-        ...invite,
-        viewed_at: invite.viewed_at ?? null,
-        last_activity_at: invite.last_activity_at ?? invite.updated_at ?? invite.created_at,
-        client_last_read_at: invite.client_last_read_at ?? null,
-        vendor_last_read_at: invite.vendor_last_read_at ?? null,
-        closed_at: invite.closed_at ?? null,
-        closed_reason: invite.closed_reason ?? null,
-        contact_revealed: accepted,
-        reveal_email: accepted,
-        reveal_phone: accepted,
-      };
-    });
-  }
-
   if (inviteError && supabaseAdmin && shouldUseAdminFallback(inviteError.message)) {
     const retry = await supabaseAdmin
       .from("rfq_invites")
-      .select("rfq_id, vendor_id, status, expires_at, created_at, updated_at, viewed_at, last_activity_at, client_last_read_at, vendor_last_read_at, closed_at, closed_reason, reveal_email, reveal_phone, contact_revealed")
+      .select("rfq_id, vendor_id, status, expires_at, created_at, updated_at, viewed_at, last_activity_at, client_last_read_at, vendor_last_read_at, closed_at, closed_reason, reveal_email, reveal_phone")
       .eq("vendor_id", vendor.id)
       .order("created_at", { ascending: false });
     invites = (retry.data ?? []) as InboxInviteRow[];
@@ -648,20 +607,21 @@ export async function loadVendorInboxThreads(userId: string) {
     const threadKey = buildThreadKey(invite.rfq_id, invite.vendor_id);
     const quotes = quotesByThread.get(threadKey) ?? [];
     const rfq = rfqsById.get(invite.rfq_id) ?? null;
-    const lastActivityAt = threadLastActivity(invite, quotes);
+    const effectiveInvite = effectiveInviteStatus(invite, rfq, quotes);
+    const lastActivityAt = threadLastActivity(effectiveInvite, quotes);
     const messages = quotes.flatMap((quote) => messagesByQuoteId.get(quote.id) ?? []);
-    const unreadActivityAt = threadUnreadActivityAt("vendor", invite, quotes, messages);
+    const unreadActivityAt = threadUnreadActivityAt("vendor", effectiveInvite, quotes, messages);
 
     return {
       threadKey,
-      invite,
+      invite: effectiveInvite,
       rfq,
       vendor,
       latestQuote: quotes[0] ?? null,
       quoteCount: quotes.length,
       lastActivityAt,
-      isUnread: unreadActivityAt ? isUnreadSince(unreadActivityAt, invite.vendor_last_read_at ?? invite.viewed_at) : false,
-      statusKey: resolveVendorStatus(invite, rfq, quotes),
+      isUnread: unreadActivityAt ? isUnreadSince(unreadActivityAt, effectiveInvite.vendor_last_read_at ?? effectiveInvite.viewed_at) : false,
+      statusKey: resolveVendorStatus(effectiveInvite, rfq, quotes),
     } satisfies VendorInboxThreadListItem;
   });
 
@@ -669,48 +629,12 @@ export async function loadVendorInboxThreads(userId: string) {
 }
 
 async function loadThreadInvite(client: SupabaseClient, rfqId: string, vendorId: string) {
-  const result = await client
+  return client
     .from("rfq_invites")
-    .select("rfq_id, vendor_id, status, expires_at, created_at, updated_at, viewed_at, last_activity_at, client_last_read_at, vendor_last_read_at, closed_at, closed_reason, reveal_email, reveal_phone, contact_revealed")
+    .select("rfq_id, vendor_id, status, expires_at, created_at, updated_at, viewed_at, last_activity_at, client_last_read_at, vendor_last_read_at, closed_at, closed_reason, reveal_email, reveal_phone")
     .eq("rfq_id", rfqId)
     .eq("vendor_id", vendorId)
     .maybeSingle<InboxInviteRow>();
-
-  if (!result.error) {
-    return result;
-  }
-
-  if (/contact_revealed/.test(result.error.message ?? "")) {
-    const fallback = await client
-      .from("rfq_invites")
-      .select("rfq_id, vendor_id, status, expires_at, created_at, updated_at")
-      .eq("rfq_id", rfqId)
-      .eq("vendor_id", vendorId)
-      .maybeSingle<InboxInviteRow>();
-
-    if (!fallback.error && fallback.data) {
-      const accepted = normalizeInviteStatus(fallback.data.status) === "accepted";
-      return {
-        data: {
-          ...fallback.data,
-          viewed_at: fallback.data.viewed_at ?? null,
-          last_activity_at: fallback.data.last_activity_at ?? fallback.data.updated_at ?? fallback.data.created_at,
-          client_last_read_at: fallback.data.client_last_read_at ?? null,
-          vendor_last_read_at: fallback.data.vendor_last_read_at ?? null,
-          closed_at: fallback.data.closed_at ?? null,
-          closed_reason: fallback.data.closed_reason ?? null,
-          contact_revealed: accepted,
-          reveal_email: accepted,
-          reveal_phone: accepted,
-        },
-        error: null,
-      };
-    }
-
-    return fallback;
-  }
-
-  return result;
 }
 
 async function loadThreadQuotes(client: SupabaseClient, rfqId: string, vendorId: string) {
@@ -784,7 +708,7 @@ export async function loadClientThreadDetail(userId: string, threadKey: string):
 
   return {
     threadKey,
-    invite: inviteResult.data,
+    invite: effectiveInviteStatus(inviteResult.data, rfq, quotesResult.data),
     rfq,
     vendor: vendorResult.data[0] ?? null,
     quotes: [...quotesResult.data].sort(quoteSortDescending),
@@ -867,7 +791,7 @@ export async function loadVendorThreadDetail(userId: string, threadKey: string):
 
   return {
     threadKey,
-    invite: inviteResult.data,
+    invite: effectiveInviteStatus(inviteResult.data, rfq, quotesResult.data),
     rfq,
     vendor,
     quotes: [...quotesResult.data].sort(quoteSortDescending),

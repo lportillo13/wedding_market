@@ -193,9 +193,12 @@ export async function sendQuote(_: SendQuoteState, form: FormData): Promise<Send
   const rfq_id = form.get("rfq_id")?.toString();
   const vendor_id = form.get("vendor_id")?.toString();
   const amount_usd = form.get("amount_usd")?.toString();
-  const message = form.get("message")?.toString() ?? null;
+  const message = form.get("message")?.toString().trim() || null;
 
   if (!rfq_id || !vendor_id) return { ok: false, message: "Missing request or vendor." };
+  if (message && message.length > 2000) {
+    return { ok: false, message: "Proposal details must be 2,000 characters or fewer." };
+  }
 
   const { data: vendor, error: vendorErr } = await supabase
     .from("vendors")
@@ -210,7 +213,7 @@ export async function sendQuote(_: SendQuoteState, form: FormData): Promise<Send
   const readInvite = (client: typeof supabase) =>
     client
       .from("rfq_invites")
-      .select("rfq_id, vendor_id, status")
+      .select("rfq_id, vendor_id, status, expires_at")
       .eq("rfq_id", rfq_id)
       .eq("vendor_id", vendor_id)
       .maybeSingle();
@@ -225,6 +228,14 @@ export async function sendQuote(_: SendQuoteState, form: FormData): Promise<Send
 
   if (inviteErr) return { ok: false, message: inviteErr.message };
   if (!invite) return { ok: false, message: "Request not found." };
+  const inviteStatus = invite.status?.trim().toLowerCase();
+  if (
+    inviteStatus === "declined" ||
+    inviteStatus === "expired" ||
+    (invite.expires_at && new Date(invite.expires_at).getTime() < Date.now())
+  ) {
+    return { ok: false, message: "This quote request is closed or expired." };
+  }
 
   const selectRfq = (client: typeof supabase, column: OwnerColumn) =>
     client
@@ -348,7 +359,11 @@ export async function sendQuote(_: SendQuoteState, form: FormData): Promise<Send
     }
   }
 
-  if (inviteUpdateErr) return { ok: false, message: inviteUpdateErr.message };
+  // The quote is already persisted at this point. Reporting a failure would
+  // encourage the vendor to retry and create an accidental extra version.
+  if (inviteUpdateErr && process.env.NODE_ENV !== "production") {
+    console.warn("Quote sent but invite activity was not updated", inviteUpdateErr.message);
+  }
 
   if (rfq.owner_id && quoteId) {
     const notificationClient = supabaseAdmin ?? supabase;

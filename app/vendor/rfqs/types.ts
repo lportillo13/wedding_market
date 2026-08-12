@@ -23,7 +23,6 @@ export type InviteRow = {
   status: string | null;
   expires_at: string | null;
   created_at: string;
-  contact_revealed?: boolean | null;
   reveal_email?: boolean | null;
   reveal_phone?: boolean | null;
 };

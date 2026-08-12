@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
+import { createClient } from "@supabase/supabase-js";
 import { requireAdminUser } from "@/lib/admin/requireAdmin";
 import { parseMediaAsset } from "@/lib/images";
 import { slugify } from "@/lib/slugify";
 import {
   buildStorageKey,
-  processCarouselLogoUpload,
   processImageUpload,
   processVideoUpload,
   validateImageUpload,
@@ -15,6 +16,11 @@ import { deleteFromR2, getR2ObjectKeyFromUrl, isR2Configured, uploadToR2 } from 
 import { getSupabaseServer } from "@/lib/supabase/server";
 import type { MediaAsset } from "@/types/images";
 
+type UploadFormData = {
+  get(name: string): FormDataEntryValue | null;
+  getAll(name: string): FormDataEntryValue[];
+};
+
 async function requireUser() {
   const supabase = await getSupabaseServer();
   const {
@@ -22,11 +28,48 @@ async function requireUser() {
     error,
   } = await supabase.auth.getUser();
 
-  if (error || !user) {
+  if (!error && user) {
+    return { supabase, user };
+  }
+
+  const authorization = await headersSafeAuthorization();
+  if (!authorization) {
     return { supabase, user: null };
   }
 
-  return { supabase, user };
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anonKey) {
+    return { supabase, user: null };
+  }
+
+  const bearerClient = createClient(url, anonKey, {
+    global: {
+      headers: {
+        Authorization: authorization,
+      },
+    },
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
+
+  const {
+    data: { user: bearerUser },
+  } = await bearerClient.auth.getUser();
+
+  return { supabase: bearerClient, user: bearerUser ?? null };
+}
+
+async function headersSafeAuthorization() {
+  try {
+    const requestHeaders = await headers();
+    const authorization = requestHeaders.get("authorization");
+    return authorization?.startsWith("Bearer ") ? authorization : null;
+  } catch {
+    return null;
+  }
 }
 
 async function requireVendor() {
@@ -42,7 +85,7 @@ async function requireVendor() {
 
   const { data: vendor, error: vendorError } = await supabase
     .from("vendors")
-    .select("id, slug, business_name, logo_url, carousel_logo_url, hero_image, thumbnail_image, gallery_images")
+    .select("id, slug, business_name, logo_url, hero_image, thumbnail_image, gallery_images")
     .eq("owner_id", user.id)
     .maybeSingle();
 
@@ -109,7 +152,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const formData = await request.formData();
+  const formData = (await request.formData()) as unknown as UploadFormData;
   const target = String(formData.get("target") ?? "").trim();
 
   if (!target) {
@@ -170,14 +213,12 @@ export async function POST(request: Request) {
       }
 
       const processed = await processImageUpload(file);
-      const processedCarouselLogo = await processCarouselLogoUpload(file);
       const vendorFolder = slugify(vendor.business_name || vendor.slug || vendor.id);
       const asset = await uploadProcessedAsset(["vendors", vendorFolder, "logo"], processed);
-      const carouselAsset = await uploadProcessedAsset(["vendors", vendorFolder, "carousel-logo"], processedCarouselLogo);
 
       const { error: updateError } = await supabase
         .from("vendors")
-        .update({ logo_url: asset.url, carousel_logo_url: carouselAsset.url })
+        .update({ logo_url: asset.url })
         .eq("id", vendor.id);
 
       if (updateError) {
@@ -185,7 +226,6 @@ export async function POST(request: Request) {
       }
 
       await replaceOldUrl(vendor.logo_url);
-      await replaceOldUrl(vendor.carousel_logo_url);
 
       revalidatePath("/vendor/profile");
       revalidatePath(`/vendors/${vendor.slug}`);

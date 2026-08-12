@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "db:start": "supabase start",
     "dev": "next dev",
     "build": "next build",
+    "prestart": "npm run db:start",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",

@@ -30,6 +30,15 @@ export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
 
+  // Node configuration files use CommonJS globals even though the app itself is ESM.
+  {
+    files: ["**/*.cjs"],
+    languageOptions: {
+      sourceType: "commonjs",
+      globals: { ...globals.node, ...globals.commonjs }
+    }
+  },
+
   // App ruleset for JS/TS + React + Next + a11y
   {
     files: ["**/*.{js,jsx,ts,tsx}"],

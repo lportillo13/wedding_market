@@ -4,28 +4,44 @@ import { parseMediaAsset } from "@/lib/images";
 
 // Public (anon) Supabase client – no cookies needed for public search
 function supabasePublic() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anonKey) return null;
   return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    url,
+    anonKey,
   );
+}
+
+function positiveInteger(value: string | null, fallback: number, maximum: number) {
+  const parsed = Number.parseInt(value ?? "", 10);
+  return Number.isFinite(parsed) && parsed > 0 ? Math.min(parsed, maximum) : fallback;
+}
+
+function postgrestQuoted(value: string) {
+  return `"${value.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
 }
 
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const q = searchParams.get("q")?.trim();
-    const category = searchParams.get("category")?.trim();
-    const page = Number(searchParams.get("page") || 1);
-    const pageSize = Math.min(Number(searchParams.get("pageSize") || 12), 50);
+    const q = searchParams.get("q")?.trim().slice(0, 100);
+    const category = searchParams.get("category")?.trim().slice(0, 100);
+    const page = positiveInteger(searchParams.get("page"), 1, 10_000);
+    const pageSize = positiveInteger(searchParams.get("pageSize"), 12, 50);
     const from = (page - 1) * pageSize;
     const to = from + pageSize - 1;
 
     const supabase = supabasePublic();
+    if (!supabase) {
+      return NextResponse.json({ items: [], total: 0, error: "Vendor search is not configured." }, { status: 503 });
+    }
     let query = supabase.from("vendor_public_search").select("*", { count: "exact" });
 
     if (q) {
+      const pattern = postgrestQuoted(`%${q}%`);
       query = query.or(
-        `slug.ilike.%${q}%,business_name.ilike.%${q}%,bio_en.ilike.%${q}%,bio_es.ilike.%${q}%,extra_info_en.ilike.%${q}%,extra_info_es.ilike.%${q}%`
+        `slug.ilike.${pattern},business_name.ilike.${pattern},bio_en.ilike.${pattern},bio_es.ilike.${pattern},extra_info_en.ilike.${pattern},extra_info_es.ilike.${pattern}`,
       );
     }
     if (category) {
@@ -45,12 +61,12 @@ export async function GET(req: Request) {
 
     const vendorRows = data ?? [];
     const vendorIds = vendorRows.flatMap((row) => (typeof row.id === "string" ? [row.id] : []));
-    let logoByVendorId = new Map<string, { logoUrl: string | null; carouselLogoUrl: string | null }>();
+    let logoByVendorId = new Map<string, { logoUrl: string | null }>();
 
     if (vendorIds.length > 0) {
       const { data: logoRows } = await supabase
         .from("vendors")
-        .select("id, logo_url, carousel_logo_url")
+        .select("id, logo_url")
         .in("id", vendorIds);
 
       logoByVendorId = new Map(
@@ -64,10 +80,6 @@ export async function GET(req: Request) {
             id,
             {
               logoUrl: typeof row.logo_url === "string" && row.logo_url.trim() ? row.logo_url : null,
-              carouselLogoUrl:
-                typeof row.carousel_logo_url === "string" && row.carousel_logo_url.trim()
-                  ? row.carousel_logo_url
-                  : null,
             },
           ]];
         }),
@@ -77,11 +89,9 @@ export async function GET(req: Request) {
     const items = vendorRows.map((row) => {
       const logoAssets = typeof row.id === "string" ? logoByVendorId.get(row.id) ?? null : null;
       const logoUrl = logoAssets?.logoUrl ?? null;
-      const carouselLogoUrl = logoAssets?.carouselLogoUrl ?? null;
       return {
         ...row,
         logo_url: logoUrl,
-        carousel_logo_url: carouselLogoUrl,
         logo_image: logoUrl
           ? {
               url: logoUrl,
@@ -91,6 +101,7 @@ export async function GET(req: Request) {
               format: logoUrl.toLowerCase().split(/[?#]/, 1)[0]?.endsWith(".svg") ? "svg" : "image",
             }
           : null,
+        hero_image: parseMediaAsset(row.hero_image),
         thumbnail_image: parseMediaAsset(row.thumbnail_image),
       };
     });

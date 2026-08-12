@@ -72,9 +72,7 @@ export default function VendorRfqsView({ hasVendorProfile, items, vendorId, vend
               rfq?.accepted_quote_id &&
                 quotesForRfq.some((quote) => quote.id === rfq.accepted_quote_id)
             );
-            const inviteRevealed =
-              invite.contact_revealed ?? (invite.status?.toLowerCase() === "accepted" ? true : undefined);
-            const contactRevealed = Boolean(inviteRevealed) || hasAcceptedQuote;
+            const contactRevealed = hasAcceptedQuote;
             const revealEmail = invite.reveal_email ?? contactRevealed;
             const revealPhone = invite.reveal_phone ?? contactRevealed;
             const statusKey = resolveStatus(invite.status, hasAcceptedQuote, Boolean(latestQuote));

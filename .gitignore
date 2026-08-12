@@ -1,6 +1,7 @@
 # Env
 .env*
 !.env.local.example
+!mobile/.env.example
 
 # Node
 node_modules/
@@ -20,6 +21,7 @@ out/
 .env.*.local
 
 # Tooling & misc
+.expo/
 dist/
 dist-tests/
 coverage/
@@ -30,3 +32,10 @@ Thumbs.db
 *.tmp
 .vscode/
 .idea/
+
+# Local reference and database export artifacts
+/.tmp-video-frames/
+/20260605-1554-42.7312306.mp4
+/supabase-local-data.sql
+/supabase-local-dump.sql
+/supabase-public-data.sql

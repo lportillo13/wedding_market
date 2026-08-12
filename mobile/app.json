@@ -4,14 +4,14 @@
     "slug": "the-wedding-market",
     "version": "0.1.0",
     "orientation": "portrait",
-    "icon": "../public/icon-512.png",
+    "icon": "./assets/icon-512.png",
     "userInterfaceStyle": "light",
     "scheme": "theweddingmarket",
     "plugins": [
       [
         "expo-notifications",
         {
-          "icon": "../public/icon-192.png",
+          "icon": "./assets/icon-192.png",
           "color": "#1D7A72"
         }
       ],
@@ -22,7 +22,16 @@
         }
       ],
       "expo-font",
-      "expo-status-bar"
+      "expo-status-bar",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/icon-512.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#F8F8F6"
+        }
+      ]
     ],
     "assetBundlePatterns": [
       "**/*"
@@ -35,14 +44,14 @@
       "package": "com.theweddingmarket.app",
       "versionCode": 1,
       "permissions": [
-        "INTERNET",
-        "POST_NOTIFICATIONS"
+        "android.permission.INTERNET",
+        "android.permission.POST_NOTIFICATIONS"
       ],
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO"
       ],
       "adaptiveIcon": {
-        "foregroundImage": "../public/icon-512.png",
+        "foregroundImage": "./assets/icon-512.png",
         "backgroundColor": "#F8F8F6"
       }
     },
@@ -50,7 +59,10 @@
       "bundler": "metro"
     },
     "extra": {
-      "appName": "The Wedding Market"
+      "appName": "The Wedding Market",
+      "eas": {
+        "projectId": "ed313d2c-f5d1-42b7-bf2f-eb71bb496b4e"
+      }
     }
   }
 }

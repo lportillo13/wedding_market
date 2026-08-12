@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1320" role="img" aria-labelledby="title desc">
+  <title id="title">The Wedding Market logo preview</title>
+  <desc id="desc">Preview sheet showing horizontal and vertical light and dark logo variants.</desc>
+  <rect width="1600" height="1320" fill="#f5f5f3"/>
+  <text x="88" y="112" fill="#09090f" font-family="Georgia, 'Times New Roman', serif" font-size="56" font-weight="400">The Wedding Market</text>
+  <text x="88" y="160" fill="#7d6018" font-family="Arial, sans-serif" font-size="24" font-weight="700">Logo system: horizontal, vertical, light, dark</text>
+  <g transform="translate(88 220)">
+    <rect width="668" height="300" fill="#ffffff"/>
+    <text x="32" y="48" fill="#b8922a" font-family="Arial, sans-serif" font-size="20" font-weight="700">HORIZONTAL LIGHT</text>
+    <g transform="translate(28 72) scale(.51)">
+      <g transform="translate(72 54)">
+        <text x="104" y="62" fill="#b8922a" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" letter-spacing="0" text-anchor="middle">THE</text>
+        <text x="0" y="205" fill="#09090f" font-family="Georgia, 'Times New Roman', serif" font-size="180" font-weight="400" letter-spacing="0">W</text>
+        <text x="135" y="205" fill="#09090f" font-family="Georgia, 'Times New Roman', serif" font-size="174" font-style="italic" font-weight="400" letter-spacing="0">M</text>
+        <path d="M210 24 C188 86 163 147 138 224" fill="none" stroke="#b8922a" stroke-width="5" stroke-linecap="round"/>
+        <path d="M18 225 H276" fill="none" stroke="#09090f" stroke-width="3" stroke-linecap="round"/>
+      </g>
+      <g transform="translate(410 91)">
+        <text x="0" y="68" fill="#09090f" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="400" letter-spacing="0">THE</text>
+        <text x="0" y="141" fill="#09090f" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="400" letter-spacing="0">WEDDING</text>
+        <text x="0" y="214" fill="#09090f" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="400" letter-spacing="0">MARKET</text>
+        <path d="M392 35 H720" fill="none" stroke="#b8922a" stroke-width="4" stroke-linecap="round"/>
+        <path d="M392 178 H720" fill="none" stroke="#b8922a" stroke-width="4" stroke-linecap="round"/>
+      </g>
+    </g>
+  </g>
+  <g transform="translate(844 220)">
+    <rect width="668" height="300" fill="#09090f"/>
+    <text x="32" y="48" fill="#b8922a" font-family="Arial, sans-serif" font-size="20" font-weight="700">HORIZONTAL DARK</text>
+    <g transform="translate(28 72) scale(.51)">
+      <g transform="translate(72 54)">
+        <text x="104" y="62" fill="#b8922a" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" letter-spacing="0" text-anchor="middle">THE</text>
+        <text x="0" y="205" fill="#ffffff" font-family="Georgia, 'Times New Roman', serif" font-size="180" font-weight="400" letter-spacing="0">W</text>
+        <text x="135" y="205" fill="#ffffff" font-family="Georgia, 'Times New Roman', serif" font-size="174" font-style="italic" font-weight="400" letter-spacing="0">M</text>
+        <path d="M210 24 C188 86 163 147 138 224" fill="none" stroke="#b8922a" stroke-width="5" stroke-linecap="round"/>
+        <path d="M18 225 H276" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+      </g>
+      <g transform="translate(410 91)">
+        <text x="0" y="68" fill="#ffffff" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="400" letter-spacing="0">THE</text>
+        <text x="0" y="141" fill="#ffffff" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="400" letter-spacing="0">WEDDING</text>
+        <text x="0" y="214" fill="#ffffff" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="400" letter-spacing="0">MARKET</text>
+        <path d="M392 35 H720" fill="none" stroke="#b8922a" stroke-width="4" stroke-linecap="round"/>
+        <path d="M392 178 H720" fill="none" stroke="#b8922a" stroke-width="4" stroke-linecap="round"/>
+      </g>
+    </g>
+  </g>
+  <g transform="translate(88 620)">
+    <rect width="668" height="612" fill="#ffffff"/>
+    <text x="32" y="48" fill="#b8922a" font-family="Arial, sans-serif" font-size="20" font-weight="700">VERTICAL LIGHT</text>
+    <g transform="translate(78 66) scale(.6)">
+      <g transform="translate(151 108)">
+        <text x="226" y="74" fill="#b8922a" font-family="Georgia, 'Times New Roman', serif" font-size="44" font-weight="700" letter-spacing="0" text-anchor="middle">THE</text>
+        <text x="0" y="330" fill="#09090f" font-family="Georgia, 'Times New Roman', serif" font-size="286" font-weight="400" letter-spacing="0">W</text>
+        <text x="214" y="330" fill="#09090f" font-family="Georgia, 'Times New Roman', serif" font-size="276" font-style="italic" font-weight="400" letter-spacing="0">M</text>
+        <path d="M344 34 C310 134 272 233 232 355" fill="none" stroke="#b8922a" stroke-width="8" stroke-linecap="round"/>
+        <path d="M34 364 H426" fill="none" stroke="#09090f" stroke-width="4" stroke-linecap="round"/>
+      </g>
+      <g transform="translate(0 548)">
+        <text x="380" y="73" fill="#09090f" font-family="Georgia, 'Times New Roman', serif" font-size="74" font-weight="400" letter-spacing="0" text-anchor="middle">THE</text>
+        <text x="380" y="157" fill="#09090f" font-family="Georgia, 'Times New Roman', serif" font-size="74" font-weight="400" letter-spacing="0" text-anchor="middle">WEDDING</text>
+        <text x="380" y="241" fill="#09090f" font-family="Georgia, 'Times New Roman', serif" font-size="74" font-weight="400" letter-spacing="0" text-anchor="middle">MARKET</text>
+        <path d="M188 275 H572" fill="none" stroke="#b8922a" stroke-width="5" stroke-linecap="round"/>
+      </g>
+    </g>
+  </g>
+  <g transform="translate(844 620)">
+    <rect width="668" height="612" fill="#09090f"/>
+    <text x="32" y="48" fill="#b8922a" font-family="Arial, sans-serif" font-size="20" font-weight="700">VERTICAL DARK</text>
+    <g transform="translate(78 66) scale(.6)">
+      <g transform="translate(151 108)">
+        <text x="226" y="74" fill="#b8922a" font-family="Georgia, 'Times New Roman', serif" font-size="44" font-weight="700" letter-spacing="0" text-anchor="middle">THE</text>
+        <text x="0" y="330" fill="#ffffff" font-family="Georgia, 'Times New Roman', serif" font-size="286" font-weight="400" letter-spacing="0">W</text>
+        <text x="214" y="330" fill="#ffffff" font-family="Georgia, 'Times New Roman', serif" font-size="276" font-style="italic" font-weight="400" letter-spacing="0">M</text>
+        <path d="M344 34 C310 134 272 233 232 355" fill="none" stroke="#b8922a" stroke-width="8" stroke-linecap="round"/>
+        <path d="M34 364 H426" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+      </g>
+      <g transform="translate(0 548)">
+        <text x="380" y="73" fill="#ffffff" font-family="Georgia, 'Times New Roman', serif" font-size="74" font-weight="400" letter-spacing="0" text-anchor="middle">THE</text>
+        <text x="380" y="157" fill="#ffffff" font-family="Georgia, 'Times New Roman', serif" font-size="74" font-weight="400" letter-spacing="0" text-anchor="middle">WEDDING</text>
+        <text x="380" y="241" fill="#ffffff" font-family="Georgia, 'Times New Roman', serif" font-size="74" font-weight="400" letter-spacing="0" text-anchor="middle">MARKET</text>
+        <path d="M188 275 H572" fill="none" stroke="#b8922a" stroke-width="5" stroke-linecap="round"/>
+      </g>
+    </g>
+  </g>
+</svg>

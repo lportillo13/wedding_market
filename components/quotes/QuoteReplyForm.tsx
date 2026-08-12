@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import type { QuoteReplyState } from "@/app/quote-replies/actions";
 
 type QuoteReplyFormProps = {
@@ -27,6 +27,7 @@ export default function QuoteReplyForm({
   const [state, formAction, pending] = useActionState<QuoteReplyState, FormData>(action, { ok: false });
   const formRef = useRef<HTMLFormElement>(null);
   const previousOk = useRef(state.ok);
+  const [characterCount, setCharacterCount] = useState(0);
 
   useEffect(() => {
     if (state.ok && !previousOk.current) {
@@ -36,7 +37,7 @@ export default function QuoteReplyForm({
   }, [state.ok]);
 
   return (
-    <form ref={formRef} action={formAction} className="mt-3">
+    <form ref={formRef} action={formAction} className="mt-3" onReset={() => setCharacterCount(0)}>
       <input type="hidden" name="quote_id" value={quoteId} />
       <input type="hidden" name="rfq_id" value={rfqId} />
       <input type="hidden" name="vendor_id" value={vendorId} />
@@ -45,9 +46,12 @@ export default function QuoteReplyForm({
           className="form-control"
           name="body"
           rows={3}
+          maxLength={2000}
           placeholder={placeholder}
+          onChange={(event) => setCharacterCount(event.currentTarget.value.length)}
           required
         />
+        <div className="form-text text-end">{characterCount}/2000</div>
       </div>
       <div className="d-flex gap-2 align-items-center">
         <button className="btn btn-outline-primary btn-sm" disabled={pending}>

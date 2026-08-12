@@ -1,17 +1,15 @@
-import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { createThreadReplyNotification } from "@/lib/notifications";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createAuthenticatedRequestClient } from "@/lib/supabase/request";
 import { verifyClientQuoteReplyAccess, verifyVendorQuoteReplyAccess } from "@/lib/quote-messages";
 
 const payloadSchema = z.object({
   quoteId: z.string().uuid(),
   rfqId: z.string().uuid(),
   vendorId: z.string().uuid(),
-  body: z.string().trim().min(1),
+  body: z.string().trim().min(1).max(2000),
   senderRole: z.enum(["client", "vendor"]),
 });
 
@@ -20,7 +18,7 @@ function isMissingThreadColumnsError(message: string | undefined) {
 }
 
 export async function POST(request: Request) {
-  const supabase = await createRequestSupabaseClient();
+  const supabase = await createAuthenticatedRequestClient(request);
   const supabaseAdmin = createSupabaseAdminClient();
   const {
     data: { user },
@@ -45,8 +43,8 @@ export async function POST(request: Request) {
   const input = parsed.data;
   const access =
     input.senderRole === "vendor"
-      ? await verifyVendorQuoteReplyAccess(input.quoteId, input.rfqId, input.vendorId, user.id)
-      : await verifyClientQuoteReplyAccess(input.quoteId, input.rfqId, input.vendorId, user.id);
+      ? await verifyVendorQuoteReplyAccess(input.quoteId, input.rfqId, input.vendorId, user.id, supabase)
+      : await verifyClientQuoteReplyAccess(input.quoteId, input.rfqId, input.vendorId, user.id, supabase);
 
   if (!access.allowed) {
     return NextResponse.json(
@@ -151,44 +149,4 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ ok: true });
-}
-
-async function createRequestSupabaseClient() {
-  const cookieClient = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await cookieClient.auth.getUser();
-
-  if (user) {
-    return cookieClient;
-  }
-
-  const authorization = await readBearerAuthorization();
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!authorization || !url || !anonKey) {
-    return cookieClient;
-  }
-
-  return createClient(url, anonKey, {
-    global: {
-      headers: {
-        Authorization: authorization,
-      },
-    },
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  });
-}
-
-async function readBearerAuthorization() {
-  try {
-    const requestHeaders = await headers();
-    const authorization = requestHeaders.get("authorization");
-    return authorization?.startsWith("Bearer ") ? authorization : null;
-  } catch {
-    return null;
-  }
 }

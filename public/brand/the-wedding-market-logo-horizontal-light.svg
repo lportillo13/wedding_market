@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">The Wedding Market horizontal logo, light</title>
+  <desc id="desc">A letter-only horizontal logo for The Wedding Market using black, white, and gold.</desc>
+  <rect width="1200" height="360" fill="#ffffff"/>
+  <g transform="translate(72 54)">
+    <text x="104" y="62" fill="#b8922a" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" letter-spacing="0" text-anchor="middle">THE</text>
+    <text x="0" y="205" fill="#09090f" font-family="Georgia, 'Times New Roman', serif" font-size="180" font-weight="400" letter-spacing="0">W</text>
+    <text x="135" y="205" fill="#09090f" font-family="Georgia, 'Times New Roman', serif" font-size="174" font-style="italic" font-weight="400" letter-spacing="0">M</text>
+    <path d="M210 24 C188 86 163 147 138 224" fill="none" stroke="#b8922a" stroke-width="5" stroke-linecap="round"/>
+    <path d="M18 225 H276" fill="none" stroke="#09090f" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(410 91)">
+    <text x="0" y="68" fill="#09090f" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="400" letter-spacing="0">THE</text>
+    <text x="0" y="141" fill="#09090f" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="400" letter-spacing="0">WEDDING</text>
+    <text x="0" y="214" fill="#09090f" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="400" letter-spacing="0">MARKET</text>
+    <path d="M392 35 H720" fill="none" stroke="#b8922a" stroke-width="4" stroke-linecap="round"/>
+    <path d="M392 178 H720" fill="none" stroke="#b8922a" stroke-width="4" stroke-linecap="round"/>
+  </g>
+</svg>

@@ -11,6 +11,23 @@ export type CreateRfqState = { ok: boolean; message?: string };
 
 const MAX_INVITES = 10;
 const QUOTE_EXPIRES_DAYS = 14;
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function trimmedFormValue(formData: FormData, key: string) {
+  return formData.get(key)?.toString().trim() ?? "";
+}
+
+function optionalNonNegativeInteger(value: string) {
+  if (!value) return null;
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed >= 0 ? parsed : Number.NaN;
+}
+
+function validDateOnly(value: string) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+}
 
 export async function createRfqAndInvites(_: CreateRfqState, formData: FormData): Promise<CreateRfqState> {
   const { dictionary } = await getRequestI18n();
@@ -25,29 +42,53 @@ export async function createRfqAndInvites(_: CreateRfqState, formData: FormData)
     return { ok: false, message: labels.loginRequired };
   }
 
-  let vendorIds: string[] = [];
+  let parsedVendorIds: unknown;
   try {
-    vendorIds = JSON.parse((formData.get("vendor_ids_json") as string) || "[]");
+    parsedVendorIds = JSON.parse(trimmedFormValue(formData, "vendor_ids_json") || "[]");
   } catch {
     return { ok: false, message: labels.invalidVendorList };
   }
 
-  vendorIds = Array.from(new Set(vendorIds)).slice(0, MAX_INVITES);
+  if (!Array.isArray(parsedVendorIds) || parsedVendorIds.some((vendorId) => typeof vendorId !== "string" || !UUID_PATTERN.test(vendorId))) {
+    return { ok: false, message: labels.invalidVendorList };
+  }
+
+  const vendorIds = Array.from(new Set(parsedVendorIds));
   if (!vendorIds.length) {
     return { ok: false, message: labels.emptyShortlist };
   }
+  if (vendorIds.length > MAX_INVITES) {
+    return { ok: false, message: labels.invalidVendorList };
+  }
+
+  const eventDate = trimmedFormValue(formData, "event_date");
+  const guestCount = optionalNonNegativeInteger(trimmedFormValue(formData, "guest_count"));
+  const budgetMin = optionalNonNegativeInteger(trimmedFormValue(formData, "budget_min"));
+  const budgetMax = optionalNonNegativeInteger(trimmedFormValue(formData, "budget_max"));
+  const notes = trimmedFormValue(formData, "notes");
+
+  if (
+    (eventDate && !validDateOnly(eventDate)) ||
+    (guestCount !== null && (!Number.isFinite(guestCount) || guestCount < 1)) ||
+    (budgetMin !== null && !Number.isFinite(budgetMin)) ||
+    (budgetMax !== null && !Number.isFinite(budgetMax)) ||
+    (budgetMin !== null && budgetMax !== null && budgetMin > budgetMax) ||
+    notes.length > 2000
+  ) {
+    return { ok: false, message: labels.submitFailed };
+  }
 
   const basePayload = {
-    event_date: formData.get("event_date") || null,
-    guest_count: Number(formData.get("guest_count") || 0) || null,
-    budget_min: Number(formData.get("budget_min") || 0) || null,
-    budget_max: Number(formData.get("budget_max") || 0) || null,
-    city: formData.get("city") || null,
-    state: formData.get("state") || null,
-    country: formData.get("country") || null,
-    language: formData.get("language") || "en",
-    theme: formData.get("theme") || null,
-    notes: formData.get("notes") || null,
+    event_date: eventDate || null,
+    guest_count: guestCount,
+    budget_min: budgetMin,
+    budget_max: budgetMax,
+    city: trimmedFormValue(formData, "city") || null,
+    state: trimmedFormValue(formData, "state") || null,
+    country: trimmedFormValue(formData, "country") || null,
+    language: trimmedFormValue(formData, "language") || "en",
+    theme: trimmedFormValue(formData, "theme") || null,
+    notes: notes || null,
   } satisfies Record<string, unknown>;
 
   const supabaseAdmin = createSupabaseAdminClient();
@@ -112,6 +153,7 @@ export async function createRfqAndInvites(_: CreateRfqState, formData: FormData)
       );
     }
     console.error("Failed to create RFQ invites", inviteErr);
+    await dbClient.from("rfqs").delete().eq("id", rfq.id);
     return { ok: false, message: labels.inviteFailed };
   }
 

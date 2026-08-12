@@ -1,4 +1,5 @@
 import { mobileConfig } from "./config";
+import { requestJson } from "./http";
 import { supabase } from "./supabase";
 
 export type VendorEditorTab =
@@ -337,19 +338,13 @@ export async function uploadVendorMedia(target: string, file: { uri: string; nam
   const field = target === "vendor-gallery" || target === "vendor-video" ? "files" : "file";
   payload.append(field, file as unknown as Blob);
 
-  const response = await fetch(`${mobileConfig.webApiUrl}/api/uploads`, {
+  return requestJson<unknown>(`${mobileConfig.webApiUrl}/api/uploads`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${session.access_token}`,
     },
     body: payload,
-  });
-
-  const json = await response.json();
-  if (!response.ok) {
-    throw new Error(json.error ?? "Upload failed.");
-  }
-  return json;
+  }, 45_000);
 }
 
 export function uploadedAssetUrl(result: unknown) {

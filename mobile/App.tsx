@@ -1,8 +1,9 @@
-﻿import { useEffect, useMemo, useRef, useState } from "react";
+﻿import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
   Animated,
+  BackHandler,
   Image,
   type LayoutChangeEvent,
   Modal,
@@ -19,18 +20,16 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import * as ImagePicker from "expo-image-picker";
 import { useFonts } from "expo-font";
-import {
-  PlayfairDisplay_400Regular,
-  PlayfairDisplay_500Medium,
-  PlayfairDisplay_700Bold,
-  PlayfairDisplay_900Black,
-} from "@expo-google-fonts/playfair-display";
+import { PlayfairDisplay_400Regular } from "@expo-google-fonts/playfair-display/400Regular";
+import { PlayfairDisplay_500Medium } from "@expo-google-fonts/playfair-display/500Medium";
+import { PlayfairDisplay_700Bold } from "@expo-google-fonts/playfair-display/700Bold";
+import { PlayfairDisplay_900Black } from "@expo-google-fonts/playfair-display/900Black";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { supabase } from "./src/lib/supabase";
-import { mobileConfig } from "./src/lib/config";
+import { getMobileConfigErrors } from "./src/lib/config";
 import {
   type AppRole,
   type AuthProfile,
@@ -41,14 +40,19 @@ import {
 } from "./src/lib/auth";
 import { fetchVendorDetail, fetchVendors, type VendorDetail, type VendorListItem } from "./src/lib/api";
 import {
-  createQuoteRequest,
+  acceptMobileQuote,
+  createQuoteRequests,
   loadMobileInbox,
   sendQuoteThreadReply,
+  sendVendorQuote,
   type MobileInboxThread,
   type QuoteRequestInput,
 } from "./src/lib/rfqs";
+import { isQuoteThreadClosed } from "./src/lib/quoteUtils";
 import { getShortlist, toggleShortlist } from "./src/lib/shortlist";
 import { addNotificationTapListener, registerForPushNotifications, unregisterPushNotifications } from "./src/lib/pushNotifications";
+import { externalMapUrl, publicWebUrl, vendorShareUrl } from "./src/lib/urls";
+import { mergeUniqueById } from "./src/lib/search";
 import {
   loadVendorEditorData,
   localizedText,
@@ -472,6 +476,24 @@ const copy = {
     requestSent: "Request sent. You can track the conversation in your inbox.",
     reply: "Reply",
     sendReply: "Send Reply",
+    sendQuote: "Send quote",
+    updateQuote: "Update quote",
+    quoteAmount: "Quote amount (USD)",
+    quoteDetails: "Proposal details",
+    quoteSent: "Quote sent.",
+    acceptQuote: "Accept quote",
+    acceptingQuote: "Accepting...",
+    quoteAccepted: "Quote accepted",
+    shareEmail: "Share my email with this vendor",
+    sharePhone: "Share my phone with this vendor",
+    proposalSent: "Proposal sent",
+    proposalUpdated: "Proposal updated",
+    noConversation: "No messages yet.",
+    contactDetails: "Shared contact details",
+    noContactShared: "The client did not share email or phone.",
+    refresh: "Refresh",
+    conversationClosed: "This conversation is closed because another quote was selected or the request expired.",
+    you: "You",
     noQuoteYet: "No quote yet. The vendor will reply here after reviewing the request.",
     authTitle: "Sign in to your platform workspace.",
     email: "Email",
@@ -530,7 +552,11 @@ const copy = {
     all: "All",
     list: "List",
     map: "Map",
+    mapPreview: "Map preview",
+    openInMaps: "Open in Maps",
     loadingVendors: "Loading vendors",
+    loadMore: "Load more",
+    loadingMore: "Loading more",
     tryAgain: "Try Again",
     noVendorsFound: "No vendors found.",
     noVendorsHint: "Try a broader search term or clear the search field.",
@@ -547,7 +573,7 @@ const copy = {
     noSavedVendorsHint: "Tap the heart on any vendor to add it here.",
     trustedVendors: "Trusted vendors",
     exploreMarketplace: "Explore the marketplace",
-    quoteBatchHint: "One form will be sent to every saved vendor.",
+    quoteBatchHint: "One shared request goes to every selected vendor. Each reply stays in its own private conversation.",
     firstName: "First name",
     lastName: "Last name",
     phone: "Phone",
@@ -571,6 +597,8 @@ const copy = {
     saving: "Saving...",
     saveChanges: "Save changes",
     accountControls: "Account controls",
+    privacyPolicy: "Privacy policy",
+    termsOfService: "Terms of service",
     deleteAccount: "Delete account",
     deleteAccountHelp: "Request deletion of your Wedding Market account and associated data.",
     saved: "Saved.",
@@ -742,6 +770,24 @@ const copy = {
     requestSent: "Solicitud enviada. Puedes seguir la conversación en mensajes.",
     reply: "Responder",
     sendReply: "Enviar respuesta",
+    sendQuote: "Enviar cotización",
+    updateQuote: "Actualizar cotización",
+    quoteAmount: "Monto de la cotización (USD)",
+    quoteDetails: "Detalles de la propuesta",
+    quoteSent: "Cotización enviada.",
+    acceptQuote: "Aceptar cotización",
+    acceptingQuote: "Aceptando...",
+    quoteAccepted: "Cotización aceptada",
+    shareEmail: "Compartir mi correo con este proveedor",
+    sharePhone: "Compartir mi teléfono con este proveedor",
+    proposalSent: "Propuesta enviada",
+    proposalUpdated: "Propuesta actualizada",
+    noConversation: "Todavía no hay mensajes.",
+    contactDetails: "Datos de contacto compartidos",
+    noContactShared: "El cliente no compartió correo ni teléfono.",
+    refresh: "Actualizar",
+    conversationClosed: "Esta conversación está cerrada porque se eligió otra cotización o venció la solicitud.",
+    you: "Tú",
     noQuoteYet: "Aún no hay cotización. El proveedor responderá aquí después de revisar la solicitud.",
     authTitle: "Inicia sesión en tu espacio de trabajo.",
     email: "Correo electrónico",
@@ -800,7 +846,11 @@ const copy = {
     all: "Todos",
     list: "Lista",
     map: "Mapa",
+    mapPreview: "Vista previa del mapa",
+    openInMaps: "Abrir en Mapas",
     loadingVendors: "Cargando proveedores",
+    loadMore: "Cargar más",
+    loadingMore: "Cargando más",
     tryAgain: "Intentar de nuevo",
     noVendorsFound: "No se encontraron proveedores.",
     noVendorsHint: "Prueba una búsqueda más amplia o limpia el campo.",
@@ -817,7 +867,7 @@ const copy = {
     noSavedVendorsHint: "Toca el corazón en cualquier proveedor para agregarlo aquí.",
     trustedVendors: "Proveedores confiables",
     exploreMarketplace: "Explora el mercado",
-    quoteBatchHint: "Un formulario se enviará a cada proveedor guardado.",
+    quoteBatchHint: "Una solicitud compartida se envía a cada proveedor seleccionado. Cada respuesta queda en su conversación privada.",
     firstName: "Nombre",
     lastName: "Apellido",
     phone: "Teléfono",
@@ -841,6 +891,8 @@ const copy = {
     saving: "Guardando...",
     saveChanges: "Guardar cambios",
     accountControls: "Controles de cuenta",
+    privacyPolicy: "Política de privacidad",
+    termsOfService: "Términos de servicio",
     deleteAccount: "Eliminar cuenta",
     deleteAccountHelp: "Solicita la eliminacion de tu cuenta de Wedding Market y los datos asociados.",
     saved: "Guardado.",
@@ -1027,13 +1079,8 @@ function roleTabs(role: AppRole) {
   return clientTabs;
 }
 
-function publicWebUrl() {
-  const rawUrl = (mobileConfig.webUrl || mobileConfig.webApiUrl || "https://theweddingmarket.com").trim();
-  return rawUrl.replace(/\/+$/, "");
-}
-
 function openPublicWebPath(path: string) {
-  return Linking.openURL(`${publicWebUrl()}${path}`);
+  return Linking.openURL(publicWebUrl(path));
 }
 
 function AuthScreen({
@@ -1833,7 +1880,10 @@ function SearchMapResults({
 
   return (
     <View style={styles.mapResults}>
-      <View style={styles.mapCanvas}>
+      <View
+        accessibilityLabel={`${labels.mapPreview}: ${displayVendors.length} ${labels.vendorsFound}`}
+        style={styles.mapCanvas}
+      >
         <View style={[styles.mapGridLine, styles.mapGridLineVerticalOne]} />
         <View style={[styles.mapGridLine, styles.mapGridLineVerticalTwo]} />
         <View style={[styles.mapGridLine, styles.mapGridLineHorizontalOne]} />
@@ -1845,6 +1895,8 @@ function SearchMapResults({
 
           return (
             <TouchableOpacity
+              accessibilityLabel={vendor.business_name}
+              accessibilityRole="button"
               key={vendor.id}
               onPress={() => onOpenVendor(vendor)}
               style={[styles.mapMarker, { left: `${x}%`, top: `${y}%` }]}
@@ -1859,16 +1911,38 @@ function SearchMapResults({
         {displayVendors.slice(0, 8).map((vendor) => {
           const location = vendorLocationLabel(vendor) || labels.availableByRequest;
           return (
-            <TouchableOpacity key={vendor.id} onPress={() => onOpenVendor(vendor)} style={styles.mapVendorRow}>
-              <View style={styles.mapVendorPin}>
-                <Ionicons name="location-outline" size={16} color={colors.tealDark} />
-              </View>
-              <View style={styles.mapVendorCopy}>
-                <Text numberOfLines={1} style={styles.mapVendorName}>{vendor.business_name}</Text>
-                <Text numberOfLines={1} style={styles.mapVendorLocation}>{location}</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={16} color={colors.muted} />
-            </TouchableOpacity>
+            <View key={vendor.id} style={styles.mapVendorRow}>
+              <TouchableOpacity
+                accessibilityLabel={vendor.business_name}
+                accessibilityRole="button"
+                onPress={() => onOpenVendor(vendor)}
+                style={styles.mapVendorMain}
+              >
+                <View style={styles.mapVendorPin}>
+                  <Ionicons name="location-outline" size={16} color={colors.tealDark} />
+                </View>
+                <View style={styles.mapVendorCopy}>
+                  <Text numberOfLines={1} style={styles.mapVendorName}>{vendor.business_name}</Text>
+                  <Text numberOfLines={1} style={styles.mapVendorLocation}>{location}</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={16} color={colors.muted} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                accessibilityLabel={`${labels.openInMaps}: ${vendor.business_name}`}
+                accessibilityRole="link"
+                onPress={() => {
+                  void Linking.openURL(externalMapUrl({
+                    businessName: vendor.business_name,
+                    lat: vendor.lat,
+                    lng: vendor.lng,
+                    location,
+                  }));
+                }}
+                style={styles.mapExternalButton}
+              >
+                <Ionicons name="navigate-outline" size={18} color={colors.tealDark} />
+              </TouchableOpacity>
+            </View>
           );
         })}
       </View>
@@ -1900,26 +1974,42 @@ function VendorSearchScreen({
   const [isSuggesting, setIsSuggesting] = useState(false);
   const [total, setTotal] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [message, setMessage] = useState("");
+  const [loadMoreMessage, setLoadMoreMessage] = useState("");
+  const [page, setPage] = useState(1);
   const [viewMode, setViewMode] = useState<SearchViewMode>("list");
+  const searchRequestId = useRef(0);
 
-  async function loadVendors(nextQuery = query, nextCategory = category) {
-    setIsLoading(true);
-    setMessage("");
+  async function loadVendors(nextQuery = query, nextCategory = category, nextPage = 1, append = false) {
+    const requestId = searchRequestId.current + 1;
+    searchRequestId.current = requestId;
+    if (append) setIsLoadingMore(true);
+    else setIsLoading(true);
+    if (append) setLoadMoreMessage("");
+    else setMessage("");
 
     try {
       const response = await fetchVendors({
         q: nextQuery.trim() || undefined,
         category: nextCategory || undefined,
-        page: 1,
+        page: nextPage,
         pageSize: 12,
       });
-      setVendors(response.items);
+      if (requestId !== searchRequestId.current) return;
+      setVendors((current) => append ? mergeUniqueById(current, response.items) : response.items);
       setTotal(response.total);
+      setPage(response.page);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Unable to load vendors.");
+      if (requestId !== searchRequestId.current) return;
+      const nextMessage = error instanceof Error ? error.message : "Unable to load vendors.";
+      if (append) setLoadMoreMessage(nextMessage);
+      else setMessage(nextMessage);
     } finally {
-      setIsLoading(false);
+      if (requestId === searchRequestId.current) {
+        if (append) setIsLoadingMore(false);
+        else setIsLoading(false);
+      }
     }
   }
 
@@ -2137,6 +2227,18 @@ function VendorSearchScreen({
               />
             ))
           )}
+          {loadMoreMessage ? <Text style={styles.errorText}>{loadMoreMessage}</Text> : null}
+          {vendors.length < total ? (
+            <TouchableOpacity
+              accessibilityRole="button"
+              disabled={isLoadingMore}
+              onPress={() => void loadVendors(query, category, page + 1, true)}
+              style={[styles.secondaryButton, isLoadingMore && styles.primaryButtonDisabled]}
+            >
+              {isLoadingMore ? <ActivityIndicator color={colors.tealDark} size="small" /> : null}
+              <Text style={styles.secondaryButtonText}>{isLoadingMore ? labels.loadingMore : labels.loadMore}</Text>
+            </TouchableOpacity>
+          ) : null}
         </View>
       )}
     </View>
@@ -2382,10 +2484,12 @@ function RequestQuoteModal({
     setStatus("");
     setIsSubmitting(true);
     try {
-      for (const targetVendor of vendors) {
-        await createQuoteRequest({ ...form, vendorId: targetVendor.id });
-      }
-      setStatus(isBatch ? (language === "en" ? `${vendors.length} requests sent. You can track the conversations in your inbox.` : `${vendors.length} solicitudes enviadas. Puedes seguir las conversaciónes en mensajes.`) : labels.requestSent);
+      await createQuoteRequests(form, vendors.map((vendor) => vendor.id));
+      setStatus(isBatch
+        ? language === "en"
+          ? `One request was sent to ${vendors.length} vendors. Each private conversation is available in your inbox.`
+          : `Se envió una solicitud a ${vendors.length} proveedores. Cada conversación privada está disponible en mensajes.`
+        : labels.requestSent);
       onSent();
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Unable to send request.");
@@ -2395,7 +2499,7 @@ function RequestQuoteModal({
   }
 
   return (
-    <Modal visible={visible} animationType="slide" transparent>
+    <Modal visible={visible} animationType="slide" onRequestClose={onClose} transparent>
       <View style={styles.modalBackdrop}>
         <View style={styles.quoteModal}>
           <View style={styles.quoteModalHandle} />
@@ -2477,6 +2581,7 @@ function RequestQuoteModal({
             />
             <FieldLabel text={labels.messageVendor} />
             <TextInput
+              maxLength={2000}
               multiline
               style={[styles.input, styles.textArea]}
               value={form.message}
@@ -2884,6 +2989,14 @@ function AccountProfileScreen({
 
       <View style={styles.formSection}>
         <Text style={styles.sectionTitle}>{copy[form.language].accountControls}</Text>
+        <TouchableOpacity onPress={() => void openPublicWebPath("/privacy")} style={styles.secondaryButton}>
+          <Ionicons name="shield-checkmark-outline" size={17} color={colors.tealDark} />
+          <Text style={styles.secondaryButtonText}>{copy[form.language].privacyPolicy}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => void openPublicWebPath("/terms")} style={styles.secondaryButton}>
+          <Ionicons name="document-text-outline" size={17} color={colors.tealDark} />
+          <Text style={styles.secondaryButtonText}>{copy[form.language].termsOfService}</Text>
+        </TouchableOpacity>
         <Text style={styles.body}>{copy[form.language].deleteAccountHelp}</Text>
         <TouchableOpacity
           onPress={() => {
@@ -3748,15 +3861,22 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
   const [threads, setThreads] = useState<MobileInboxThread[]>([]);
   const [selectedThread, setSelectedThread] = useState<MobileInboxThread | null>(null);
   const [replyBody, setReplyBody] = useState("");
+  const [quoteAmount, setQuoteAmount] = useState("");
+  const [quoteMessage, setQuoteMessage] = useState("");
+  const [revealEmail, setRevealEmail] = useState(true);
+  const [revealPhone, setRevealPhone] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
+  const [isSendingQuote, setIsSendingQuote] = useState(false);
+  const [isAcceptingQuote, setIsAcceptingQuote] = useState(false);
   const [message, setMessage] = useState("");
+  const isVendorViewer = role === "vendor" || role === "admin";
 
-  async function refreshInbox(shouldApply = () => true) {
+  const refreshInbox = useCallback(async (shouldApply: () => boolean = () => true) => {
     setIsLoading(true);
     setMessage("");
     try {
-      const nextThreads = await loadMobileInbox(role);
+      const nextThreads = await loadMobileInbox(role, language);
       if (!shouldApply()) return;
       setThreads(nextThreads);
       setSelectedThread((current) => {
@@ -3768,7 +3888,7 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
     } finally {
       if (shouldApply()) setIsLoading(false);
     }
-  }
+  }, [language, role]);
 
   useEffect(() => {
     let isMounted = true;
@@ -3776,7 +3896,15 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
     return () => {
       isMounted = false;
     };
-  }, [role, language]);
+  }, [refreshInbox]);
+
+  useEffect(() => {
+    if (!selectedThread) return;
+    const amount = selectedThread.latestQuote?.amountCents;
+    setQuoteAmount(typeof amount === "number" ? (amount / 100).toFixed(2) : "");
+    setQuoteMessage(selectedThread.latestQuote?.message ?? "");
+    setReplyBody("");
+  }, [selectedThread]);
 
   async function submitReply() {
     if (!selectedThread) return;
@@ -3793,6 +3921,35 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
     }
   }
 
+  async function submitQuote() {
+    if (!selectedThread) return;
+    setIsSendingQuote(true);
+    setMessage("");
+    try {
+      await sendVendorQuote(selectedThread, quoteAmount, quoteMessage);
+      await refreshInbox();
+      setMessage(labels.quoteSent);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Unable to send quote.");
+    } finally {
+      setIsSendingQuote(false);
+    }
+  }
+
+  async function acceptQuote() {
+    if (!selectedThread?.latestQuote) return;
+    setIsAcceptingQuote(true);
+    setMessage("");
+    try {
+      await acceptMobileQuote(selectedThread, { revealEmail, revealPhone });
+      await refreshInbox();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Unable to accept quote.");
+    } finally {
+      setIsAcceptingQuote(false);
+    }
+  }
+
   if (isLoading) {
     return (
       <View style={styles.searchState}>
@@ -3803,21 +3960,52 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
   }
 
   if (selectedThread) {
+    const isAcceptedHere = Boolean(
+      selectedThread.acceptedQuoteId &&
+      selectedThread.quotes.some((quote) => quote.id === selectedThread.acceptedQuoteId)
+    );
+    const conversationClosed = isQuoteThreadClosed(
+      selectedThread.status,
+      selectedThread.expiresAt,
+      selectedThread.acceptedQuoteId,
+      selectedThread.quotes.map((quote) => quote.id),
+    );
+    const activity = [
+      ...selectedThread.quotes.map((quote) => ({ kind: "quote" as const, createdAt: quote.createdAt, quote })),
+      ...selectedThread.messages.map((inboxMessage) => ({
+        kind: "message" as const,
+        createdAt: inboxMessage.createdAt,
+        inboxMessage,
+      })),
+    ].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+
     return (
       <View>
-        <TouchableOpacity onPress={() => setSelectedThread(null)} style={styles.backButtonInline}>
-          <Ionicons name="chevron-back" size={18} color={colors.tealDark} />
-          <Text style={styles.backButtonText}>{labels.inbox}</Text>
-        </TouchableOpacity>
+        <View style={styles.quoteSummaryHeader}>
+          <TouchableOpacity onPress={() => setSelectedThread(null)} style={styles.backButtonInline}>
+            <Ionicons name="chevron-back" size={18} color={colors.tealDark} />
+            <Text style={styles.backButtonText}>{labels.inbox}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity disabled={isLoading} onPress={() => void refreshInbox()} style={styles.backButtonInline}>
+            <Ionicons name="refresh-outline" size={18} color={colors.tealDark} />
+            <Text style={styles.backButtonText}>{labels.refresh}</Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.dashboardHero}>
           <Text style={styles.kicker}>{selectedThread.status}</Text>
           <Text style={styles.title}>{selectedThread.title}</Text>
           <Text style={styles.body}>{selectedThread.subtitle}</Text>
         </View>
+        {message ? (
+          <Text style={message === labels.quoteSent ? styles.successText : styles.errorText}>{message}</Text>
+        ) : null}
 
         {selectedThread.latestQuote ? (
           <View style={styles.quoteSummaryCard}>
-            <Text style={styles.kicker}>{labels.quotes}</Text>
+            <View style={styles.quoteSummaryHeader}>
+              <Text style={styles.kicker}>{labels.quotes}</Text>
+              {isAcceptedHere ? <Text style={styles.acceptedBadge}>{labels.quoteAccepted}</Text> : null}
+            </View>
             <Text style={styles.quoteSummaryAmount}>
               {formatMoney(selectedThread.latestQuote.amountCents, selectedThread.latestQuote.currency, language)}
             </Text>
@@ -3827,37 +4015,163 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
           </View>
         ) : (
           <View style={styles.panel}>
-            <Text style={styles.body}>{labels.noQuoteYet}</Text>
+            <Text style={styles.body}>
+              {isVendorViewer
+                ? language === "en"
+                  ? "No quote yet. Send a proposal when you are ready."
+                  : "Aún no hay cotización. Envía una propuesta cuando estés listo."
+                : labels.noQuoteYet}
+            </Text>
           </View>
         )}
 
+        {isVendorViewer && isAcceptedHere ? (
+          <View style={styles.panel}>
+            <Text style={styles.sectionTitle}>{labels.contactDetails}</Text>
+            {selectedThread.contactEmail ? (
+              <Text onPress={() => void Linking.openURL(`mailto:${selectedThread.contactEmail}`)} style={styles.contactLink}>
+                {selectedThread.contactEmail}
+              </Text>
+            ) : null}
+            {selectedThread.contactPhone ? (
+              <Text onPress={() => void Linking.openURL(`tel:${selectedThread.contactPhone}`)} style={styles.contactLink}>
+                {selectedThread.contactPhone}
+              </Text>
+            ) : null}
+            {!selectedThread.contactEmail && !selectedThread.contactPhone ? (
+              <Text style={styles.body}>{labels.noContactShared}</Text>
+            ) : null}
+          </View>
+        ) : null}
+
         <View style={styles.inboxList}>
-          {selectedThread.messages.map((item) => (
-            <View
-              key={item.id}
-              style={[
-                styles.messageBubble,
-                item.senderRole === "client" ? styles.messageBubbleClient : styles.messageBubbleVendor,
-              ]}
-            >
-              <Text style={styles.messageSender}>{item.senderRole === "client" ? labels.client : labels.vendor}</Text>
-              <Text style={styles.messageBody}>{item.body}</Text>
-              <Text style={styles.inboxMeta}>{new Date(item.createdAt).toLocaleString()}</Text>
-            </View>
-          ))}
+          {activity.length ? activity.map((item) => {
+            if (item.kind === "quote") {
+              return (
+                <View key={`quote-${item.quote.id}`} style={styles.proposalActivityCard}>
+                  <View style={styles.quoteSummaryHeader}>
+                    <Text style={styles.messageSender}>
+                      {item.quote.version > 1 ? labels.proposalUpdated : labels.proposalSent}
+                    </Text>
+                    <Text style={styles.inboxAmount}>
+                      {formatMoney(item.quote.amountCents, item.quote.currency, language)}
+                    </Text>
+                  </View>
+                  {item.quote.message ? <Text style={styles.messageBody}>{item.quote.message}</Text> : null}
+                  <Text style={styles.inboxMeta}>{new Date(item.quote.createdAt).toLocaleString()}</Text>
+                </View>
+              );
+            }
+
+            const ownMessage = item.inboxMessage.senderRole === (isVendorViewer ? "vendor" : "client");
+            return (
+              <View
+                key={`message-${item.inboxMessage.id}`}
+                style={[styles.messageBubble, ownMessage ? styles.messageBubbleOwn : styles.messageBubbleOther]}
+              >
+                <Text style={styles.messageSender}>
+                  {ownMessage
+                    ? labels.you
+                    : item.inboxMessage.senderRole === "client"
+                      ? labels.client
+                      : labels.vendor}
+                </Text>
+                <Text style={styles.messageBody}>{item.inboxMessage.body}</Text>
+                <Text style={styles.inboxMeta}>{new Date(item.inboxMessage.createdAt).toLocaleString()}</Text>
+              </View>
+            );
+          }) : <Text style={styles.body}>{labels.noConversation}</Text>}
         </View>
 
-        {selectedThread.latestQuote ? (
+        {conversationClosed ? (
+          <View style={styles.panel}>
+            <Text style={styles.body}>{labels.conversationClosed}</Text>
+          </View>
+        ) : null}
+
+        {isVendorViewer && !selectedThread.acceptedQuoteId && !conversationClosed ? (
+          <View style={styles.replyComposer}>
+            <Text style={styles.sectionTitle}>
+              {selectedThread.latestQuote ? labels.updateQuote : labels.sendQuote}
+            </Text>
+            <FieldLabel text={labels.quoteAmount} />
+            <TextInput
+              keyboardType="decimal-pad"
+              placeholder="0.00"
+              style={styles.input}
+              value={quoteAmount}
+              onChangeText={setQuoteAmount}
+            />
+            <FieldLabel text={labels.quoteDetails} />
+            <TextInput
+              maxLength={2000}
+              multiline
+              placeholder={language === "en" ? "Describe what is included" : "Describe lo que está incluido"}
+              style={[styles.input, styles.textArea]}
+              value={quoteMessage}
+              onChangeText={setQuoteMessage}
+            />
+            <Text style={styles.characterCount}>{quoteMessage.length}/2000</Text>
+            <TouchableOpacity
+              disabled={isSendingQuote}
+              onPress={submitQuote}
+              style={[styles.primaryButton, isSendingQuote && styles.primaryButtonDisabled]}
+            >
+              <Ionicons name="cash-outline" size={17} color="#FFFFFF" />
+              <Text style={styles.primaryButtonText}>
+                {isSendingQuote ? labels.sending : selectedThread.latestQuote ? labels.updateQuote : labels.sendQuote}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
+
+        {!isVendorViewer && selectedThread.latestQuote && !selectedThread.acceptedQuoteId && !conversationClosed ? (
+          <View style={styles.replyComposer}>
+            <Text style={styles.sectionTitle}>{labels.acceptQuote}</Text>
+            <TouchableOpacity onPress={() => setRevealEmail((current) => !current)} style={styles.checkboxRow}>
+              <Ionicons name={revealEmail ? "checkbox" : "square-outline"} size={20} color={colors.tealDark} />
+              <Text style={styles.checkboxText}>{labels.shareEmail}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setRevealPhone((current) => !current)} style={styles.checkboxRow}>
+              <Ionicons name={revealPhone ? "checkbox" : "square-outline"} size={20} color={colors.tealDark} />
+              <Text style={styles.checkboxText}>{labels.sharePhone}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              disabled={isAcceptingQuote}
+              onPress={() => {
+                Alert.alert(
+                  labels.acceptQuote,
+                  language === "en"
+                    ? "Accept this quote and close the other vendor requests?"
+                    : "¿Aceptar esta cotización y cerrar las otras solicitudes?",
+                  [
+                    { text: language === "en" ? "Cancel" : "Cancelar", style: "cancel" },
+                    { text: labels.acceptQuote, onPress: () => void acceptQuote() },
+                  ]
+                );
+              }}
+              style={[styles.primaryButton, isAcceptingQuote && styles.primaryButtonDisabled]}
+            >
+              <Ionicons name="checkmark-circle-outline" size={17} color="#FFFFFF" />
+              <Text style={styles.primaryButtonText}>
+                {isAcceptingQuote ? labels.acceptingQuote : labels.acceptQuote}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
+
+        {selectedThread.latestQuote && !conversationClosed ? (
           <View style={styles.replyComposer}>
             <FieldLabel text={labels.reply} />
             <TextInput
+              maxLength={2000}
               multiline
               placeholder={language === "en" ? "Write your message" : "Escribe tu mensaje"}
               style={[styles.input, styles.textArea]}
               value={replyBody}
               onChangeText={setReplyBody}
             />
-            {message ? <Text style={styles.errorText}>{message}</Text> : null}
+            <Text style={styles.characterCount}>{replyBody.length}/2000</Text>
             <TouchableOpacity disabled={isSending} onPress={submitReply} style={[styles.primaryButton, isSending && styles.primaryButtonDisabled]}>
               <Ionicons name="chatbubble-ellipses-outline" size={17} color="#FFFFFF" />
               <Text style={styles.primaryButtonText}>{isSending ? labels.sending : labels.sendReply}</Text>
@@ -3870,6 +4184,10 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
 
   return (
     <View>
+      <TouchableOpacity disabled={isLoading} onPress={() => void refreshInbox()} style={styles.backButtonInline}>
+        <Ionicons name="refresh-outline" size={18} color={colors.tealDark} />
+        <Text style={styles.backButtonText}>{labels.refresh}</Text>
+      </TouchableOpacity>
       <View style={styles.dashboardHero}>
         <Text style={styles.kicker}>{labels.inbox}</Text>
         <Text style={styles.title}>{labels.inboxTitle}</Text>
@@ -4094,7 +4412,7 @@ function VendorDetailScreen({
 
   async function handleShare() {
     if (!vendor) return;
-    const vendorUrl = `http://127.0.0.1:3000/vendors/${vendor.slug}`;
+    const vendorUrl = vendorShareUrl(vendor.slug);
     await Share.share({
       title: vendor.business_name,
       message: `${vendor.business_name}\n${vendorUrl}`,
@@ -4480,7 +4798,12 @@ function VendorDetailScreen({
       </DetailSection>
       </View>
 
-      <Modal visible={Boolean(activeGalleryImage)} transparent animationType="fade">
+      <Modal
+        visible={Boolean(activeGalleryImage)}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setActiveGalleryImage(null)}
+      >
         <View style={styles.galleryModal}>
           <TouchableOpacity style={styles.galleryModalClose} onPress={() => setActiveGalleryImage(null)}>
             <Ionicons name="close" size={24} color={colors.ink} />
@@ -4757,6 +5080,7 @@ export default function App() {
   const visibleActiveTab = tabs.some((tab) => tab.key === activeTab) ? activeTab : tabs[0].key;
   const isHomeOpen = !isDetailOpen && visibleActiveTab === "home";
   const isVendorPublicOpen = !isDetailOpen && visibleActiveTab === "vendor";
+  const configErrors = getMobileConfigErrors();
 
   useEffect(() => {
     let isMounted = true;
@@ -4823,11 +5147,47 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (Platform.OS !== "android") return;
+
+    const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
+      if (isAccountMenuOpen) {
+        setIsAccountMenuOpen(false);
+        return true;
+      }
+      if (quoteVendors.length) {
+        setQuoteVendors([]);
+        return true;
+      }
+      if (selectedVendor) {
+        setSelectedVendor(null);
+        return true;
+      }
+      if (visibleActiveTab !== tabs[0].key) {
+        setActiveTab(tabs[0].key);
+        return true;
+      }
+      return false;
+    });
+
+    return () => subscription.remove();
+  }, [isAccountMenuOpen, quoteVendors.length, selectedVendor, tabs, visibleActiveTab]);
+
   if (isBooting || !fontsLoaded) {
     return (
       <SafeAreaView style={styles.centeredRoot}>
         <ActivityIndicator color="#A17619" />
         <Text style={styles.loadingText}>{copy[language].loadingApp}</Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (configErrors.length) {
+    return (
+      <SafeAreaView style={styles.centeredRoot}>
+        <Ionicons name="warning-outline" size={32} color="#B42318" />
+        <Text style={styles.title}>App configuration required</Text>
+        {configErrors.map((error) => <Text key={error} style={styles.errorText}>{error}</Text>)}
       </SafeAreaView>
     );
   }
@@ -4904,6 +5264,9 @@ export default function App() {
         </View>
         <View style={styles.headerActions}>
           <TouchableOpacity
+            accessibilityLabel={userEmail ? copy[language].profile : copy[language].logIn}
+            accessibilityRole="button"
+            accessibilityState={{ expanded: isAccountMenuOpen }}
             onPress={() => setIsAccountMenuOpen((current) => !current)}
             style={[styles.accountButton, isHomeOpen && styles.accountButtonOverlay]}
           >
@@ -4948,6 +5311,26 @@ export default function App() {
                 <Ionicons name={userEmail ? "person-circle-outline" : "log-in-outline"} size={18} color={colors.tealDark} />
                 <Text style={styles.accountMenuText}>{userEmail ? copy[language].profile : copy[language].logIn}</Text>
               </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsAccountMenuOpen(false);
+                  void openPublicWebPath("/privacy");
+                }}
+                style={styles.accountMenuItem}
+              >
+                <Ionicons name="shield-checkmark-outline" size={18} color={colors.tealDark} />
+                <Text style={styles.accountMenuText}>{copy[language].privacyPolicy}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsAccountMenuOpen(false);
+                  void openPublicWebPath("/terms");
+                }}
+                style={styles.accountMenuItem}
+              >
+                <Ionicons name="document-text-outline" size={18} color={colors.tealDark} />
+                <Text style={styles.accountMenuText}>{copy[language].termsOfService}</Text>
+              </TouchableOpacity>
               {userEmail ? (
                 <>
                   <TouchableOpacity
@@ -4974,6 +5357,8 @@ export default function App() {
       <ScrollView
         ref={contentScrollRef}
         contentContainerStyle={isDetailOpen || isVendorPublicOpen ? styles.detailContent : isHomeOpen ? styles.homeContent : styles.content}
+        keyboardDismissMode={Platform.OS === "ios" ? "interactive" : "on-drag"}
+        keyboardShouldPersistTaps="handled"
       >
         {selectedVendor ? (
           <VendorDetailScreen
@@ -5024,6 +5409,9 @@ export default function App() {
           const isActive = tab.key === visibleActiveTab;
           return (
             <TouchableOpacity
+              accessibilityLabel={tabLabel(tab.key, language)}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: isActive }}
               key={tab.key}
               style={[styles.tab, isActive && styles.tabActive]}
               onPress={() => {
@@ -5962,6 +6350,21 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     padding: 18,
   },
+  quoteSummaryHeader: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  acceptedBadge: {
+    backgroundColor: "#DDF5E7",
+    borderRadius: 999,
+    color: "#146C43",
+    fontSize: 11,
+    fontWeight: "900",
+    overflow: "hidden",
+    paddingHorizontal: 9,
+    paddingVertical: 5,
+  },
   quoteSummaryAmount: {
     color: colors.paper,
     fontSize: 28,
@@ -5977,6 +6380,14 @@ const styles = StyleSheet.create({
     gap: 5,
     maxWidth: "88%",
     padding: 12,
+  },
+  messageBubbleOwn: {
+    alignSelf: "flex-end",
+    backgroundColor: "#E5F4F1",
+  },
+  messageBubbleOther: {
+    alignSelf: "flex-start",
+    backgroundColor: colors.soft,
   },
   messageBubbleClient: {
     alignSelf: "flex-end",
@@ -5996,6 +6407,27 @@ const styles = StyleSheet.create({
     color: colors.ink,
     fontSize: 14,
     lineHeight: 20,
+  },
+  proposalActivityCard: {
+    alignSelf: "stretch",
+    backgroundColor: colors.paper,
+    borderColor: colors.line,
+    borderRadius: 20,
+    borderWidth: 1,
+    gap: 6,
+    padding: 13,
+  },
+  characterCount: {
+    alignSelf: "flex-end",
+    color: colors.muted,
+    fontSize: 11,
+    marginTop: -6,
+  },
+  contactLink: {
+    color: colors.tealDark,
+    fontSize: 14,
+    fontWeight: "800",
+    textDecorationLine: "underline",
   },
   replyComposer: {
     backgroundColor: colors.paper,
@@ -6990,10 +7422,23 @@ const styles = StyleSheet.create({
     borderTopColor: colors.line,
     borderTopWidth: 1,
     flexDirection: "row",
+  },
+  mapVendorMain: {
+    alignItems: "center",
+    flex: 1,
+    flexDirection: "row",
     gap: 10,
-    minHeight: 66,
-    paddingHorizontal: 13,
-    paddingVertical: 10,
+    minHeight: 58,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+  },
+  mapExternalButton: {
+    alignItems: "center",
+    borderLeftColor: colors.line,
+    borderLeftWidth: 1,
+    justifyContent: "center",
+    minHeight: 58,
+    width: 52,
   },
   mapVendorPin: {
     alignItems: "center",

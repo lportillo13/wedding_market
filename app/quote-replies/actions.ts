@@ -12,6 +12,8 @@ export type QuoteReplyState = {
   message?: string;
 };
 
+const MAX_REPLY_LENGTH = 2000;
+
 function getTrimmedValue(form: FormData, key: string) {
   return form.get(key)?.toString().trim() ?? "";
 }
@@ -38,6 +40,9 @@ export async function sendClientQuoteReply(_: QuoteReplyState, form: FormData): 
 
   if (!quoteId || !rfqId || !vendorId || !body) {
     return { ok: false, message: "Please enter a reply." };
+  }
+  if (body.length > MAX_REPLY_LENGTH) {
+    return { ok: false, message: "Replies must be 2,000 characters or fewer." };
   }
 
   const access = await verifyClientQuoteReplyAccess(quoteId, rfqId, vendorId, user.id);
@@ -143,6 +148,9 @@ export async function sendVendorQuoteReply(_: QuoteReplyState, form: FormData): 
 
   if (!quoteId || !rfqId || !vendorId || !body) {
     return { ok: false, message: "Please enter a reply." };
+  }
+  if (body.length > MAX_REPLY_LENGTH) {
+    return { ok: false, message: "Replies must be 2,000 characters or fewer." };
   }
 
   const access = await verifyVendorQuoteReplyAccess(quoteId, rfqId, vendorId, user.id);

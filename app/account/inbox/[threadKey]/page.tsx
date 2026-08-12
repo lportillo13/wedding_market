@@ -85,6 +85,11 @@ export default async function AccountInboxThreadPage({
   const acceptedQuote = detail.rfq.accepted_quote_id
     ? detail.quotes.find((quote) => quote.id === detail.rfq.accepted_quote_id) ?? null
     : null;
+  const normalizedStatus = detail.invite.status?.trim().toLowerCase();
+  const conversationClosed =
+    normalizedStatus === "declined" ||
+    normalizedStatus === "expired" ||
+    Boolean(detail.rfq.accepted_quote_id && !acceptedQuote);
   const location =
     [detail.rfq.city, detail.rfq.state, detail.rfq.country].filter(Boolean).join(", ") ||
     dictionary.account.rfqsPage.formatting.locationTbd;
@@ -150,7 +155,7 @@ export default async function AccountInboxThreadPage({
                     {new Date(detail.latestQuote.created_at).toLocaleString(locale)}
                   </div>
                   {detail.latestQuote.message ? <div>{detail.latestQuote.message}</div> : null}
-                  {!accepted ? (
+                  {!detail.rfq.accepted_quote_id && !conversationClosed ? (
                     <div className="mt-3">
                       <AcceptButton rfq_id={detail.rfq.id} quote_id={detail.latestQuote.id} />
                     </div>
@@ -185,7 +190,7 @@ export default async function AccountInboxThreadPage({
             </div>
           </div>
 
-          {detail.latestQuote ? (
+          {detail.latestQuote && !conversationClosed ? (
             <div className="card mb-4">
               <div className="card-body">
                 <div className="fw-semibold mb-3">{dictionary.account.quotesPage.conversation.heading}</div>
@@ -200,6 +205,12 @@ export default async function AccountInboxThreadPage({
                   successLabel={dictionary.account.quotesPage.conversation.replySuccess}
                 />
               </div>
+            </div>
+          ) : conversationClosed ? (
+            <div className="alert alert-secondary">
+              {language === "es"
+                ? "Esta conversación se cerró cuando se eligió otra propuesta o venció la solicitud."
+                : "This conversation closed when another proposal was selected or the request expired."}
             </div>
           ) : null}
         </div>

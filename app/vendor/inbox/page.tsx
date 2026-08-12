@@ -95,7 +95,7 @@ export default async function VendorInboxPage({
     requestCode: language === "es" ? "Solicitud" : "Request",
     updated: language === "es" ? "Actualizado" : "Updated",
     notesFallback: language === "es" ? "Sin mensaje inicial." : "No opening note yet.",
-    active: language === "es" ? "Activas" : "Active",
+    active: language === "es" ? "Conversaciones" : "Conversations",
     deleted: dictionary.account.notificationsPage.deletedTitle,
     searchPlaceholder: language === "es" ? "Buscar solicitud, lugar o mensaje" : "Search request, location, or message",
     searchButton: language === "es" ? "Buscar" : "Search",
@@ -108,9 +108,10 @@ export default async function VendorInboxPage({
   const { vendor, items } = await loadVendorInboxThreads(user.id);
   const deletedView = params?.view === "deleted";
   const query = params?.q?.trim().toLowerCase() ?? "";
-  const activeCount = items.filter((item) => !item.invite.closed_at).length;
-  const deletedCount = items.filter((item) => Boolean(item.invite.closed_at)).length;
-  const scopeItems = items.filter((item) => (deletedView ? Boolean(item.invite.closed_at) : !item.invite.closed_at));
+  const isArchived = (item: (typeof items)[number]) => item.invite.closed_reason === "archived_by_vendor";
+  const activeCount = items.filter((item) => !isArchived(item)).length;
+  const deletedCount = items.filter(isArchived).length;
+  const scopeItems = items.filter((item) => (deletedView ? isArchived(item) : !isArchived(item)));
   const visibleItems = scopeItems.filter((item) => {
     const location =
       [item.rfq?.city, item.rfq?.state, item.rfq?.country].filter(Boolean).join(", ") || labels.untitledLocation;

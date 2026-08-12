@@ -11,7 +11,7 @@ For local development, the app can run against the existing local stack:
 
 For Android emulator networking, use `10.0.2.2` instead of `127.0.0.1`.
 
-For Play Store builds, configure these values in the EAS production environment instead of shipping local URLs:
+For store builds, configure these values in the EAS `development`, `preview`, and `production` environments instead of shipping local URLs:
 
 - `EXPO_PUBLIC_SUPABASE_URL`
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
@@ -37,6 +37,18 @@ npm run start
 
 This project targets Expo SDK 56 and includes native modules used by the production app. Use a development build instead of Expo Go. If Expo Go shows "Project is incompatible with this version of Expo Go", install the Android development build from EAS and then run `npm run start`.
 
+## Quality Checks
+
+Run the complete local mobile gate before creating an EAS build:
+
+```powershell
+cd C:\wedding-market\mobile
+npm run check
+npm run export:android
+```
+
+The gate runs TypeScript, ESLint, unit tests, and Expo dependency compatibility checks. The Android export verifies that Metro can produce a production bundle without starting a remote EAS build.
+
 ## Android Release Build
 
 The production EAS profile builds an Android App Bundle (`.aab`) for Google Play:
@@ -47,6 +59,17 @@ npm run build:android:production
 ```
 
 Before submitting, confirm the production EAS environment points to the deployed Supabase project and deployed Wedding Market web/API host.
+
+## iOS Release Build
+
+The same production profile can create the App Store build:
+
+```powershell
+cd C:\wedding-market\mobile
+npm run build:ios:production
+```
+
+The iOS build runs remotely through EAS and requires Apple developer credentials during credential or submission setup.
 
 ## Implemented Mobile Surface
 
@@ -61,6 +84,8 @@ The mobile app currently includes:
 7. Vendor profile editor, media, availability, pricing, amenities, team, and reviews.
 8. Notifications.
 9. Admin operations overview.
+
+Search includes a lightweight location preview. Each result opens the native/browser Google Maps experience for real map navigation without embedding a store API key in the app.
 
 ## Backend Strategy
 

@@ -67,13 +67,18 @@ export default async function VendorInboxThreadPage({
   const accepted = Boolean(
     detail.rfq.accepted_quote_id && detail.quotes.some((quote) => quote.id === detail.rfq.accepted_quote_id)
   );
+  const normalizedStatus = detail.invite.status?.trim().toLowerCase();
+  const conversationClosed =
+    normalizedStatus === "declined" ||
+    normalizedStatus === "expired" ||
+    Boolean(detail.rfq.accepted_quote_id && !accepted);
   const location =
     [detail.rfq.city, detail.rfq.state, detail.rfq.country].filter(Boolean).join(", ") || "-";
   const guestLabel =
     typeof detail.rfq.guest_count === "number"
       ? `${detail.rfq.guest_count} ${language === "es" ? "invitados" : "guests"}`
       : detail.rfq.guest_count_range || labels.guestCountTbd;
-  const inviteAccepted = detail.invite.contact_revealed ?? accepted;
+  const inviteAccepted = accepted;
   const revealEmail = detail.invite.reveal_email ?? inviteAccepted;
   const revealPhone = detail.invite.reveal_phone ?? inviteAccepted;
 
@@ -184,7 +189,7 @@ export default async function VendorInboxThreadPage({
             </div>
           </div>
 
-          {detail.latestQuote ? (
+          {detail.latestQuote && !conversationClosed ? (
             <div className="card mb-4">
               <div className="card-body">
                 <div className="fw-semibold mb-3">{dictionary.vendorQuotes.conversation.heading}</div>
@@ -200,9 +205,15 @@ export default async function VendorInboxThreadPage({
                 />
               </div>
             </div>
+          ) : conversationClosed ? (
+            <div className="alert alert-secondary">
+              {language === "es"
+                ? "Esta conversación está cerrada porque se eligió otra propuesta o venció la solicitud."
+                : "This conversation is closed because another proposal was selected or the request expired."}
+            </div>
           ) : null}
 
-          {!accepted ? (
+          {!accepted && !conversationClosed ? (
             <div className="card mb-4">
               <div className="card-body">
                 <div className="fw-semibold mb-3">

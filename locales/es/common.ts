@@ -1107,7 +1107,7 @@ const common = {
       "vendorsLoadError": "No pudimos cargar los detalles de los proveedores. Aun así puedes enviar tu solicitud.",
       "vendorLoading": "Cargando...",
       "vendorUnavailable": "Proveedor no disponible",
-      "maxVendorsHelp": "Máximo 10 proveedores por solicitud.",
+      "maxVendorsHelp": "Una solicitud puede enviarse a hasta 10 proveedores. Cada proveedor responde en una conversación privada separada.",
       "eventDateLabel": "Fecha del evento",
       "guestCountLabel": "Número de invitados",
       "cityLabel": "Ciudad",

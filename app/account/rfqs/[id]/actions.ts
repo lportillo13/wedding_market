@@ -11,7 +11,11 @@ import { getSupabaseServer } from "@/lib/supabase/server";
 import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 
 function isMissingThreadColumnsError(message: string | undefined) {
-  return /last_activity_at|viewed_at|client_last_read_at|vendor_last_read_at|closed_at|closed_reason/i.test(message ?? "");
+  return /reveal_email|reveal_phone|last_activity_at|viewed_at|client_last_read_at|vendor_last_read_at|closed_at|closed_reason/i.test(message ?? "");
+}
+
+function shouldUseAdminFallback(message: string | undefined) {
+  return /policy|permission|row-level security|infinite recursion/i.test(message ?? "");
 }
 
 export async function acceptQuote(
@@ -58,7 +62,7 @@ export async function acceptQuote(
     rfqErr = retry.error;
   }
 
-  if (rfqErr && supabaseAdmin && /infinite recursion detected in policy/i.test(rfqErr.message)) {
+  if (rfqErr && supabaseAdmin && shouldUseAdminFallback(rfqErr.message)) {
     const retry = await selectWithOwner(supabaseAdmin, ownerColumn);
     rfq = retry.data;
     rfqErr = retry.error;
@@ -77,11 +81,19 @@ export async function acceptQuote(
     return { ok: false, message: labels.errors.alreadyAccepted };
   }
 
-  const { data: quote, error: quoteErr } = await supabase
-    .from("quotes")
-    .select("id, rfq_id, vendor_id")
-    .eq("id", quote_id)
-    .maybeSingle();
+  const selectQuote = (client: SupabaseClient) =>
+    client
+      .from("quotes")
+      .select("id, rfq_id, vendor_id")
+      .eq("id", quote_id)
+      .maybeSingle<{ id: string; rfq_id: string; vendor_id: string }>();
+
+  let { data: quote, error: quoteErr } = await selectQuote(supabase);
+  if (quoteErr && supabaseAdmin && shouldUseAdminFallback(quoteErr.message)) {
+    const retry = await selectQuote(supabaseAdmin);
+    quote = retry.data;
+    quoteErr = retry.error;
+  }
 
   if (quoteErr) {
     console.error("Failed to load quote before accepting it", quoteErr);
@@ -92,16 +104,49 @@ export async function acceptQuote(
     return { ok: false, message: labels.errors.invalidQuote };
   }
 
-  let { error: updateErr } = await supabase
+  const selectInvite = (client: SupabaseClient) =>
+    client
+      .from("rfq_invites")
+      .select("status, expires_at")
+      .eq("rfq_id", rfq_id)
+      .eq("vendor_id", quote.vendor_id)
+      .maybeSingle<{ status: string | null; expires_at: string | null }>();
+
+  let { data: invite, error: inviteErr } = await selectInvite(supabase);
+  if ((inviteErr || !invite) && supabaseAdmin) {
+    const retry = await selectInvite(supabaseAdmin);
+    invite = retry.data;
+    inviteErr = retry.error;
+  }
+  const inviteStatus = invite?.status?.trim().toLowerCase();
+  const inviteExpiresAt = invite?.expires_at ? Date.parse(invite.expires_at) : Number.NaN;
+  if (
+    inviteErr ||
+    !invite ||
+    inviteStatus === "declined" ||
+    inviteStatus === "expired" ||
+    (Number.isFinite(inviteExpiresAt) && inviteExpiresAt <= Date.now())
+  ) {
+    return { ok: false, message: labels.errors.invalidQuote };
+  }
+
+  let { data: acceptedRfq, error: updateErr } = await supabase
     .from("rfqs")
     .update({ accepted_quote_id: quote_id, accepted_at: new Date().toISOString() })
-    .eq("id", rfq_id);
+    .eq("id", rfq_id)
+    .is("accepted_quote_id", null)
+    .select("id")
+    .maybeSingle<{ id: string }>();
 
-  if (updateErr && supabaseAdmin && /infinite recursion detected in policy/i.test(updateErr.message)) {
+  if (updateErr && supabaseAdmin && shouldUseAdminFallback(updateErr.message)) {
     const retry = await supabaseAdmin
       .from("rfqs")
       .update({ accepted_quote_id: quote_id, accepted_at: new Date().toISOString() })
-      .eq("id", rfq_id);
+      .eq("id", rfq_id)
+      .is("accepted_quote_id", null)
+      .select("id")
+      .maybeSingle<{ id: string }>();
+    acceptedRfq = retry.data;
     updateErr = retry.error;
   }
 
@@ -109,9 +154,11 @@ export async function acceptQuote(
     console.error("Failed to accept quote", updateErr);
     return { ok: false, message: labels.errors.acceptFailed };
   }
+  if (!acceptedRfq) {
+    return { ok: false, message: labels.errors.alreadyAccepted };
+  }
 
   const acceptedInvitePayload = {
-    contact_revealed: true,
     reveal_email,
     reveal_phone,
     status: "accepted",
@@ -127,7 +174,7 @@ export async function acceptQuote(
     .eq("rfq_id", rfq_id)
     .eq("vendor_id", quote.vendor_id);
 
-  if (revealErr && supabaseAdmin && /infinite recursion detected in policy/i.test(revealErr.message)) {
+  if (revealErr && supabaseAdmin && shouldUseAdminFallback(revealErr.message)) {
     const retry = await supabaseAdmin
       .from("rfq_invites")
       .update(acceptedInvitePayload)
@@ -136,7 +183,7 @@ export async function acceptQuote(
     revealErr = retry.error;
   }
 
-  if (revealErr && (/contact_revealed/.test(revealErr.message) || isMissingThreadColumnsError(revealErr.message))) {
+  if (revealErr && isMissingThreadColumnsError(revealErr.message)) {
     const fallback = await supabase
       .from("rfq_invites")
       .update({ status: "accepted" })
@@ -144,7 +191,7 @@ export async function acceptQuote(
       .eq("vendor_id", quote.vendor_id);
     revealErr = fallback.error;
 
-    if (revealErr && supabaseAdmin && /infinite recursion detected in policy/i.test(revealErr.message)) {
+    if (revealErr && supabaseAdmin && shouldUseAdminFallback(revealErr.message)) {
       const retry = await supabaseAdmin
         .from("rfq_invites")
         .update({ status: "accepted" })
@@ -155,6 +202,11 @@ export async function acceptQuote(
   }
 
   if (revealErr) {
+    await (supabaseAdmin ?? supabase)
+      .from("rfqs")
+      .update({ accepted_quote_id: null, accepted_at: null })
+      .eq("id", rfq_id)
+      .eq("accepted_quote_id", quote_id);
     console.error("Failed to reveal contact details for accepted quote", revealErr);
     return { ok: false, message: labels.errors.acceptFailed };
   }
@@ -172,7 +224,7 @@ export async function acceptQuote(
     .eq("rfq_id", rfq_id)
     .neq("vendor_id", quote.vendor_id);
 
-  if (closeOthersError && supabaseAdmin && /infinite recursion detected in policy/i.test(closeOthersError.message)) {
+  if (closeOthersError && supabaseAdmin && shouldUseAdminFallback(closeOthersError.message)) {
     const retry = await supabaseAdmin
       .from("rfq_invites")
       .update(closeOtherInvitesPayload)
@@ -189,7 +241,7 @@ export async function acceptQuote(
       .neq("vendor_id", quote.vendor_id);
     closeOthersError = fallback.error;
 
-    if (closeOthersError && supabaseAdmin && /infinite recursion detected in policy/i.test(closeOthersError.message)) {
+    if (closeOthersError && supabaseAdmin && shouldUseAdminFallback(closeOthersError.message)) {
       const retry = await supabaseAdmin
         .from("rfq_invites")
         .update({ status: "declined" })

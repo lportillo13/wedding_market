@@ -26,7 +26,7 @@ export default function QuoteForm({
     if (!formRef.current) return;
     if (prevOk.current !== state.ok) {
       const amountInput = formRef.current.elements.namedItem("amount_usd") as HTMLInputElement | null;
-      const messageInput = formRef.current.elements.namedItem("message") as HTMLInputElement | null;
+      const messageInput = formRef.current.elements.namedItem("message") as HTMLTextAreaElement | null;
       if (amountInput && !pending) amountInput.defaultValue = amountInput.value;
       if (messageInput && !pending) messageInput.defaultValue = messageInput.value;
     }
@@ -57,10 +57,12 @@ export default function QuoteForm({
         <label className="form-label" htmlFor="quote-message">
           {t("vendorInbox.quoteForm.messageLabel")}
         </label>
-        <input
+        <textarea
           id="quote-message"
           className="form-control"
           name="message"
+          rows={3}
+          maxLength={2000}
           placeholder={t("vendorInbox.quoteForm.messagePlaceholder")}
           defaultValue={initialMessage ?? ""}
         />

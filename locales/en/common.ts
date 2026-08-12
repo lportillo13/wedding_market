@@ -1107,7 +1107,7 @@ const common = {
       "vendorsLoadError": "We couldn't load vendor details. You can still send your request.",
       "vendorLoading": "Loading...",
       "vendorUnavailable": "Vendor unavailable",
-      "maxVendorsHelp": "Maximum 10 vendors per request.",
+      "maxVendorsHelp": "One request can go to up to 10 vendors. Each vendor replies in a separate private conversation.",
       "eventDateLabel": "Event date",
       "guestCountLabel": "Guest count",
       "cityLabel": "City",

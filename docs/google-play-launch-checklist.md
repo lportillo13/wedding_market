@@ -1,6 +1,6 @@
 # Google Play Launch Checklist
 
-Last updated: June 15, 2026
+Last updated: August 12, 2026
 
 ## Build
 
@@ -13,7 +13,9 @@ Last updated: June 15, 2026
 
 ```powershell
 cd C:\wedding-market\mobile
-eas build --platform android --profile production
+npm run check
+npm run export:android
+npm run build:android:production
 ```
 
 - Verify the app on a real Android device before submitting to closed testing.
@@ -56,7 +58,7 @@ Expected Android permissions:
 - `INTERNET`
 - `POST_NOTIFICATIONS`
 
-`RECORD_AUDIO` is blocked in Expo config because the app only needs selected images for the current media upload flows.
+`RECORD_AUDIO` is blocked and is not requested because the app only needs user-selected images for the current media upload flows.
 
 ## Play Console Before Public Launch
 
@@ -67,3 +69,4 @@ Expected Android permissions:
 - Upload screenshots and feature graphic.
 - Run required closed testing before production if the Play developer account requires it.
 - Confirm the Android App Bundle targets the current Play target SDK requirement.
+- Verify sign-in, search pagination, vendor sharing, quote creation and replies, uploads, notification taps, legal links, and Android hardware-back behavior in the release build.

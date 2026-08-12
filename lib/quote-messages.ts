@@ -20,6 +20,78 @@ function isMissingQuoteMessagesTableError(message: string | undefined) {
   return /quote_messages/i.test(message ?? "") && /does not exist|could not find/i.test(message ?? "");
 }
 
+type ClientReplyPermission = {
+  allowed: boolean;
+  message?: string;
+};
+
+async function verifyQuoteThreadOpen(
+  supabase: SupabaseClient,
+  supabaseAdmin: SupabaseClient | null,
+  rfqId: string,
+  vendorId: string,
+): Promise<ClientReplyPermission> {
+  const selectInvite = (client: SupabaseClient) =>
+    client
+      .from("rfq_invites")
+      .select("status, expires_at")
+      .eq("rfq_id", rfqId)
+      .eq("vendor_id", vendorId)
+      .maybeSingle<{ status: string | null; expires_at: string | null }>();
+
+  let { data: invite, error } = await selectInvite(supabase);
+  if (error && supabaseAdmin && shouldUseAdminFallback(error.message)) {
+    const retry = await selectInvite(supabaseAdmin);
+    invite = retry.data;
+    error = retry.error;
+  }
+
+  if (error) return { allowed: false, message: error.message };
+  if (!invite) return { allowed: false, message: "Quote request not found." };
+
+  const status = invite.status?.trim().toLowerCase();
+  if (status === "declined" || status === "expired") {
+    return { allowed: false, message: "This quote conversation is closed." };
+  }
+
+  const selectRfq = (client: SupabaseClient) =>
+    client
+      .from("rfqs")
+      .select("accepted_quote_id")
+      .eq("id", rfqId)
+      .maybeSingle<{ accepted_quote_id: string | null }>();
+
+  let { data: rfq, error: rfqError } = await selectRfq(supabase);
+  if ((rfqError || !rfq) && supabaseAdmin) {
+    const retry = await selectRfq(supabaseAdmin);
+    rfq = retry.data;
+    rfqError = retry.error;
+  }
+  if (rfqError) return { allowed: false, message: rfqError.message };
+  if (!rfq) return { allowed: false, message: "Quote request not found." };
+
+  if (rfq.accepted_quote_id) {
+    const { data: acceptedQuote, error: acceptedQuoteError } = await (supabaseAdmin ?? supabase)
+      .from("quotes")
+      .select("vendor_id")
+      .eq("id", rfq.accepted_quote_id)
+      .maybeSingle<{ vendor_id: string }>();
+
+    if (acceptedQuoteError) return { allowed: false, message: acceptedQuoteError.message };
+    if (!acceptedQuote || acceptedQuote.vendor_id !== vendorId) {
+      return { allowed: false, message: "This quote conversation is closed." };
+    }
+    return { allowed: true };
+  }
+
+  const expiresAt = invite.expires_at ? Date.parse(invite.expires_at) : Number.NaN;
+  if (Number.isFinite(expiresAt) && expiresAt <= Date.now()) {
+    return { allowed: false, message: "This quote conversation is closed." };
+  }
+
+  return { allowed: true };
+}
+
 export async function fetchQuoteMessagesByQuoteIds(
   quoteIds: string[]
 ): Promise<Map<string, QuoteMessageRow[]>> {
@@ -64,18 +136,14 @@ export async function fetchQuoteMessagesByQuoteIds(
   return byQuoteId;
 }
 
-type ClientReplyPermission = {
-  allowed: boolean;
-  message?: string;
-};
-
 export async function verifyClientQuoteReplyAccess(
   quoteId: string,
   rfqId: string,
   vendorId: string,
-  userId: string
+  userId: string,
+  authenticatedClient?: SupabaseClient,
 ): Promise<ClientReplyPermission> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = authenticatedClient ?? await createSupabaseServerClient();
   const supabaseAdmin = createSupabaseAdminClient();
 
   const selectQuote = (client: SupabaseClient) =>
@@ -124,16 +192,17 @@ export async function verifyClientQuoteReplyAccess(
     return { allowed: false, message: "You do not have access to this quote." };
   }
 
-  return { allowed: true };
+  return verifyQuoteThreadOpen(supabase, supabaseAdmin, rfqId, vendorId);
 }
 
 export async function verifyVendorQuoteReplyAccess(
   quoteId: string,
   rfqId: string,
   vendorId: string,
-  userId: string
+  userId: string,
+  authenticatedClient?: SupabaseClient,
 ): Promise<ClientReplyPermission> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = authenticatedClient ?? await createSupabaseServerClient();
   const supabaseAdmin = createSupabaseAdminClient();
 
   const { data: vendor, error: vendorErr } = await supabase
@@ -170,5 +239,5 @@ export async function verifyVendorQuoteReplyAccess(
     return { allowed: false, message: "Quote not found." };
   }
 
-  return { allowed: true };
+  return verifyQuoteThreadOpen(supabase, supabaseAdmin, rfqId, vendorId);
 }
