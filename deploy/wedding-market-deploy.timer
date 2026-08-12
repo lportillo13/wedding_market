@@ -1,0 +1,12 @@
+[Unit]
+Description=Check origin/dev for Wedding Market updates
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=2min
+RandomizedDelaySec=15s
+Persistent=true
+Unit=wedding-market-deploy.service
+
+[Install]
+WantedBy=timers.target

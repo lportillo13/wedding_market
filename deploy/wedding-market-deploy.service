@@ -1,0 +1,24 @@
+[Unit]
+Description=Deploy Wedding Market when origin/dev changes
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=deploy
+Group=deploy
+WorkingDirectory=/var/www/wedding-market
+Environment=HOME=/home/deploy
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+Environment=APP_DIR=/var/www/wedding-market
+Environment=DEPLOY_REMOTE=origin
+Environment=DEPLOY_BRANCH=dev
+Environment=PM2_APP_NAME=wedding-market
+Environment=HEALTH_URL=http://127.0.0.1:3001/api/health
+ExecStart=/usr/bin/bash /var/www/wedding-market/deploy/deploy-if-changed.sh
+TimeoutStartSec=30min
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
