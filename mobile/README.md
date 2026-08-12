@@ -18,6 +18,22 @@ For store builds, configure these values in the EAS `development`, `preview`, an
 - `EXPO_PUBLIC_WEB_URL`
 - `EXPO_PUBLIC_WEB_API_URL`
 
+## Email confirmation
+
+The native app uses `theweddingmarket://auth/callback` to finish Supabase email
+confirmation inside the installed app. Add this URL to **Supabase Dashboard →
+Authentication → URL Configuration → Redirect URLs** for every Supabase project
+used by a mobile build:
+
+```text
+theweddingmarket://auth/callback
+```
+
+Keep **Confirm email** enabled for production. When confirmation is required,
+signup stores the pending onboarding fields in Supabase user metadata, shows a
+check-your-email state, and provisions the profile after the verified callback.
+The login screen also offers a resend action for unconfirmed accounts.
+
 ## Setup
 
 1. Start local Supabase from the repository root.

@@ -19,6 +19,9 @@ npm run build:android:production
 ```
 
 - Verify the app on a real Android device before submitting to closed testing.
+- In Supabase Auth redirect URLs, allow `theweddingmarket://auth/callback` and
+  verify that a confirmation email opens the installed release build and
+  completes the user profile.
 
 ## Store Listing URLs
 

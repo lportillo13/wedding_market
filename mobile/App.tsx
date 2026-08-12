@@ -33,7 +33,11 @@ import { getMobileConfigErrors } from "./src/lib/config";
 import {
   type AppRole,
   type AuthProfile,
+  type AuthState,
+  createSessionFromMobileAuthUrl,
   loadAuthState,
+  resendSignUpConfirmation,
+  restoreMobileAuthState,
   signInWithEmail,
   signUpWithEmail,
   signOut,
@@ -538,6 +542,14 @@ const copy = {
     weddingBudget: "Wedding budget",
     region: "State / Region",
     accountCreated: "Account created. Your workspace is ready.",
+    confirmationSent: "Check your email to confirm your account. The verification link will reopen the app and finish setup.",
+    emailConfirmedTitle: "Email confirmed",
+    emailConfirmedBody: "Your Wedding Market account is ready.",
+    emailConfirmationErrorTitle: "Email confirmation failed",
+    emailConfirmationFailed: "We could not finish email confirmation. Open the newest verification link or sign in again.",
+    resendConfirmation: "Resend verification email",
+    resendingConfirmation: "Sending verification email...",
+    confirmationResent: "A new verification email was sent. Open the newest link to confirm your account.",
     createAccountIntro: "I will ask a few quick questions and help you start your wedding plan.",
     loginIntro: "Use an existing local Supabase account. The app will detect whether the account is client, vendor, or admin after sign-in.",
     vendorSearch: "Vendor Search",
@@ -832,6 +844,14 @@ const copy = {
     weddingBudget: "Presupuesto de boda",
     region: "Estado / Región",
     accountCreated: "Cuenta creada. Tu espacio está listo.",
+    confirmationSent: "Revisa tu correo para confirmar tu cuenta. El enlace de verificación abrirá la app y terminará la configuración.",
+    emailConfirmedTitle: "Correo confirmado",
+    emailConfirmedBody: "Tu cuenta de Wedding Market está lista.",
+    emailConfirmationErrorTitle: "Error al confirmar el correo",
+    emailConfirmationFailed: "No pudimos terminar la confirmación. Abre el enlace de verificación más reciente o inicia sesión de nuevo.",
+    resendConfirmation: "Reenviar correo de verificación",
+    resendingConfirmation: "Enviando correo de verificación...",
+    confirmationResent: "Enviamos un nuevo correo de verificación. Abre el enlace más reciente para confirmar tu cuenta.",
     createAccountIntro: "Te haré unas preguntas rápidas para ayudarte a empezar tu plan de boda.",
     loginIntro: "Usa una cuenta local existente de Supabase. La app detectará si la cuenta es cliente, proveedor o admin después de iniciar sesión.",
     vendorSearch: "Búsqueda de proveedores",
@@ -1122,6 +1142,8 @@ function AuthScreen({
   const [message, setMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pendingConfirmationEmail, setPendingConfirmationEmail] = useState<string | null>(null);
+  const [isResendingConfirmation, setIsResendingConfirmation] = useState(false);
   const signupStepCount = 6;
   const stepTranslateY = stepOpacity.interpolate({
     inputRange: [0, 1],
@@ -1305,7 +1327,11 @@ function AuthScreen({
         profile: nextState.profile,
       });
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Unable to sign in.");
+      const nextMessage = error instanceof Error ? error.message : "Unable to sign in.";
+      if (/email not confirmed/i.test(nextMessage)) {
+        setPendingConfirmationEmail(email.trim().toLowerCase());
+      }
+      setMessage(nextMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -1330,16 +1356,42 @@ function AuthScreen({
         weddingBudget: signupForm.weddingBudget,
         weddingTheme: signupForm.weddingTheme,
       });
+
       setIsSuccess(true);
+      if (nextState.status === "confirmation_required") {
+        setPendingConfirmationEmail(nextState.email);
+        setMode("login");
+        setIsSignupModalOpen(false);
+        setMessage(labels.confirmationSent);
+        return;
+      }
+
       setMessage(labels.accountCreated);
       onSignedIn({
-        userEmail: nextState.user?.email ?? email.trim(),
-        profile: nextState.profile,
+        userEmail: nextState.state.user?.email ?? email.trim(),
+        profile: nextState.state.profile,
       });
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Unable to create account.");
     } finally {
       setIsSubmitting(false);
+    }
+  }
+
+  async function handleResendConfirmation() {
+    if (!pendingConfirmationEmail) return;
+
+    setIsResendingConfirmation(true);
+    setIsSuccess(false);
+    setMessage("");
+    try {
+      await resendSignUpConfirmation(pendingConfirmationEmail);
+      setIsSuccess(true);
+      setMessage(labels.confirmationResent);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : labels.emailConfirmationFailed);
+    } finally {
+      setIsResendingConfirmation(false);
     }
   }
 
@@ -1630,6 +1682,19 @@ function AuthScreen({
                 />
 
                 {message ? <Text style={isSuccess ? styles.successText : styles.errorText}>{message}</Text> : null}
+
+                {pendingConfirmationEmail ? (
+                  <TouchableOpacity
+                    disabled={isResendingConfirmation}
+                    onPress={() => void handleResendConfirmation()}
+                    style={[styles.secondaryButton, isResendingConfirmation && styles.primaryButtonDisabled]}
+                  >
+                    <Ionicons name="mail-outline" size={17} color={colors.tealDark} />
+                    <Text style={styles.secondaryButtonText}>
+                      {isResendingConfirmation ? labels.resendingConfirmation : labels.resendConfirmation}
+                    </Text>
+                  </TouchableOpacity>
+                ) : null}
 
                 <TouchableOpacity
                   disabled={isSubmitting}
@@ -5081,20 +5146,57 @@ export default function App() {
   const isHomeOpen = !isDetailOpen && visibleActiveTab === "home";
   const isVendorPublicOpen = !isDetailOpen && visibleActiveTab === "vendor";
   const configErrors = getMobileConfigErrors();
+  const applyAuthenticatedState = useCallback((state: AuthState) => {
+    setUserEmail(state.user?.email ?? null);
+    setProfile(state.profile);
+    setLanguage(state.profile?.language ?? "en");
+    setActiveTab(roleTabs(state.profile?.role ?? (state.user ? "client" : "guest"))[0].key);
+    setIsAccountMenuOpen(false);
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
 
-    loadAuthState()
-      .then((state) => {
-        if (!isMounted) return;
-        setUserEmail(state.user?.email ?? null);
-        setProfile(state.profile);
-        setLanguage(state.profile?.language ?? "en");
-      })
-      .finally(() => {
+    const handleAuthUrl = async (url: string, showConfirmation: boolean) => {
+      try {
+        const state = await createSessionFromMobileAuthUrl(url);
+        if (!state || !isMounted) return false;
+
+        applyAuthenticatedState(state);
+        if (showConfirmation) {
+          const labels = copy[state.profile?.language ?? "en"];
+          Alert.alert(labels.emailConfirmedTitle, labels.emailConfirmedBody);
+        }
+        return true;
+      } catch (error) {
+        if (isMounted) {
+          const message = error instanceof Error ? error.message : copy.en.emailConfirmationFailed;
+          Alert.alert(copy.en.emailConfirmationErrorTitle, message);
+        }
+        return true;
+      }
+    };
+
+    void (async () => {
+      try {
+        const initialUrl = await Linking.getInitialURL();
+        const handled = initialUrl ? await handleAuthUrl(initialUrl, true) : false;
+        if (!handled) {
+          const state = await restoreMobileAuthState();
+          if (isMounted) applyAuthenticatedState(state);
+        }
+      } catch (error) {
+        if (process.env.NODE_ENV !== "production") {
+          console.warn("Unable to restore the mobile auth session", error);
+        }
+      } finally {
         if (isMounted) setIsBooting(false);
-      });
+      }
+    })();
+
+    const linkingSubscription = Linking.addEventListener("url", ({ url }) => {
+      void handleAuthUrl(url, true);
+    });
 
     const { data: subscription } =
       supabase?.auth.onAuthStateChange((_event, session) => {
@@ -5112,9 +5214,10 @@ export default function App() {
 
     return () => {
       isMounted = false;
+      linkingSubscription.remove();
       subscription.subscription?.unsubscribe();
     };
-  }, []);
+  }, [applyAuthenticatedState]);
 
   useEffect(() => {
     if (selectedVendor) {
