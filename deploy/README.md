@@ -46,8 +46,13 @@ there is a new fast-forward commit, it:
 Run one check manually:
 
 ```bash
-sudo -u deploy -H /usr/bin/bash /var/www/wedding-market/deploy/deploy-if-changed.sh
+/var/www/wedding-market/deploy/deploy-if-changed.sh
 ```
+
+You can launch that command as either `root` or `deploy`. When launched as
+`root`, the script immediately re-executes itself through
+`sudo -u deploy -H`; PM2 therefore continues to use `/home/deploy/.pm2`, and
+build artifacts remain owned by `deploy`. Any other user is rejected.
 
 The first time, make sure the checkout is on `dev`, is clean, and can fetch the
 GitHub repository non-interactively:
@@ -59,13 +64,22 @@ sudo -u deploy -H git pull --ff-only origin dev
 sudo -u deploy -H git fetch origin dev
 ```
 
+Because that bootstrap pull retrieves the deployer and advances the checkout
+before it has built the app, run the first deployment once with `--force`:
+
+```bash
+/var/www/wedding-market/deploy/deploy-if-changed.sh --force
+```
+
+`--force` rebuilds the current branch commit. The systemd timer never uses it;
+normal scheduled checks only deploy when `origin/dev` advances.
+
 To check automatically every two minutes, install the included systemd service
 and timer once:
 
 ```bash
 cd /var/www/wedding-market
 sudo bash deploy/install-deployer.sh
-sudo systemctl start wedding-market-deploy.service
 sudo systemctl status wedding-market-deploy.timer
 sudo journalctl -u wedding-market-deploy.service -n 100 --no-pager
 ```

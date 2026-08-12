@@ -15,7 +15,8 @@ id "$DEPLOY_USER" >/dev/null 2>&1 || {
   exit 1
 }
 
-[[ -x "$APP_DIR/deploy/deploy-if-changed.sh" ]] || chmod 0755 "$APP_DIR/deploy/deploy-if-changed.sh"
+chown "$DEPLOY_USER:$DEPLOY_USER" "$APP_DIR/deploy/deploy-if-changed.sh"
+chmod 0700 "$APP_DIR/deploy/deploy-if-changed.sh"
 
 install -m 0644 "$APP_DIR/deploy/wedding-market-deploy.service" /etc/systemd/system/wedding-market-deploy.service
 install -m 0644 "$APP_DIR/deploy/wedding-market-deploy.timer" /etc/systemd/system/wedding-market-deploy.timer
@@ -24,6 +25,8 @@ systemctl daemon-reload
 systemctl enable --now wedding-market-deploy.timer
 
 printf 'Installed Wedding Market branch deployer.\n'
-printf 'Run a check now: systemctl start wedding-market-deploy.service\n'
+printf 'First deployment after the bootstrap git pull:\n'
+printf '  %s/deploy/deploy-if-changed.sh --force\n' "$APP_DIR"
+printf 'Later change-only check: systemctl start wedding-market-deploy.service\n'
 printf 'Follow logs: journalctl -u wedding-market-deploy.service -f\n'
 printf 'Timer status: systemctl status wedding-market-deploy.timer\n'

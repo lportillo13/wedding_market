@@ -2,6 +2,18 @@
 
 set -Eeuo pipefail
 
+if [[ "$(id -u)" -eq 0 ]]; then
+  echo "Root detected; switching to the deploy user..."
+  exec sudo -u deploy -H /usr/bin/bash "$(readlink -f "${BASH_SOURCE[0]}")" "$@"
+fi
+
+DEPLOY_USER="deploy"
+
+if [[ "$(id -un)" != "$DEPLOY_USER" ]]; then
+  echo "Run this deployer as root or $DEPLOY_USER, not $(id -un)." >&2
+  exit 1
+fi
+
 APP_DIR="${APP_DIR:-/var/www/wedding-market}"
 DEPLOY_BRANCH="${DEPLOY_BRANCH:-dev}"
 DEPLOY_REMOTE="${DEPLOY_REMOTE:-origin}"
@@ -10,6 +22,7 @@ HEALTH_URL="${HEALTH_URL:-http://127.0.0.1:3001/api/health}"
 LOCK_FILE="${LOCK_FILE:-/tmp/wedding-market-deploy.lock}"
 HEALTH_ATTEMPTS="${HEALTH_ATTEMPTS:-20}"
 HEALTH_DELAY_SECONDS="${HEALTH_DELAY_SECONDS:-3}"
+force_deploy=0
 
 previous_sha=""
 deployment_updated=0
@@ -70,6 +83,12 @@ rollback() {
 
 trap 'rollback "$LINENO" "$?"' ERR
 
+case "${1:-}" in
+  "") ;;
+  --force) force_deploy=1 ;;
+  *) fail "Usage: $0 [--force]" ;;
+esac
+
 require_command git
 require_command npm
 require_command pm2
@@ -102,20 +121,24 @@ git fetch --prune "$DEPLOY_REMOTE" "+refs/heads/$DEPLOY_BRANCH:refs/remotes/$DEP
 previous_sha="$(git rev-parse HEAD)"
 remote_sha="$(git rev-parse "$DEPLOY_REMOTE/$DEPLOY_BRANCH")"
 
-if [[ "$previous_sha" == "$remote_sha" ]]; then
+if [[ "$previous_sha" == "$remote_sha" && "$force_deploy" -eq 0 ]]; then
   log "Already deployed at $remote_sha; nothing to do."
   exit 0
 fi
 
-if ! git merge-base --is-ancestor "$previous_sha" "$remote_sha"; then
-  fail "Local HEAD $previous_sha has diverged from $DEPLOY_REMOTE/$DEPLOY_BRANCH ($remote_sha). Refusing to reset it."
+if [[ "$previous_sha" != "$remote_sha" ]]; then
+  if ! git merge-base --is-ancestor "$previous_sha" "$remote_sha"; then
+    fail "Local HEAD $previous_sha has diverged from $DEPLOY_REMOTE/$DEPLOY_BRANCH ($remote_sha). Refusing to reset it."
+  fi
+
+  log "Deploying $previous_sha -> $remote_sha"
+  git merge --ff-only "$DEPLOY_REMOTE/$DEPLOY_BRANCH"
+  deployment_updated=1
+else
+  log "Force-deploying current commit $remote_sha."
 fi
 
-log "Deploying $previous_sha -> $remote_sha"
-git merge --ff-only "$DEPLOY_REMOTE/$DEPLOY_BRANCH"
-deployment_updated=1
-
-log "Installing locked production dependencies."
+log "Installing locked dependencies."
 npm ci
 
 log "Building the Next.js application."
