@@ -7,7 +7,7 @@ import {
   parseVendorNewRequestNotificationData,
   parseVendorQuoteAcceptedNotificationData,
   VENDOR_NOTIFICATION_TYPES,
-} from "@/lib/notifications";
+} from "@/lib/notification-types";
 import { type QuoteMessageRow, fetchQuoteMessagesByQuoteIds } from "@/lib/quote-messages";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";

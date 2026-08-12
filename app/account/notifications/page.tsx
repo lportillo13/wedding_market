@@ -12,7 +12,7 @@ import {
   loadNotifications,
 } from "@/lib/notification-center";
 import NotificationOpenLink from "@/components/NotificationOpenLink";
-import { parseQuoteAnsweredNotificationData, parseThreadReplyNotificationData } from "@/lib/notifications";
+import { parseQuoteAnsweredNotificationData, parseThreadReplyNotificationData } from "@/lib/notification-types";
 import { buildAutocompleteSuggestions } from "@/lib/search/autocomplete";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";

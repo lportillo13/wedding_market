@@ -62,6 +62,8 @@ export default function SiteFooter({ vendorCategories }: SiteFooterProps) {
   const { language } = useLanguage();
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [subscribing, setSubscribing] = useState(false);
+  const [subscribeError, setSubscribeError] = useState("");
   const [openFooterMenus, setOpenFooterMenus] = useState<Record<FooterMenuId, boolean>>({
     navigation: false,
     contact: false,
@@ -75,10 +77,33 @@ export default function SiteFooter({ vendorCategories }: SiteFooterProps) {
   const featuredCategories = vendorCategories.slice(0, 5);
   const currentYear = new Date().getFullYear();
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email.trim()) {
+    const normalizedEmail = email.trim();
+    if (!normalizedEmail || subscribing) {
+      return;
+    }
+
+    setSubscribing(true);
+    setSubscribeError("");
+
+    try {
+      const response = await fetch("/api/newsletter/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: normalizedEmail, website: "" }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Newsletter signup failed.");
+      }
+
       setSubscribed(true);
+      setEmail("");
+    } catch {
+      setSubscribeError(t("footer.newsletter.errorMessage"));
+    } finally {
+      setSubscribing(false);
     }
   };
 
@@ -119,14 +144,20 @@ export default function SiteFooter({ vendorCategories }: SiteFooterProps) {
                   placeholder={t("footer.newsletter.placeholder")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={subscribing}
                   required
                   aria-label={t("footer.newsletter.placeholder")}
                 />
-                <button type="submit" className="wm-site-footer__newsletter-btn">
-                  {t("footer.newsletter.submit")}
+                <button type="submit" className="wm-site-footer__newsletter-btn" disabled={subscribing}>
+                  {subscribing ? t("footer.newsletter.submitting") : t("footer.newsletter.submit")}
                 </button>
               </form>
             )}
+            {subscribeError ? (
+              <p className="wm-site-footer__newsletter-error" role="alert">
+                {subscribeError}
+              </p>
+            ) : null}
 
             <div className="wm-site-footer__app-btns">
               <a href="https://apps.apple.com" target="_blank" rel="noopener noreferrer" className="wm-site-footer__app-btn" aria-label="Download on the App Store">

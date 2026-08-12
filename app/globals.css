@@ -3745,11 +3745,24 @@ select:focus {
   box-shadow: var(--wm-shadow-gold);
 }
 
+.wm-site-footer__newsletter-btn:disabled,
+.wm-site-footer__newsletter-input:disabled {
+  cursor: wait;
+  opacity: 0.68;
+}
+
 .wm-site-footer__newsletter-success {
   color: var(--wm-accent);
   font-size: 1rem;
   font-weight: 500;
   margin: 0 0 1.5rem;
+}
+
+.wm-site-footer__newsletter-error {
+  color: #b42318;
+  font-size: 0.88rem;
+  margin: -0.85rem 0 1.5rem;
+  max-width: 22rem;
 }
 
 /* App store buttons */

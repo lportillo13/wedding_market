@@ -55,7 +55,9 @@ const common = {
       "heading": "Stay updated on the latest from Wedding Market",
       "placeholder": "Your email address",
       "submit": "Subscribe",
-      "successMessage": "You're on the list!"
+      "submitting": "Subscribing...",
+      "successMessage": "You're on the list!",
+      "errorMessage": "We couldn't subscribe you right now. Please try again."
     },
     "contact": {
       "email": "hello@weddingmarket.com",

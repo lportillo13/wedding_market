@@ -16,7 +16,7 @@ import {
   parseThreadReplyNotificationData,
   parseVendorNewRequestNotificationData,
   parseVendorQuoteAcceptedNotificationData,
-} from "@/lib/notifications";
+} from "@/lib/notification-types";
 import { buildAutocompleteSuggestions } from "@/lib/search/autocomplete";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 

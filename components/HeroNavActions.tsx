@@ -6,7 +6,7 @@ import type { User } from "@supabase/supabase-js";
 import AuthDropdown from "@/components/AuthDropdown";
 import LanguageDropdown from "@/components/LanguageDropdown";
 import NotificationLink from "@/components/NotificationLink";
-import { ACCOUNT_NOTIFICATION_TYPES, VENDOR_NOTIFICATION_TYPES } from "@/lib/notifications";
+import { ACCOUNT_NOTIFICATION_TYPES, VENDOR_NOTIFICATION_TYPES } from "@/lib/notification-types";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { useTranslation } from "@/contexts/LanguageContext";
 import { getShortlistCount } from "@/lib/shortlist";

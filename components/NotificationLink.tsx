@@ -10,7 +10,7 @@ import {
   parseVendorNewRequestNotificationData,
   parseVendorQuoteAcceptedNotificationData,
   type NotificationType,
-} from "@/lib/notifications";
+} from "@/lib/notification-types";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 

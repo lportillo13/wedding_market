@@ -5,26 +5,30 @@ import {
   fillTemplate,
   getLanguageLocale,
   isSupportedLanguage,
+  type SupportedLanguage,
 } from "@/lib/i18n";
+import { deliverNotificationEmail } from "@/lib/notification-email";
+export {
+  ACCOUNT_NOTIFICATION_TYPES,
+  parseQuoteAnsweredNotificationData,
+  parseThreadReplyNotificationData,
+  parseVendorNewRequestNotificationData,
+  parseVendorQuoteAcceptedNotificationData,
+  VENDOR_NOTIFICATION_TYPES,
+  type NotificationType,
+  type QuoteAnsweredNotificationData,
+  type ThreadReplyNotificationData,
+  type VendorNewRequestNotificationData,
+  type VendorQuoteAcceptedNotificationData,
+} from "@/lib/notification-types";
+import type {
+  NotificationType,
+  QuoteAnsweredNotificationData,
+  ThreadReplyNotificationData,
+  VendorNewRequestNotificationData,
+  VendorQuoteAcceptedNotificationData,
+} from "@/lib/notification-types";
 import { sendMobilePushNotification } from "@/lib/push-notifications";
-
-export type NotificationType =
-  | "quote_answered"
-  | "vendor_new_request"
-  | "vendor_quote_accepted"
-  | "thread_reply";
-
-export const ACCOUNT_NOTIFICATION_TYPES = ["quote_answered", "thread_reply"] as const satisfies readonly NotificationType[];
-export const VENDOR_NOTIFICATION_TYPES = ["vendor_new_request", "vendor_quote_accepted", "thread_reply"] as const satisfies readonly NotificationType[];
-
-export type QuoteAnsweredNotificationData = {
-  rfqId: string;
-  quoteId: string;
-  vendorId: string;
-  vendorName: string | null;
-  amountCents: number | null;
-  isUpdate: boolean;
-};
 
 type CreateQuoteAnsweredNotificationInput = {
   recipientId: string;
@@ -35,16 +39,6 @@ type CreateQuoteAnsweredNotificationInput = {
   vendorName: string | null;
   amountCents: number | null;
   isUpdate: boolean;
-};
-
-export type VendorNewRequestNotificationData = {
-  rfqId: string;
-  vendorId: string;
-  requesterName: string | null;
-  city: string | null;
-  state: string | null;
-  country: string | null;
-  eventDate: string | null;
 };
 
 type CreateVendorNewRequestNotificationInput = {
@@ -59,15 +53,6 @@ type CreateVendorNewRequestNotificationInput = {
   eventDate: string | null;
 };
 
-export type VendorQuoteAcceptedNotificationData = {
-  rfqId: string;
-  quoteId: string;
-  vendorId: string;
-  acceptedByName: string | null;
-  revealEmail: boolean;
-  revealPhone: boolean;
-};
-
 type CreateVendorQuoteAcceptedNotificationInput = {
   recipientId: string;
   actorId: string | null;
@@ -77,15 +62,6 @@ type CreateVendorQuoteAcceptedNotificationInput = {
   acceptedByName: string | null;
   revealEmail: boolean;
   revealPhone: boolean;
-};
-
-export type ThreadReplyNotificationData = {
-  rfqId: string;
-  quoteId: string;
-  vendorId: string;
-  senderRole: "client" | "vendor";
-  senderName: string | null;
-  messagePreview: string | null;
 };
 
 type CreateThreadReplyNotificationInput = {
@@ -113,6 +89,7 @@ async function insertNotification(
     title: string;
     body: string;
     data: unknown;
+    language: SupportedLanguage;
   }
 ) {
   const result = await client
@@ -131,14 +108,25 @@ async function insertNotification(
     .single<{ id: string }>();
 
   if (!result.error && result.data?.id) {
-    await sendMobilePushNotification(client, {
-      notificationId: result.data.id,
-      recipientId: input.recipientId,
-      type: input.type,
-      title: input.title,
-      body: input.body,
-      data: input.data,
-    });
+    await Promise.all([
+      sendMobilePushNotification(client, {
+        notificationId: result.data.id,
+        recipientId: input.recipientId,
+        type: input.type,
+        title: input.title,
+        body: input.body,
+        data: input.data,
+      }),
+      deliverNotificationEmail({
+        notificationId: result.data.id,
+        recipientId: input.recipientId,
+        type: input.type,
+        title: input.title,
+        body: input.body,
+        data: input.data,
+        language: input.language,
+      }),
+    ]);
   }
 
   return { data: result.data, error: result.error };
@@ -186,6 +174,7 @@ export async function createQuoteAnsweredNotification(
     title,
     body,
     data,
+    language,
   });
 }
 
@@ -223,6 +212,7 @@ export async function createVendorNewRequestNotification(
     title,
     body,
     data,
+    language,
   });
 }
 
@@ -260,6 +250,7 @@ export async function createVendorQuoteAcceptedNotification(
     title,
     body,
     data,
+    language,
   });
 }
 
@@ -310,102 +301,6 @@ export async function createThreadReplyNotification(
     title,
     body,
     data,
+    language,
   });
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
-}
-
-export function parseQuoteAnsweredNotificationData(value: unknown): QuoteAnsweredNotificationData | null {
-  if (!isRecord(value)) {
-    return null;
-  }
-
-  const rfqId = typeof value.rfqId === "string" ? value.rfqId : null;
-  const quoteId = typeof value.quoteId === "string" ? value.quoteId : null;
-  const vendorId = typeof value.vendorId === "string" ? value.vendorId : null;
-
-  if (!rfqId || !quoteId || !vendorId) {
-    return null;
-  }
-
-  return {
-    rfqId,
-    quoteId,
-    vendorId,
-    vendorName: typeof value.vendorName === "string" ? value.vendorName : null,
-    amountCents: typeof value.amountCents === "number" ? value.amountCents : null,
-    isUpdate: value.isUpdate === true,
-  };
-}
-
-export function parseVendorNewRequestNotificationData(value: unknown): VendorNewRequestNotificationData | null {
-  if (!isRecord(value)) {
-    return null;
-  }
-
-  const rfqId = typeof value.rfqId === "string" ? value.rfqId : null;
-  const vendorId = typeof value.vendorId === "string" ? value.vendorId : null;
-
-  if (!rfqId || !vendorId) {
-    return null;
-  }
-
-  return {
-    rfqId,
-    vendorId,
-    requesterName: typeof value.requesterName === "string" ? value.requesterName : null,
-    city: typeof value.city === "string" ? value.city : null,
-    state: typeof value.state === "string" ? value.state : null,
-    country: typeof value.country === "string" ? value.country : null,
-    eventDate: typeof value.eventDate === "string" ? value.eventDate : null,
-  };
-}
-
-export function parseVendorQuoteAcceptedNotificationData(value: unknown): VendorQuoteAcceptedNotificationData | null {
-  if (!isRecord(value)) {
-    return null;
-  }
-
-  const rfqId = typeof value.rfqId === "string" ? value.rfqId : null;
-  const quoteId = typeof value.quoteId === "string" ? value.quoteId : null;
-  const vendorId = typeof value.vendorId === "string" ? value.vendorId : null;
-
-  if (!rfqId || !quoteId || !vendorId) {
-    return null;
-  }
-
-  return {
-    rfqId,
-    quoteId,
-    vendorId,
-    acceptedByName: typeof value.acceptedByName === "string" ? value.acceptedByName : null,
-    revealEmail: value.revealEmail === true,
-    revealPhone: value.revealPhone === true,
-  };
-}
-
-export function parseThreadReplyNotificationData(value: unknown): ThreadReplyNotificationData | null {
-  if (!isRecord(value)) {
-    return null;
-  }
-
-  const rfqId = typeof value.rfqId === "string" ? value.rfqId : null;
-  const quoteId = typeof value.quoteId === "string" ? value.quoteId : null;
-  const vendorId = typeof value.vendorId === "string" ? value.vendorId : null;
-  const senderRole = value.senderRole === "client" || value.senderRole === "vendor" ? value.senderRole : null;
-
-  if (!rfqId || !quoteId || !vendorId || !senderRole) {
-    return null;
-  }
-
-  return {
-    rfqId,
-    quoteId,
-    vendorId,
-    senderRole,
-    senderName: typeof value.senderName === "string" ? value.senderName : null,
-    messagePreview: typeof value.messagePreview === "string" ? value.messagePreview : null,
-  };
 }

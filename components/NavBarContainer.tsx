@@ -7,7 +7,7 @@ import NavBar from "@/components/NavBar";
 import AuthDropdown from "@/components/AuthDropdown";
 import GuestAuthActions from "@/components/GuestAuthActions";
 import NotificationLink from "@/components/NotificationLink";
-import { ACCOUNT_NOTIFICATION_TYPES, VENDOR_NOTIFICATION_TYPES } from "@/lib/notifications";
+import { ACCOUNT_NOTIFICATION_TYPES, VENDOR_NOTIFICATION_TYPES } from "@/lib/notification-types";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import type { HeaderVendorCategory } from "@/components/VendorsMegaMenu";
 
