@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { parseCloudinaryImage } from "@/lib/images";
 import { supportedLanguages, type SupportedLanguage } from "@/lib/i18n";
 import UserAvatar from "@/components/UserAvatar";
@@ -16,6 +17,7 @@ type AuthDropdownProps = {
 };
 
 export default function AuthDropdown({ user, isVendor }: AuthDropdownProps) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
@@ -208,7 +210,8 @@ export default function AuthDropdown({ user, isVendor }: AuthDropdownProps) {
                   throw new Error("Failed to complete sign out on the server.");
                 }
 
-                window.location.assign("/");
+                router.push("/");
+                router.refresh();
                 return;
               } finally {
                 setSigningOut(false);

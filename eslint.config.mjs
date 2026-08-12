@@ -19,6 +19,7 @@ export default [
       "**/.claude/**",
       "**/.next/**",
       "**/dist-tests/**",
+      "mobile/**",
       "out/**",
       "build/**",
       "next-env.d.ts",

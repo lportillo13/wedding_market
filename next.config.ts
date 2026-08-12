@@ -2,9 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["ffmpeg-static", "sharp"],
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   sassOptions: {
     quietDeps: true,
     silenceDeprecations: ["import", "legacy-js-api"],

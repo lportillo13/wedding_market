@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { type ChangeEvent, type FocusEvent, type KeyboardEvent, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -29,6 +29,7 @@ function normalizeTerm(value: string) {
 }
 
 export default function VendorsMegaMenu({ categories, closeMobileNav }: VendorsMegaMenuProps) {
+  const router = useRouter();
   const { dictionary, language } = useLanguage();
   const pathname = usePathname();
   const labels = dictionary.nav.vendorsMenu;
@@ -180,7 +181,7 @@ export default function VendorsMegaMenu({ categories, closeMobileNav }: VendorsM
       event.preventDefault();
       const selected = suggestions[activeIndex];
       if (selected) {
-        window.location.assign(`/vendors/${selected.slug}`);
+        router.push(`/vendors/${selected.slug}`);
       }
     }
 
