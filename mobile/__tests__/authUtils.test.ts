@@ -10,6 +10,7 @@ describe("mobile auth callback", () => {
       accessToken: "access-123",
       refreshToken: "refresh-456",
       code: null,
+      type: "signup",
     });
   });
 
@@ -18,7 +19,16 @@ describe("mobile auth callback", () => {
       accessToken: null,
       refreshToken: null,
       code: "code-123",
+      type: null,
     });
+  });
+
+  test("identifies password recovery links", () => {
+    expect(
+      parseMobileAuthCallback(
+        `${MOBILE_AUTH_CALLBACK_URL}#access_token=access-123&refresh_token=refresh-456&type=recovery`,
+      ),
+    ).toMatchObject({ type: "recovery" });
   });
 
   test("ignores unrelated app links", () => {

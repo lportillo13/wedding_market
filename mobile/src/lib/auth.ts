@@ -41,6 +41,11 @@ export type MobileSignUpResult =
   | { status: "signed_in"; state: AuthState }
   | { status: "confirmation_required"; email: string };
 
+export type MobileAuthUrlResult = {
+  state: AuthState;
+  event: "authenticated" | "password_recovery";
+};
+
 type PendingMobileSignUp = {
   version: 1;
   role: SignUpRole;
@@ -360,7 +365,7 @@ export async function restoreMobileAuthState() {
   return provisionAuthenticatedAccount(state.user);
 }
 
-export async function createSessionFromMobileAuthUrl(url: string): Promise<AuthState | null> {
+export async function createSessionFromMobileAuthUrl(url: string): Promise<MobileAuthUrlResult | null> {
   if (!supabase) {
     throw new Error("Supabase is not configured. Check mobile/.env.");
   }
@@ -384,7 +389,43 @@ export async function createSessionFromMobileAuthUrl(url: string): Promise<AuthS
     throw new Error("The confirmation link did not include a valid account session.");
   }
 
-  return provisionAuthenticatedAccount(user);
+  if (callback.type === "recovery") {
+    return {
+      state: await loadAuthState(),
+      event: "password_recovery",
+    };
+  }
+
+  return {
+    state: await provisionAuthenticatedAccount(user),
+    event: "authenticated",
+  };
+}
+
+export async function requestPasswordReset(email: string) {
+  if (!supabase) {
+    throw new Error("Supabase is not configured. Check mobile/.env.");
+  }
+
+  const normalizedEmail = requireText(email, "Email is required.").toLowerCase();
+  const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
+    redirectTo: MOBILE_AUTH_CALLBACK_URL,
+  });
+
+  if (error) throw new Error(error.message);
+}
+
+export async function updatePassword(password: string) {
+  if (!supabase) {
+    throw new Error("Supabase is not configured. Check mobile/.env.");
+  }
+
+  if (password.length < 8) {
+    throw new Error("Password must be at least 8 characters.");
+  }
+
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) throw new Error(error.message);
 }
 
 export async function resendSignUpConfirmation(email: string) {

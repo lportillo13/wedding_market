@@ -6,7 +6,12 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const next = requestUrl.searchParams.get("next") || "/";
+  const requestedNext = requestUrl.searchParams.get("next");
+  const next = requestedNext?.startsWith("/")
+    && !requestedNext.startsWith("//")
+    && !requestedNext.includes("\\")
+    ? requestedNext
+    : "/";
   const res = NextResponse.redirect(new URL(next, requestUrl.origin));
   if (!code) return res;
 
@@ -48,6 +53,12 @@ export async function GET(request: Request) {
     }
   );
 
-  await supabase.auth.exchangeCodeForSession(code);
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  if (error) {
+    const fallbackPath = next === "/reset-password"
+      ? "/forgot-password?error=recovery"
+      : "/login?error=auth_callback";
+    return NextResponse.redirect(new URL(fallbackPath, requestUrl.origin));
+  }
   return res;
 }

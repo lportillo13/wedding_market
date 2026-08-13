@@ -18,7 +18,13 @@ async function resolveLoginDestination(nextPath: string, userId?: string) {
   return isVendor ? "/vendor/profile" : "/account/profile";
 }
 
-export default function LoginClient({ nextPath }: { nextPath: string }) {
+export default function LoginClient({
+  nextPath,
+  passwordUpdated = false,
+}: {
+  nextPath: string;
+  passwordUpdated?: boolean;
+}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -61,6 +67,7 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
         </div>
 
         <div className="wm-auth-card__body">
+          {passwordUpdated && <div className="wm-auth-success">{labels.passwordUpdated}</div>}
           {err && <div className="wm-auth-error">{err}</div>}
 
           <form onSubmit={onEmailPassword}>
@@ -85,6 +92,9 @@ export default function LoginClient({ nextPath }: { nextPath: string }) {
                 required
                 autoComplete="current-password"
               />
+              <div className="wm-auth-field-action">
+                <Link href="/forgot-password">{labels.forgotPassword}</Link>
+              </div>
             </div>
             <button className="wm-auth-btn" type="submit" disabled={loading}>
               {loading ? labels.submitting : labels.submit}

@@ -36,11 +36,13 @@ import {
   type AuthState,
   createSessionFromMobileAuthUrl,
   loadAuthState,
+  requestPasswordReset,
   resendSignUpConfirmation,
   restoreMobileAuthState,
   signInWithEmail,
   signUpWithEmail,
   signOut,
+  updatePassword,
 } from "./src/lib/auth";
 import { fetchVendorDetail, fetchVendors, type VendorDetail, type VendorListItem } from "./src/lib/api";
 import {
@@ -502,6 +504,26 @@ const copy = {
     authTitle: "Sign in to your platform workspace.",
     email: "Email",
     password: "Password",
+    forgotPassword: "Forgot your password?",
+    passwordResetTitle: "Reset your password",
+    passwordResetIntro: "Enter your account email and we will send you a secure reset link.",
+    sendResetLink: "Send reset link",
+    sendingResetLink: "Sending reset link...",
+    resetEmailSent: "If an account exists for that email, a reset link is on its way. Check your inbox and spam folder.",
+    backToSignIn: "Back to sign in",
+    newPassword: "New password",
+    confirmNewPassword: "Confirm new password",
+    chooseNewPassword: "Choose a new password",
+    chooseNewPasswordIntro: "Use at least 8 characters. This secure reset link can only be used once.",
+    updatePassword: "Update password",
+    updatingPassword: "Updating password...",
+    passwordTooShort: "Password must be at least 8 characters.",
+    passwordsDoNotMatch: "The passwords do not match.",
+    passwordUpdatedTitle: "Password updated",
+    passwordUpdatedBody: "You can now sign in with your new password.",
+    passwordResetErrorTitle: "Password reset failed",
+    passwordResetFailed: "We could not use this reset link. Request a new one and try again.",
+    cancel: "Cancel",
     signIn: "Sign In",
     signingIn: "Signing in...",
     createAccount: "Create Account",
@@ -804,6 +826,26 @@ const copy = {
     authTitle: "Inicia sesión en tu espacio de trabajo.",
     email: "Correo electrónico",
     password: "Contraseña",
+    forgotPassword: "¿Olvidaste tu contraseña?",
+    passwordResetTitle: "Restablece tu contraseña",
+    passwordResetIntro: "Ingresa el correo de tu cuenta y te enviaremos un enlace seguro.",
+    sendResetLink: "Enviar enlace",
+    sendingResetLink: "Enviando enlace...",
+    resetEmailSent: "Si existe una cuenta con ese correo, recibirás un enlace. Revisa tu bandeja de entrada y spam.",
+    backToSignIn: "Volver a iniciar sesión",
+    newPassword: "Nueva contraseña",
+    confirmNewPassword: "Confirmar nueva contraseña",
+    chooseNewPassword: "Elige una nueva contraseña",
+    chooseNewPasswordIntro: "Usa al menos 8 caracteres. Este enlace seguro solo se puede usar una vez.",
+    updatePassword: "Actualizar contraseña",
+    updatingPassword: "Actualizando contraseña...",
+    passwordTooShort: "La contraseña debe tener al menos 8 caracteres.",
+    passwordsDoNotMatch: "Las contraseñas no coinciden.",
+    passwordUpdatedTitle: "Contraseña actualizada",
+    passwordUpdatedBody: "Ya puedes iniciar sesión con tu nueva contraseña.",
+    passwordResetErrorTitle: "No se pudo restablecer la contraseña",
+    passwordResetFailed: "No pudimos usar este enlace. Solicita uno nuevo e inténtalo otra vez.",
+    cancel: "Cancelar",
     signIn: "Entrar",
     signingIn: "Entrando...",
     createAccount: "Crear cuenta",
@@ -1114,6 +1156,7 @@ function AuthScreen({
 }) {
   const labels = copy[language];
   const [mode, setMode] = useState<"login" | "signup">("login");
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [signupStep, setSignupStep] = useState(0);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const [datePickerMonth, setDatePickerMonth] = useState(() => {
@@ -1332,6 +1375,22 @@ function AuthScreen({
         setPendingConfirmationEmail(email.trim().toLowerCase());
       }
       setMessage(nextMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function handlePasswordResetRequest() {
+    setMessage("");
+    setIsSuccess(false);
+    setIsSubmitting(true);
+
+    try {
+      await requestPasswordReset(email.trim());
+      setIsSuccess(true);
+      setMessage(labels.resetEmailSent);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : labels.passwordResetFailed);
     } finally {
       setIsSubmitting(false);
     }
@@ -1629,36 +1688,86 @@ function AuthScreen({
             <Ionicons name="sparkles-outline" size={22} color={colors.gold} />
           </View>
           <Text style={styles.brand}>The Wedding Market</Text>
-          <Text style={styles.authTitle}>{title ?? labels.authTitle}</Text>
-          <Text style={styles.body}>{mode === "login" ? labels.loginIntro : labels.createAccountIntro}</Text>
+          <Text style={styles.authTitle}>
+            {isForgotPassword ? labels.passwordResetTitle : title ?? labels.authTitle}
+          </Text>
+          <Text style={styles.body}>
+            {isForgotPassword
+              ? labels.passwordResetIntro
+              : mode === "login"
+                ? labels.loginIntro
+                : labels.createAccountIntro}
+          </Text>
 
-          <View style={styles.authModeSegment}>
-            {[
-              { key: "login", label: labels.logIn },
-              { key: "signup", label: labels.createAccount },
-            ].map((item) => (
-              <TouchableOpacity
-                key={item.key}
-                onPress={() => {
-                  setMode(item.key as "login" | "signup");
-                  if (item.key === "signup") {
-                    setSignupStep(0);
-                    stepOpacity.setValue(1);
-                  }
-                  setMessage("");
-                  setIsSuccess(false);
-                }}
-                style={[styles.authModeButton, mode === item.key && styles.authModeButtonActive]}
-              >
-                <Text style={[styles.authModeText, mode === item.key && styles.authModeTextActive]}>
-                  {item.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          {!isForgotPassword ? (
+            <View style={styles.authModeSegment}>
+              {[
+                { key: "login", label: labels.logIn },
+                { key: "signup", label: labels.createAccount },
+              ].map((item) => (
+                <TouchableOpacity
+                  key={item.key}
+                  onPress={() => {
+                    setMode(item.key as "login" | "signup");
+                    setIsForgotPassword(false);
+                    if (item.key === "signup") {
+                      setSignupStep(0);
+                      stepOpacity.setValue(1);
+                    }
+                    setMessage("");
+                    setIsSuccess(false);
+                  }}
+                  style={[styles.authModeButton, mode === item.key && styles.authModeButtonActive]}
+                >
+                  <Text style={[styles.authModeText, mode === item.key && styles.authModeTextActive]}>
+                    {item.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          ) : null}
 
           <View style={styles.form}>
-            {mode === "login" ? (
+            {isForgotPassword ? (
+              <>
+                <FieldLabel text={labels.email} />
+                <TextInput
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  keyboardType="email-address"
+                  onChangeText={setEmail}
+                  placeholder="you@example.com"
+                  style={styles.input}
+                  value={email}
+                />
+
+                {message ? <Text style={isSuccess ? styles.successText : styles.errorText}>{message}</Text> : null}
+
+                {!isSuccess ? (
+                  <TouchableOpacity
+                    disabled={isSubmitting}
+                    onPress={() => void handlePasswordResetRequest()}
+                    style={[styles.primaryButton, isSubmitting && styles.primaryButtonDisabled]}
+                  >
+                    <Text style={styles.primaryButtonText}>
+                      {isSubmitting ? labels.sendingResetLink : labels.sendResetLink}
+                    </Text>
+                  </TouchableOpacity>
+                ) : null}
+
+                <TouchableOpacity
+                  onPress={() => {
+                    setIsForgotPassword(false);
+                    setMessage("");
+                    setIsSuccess(false);
+                  }}
+                  style={styles.authTextButton}
+                >
+                  <Ionicons name="arrow-back-outline" size={16} color={colors.tealDark} />
+                  <Text style={styles.authTextButtonLabel}>{labels.backToSignIn}</Text>
+                </TouchableOpacity>
+              </>
+            ) : mode === "login" ? (
               <>
                 <FieldLabel text={labels.email} />
                 <TextInput
@@ -1680,6 +1789,18 @@ function AuthScreen({
                   style={styles.input}
                   value={password}
                 />
+
+                <TouchableOpacity
+                  onPress={() => {
+                    setIsForgotPassword(true);
+                    setMessage("");
+                    setIsSuccess(false);
+                    setPendingConfirmationEmail(null);
+                  }}
+                  style={styles.forgotPasswordButton}
+                >
+                  <Text style={styles.authTextButtonLabel}>{labels.forgotPassword}</Text>
+                </TouchableOpacity>
 
                 {message ? <Text style={isSuccess ? styles.successText : styles.errorText}>{message}</Text> : null}
 
@@ -1791,6 +1912,126 @@ function AuthScreen({
         </SafeAreaView>
       </Modal>
     </SafeAreaView>
+  );
+}
+
+function PasswordRecoveryModal({
+  visible,
+  language,
+  onComplete,
+  onCancel,
+}: {
+  visible: boolean;
+  language: "en" | "es";
+  onComplete: () => void;
+  onCancel: () => void;
+}) {
+  const labels = copy[language];
+  const [password, setPassword] = useState("");
+  const [confirmation, setConfirmation] = useState("");
+  const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!visible) {
+      setPassword("");
+      setConfirmation("");
+      setMessage("");
+      setIsSubmitting(false);
+    }
+  }, [visible]);
+
+  async function submit() {
+    setMessage("");
+    if (password.length < 8) {
+      setMessage(labels.passwordTooShort);
+      return;
+    }
+    if (password !== confirmation) {
+      setMessage(labels.passwordsDoNotMatch);
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await updatePassword(password);
+      await signOut();
+      onComplete();
+      Alert.alert(labels.passwordUpdatedTitle, labels.passwordUpdatedBody);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : labels.passwordResetFailed);
+      setIsSubmitting(false);
+    }
+  }
+
+  async function cancel() {
+    await signOut();
+    onCancel();
+  }
+
+  return (
+    <Modal
+      animationType="slide"
+      onRequestClose={() => void cancel()}
+      presentationStyle="fullScreen"
+      visible={visible}
+    >
+      <SafeAreaView style={styles.passwordRecoveryRoot}>
+        <StatusBar barStyle="dark-content" />
+        <ExpoStatusBar style="dark" />
+        <ScrollView contentContainerStyle={styles.passwordRecoveryContent} keyboardShouldPersistTaps="handled">
+          <View style={styles.authLogo}>
+            <Ionicons name="key-outline" size={22} color={colors.gold} />
+          </View>
+          <Text style={styles.brand}>The Wedding Market</Text>
+          <Text style={styles.authTitle}>{labels.chooseNewPassword}</Text>
+          <Text style={styles.body}>{labels.chooseNewPasswordIntro}</Text>
+
+          <View style={styles.form}>
+            <FieldLabel text={labels.newPassword} />
+            <TextInput
+              autoCapitalize="none"
+              autoComplete="new-password"
+              onChangeText={setPassword}
+              placeholder={labels.newPassword}
+              secureTextEntry
+              style={styles.input}
+              value={password}
+            />
+
+            <FieldLabel text={labels.confirmNewPassword} />
+            <TextInput
+              autoCapitalize="none"
+              autoComplete="new-password"
+              onChangeText={setConfirmation}
+              placeholder={labels.confirmNewPassword}
+              secureTextEntry
+              style={styles.input}
+              value={confirmation}
+            />
+
+            {message ? <Text style={styles.errorText}>{message}</Text> : null}
+
+            <TouchableOpacity
+              disabled={isSubmitting}
+              onPress={() => void submit()}
+              style={[styles.primaryButton, isSubmitting && styles.primaryButtonDisabled]}
+            >
+              <Text style={styles.primaryButtonText}>
+                {isSubmitting ? labels.updatingPassword : labels.updatePassword}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              disabled={isSubmitting}
+              onPress={() => void cancel()}
+              style={styles.authTextButton}
+            >
+              <Text style={styles.authTextButtonLabel}>{labels.cancel}</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </Modal>
   );
 }
 
@@ -5131,6 +5372,7 @@ export default function App() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [profile, setProfile] = useState<AuthProfile | null>(null);
   const [language, setLanguage] = useState<"en" | "es">("en");
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const role = profile?.role ?? "guest";
   const tabs = useMemo(() => roleTabs(role), [role]);
@@ -5158,20 +5400,40 @@ export default function App() {
     let isMounted = true;
 
     const handleAuthUrl = async (url: string, showConfirmation: boolean) => {
+      const isRecoveryUrl = /[?#&]type=recovery(?:&|$)/.test(url);
       try {
-        const state = await createSessionFromMobileAuthUrl(url);
-        if (!state || !isMounted) return false;
+        const result = await createSessionFromMobileAuthUrl(url);
+        if (!result || !isMounted) return false;
 
-        applyAuthenticatedState(state);
+        if (result.event === "password_recovery") {
+          setUserEmail(null);
+          setProfile(null);
+          setLanguage(result.state.profile?.language ?? "en");
+          setActiveTab("home");
+          setSelectedVendor(null);
+          setIsAccountMenuOpen(false);
+          setIsPasswordRecovery(true);
+          return true;
+        }
+
+        applyAuthenticatedState(result.state);
         if (showConfirmation) {
-          const labels = copy[state.profile?.language ?? "en"];
+          const labels = copy[result.state.profile?.language ?? "en"];
           Alert.alert(labels.emailConfirmedTitle, labels.emailConfirmedBody);
         }
         return true;
       } catch (error) {
         if (isMounted) {
-          const message = error instanceof Error ? error.message : copy.en.emailConfirmationFailed;
-          Alert.alert(copy.en.emailConfirmationErrorTitle, message);
+          const labels = copy.en;
+          const message = error instanceof Error
+            ? error.message
+            : isRecoveryUrl
+              ? labels.passwordResetFailed
+              : labels.emailConfirmationFailed;
+          Alert.alert(
+            isRecoveryUrl ? labels.passwordResetErrorTitle : labels.emailConfirmationErrorTitle,
+            message,
+          );
         }
         return true;
       }
@@ -5201,6 +5463,7 @@ export default function App() {
     const { data: subscription } =
       supabase?.auth.onAuthStateChange((_event, session) => {
         if (!session?.user) {
+          setIsPasswordRecovery(false);
           setUserEmail(null);
           setProfile(null);
           setActiveTab("home");
@@ -5546,6 +5809,24 @@ export default function App() {
           setActiveTab("inbox");
         }}
       />
+      <PasswordRecoveryModal
+        visible={isPasswordRecovery}
+        language={language}
+        onComplete={() => {
+          setIsPasswordRecovery(false);
+          setUserEmail(null);
+          setProfile(null);
+          setActiveTab("home");
+          setSelectedVendor(null);
+        }}
+        onCancel={() => {
+          setIsPasswordRecovery(false);
+          setUserEmail(null);
+          setProfile(null);
+          setActiveTab("home");
+          setSelectedVendor(null);
+        }}
+      />
     </SafeAreaView>
   );
 }
@@ -5569,6 +5850,16 @@ const styles = StyleSheet.create({
   },
   authScroll: {
     flexGrow: 1,
+  },
+  passwordRecoveryRoot: {
+    backgroundColor: colors.paper,
+    flex: 1,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight ?? 0 : 0,
+  },
+  passwordRecoveryContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+    padding: 24,
   },
   authModeSegment: {
     backgroundColor: colors.soft,
@@ -5596,6 +5887,25 @@ const styles = StyleSheet.create({
   },
   authModeTextActive: {
     color: colors.paper,
+  },
+  forgotPasswordButton: {
+    alignSelf: "flex-end",
+    paddingVertical: 4,
+  },
+  authTextButton: {
+    alignItems: "center",
+    alignSelf: "center",
+    flexDirection: "row",
+    gap: 6,
+    justifyContent: "center",
+    marginTop: 10,
+    minHeight: 40,
+    paddingHorizontal: 12,
+  },
+  authTextButtonLabel: {
+    color: colors.tealDark,
+    fontSize: 14,
+    fontWeight: "800",
   },
   signupProgressRow: {
     alignItems: "center",

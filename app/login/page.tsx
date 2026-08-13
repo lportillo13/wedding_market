@@ -7,7 +7,7 @@ export default async function Page({
   searchParams,
 }: {
   // Next 15: await searchParams
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; password_updated?: string }>;
 }) {
   const sp = await searchParams;
   const supabase = await getSupabaseServer();
@@ -25,5 +25,5 @@ export default async function Page({
   // If already logged in, go straight to target
   if (user) redirect(nextPath);
 
-  return <LoginClient nextPath={nextPath} />;
+  return <LoginClient nextPath={nextPath} passwordUpdated={sp.password_updated === "1"} />;
 }

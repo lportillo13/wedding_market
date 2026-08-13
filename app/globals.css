@@ -9542,6 +9542,47 @@ select:focus {
   padding-bottom: 4.25rem;
 }
 
+.wm-auth-success {
+  background: rgba(6, 118, 71, 0.07);
+  border: 1px solid rgba(6, 118, 71, 0.22);
+  border-radius: var(--wm-radius-sm);
+  color: #067647;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+}
+
+.wm-auth-description {
+  color: var(--wm-muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin: 0 0 1.5rem;
+  text-align: center;
+}
+
+.wm-auth-field-action {
+  font-size: 0.82rem;
+  margin-top: 0.5rem;
+  text-align: right;
+}
+
+.wm-auth-field-action a,
+.wm-auth-text-link {
+  color: var(--wm-accent-strong);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.wm-auth-field-action a:hover,
+.wm-auth-text-link:hover {
+  text-decoration: underline;
+}
+
+.wm-auth-back {
+  margin-top: 1.25rem;
+  text-align: center;
+}
+
 .wm-vendor-hero__frame,
 .wm-vendor-hero__spotlight,
 .wm-vendor-hero__spotlight--empty {

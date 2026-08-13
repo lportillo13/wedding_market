@@ -4,6 +4,7 @@ export type MobileAuthCallback = {
   accessToken: string | null;
   refreshToken: string | null;
   code: string | null;
+  type: string | null;
 };
 
 function callbackParams(url: string) {
@@ -29,5 +30,6 @@ export function parseMobileAuthCallback(url: string): MobileAuthCallback | null 
     accessToken: get("access_token"),
     refreshToken: get("refresh_token"),
     code: get("code"),
+    type: get("type"),
   };
 }
