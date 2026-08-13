@@ -27,6 +27,20 @@ function stringField(value: Record<string, unknown> | null, key: string) {
   return typeof value?.[key] === "string" ? value[key] : null;
 }
 
+function getNotificationEmailPresentation(type: NotificationType, language: SupportedLanguage) {
+  const labels: Record<NotificationType, { en: string; es: string }> = {
+    quote_answered: { en: "QUOTE UPDATE", es: "ACTUALIZACIÓN DE COTIZACIÓN" },
+    vendor_new_request: { en: "NEW CLIENT REQUEST", es: "NUEVA SOLICITUD DE CLIENTE" },
+    vendor_quote_accepted: { en: "QUOTE ACCEPTED", es: "COTIZACIÓN ACEPTADA" },
+    thread_reply: { en: "NEW MESSAGE", es: "NUEVO MENSAJE" },
+  };
+
+  return {
+    eyebrow: labels[type][language],
+    detailLabel: language === "es" ? "VISTA PREVIA DEL MENSAJE" : "MESSAGE PREVIEW",
+  };
+}
+
 export function getNotificationEmailAction(
   type: NotificationType,
   data: unknown,
@@ -63,7 +77,8 @@ export function buildNotificationEmail(input: NotificationEmailInput, recipientE
   const record = asRecord(input.data);
   const messagePreview = stringField(record, "messagePreview")?.replace(/\s+/g, " ").trim().slice(0, 320);
   const detail = input.type === "thread_reply" ? messagePreview : null;
-  const subject = `${input.title} | Wedding Market`;
+  const presentation = getNotificationEmailPresentation(input.type, input.language);
+  const subject = `${input.title} | The Wedding Market`;
   const textParts = [input.title, input.body];
 
   if (detail) {
@@ -79,6 +94,9 @@ export function buildNotificationEmail(input: NotificationEmailInput, recipientE
       title: input.title,
       body: input.body,
       detail,
+      detailLabel: presentation.detailLabel,
+      eyebrow: presentation.eyebrow,
+      language: input.language,
       actionLabel: action.label,
       actionUrl: action.url,
     }),

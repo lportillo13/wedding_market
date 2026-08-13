@@ -40,6 +40,9 @@ test("builds a localized, escaped notification email with a stable idempotency k
   assert.ok(email);
   assert.equal(email.to, "couple@example.com");
   assert.equal(email.idempotencyKey, "notification/notification-1");
+  assert.match(email.subject, /The Wedding Market$/);
+  assert.match(email.html, /NUEVO MENSAJE/);
+  assert.match(email.html, /VISTA PREVIA DEL MENSAJE/);
   assert.match(email.text, /Ver conversación/);
   assert.doesNotMatch(email.html, /<script>/);
   assert.match(email.html, /&lt;script&gt;/);

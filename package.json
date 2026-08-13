@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck && npm run lint && npm run build",
     "schema:supabase": "node ./scripts/generate-supabase-schema.mjs",
+    "email:deploy-auth": "node ./scripts/deploy-supabase-email-templates.mjs",
     "blog:import-samples": "node ./scripts/import-sample-blog-posts.js",
     "seed:random-vendors": "node ./scripts/seed-random-vendors.js",
     "test": "npm run test:build && npm run test:run",
