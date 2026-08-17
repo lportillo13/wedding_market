@@ -32,6 +32,12 @@ Password: <the Resend SMTP API key>
 
 Keep **Confirm Email** enabled. Under **Authentication -> Rate Limits**, set an email limit that fits the active Resend plan. Keep `theweddingmarket://auth/callback` in the allowed redirect URLs for the mobile app.
 
+Password-recovery emails deliberately link to the website's
+`/auth/confirm` endpoint instead of using Supabase's generated
+`.ConfirmationURL`. The endpoint verifies the token hash, stores the recovery
+session in secure cookies, and opens `/reset-password`. This keeps recovery
+links usable in any browser even when the request originated in the mobile app.
+
 ## 3. Configure application email
 
 Create a second Resend key with **Sending access**, restricted to `mail.thewedmarket.com`. Put it only in the server runtime environment:
@@ -57,6 +63,29 @@ RESEND_NEWSLETTER_TOPIC_ID=topic_replace_me
 The footer form then creates or re-subscribes the contact and opts it into that Topic. Send marketing mail with Resend Broadcasts so Resend can apply the contact's unsubscribe preferences.
 
 ## 5. Deploy and verify
+
+Hosted Supabase Auth does not read `supabase/config.toml` or automatically upload
+the files in `supabase/templates` during an application deploy. Publish the
+branded Auth templates separately whenever those files change:
+
+```bash
+export SUPABASE_ACCESS_TOKEN="<personal-access-token>"
+export SUPABASE_PROJECT_REF="<project-ref>"
+npm run email:deploy-auth
+```
+
+The command updates confirmation, password recovery, invite, magic-link, email
+change, and reauthentication templates through the Supabase Management API. The
+access token is only needed for this deployment command and must not be added to
+the application runtime environment.
+
+For local email previews, restart the local Supabase stack after changing a
+template so Auth reloads `supabase/config.toml`:
+
+```bash
+npx supabase stop
+npx supabase start
+```
 
 After updating `/var/www/wedding-market/deploy/.env`, deploy the `dev` branch:
 

@@ -5,7 +5,7 @@ import test from "node:test";
 
 const templates = [
   ["confirmation.html", ".ConfirmationURL"],
-  ["recovery.html", ".ConfirmationURL"],
+  ["recovery.html", ".TokenHash"],
   ["invite.html", ".ConfirmationURL"],
   ["magic-link.html", ".ConfirmationURL"],
   ["email-change.html", ".ConfirmationURL"],
@@ -23,4 +23,18 @@ test("all Supabase Auth emails use the branded responsive template", () => {
     assert.match(html, /\.Data\.language/);
     assert.ok(html.includes(`{{ ${requiredVariable} }}`), `${fileName} must include {{ ${requiredVariable} }}`);
   }
+});
+
+test("password recovery always opens the web reset flow", () => {
+  const html = readFileSync(
+    path.join(process.cwd(), "supabase", "templates", "recovery.html"),
+    "utf8",
+  );
+
+  assert.ok(
+    html.includes(
+      "{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=recovery&amp;next=/reset-password",
+    ),
+  );
+  assert.doesNotMatch(html, /\.ConfirmationURL/);
 });
