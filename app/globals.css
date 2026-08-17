@@ -7648,7 +7648,7 @@ select:focus {
 .wm-signup-fields {
   animation: wm-signup-fields-in 220ms ease both;
   margin-top: clamp(0.75rem, 1.8svh, 1.15rem);
-  text-align: left;
+  text-align: center;
   width: 100%;
 }
 
@@ -7656,6 +7656,37 @@ select:focus {
 .wm-signup-modal .form-select {
   border-radius: 0.9rem;
   min-height: 3rem;
+  text-align: center;
+}
+
+.wm-signup-modal .form-select {
+  text-align-last: center;
+}
+
+.wm-signup-fields .form-label,
+.wm-signup-fields .form-text {
+  display: block;
+  text-align: center;
+  width: 100%;
+}
+
+.wm-signup-money-field {
+  position: relative;
+}
+
+.wm-signup-money-field > span {
+  color: #1c1c1c;
+  font-weight: 800;
+  left: 1rem;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.wm-signup-money-field .form-control {
+  padding-inline: 2.75rem;
 }
 
 .wm-signup-style-grid {
@@ -7689,7 +7720,7 @@ select:focus {
   padding: 0;
   position: relative;
   scroll-snap-align: start;
-  text-align: left;
+  text-align: center;
   transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
   width: clamp(10.25rem, 21vw, 13rem);
 }
@@ -7709,6 +7740,7 @@ select:focus {
   color: #ffffff;
   display: flex;
   inset: auto 0 0;
+  justify-content: center;
   min-height: 44%;
   padding: 2.5rem 0.9rem 0.85rem;
   position: absolute;
@@ -7720,7 +7752,9 @@ select:focus {
   font-size: 0.98rem;
   font-weight: 800;
   line-height: 1.15;
+  text-align: center;
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+  width: 100%;
 }
 
 .wm-signup-style-card::after {

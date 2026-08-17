@@ -1226,7 +1226,7 @@ const common = {
         "next": "Continue"
       },
       "modal": {
-        "startPlanning": "Start planning now",
+        "startPlanning": "Get started",
         "closeLabel": "Close signup",
         "stopTitle": "Stop creating your account?",
         "stopBody": "Stop creating your account? Your answers are not saved yet.",
@@ -1240,6 +1240,10 @@ const common = {
         "previousMonth": "Previous month",
         "nextMonth": "Next month",
         "weddingDate": "Wedding date",
+        "contactCountryLabel": "Country you are contacting from",
+        "contactCountryPlaceholder": "Select your country",
+        "guestCountOptional": "Guest count (optional)",
+        "budgetOptional": "Wedding budget (optional)",
         "phoneRequired": "Please add your phone number before moving on.",
         "styleRequired": "Choose a wedding style before moving on.",
         "accountTitle": "Now let us save your plan.",
@@ -1261,12 +1265,12 @@ const common = {
           "body": "Choose the date you are planning around. If it changes later, that is completely okay."
         },
         "guests": {
-          "title": "How many people should we plan for?",
-          "body": "An estimate is enough for now. This helps vendors understand the size of your celebration."
+          "title": "Where are you contacting us from?",
+          "body": "Choose the country you are contacting from. Wedding Market only supports weddings taking place in Costa Rica."
         },
         "budget": {
-          "title": "Where are we planning this wedding?",
-          "body": "Choose your country and share a rough budget so I can help organize better vendor matches."
+          "title": "A few final details.",
+          "body": "Guest count and budget are optional. Share an estimate if you have one, or leave either field blank."
         }
       },
       "steps": {
@@ -1364,9 +1368,7 @@ const common = {
         "passwordRequired": "Please add a password before moving on.",
         "passwordTooShort": "Use at least 6 characters for your password.",
         "dateRequired": "Choose a wedding date or tentative date before moving on.",
-        "guestCountRequired": "Add your estimated guest count before moving on.",
-        "budgetRequired": "Add a budget so we can personalize recommendations.",
-        "countryRequired": "Select the country for your celebration before moving on.",
+        "countryRequired": "Select the country you are contacting us from before moving on.",
         "planningStageRequired": "Choose where you are in the planning process.",
         "prioritiesRequired": "Choose at least one vendor priority so we know where to start."
       }

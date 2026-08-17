@@ -1226,7 +1226,7 @@ const common = {
         "next": "Continuar"
       },
       "modal": {
-        "startPlanning": "Empezar a planificar",
+        "startPlanning": "Comenzar",
         "closeLabel": "Cerrar registro",
         "stopTitle": "Detener la creacion de la cuenta?",
         "stopBody": "Detener la creacion de la cuenta? Tus respuestas todavia no estan guardadas.",
@@ -1240,6 +1240,10 @@ const common = {
         "previousMonth": "Mes anterior",
         "nextMonth": "Mes siguiente",
         "weddingDate": "Fecha de boda",
+        "contactCountryLabel": "País desde el que nos contactas",
+        "contactCountryPlaceholder": "Selecciona tu país",
+        "guestCountOptional": "Número de invitados (opcional)",
+        "budgetOptional": "Presupuesto de boda (opcional)",
         "phoneRequired": "Agrega tu telefono antes de continuar.",
         "styleRequired": "Elige un estilo de boda antes de continuar.",
         "accountTitle": "Ahora guardemos tu plan.",
@@ -1261,12 +1265,12 @@ const common = {
           "body": "Escoge la fecha que estas planeando. Si cambia despues, no pasa nada."
         },
         "guests": {
-          "title": "Para cuantas personas estamos planificando?",
-          "body": "Un estimado esta bien por ahora. Esto ayuda a los proveedores a entender el tamano de tu celebracion."
+          "title": "¿Desde qué país nos contactas?",
+          "body": "Elige el país desde el que nos contactas. Wedding Market solo ofrece servicios para bodas que se celebran en Costa Rica."
         },
         "budget": {
-          "title": "Donde estamos planificando esta boda?",
-          "body": "Elige tu pais y comparte un presupuesto aproximado para ayudarte a organizar mejores opciones."
+          "title": "Unos últimos detalles.",
+          "body": "El número de invitados y el presupuesto son opcionales. Comparte un estimado si lo tienes o deja cualquiera de los campos en blanco."
         }
       },
       "steps": {
@@ -1364,9 +1368,7 @@ const common = {
         "passwordRequired": "Agrega una contraseña antes de continuar.",
         "passwordTooShort": "Usa al menos 6 caracteres en tu contraseña.",
         "dateRequired": "Elige una fecha de boda o tentativa antes de continuar.",
-        "guestCountRequired": "Agrega tu estimado de invitados antes de continuar.",
-        "budgetRequired": "Agrega un presupuesto para personalizar mejor las recomendaciones.",
-        "countryRequired": "Selecciona el país de la celebración antes de continuar.",
+        "countryRequired": "Selecciona el país desde el que nos contactas antes de continuar.",
         "planningStageRequired": "Elige en qué etapa están del proceso.",
         "prioritiesRequired": "Elige al menos una prioridad para saber por dónde empezar."
       }

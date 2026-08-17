@@ -256,13 +256,11 @@ export default function SignUpForm({
     }
 
     if (targetStep === 4) {
-      if (!form.guest_count.trim()) return labels.validation.guestCountRequired;
+      if (!form.country.trim()) return labels.validation.countryRequired;
       return null;
     }
 
     if (targetStep === 5) {
-      if (!form.country.trim()) return labels.validation.countryRequired;
-      if (!form.wedding_budget.trim()) return labels.validation.budgetRequired;
       if (!form.password.trim()) return labels.validation.passwordRequired;
       if (form.password.trim().length < 6) return labels.validation.passwordTooShort;
       return null;
@@ -564,19 +562,24 @@ export default function SignUpForm({
                   ) : null}
                   {step === 4 && fieldsVisible ? (
                     <div className="wm-signup-fields">
-                      <label className="form-label" htmlFor="signup-guests">
-                        {profileLabels.guestCountLabel}
+                      <label className="form-label" htmlFor="signup-country">
+                        {modal.contactCountryLabel}
                       </label>
-                      <input
-                        id="signup-guests"
-                        className="form-control"
-                        type="number"
-                        min={1}
-                        name="guest_count"
-                        value={form.guest_count}
-                        onChange={(event) => updateField('guest_count', event.target.value)}
-                        placeholder="120"
-                      />
+                      <select
+                        id="signup-country"
+                        className="form-select"
+                        name="country"
+                        value={form.country}
+                        onChange={(event) => updateField('country', event.target.value)}
+                        autoComplete="country-name"
+                      >
+                        <option value="">{modal.contactCountryPlaceholder}</option>
+                        {countryOptions.map((country) => (
+                          <option key={country} value={country}>
+                            {country}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   ) : null}
                 </section>
@@ -594,39 +597,37 @@ export default function SignUpForm({
                   ) : null}
                   {step === 5 && fieldsVisible ? (
                     <div className="wm-signup-field-stack wm-signup-fields">
-                      <label className="form-label" htmlFor="signup-country">
-                        {profileLabels.countryLabel}
-                      </label>
-                      <select
-                        id="signup-country"
-                        className="form-select"
-                        name="country"
-                        value={form.country}
-                        onChange={(event) => updateField('country', event.target.value)}
-                        autoComplete="country-name"
-                      >
-                        <option value="">{profileLabels.countryPlaceholder}</option>
-                        {countryOptions.map((country) => (
-                          <option key={country} value={country}>
-                            {country}
-                          </option>
-                        ))}
-                      </select>
-
-                      <label className="form-label" htmlFor="signup-budget">
-                        {profileLabels.budgetLabel}
+                      <label className="form-label" htmlFor="signup-guests">
+                        {modal.guestCountOptional}
                       </label>
                       <input
-                        id="signup-budget"
+                        id="signup-guests"
                         className="form-control"
                         type="number"
-                        min={0}
-                        step="0.01"
-                        name="wedding_budget"
-                        value={form.wedding_budget}
-                        onChange={(event) => updateField('wedding_budget', event.target.value)}
-                        placeholder="25000"
+                        min={1}
+                        name="guest_count"
+                        value={form.guest_count}
+                        onChange={(event) => updateField('guest_count', event.target.value)}
+                        placeholder="120"
                       />
+
+                      <label className="form-label" htmlFor="signup-budget">
+                        {modal.budgetOptional}
+                      </label>
+                      <div className="wm-signup-money-field">
+                        <span aria-hidden="true">$</span>
+                        <input
+                          id="signup-budget"
+                          className="form-control"
+                          type="number"
+                          min={0}
+                          step="0.01"
+                          name="wedding_budget"
+                          value={form.wedding_budget}
+                          onChange={(event) => updateField('wedding_budget', event.target.value)}
+                          placeholder="25,000"
+                        />
+                      </div>
 
                       <div className="wm-signup-account-save">
                         <h3>{modal.accountTitle}</h3>

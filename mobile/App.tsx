@@ -454,8 +454,6 @@ const copy = {
     language: "Language",
     english: "English",
     spanish: "Spanish",
-    switchToSpanish: "Switch to Spanish",
-    switchToEnglish: "Switch to English",
     currentLanguage: "Current language",
     accountProfile: "Account Profile",
     manageProfile: "Manage the same profile fields used by the website.",
@@ -533,7 +531,7 @@ const copy = {
     fullName: "Full name",
     signupWelcomeTitle: "Hi, I am happy you are here.",
     signupWelcomeBody: "I will help you start your wedding plan without making it feel overwhelming. I just need a few details first.",
-    startPlanning: "Start with me",
+    startPlanning: "Get started",
     stopSignupTitle: "Stop creating your account?",
     stopSignupBody: "Your answers are not saved yet. You can stay here and continue, or leave this setup.",
     keepPlanning: "Keep planning",
@@ -552,16 +550,19 @@ const copy = {
     weddingStyleStepBody: "Pick the style that feels closest. It does not have to be perfect; we can adjust it later.",
     weddingDateStepTitle: "Do you already have a date in mind?",
     weddingDateStepBody: "Choose the date you are planning around. If it changes later, that is completely okay.",
-    guestStepTitle: "How many people should we plan for?",
-    guestStepBody: "An estimate is enough for now. This helps vendors understand the size of your celebration.",
-    budgetStepTitle: "Where are we planning this wedding?",
-    budgetStepBody: "Choose your country and share a rough budget so I can help organize better vendor matches.",
+    guestStepTitle: "Where are you contacting us from?",
+    guestStepBody: "Choose the country you are contacting from. Wedding Market only supports weddings taking place in Costa Rica.",
+    budgetStepTitle: "A few final details.",
+    budgetStepBody: "Guest count and budget are optional. Share an estimate if you have one, or leave either field blank.",
     accountStepTitle: "Now let us save your plan.",
     accountStepBody: "Choose a password so you can come back to your favorites, quotes, and messages anytime.",
     requiredFields: "Please complete the required fields before continuing.",
     weddingDate: "Wedding date",
     guestCount: "Guest count",
+    guestCountOptional: "Guest count (optional)",
     weddingBudget: "Wedding budget",
+    weddingBudgetOptional: "Wedding budget (optional)",
+    contactCountry: "Country you are contacting from",
     region: "State / Region",
     accountCreated: "Account created. Your workspace is ready.",
     confirmationSent: "Check your email to confirm your account. The verification link will reopen the app and finish setup.",
@@ -776,8 +777,6 @@ const copy = {
     language: "Idioma",
     english: "Inglés",
     spanish: "Español",
-    switchToSpanish: "Cambiar a español",
-    switchToEnglish: "Cambiar a inglés",
     currentLanguage: "Idioma actual",
     accountProfile: "Perfil de cuenta",
     manageProfile: "Administra los mismos campos del perfil del sitio web.",
@@ -855,7 +854,7 @@ const copy = {
     fullName: "Nombre completo",
     signupWelcomeTitle: "Hola, me alegra que estés aquí.",
     signupWelcomeBody: "Voy a ayudarte a empezar tu plan de boda sin que se sienta abrumador. Solo necesito algunos datos primero.",
-    startPlanning: "Empezar contigo",
+    startPlanning: "Comenzar",
     stopSignupTitle: "¿Detener la creación de la cuenta?",
     stopSignupBody: "Tus respuestas todavía no están guardadas. Puedes quedarte y continuar, o salir de esta configuración.",
     keepPlanning: "Seguir planificando",
@@ -874,16 +873,19 @@ const copy = {
     weddingStyleStepBody: "Elige el estilo que se sienta más cercano. No tiene que ser perfecto; lo podemos ajustar después.",
     weddingDateStepTitle: "¿Ya tienes una fecha en mente?",
     weddingDateStepBody: "Escoge la fecha que estás planeando. Si cambia después, no pasa nada.",
-    guestStepTitle: "¿Para cuántas personas estamos planificando?",
-    guestStepBody: "Un estimado está bien por ahora. Esto ayuda a los proveedores a entender el tamaño de tu celebración.",
-    budgetStepTitle: "¿Dónde estamos planificando esta boda?",
-    budgetStepBody: "Elige tu país y comparte un presupuesto aproximado para ayudarte a organizar mejores opciones.",
+    guestStepTitle: "¿Desde qué país nos contactas?",
+    guestStepBody: "Elige el país desde el que nos contactas. Wedding Market solo ofrece servicios para bodas que se celebran en Costa Rica.",
+    budgetStepTitle: "Unos últimos detalles.",
+    budgetStepBody: "El número de invitados y el presupuesto son opcionales. Comparte un estimado si lo tienes o deja cualquiera de los campos en blanco.",
     accountStepTitle: "Ahora guardemos tu plan.",
     accountStepBody: "Elige una contraseña para volver a tus favoritos, cotizaciones y mensajes cuando quieras.",
     requiredFields: "Completa los campos requeridos antes de continuar.",
     weddingDate: "Fecha de boda",
     guestCount: "Número de invitados",
+    guestCountOptional: "Número de invitados (opcional)",
     weddingBudget: "Presupuesto de boda",
+    weddingBudgetOptional: "Presupuesto de boda (opcional)",
+    contactCountry: "País desde el que nos contactas",
     region: "Estado / Región",
     accountCreated: "Cuenta creada. Tu espacio está listo.",
     confirmationSent: "Revisa tu correo para confirmar tu cuenta. El enlace de verificación abrirá la app y terminará la configuración.",
@@ -1338,11 +1340,11 @@ function AuthScreen({
     }
 
     if (step === 4) {
-      return Boolean(signupForm.guestCount.trim());
+      return Boolean(signupForm.country.trim());
     }
 
     if (step === 5) {
-      return Boolean(signupForm.country.trim() && signupForm.weddingBudget.trim() && password.trim());
+      return Boolean(password.trim());
     }
 
     return true;
@@ -1501,30 +1503,30 @@ function AuthScreen({
           {renderSignupHeading(`${labels.stepOf} 1 / 5`)}
           {fieldsVisible ? (
             <>
-              <FieldLabel text={labels.fullName} />
+              <FieldLabel centered text={labels.fullName} />
               <TextInput
                 autoCapitalize="words"
                 onChangeText={(value) => updateSignupField("fullName", value)}
                 placeholder={labels.fullName}
-                style={styles.input}
+                style={[styles.input, styles.signupCenteredInput]}
                 value={signupForm.fullName}
               />
-              <FieldLabel text={labels.email} />
+              <FieldLabel centered text={labels.email} />
               <TextInput
                 autoCapitalize="none"
                 autoComplete="email"
                 keyboardType="email-address"
                 onChangeText={setEmail}
                 placeholder="you@example.com"
-                style={styles.input}
+                style={[styles.input, styles.signupCenteredInput]}
                 value={email}
               />
-              <FieldLabel text={labels.phone} />
+              <FieldLabel centered text={labels.phone} />
               <TextInput
                 keyboardType="phone-pad"
                 onChangeText={(value) => updateSignupField("phone", value)}
                 placeholder={labels.phone}
-                style={styles.input}
+                style={[styles.input, styles.signupCenteredInput]}
                 value={signupForm.phone}
               />
             </>
@@ -1539,7 +1541,7 @@ function AuthScreen({
           {renderSignupHeading(`${labels.stepOf} 2 / 5`)}
           {fieldsVisible ? (
             <>
-              <FieldLabel text={labels.chooseWeddingStyle} />
+              <FieldLabel centered text={labels.chooseWeddingStyle} />
               <View style={styles.weddingStyleGrid}>
                 {weddingStyleCards.map((style) => {
                   const isSelected = signupForm.weddingTheme === style.value;
@@ -1574,7 +1576,7 @@ function AuthScreen({
           {renderSignupHeading(`${labels.stepOf} 3 / 5`)}
           {fieldsVisible ? (
             <>
-              <FieldLabel text={labels.weddingDate} />
+              <FieldLabel centered text={labels.weddingDate} />
               <View style={styles.datePickerCard}>
                 <View style={styles.datePickerHeader}>
                   <TouchableOpacity onPress={() => moveDatePickerMonth(-1)} style={styles.datePickerArrow}>
@@ -1626,16 +1628,14 @@ function AuthScreen({
         <>
           {renderSignupHeading(`${labels.stepOf} 4 / 5`)}
           {fieldsVisible ? (
-            <>
-              <FieldLabel text={labels.guestCount} />
-              <TextInput
-                keyboardType="number-pad"
-                onChangeText={(value) => updateSignupField("guestCount", value)}
-                placeholder="120"
-                style={styles.input}
-                value={signupForm.guestCount}
-              />
-            </>
+            <SearchableCountryDropdown
+              centered
+              label={labels.contactCountry}
+              value={signupForm.country}
+              options={countryOptions(language)}
+              onChange={(value) => updateSignupField("country", value)}
+              language={language}
+            />
           ) : null}
         </>
       );
@@ -1646,30 +1646,34 @@ function AuthScreen({
         {renderSignupHeading(`${labels.stepOf} 5 / 5`)}
         {fieldsVisible ? (
           <>
-            <SearchableCountryDropdown
-              label={labels.country}
-              value={signupForm.country}
-              options={countryOptions(language)}
-              onChange={(value) => updateSignupField("country", value)}
-              language={language}
-            />
-            <FieldLabel text={labels.weddingBudget} />
+            <FieldLabel centered text={labels.guestCountOptional} />
             <TextInput
-              keyboardType="decimal-pad"
-              onChangeText={(value) => updateSignupField("weddingBudget", value)}
-              placeholder="25000"
-              style={styles.input}
-              value={signupForm.weddingBudget}
+              keyboardType="number-pad"
+              onChangeText={(value) => updateSignupField("guestCount", value)}
+              placeholder="120"
+              style={[styles.input, styles.signupCenteredInput]}
+              value={signupForm.guestCount}
             />
+            <FieldLabel centered text={labels.weddingBudgetOptional} />
+            <View style={styles.signupMoneyInputWrap}>
+              <Text style={styles.signupMoneyPrefix}>$</Text>
+              <TextInput
+                keyboardType="decimal-pad"
+                onChangeText={(value) => updateSignupField("weddingBudget", value)}
+                placeholder="25,000"
+                style={[styles.input, styles.signupCenteredInput, styles.signupMoneyInput]}
+                value={signupForm.weddingBudget}
+              />
+            </View>
             <Text style={styles.signupStepTitleSmall}>{labels.accountStepTitle}</Text>
             <Text style={styles.signupStepBody}>{labels.accountStepBody}</Text>
-            <FieldLabel text={labels.password} />
+            <FieldLabel centered text={labels.password} />
             <TextInput
               autoCapitalize="none"
               onChangeText={setPassword}
               placeholder={labels.password}
               secureTextEntry
-              style={styles.input}
+              style={[styles.input, styles.signupCenteredInput]}
               value={password}
             />
           </>
@@ -1684,14 +1688,20 @@ function AuthScreen({
       <ExpoStatusBar style="dark" />
       <ScrollView contentContainerStyle={styles.authScroll} keyboardShouldPersistTaps="handled">
         <View style={styles.authShell}>
-          <View style={styles.authLogo}>
+          <View style={[styles.authLogo, mode === "signup" && !isForgotPassword && styles.signupAuthLogo]}>
             <Ionicons name="sparkles-outline" size={22} color={colors.gold} />
           </View>
-          <Text style={styles.brand}>The Wedding Market</Text>
-          <Text style={styles.authTitle}>
-            {isForgotPassword ? labels.passwordResetTitle : title ?? labels.authTitle}
+          <Text style={[styles.brand, mode === "signup" && !isForgotPassword && styles.signupAuthCenteredText]}>
+            The Wedding Market
           </Text>
-          <Text style={styles.body}>
+          <Text style={[styles.authTitle, mode === "signup" && !isForgotPassword && styles.signupAuthCenteredText]}>
+            {isForgotPassword
+              ? labels.passwordResetTitle
+              : mode === "signup"
+                ? labels.createAccount
+                : title ?? labels.authTitle}
+          </Text>
+          <Text style={[styles.body, mode === "signup" && !isForgotPassword && styles.signupAuthCenteredText]}>
             {isForgotPassword
               ? labels.passwordResetIntro
               : mode === "login"
@@ -1876,7 +1886,11 @@ function AuthScreen({
               {renderSignupStep()}
             </Animated.View>
 
-            {message ? <Text style={isSuccess ? styles.successText : styles.errorText}>{message}</Text> : null}
+            {message ? (
+              <Text style={[isSuccess ? styles.successText : styles.errorText, styles.signupMessage]}>
+                {message}
+              </Text>
+            ) : null}
           </ScrollView>
           <View style={styles.signupModalFooter}>
             {signupStep > 0 ? (
@@ -2907,8 +2921,8 @@ function RequestQuoteModal({
   );
 }
 
-function FieldLabel({ text }: { text: string }) {
-  return <Text style={styles.label}>{text}</Text>;
+function FieldLabel({ text, centered = false }: { text: string; centered?: boolean }) {
+  return <Text style={[styles.label, centered && styles.signupFieldLabel]}>{text}</Text>;
 }
 
 function NativeSelect({
@@ -2956,12 +2970,14 @@ function SearchableCountryDropdown({
   options,
   onChange,
   language,
+  centered = false,
 }: {
   label: string;
   value: string;
   options: { value: string; label: string }[];
   onChange: (value: string) => void;
   language: "en" | "es";
+  centered?: boolean;
 }) {
   const labels = copy[language];
   const [isOpen, setIsOpen] = useState(false);
@@ -2978,26 +2994,40 @@ function SearchableCountryDropdown({
 
   return (
     <View style={styles.countryDropdownBlock}>
-      <FieldLabel text={label} />
+      <FieldLabel centered={centered} text={label} />
       <TouchableOpacity
         onPress={() => setIsOpen((current) => !current)}
         style={[styles.countryDropdownTrigger, isOpen && styles.countryDropdownTriggerActive]}
       >
-        <Text style={[styles.countryDropdownValue, !selectedLabel && styles.countryDropdownPlaceholder]}>
+        <Text style={[
+          styles.countryDropdownValue,
+          centered && styles.countryDropdownValueCentered,
+          !selectedLabel && styles.countryDropdownPlaceholder,
+        ]}>
           {selectedLabel || labels.searchCountry}
         </Text>
-        <Ionicons name={isOpen ? "chevron-up" : "chevron-down"} size={18} color={colors.ink} />
+        <Ionicons
+          name={isOpen ? "chevron-up" : "chevron-down"}
+          size={18}
+          color={colors.ink}
+          style={centered ? styles.countryDropdownIconCentered : undefined}
+        />
       </TouchableOpacity>
 
       {isOpen ? (
         <View style={styles.countryDropdownMenu}>
           <View style={styles.countrySearchInputWrap}>
-            <Ionicons name="search-outline" size={17} color={colors.muted} />
+            <Ionicons
+              name="search-outline"
+              size={17}
+              color={colors.muted}
+              style={centered ? styles.countrySearchIconCentered : undefined}
+            />
             <TextInput
               autoCapitalize="words"
               onChangeText={setQuery}
               placeholder={labels.searchCountry}
-              style={styles.countrySearchInput}
+              style={[styles.countrySearchInput, centered && styles.countrySearchInputCentered]}
               value={query}
             />
           </View>
@@ -3015,10 +3045,21 @@ function SearchableCountryDropdown({
                     }}
                     style={[styles.countryOptionRow, isSelected && styles.countryOptionRowActive]}
                   >
-                    <Text style={[styles.countryOptionText, isSelected && styles.countryOptionTextActive]}>
+                    <Text style={[
+                      styles.countryOptionText,
+                      centered && styles.countryOptionTextCentered,
+                      isSelected && styles.countryOptionTextActive,
+                    ]}>
                       {option.label}
                     </Text>
-                    {isSelected ? <Ionicons name="checkmark" size={17} color={colors.ink} /> : null}
+                    {isSelected ? (
+                      <Ionicons
+                        name="checkmark"
+                        size={17}
+                        color={colors.ink}
+                        style={centered ? styles.countryOptionCheckCentered : undefined}
+                      />
+                    ) : null}
                   </TouchableOpacity>
                 );
               })
@@ -5577,9 +5618,10 @@ export default function App() {
   };
 
   const handleLanguageChange = async (nextLanguage: "en" | "es") => {
+    if (nextLanguage === language) return;
+
     setLanguage(nextLanguage);
     setProfile((current) => current ? { ...current, language: nextLanguage } : current);
-    setIsAccountMenuOpen(false);
 
     if (!supabase || !userEmail) return;
 
@@ -5650,22 +5692,40 @@ export default function App() {
                 <Text style={styles.accountMenuTitle}>{userEmail ? profile?.fullName ?? userEmail : copy[language].guest}</Text>
                 <Text style={styles.accountMenuSubtitle}>{userEmail ? role : copy[language].browseAsGuest}</Text>
               </View>
-              <TouchableOpacity
-                onPress={() => {
-                  void handleLanguageChange(language === "en" ? "es" : "en");
-                }}
-                style={styles.accountMenuItem}
-              >
-                <Ionicons name="language-outline" size={18} color={colors.tealDark} />
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.accountMenuText}>
-                    {copy[language].language}: {language === "es" ? copy[language].spanish : copy[language].english}
-                  </Text>
-                  <Text style={styles.accountMenuMeta}>
-                    {language === "en" ? copy[language].switchToSpanish : copy[language].switchToEnglish}
-                  </Text>
+              <View style={styles.accountMenuLanguageSection}>
+                <View style={styles.accountMenuLanguageHeader}>
+                  <Ionicons name="language-outline" size={18} color={colors.tealDark} />
+                  <Text style={styles.accountMenuLanguageLabel}>{copy[language].language}</Text>
                 </View>
-              </TouchableOpacity>
+                <View style={styles.accountMenuLanguageOptions} accessibilityRole="radiogroup">
+                  {([
+                    { key: "en" as const, label: "English" },
+                    { key: "es" as const, label: "Español" },
+                  ]).map((option) => {
+                    const isActive = language === option.key;
+                    return (
+                      <TouchableOpacity
+                        accessibilityRole="radio"
+                        accessibilityState={{ checked: isActive }}
+                        key={option.key}
+                        onPress={() => void handleLanguageChange(option.key)}
+                        style={[
+                          styles.accountMenuLanguageOption,
+                          isActive && styles.accountMenuLanguageOptionActive,
+                        ]}
+                      >
+                        <Text style={[
+                          styles.accountMenuLanguageOptionText,
+                          isActive && styles.accountMenuLanguageOptionTextActive,
+                        ]}>
+                          {option.label}
+                        </Text>
+                        {isActive ? <Ionicons name="checkmark" size={15} color={colors.paper} /> : null}
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </View>
               <TouchableOpacity
                 onPress={() => {
                   setSelectedVendor(null);
@@ -5676,26 +5736,6 @@ export default function App() {
               >
                 <Ionicons name={userEmail ? "person-circle-outline" : "log-in-outline"} size={18} color={colors.tealDark} />
                 <Text style={styles.accountMenuText}>{userEmail ? copy[language].profile : copy[language].logIn}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setIsAccountMenuOpen(false);
-                  void openPublicWebPath("/privacy");
-                }}
-                style={styles.accountMenuItem}
-              >
-                <Ionicons name="shield-checkmark-outline" size={18} color={colors.tealDark} />
-                <Text style={styles.accountMenuText}>{copy[language].privacyPolicy}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setIsAccountMenuOpen(false);
-                  void openPublicWebPath("/terms");
-                }}
-                style={styles.accountMenuItem}
-              >
-                <Ionicons name="document-text-outline" size={18} color={colors.tealDark} />
-                <Text style={styles.accountMenuText}>{copy[language].termsOfService}</Text>
               </TouchableOpacity>
               {userEmail ? (
                 <>
@@ -5907,6 +5947,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "800",
   },
+  signupAuthLogo: {
+    alignSelf: "center",
+  },
+  signupAuthCenteredText: {
+    textAlign: "center",
+  },
   signupProgressRow: {
     alignItems: "center",
     flexDirection: "row",
@@ -5956,6 +6002,7 @@ const styles = StyleSheet.create({
     color: colors.teal,
     fontSize: 12,
     fontWeight: "900",
+    textAlign: "center",
     textTransform: "uppercase",
   },
   signupStepTitle: {
@@ -5964,6 +6011,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "500",
     lineHeight: 31,
+    textAlign: "center",
   },
   signupStepTitleSmall: {
     color: colors.ink,
@@ -5972,11 +6020,37 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     lineHeight: 26,
     marginTop: 6,
+    textAlign: "center",
   },
   signupStepBody: {
     color: colors.muted,
     fontSize: 13,
     lineHeight: 20,
+    textAlign: "center",
+  },
+  signupFieldLabel: {
+    textAlign: "center",
+  },
+  signupCenteredInput: {
+    textAlign: "center",
+  },
+  signupMoneyInputWrap: {
+    position: "relative",
+  },
+  signupMoneyPrefix: {
+    color: colors.ink,
+    fontSize: 16,
+    fontWeight: "800",
+    left: 16,
+    position: "absolute",
+    top: 14,
+    zIndex: 1,
+  },
+  signupMoneyInput: {
+    paddingHorizontal: 42,
+  },
+  signupMessage: {
+    textAlign: "center",
   },
   signupNavRow: {
     alignItems: "center",
@@ -6100,9 +6174,10 @@ const styles = StyleSheet.create({
     color: colors.paper,
     fontSize: 15,
     fontWeight: "900",
-    left: 12,
+    left: 8,
     position: "absolute",
-    right: 38,
+    right: 8,
+    textAlign: "center",
     textShadowColor: "rgba(0,0,0,0.3)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3,
@@ -6393,6 +6468,14 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "700",
   },
+  countryDropdownValueCentered: {
+    paddingHorizontal: 24,
+    textAlign: "center",
+  },
+  countryDropdownIconCentered: {
+    position: "absolute",
+    right: 12,
+  },
   countryDropdownPlaceholder: {
     color: colors.muted,
   },
@@ -6419,6 +6502,15 @@ const styles = StyleSheet.create({
     minHeight: 42,
     padding: 0,
   },
+  countrySearchInputCentered: {
+    paddingHorizontal: 28,
+    textAlign: "center",
+  },
+  countrySearchIconCentered: {
+    left: 12,
+    position: "absolute",
+    zIndex: 1,
+  },
   countryOptionsList: {
     marginTop: 8,
     maxHeight: 220,
@@ -6439,6 +6531,14 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
     fontWeight: "700",
+  },
+  countryOptionTextCentered: {
+    paddingHorizontal: 24,
+    textAlign: "center",
+  },
+  countryOptionCheckCentered: {
+    position: "absolute",
+    right: 10,
   },
   countryOptionTextActive: {
     fontWeight: "900",
@@ -6939,7 +7039,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     borderWidth: 1,
     elevation: 8,
-    minWidth: 230,
+    minWidth: 270,
     padding: 8,
     position: "absolute",
     right: 0,
@@ -6977,17 +7077,58 @@ const styles = StyleSheet.create({
     minHeight: 42,
     paddingHorizontal: 10,
   },
+  accountMenuLanguageSection: {
+    backgroundColor: colors.soft,
+    borderRadius: 17,
+    gap: 8,
+    marginBottom: 4,
+    padding: 8,
+  },
+  accountMenuLanguageHeader: {
+    alignItems: "center",
+    flexDirection: "row",
+    gap: 7,
+    paddingHorizontal: 3,
+  },
+  accountMenuLanguageLabel: {
+    color: colors.ink,
+    fontSize: 13,
+    fontWeight: "900",
+  },
+  accountMenuLanguageOptions: {
+    flexDirection: "row",
+    gap: 6,
+  },
+  accountMenuLanguageOption: {
+    alignItems: "center",
+    backgroundColor: colors.paper,
+    borderColor: colors.line,
+    borderRadius: 12,
+    borderWidth: 1,
+    flex: 1,
+    flexDirection: "row",
+    gap: 5,
+    justifyContent: "center",
+    minHeight: 38,
+    paddingHorizontal: 8,
+  },
+  accountMenuLanguageOptionActive: {
+    backgroundColor: colors.ink,
+    borderColor: colors.ink,
+  },
+  accountMenuLanguageOptionText: {
+    color: colors.ink,
+    fontSize: 13,
+    fontWeight: "800",
+  },
+  accountMenuLanguageOptionTextActive: {
+    color: colors.paper,
+  },
   accountMenuText: {
     color: colors.ink,
     flex: 1,
     fontSize: 14,
     fontWeight: "800",
-  },
-  accountMenuMeta: {
-    color: colors.muted,
-    fontSize: 12,
-    fontWeight: "700",
-    marginTop: 2,
   },
   accountMenuDanger: {
     color: "#B42318",
