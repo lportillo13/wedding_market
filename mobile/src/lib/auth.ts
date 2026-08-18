@@ -10,6 +10,11 @@ export type AuthProfile = {
   language: "en" | "es";
   avatarUrl: string | null;
   vendorLogoUrl: string | null;
+  phone: string | null;
+  tentativeWeddingDate: string | null;
+  guestCount: number | null;
+  weddingBudget: number | null;
+  weddingTheme: string | null;
 };
 
 export type AuthState = {
@@ -172,7 +177,7 @@ export async function loadAuthState(): Promise<AuthState> {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role, full_name, language")
+    .select("role, full_name, language, phone, tentative_wedding_date, guest_count, wedding_budget, wedding_theme")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -195,6 +200,17 @@ export async function loadAuthState(): Promise<AuthState> {
       language: profile?.language === "es" ? "es" : "en",
       avatarUrl: avatarUrlFromMetadata(user.user_metadata),
       vendorLogoUrl,
+      phone: optionalMetadataText(profile?.phone),
+      tentativeWeddingDate: optionalMetadataText(profile?.tentative_wedding_date),
+      guestCount:
+        typeof profile?.guest_count === "number" && Number.isInteger(profile.guest_count) && profile.guest_count > 0
+          ? profile.guest_count
+          : null,
+      weddingBudget:
+        typeof profile?.wedding_budget === "number" && Number.isFinite(profile.wedding_budget) && profile.wedding_budget >= 0
+          ? profile.wedding_budget
+          : null,
+      weddingTheme: optionalMetadataText(profile?.wedding_theme),
     },
   };
 }

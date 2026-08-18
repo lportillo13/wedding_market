@@ -16,6 +16,7 @@ const payloadSchema = z.object({
   phone: z.string().trim().max(50).optional().nullable(),
   guest_count: z.number().int().positive().optional().nullable(),
   guest_count_range: z.string().optional().nullable(),
+  budget: z.number().int().nonnegative().optional().nullable(),
   budget_min: z.number().int().nonnegative().optional().nullable(),
   budget_max: z.number().int().nonnegative().optional().nullable(),
   city: z.string().optional().nullable(),
@@ -76,17 +77,18 @@ export async function POST(request: Request) {
   }
 
   const eventDate = input.event_date ?? null;
+  const singleBudget = input.budget ?? null;
 
   const basePayload = {
     event_date: eventDate,
     flexible_date: input.flexible ?? false,
     guest_count: input.guest_count ?? null,
     guest_count_range: input.guest_count_range?.trim() || (input.guest_count ? String(input.guest_count) : null),
-    budget_min: input.budget_min ?? null,
-    budget_max: input.budget_max ?? null,
+    budget_min: singleBudget ?? input.budget_min ?? null,
+    budget_max: singleBudget ?? input.budget_max ?? null,
     city: input.city?.trim() || null,
-    state: input.state?.trim() || null,
-    country: input.country?.trim() || null,
+    state: null,
+    country: "Costa Rica",
     language: input.language?.trim() || null,
     theme: input.theme?.trim() || null,
     notes: input.message,

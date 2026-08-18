@@ -12,11 +12,8 @@ export type QuoteRequestInput = {
   eventDate: string;
   flexible: boolean;
   guestCount: string;
-  budgetMin: string;
-  budgetMax: string;
+  budget: string;
   city: string;
-  state: string;
-  country: string;
   language: string;
   theme: string;
   message: string;
@@ -198,11 +195,10 @@ export async function createQuoteRequests(input: QuoteRequestInput, vendorIds: s
       flexible: input.flexible,
       guest_count: guestCount,
       guest_count_range: input.guestCount.trim(),
-      budget_min: parseIntOrNull(input.budgetMin),
-      budget_max: parseIntOrNull(input.budgetMax),
+      budget: parseIntOrNull(input.budget),
       city: clean(input.city),
-      state: clean(input.state),
-      country: clean(input.country),
+      state: null,
+      country: "Costa Rica",
       language: clean(input.language),
       theme: clean(input.theme),
       message: input.message.trim(),

@@ -148,10 +148,7 @@ export type VendorContactPrefill = {
   eventDate: string;
   guestCount: string;
   city: string;
-  state: string;
-  country: string;
-  budgetMin: string;
-  budgetMax: string;
+  budget: string;
   language: string;
   theme: string;
   message: string;
@@ -473,7 +470,7 @@ export async function fetchVendorContactPrefill(vendorId: string): Promise<Vendo
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("full_name, phone, country, tentative_wedding_date, guest_count, wedding_budget, wedding_theme, language")
+    .select("full_name, phone, tentative_wedding_date, guest_count, wedding_budget, wedding_theme, language")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -483,7 +480,7 @@ export async function fetchVendorContactPrefill(vendorId: string): Promise<Vendo
 
   const { data: existingRfq, error: existingRfqError } = await supabase
     .from("rfqs")
-    .select("id, event_date, guest_count, guest_count_range, budget_min, budget_max, city, state, country, language, theme, notes, flexible_date, guest_first_name, guest_last_name, contact_email, contact_phone")
+    .select("id, event_date, guest_count, guest_count_range, budget_min, budget_max, city, language, theme, notes, flexible_date, guest_first_name, guest_last_name, contact_email, contact_phone")
     .eq("owner_id", user.id)
     .eq("vendor_id", vendorId)
     .is("accepted_quote_id", null)
@@ -536,16 +533,12 @@ export async function fetchVendorContactPrefill(vendorId: string): Promise<Vendo
         ? String(editableRfq.guest_count)
         : editableRfq?.guest_count_range ?? guestCount,
     city: editableRfq?.city ?? "",
-    state: editableRfq?.state ?? "",
-    country: editableRfq?.country ?? profile?.country ?? "",
-    budgetMin:
+    budget:
       typeof editableRfq?.budget_min === "number"
         ? String(editableRfq.budget_min)
-        : budget,
-    budgetMax:
-      typeof editableRfq?.budget_max === "number"
-        ? String(editableRfq.budget_max)
-        : budget,
+        : typeof editableRfq?.budget_max === "number"
+          ? String(editableRfq.budget_max)
+          : budget,
     language: editableRfq?.language ?? profile?.language ?? "es",
     theme: editableRfq?.theme ?? profile?.wedding_theme ?? "",
     message: editableRfq?.notes ?? "",

@@ -29,6 +29,9 @@ function formatBudget(rfq: InboxRfqRow, locale: string) {
     currency: "USD",
     maximumFractionDigits: 0,
   });
+  if (rfq.budget_min != null && rfq.budget_max != null && rfq.budget_min === rfq.budget_max) {
+    return formatter.format(rfq.budget_min);
+  }
   const minimum = rfq.budget_min == null ? "?" : formatter.format(rfq.budget_min);
   const maximum = rfq.budget_max == null ? "?" : formatter.format(rfq.budget_max);
   return `${minimum} – ${maximum}`;

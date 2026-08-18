@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { buildCountryOptions } from "@/lib/countries";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
 import type { VendorContactPrefill } from "@/app/vendors/[slug]/data";
 
@@ -23,10 +22,7 @@ type FormValues = {
   phone?: string;
   guest_count: string;
   city: string;
-  state: string;
-  country: string;
-  budget_min: string;
-  budget_max: string;
+  budget: string;
   language: string;
   theme: string;
   message: string;
@@ -52,10 +48,7 @@ function buildDefaultValues(prefill: VendorContactPrefill | null): FormValues {
     phone: prefill?.phone ?? "",
     guest_count: prefill?.guestCount ?? "",
     city: prefill?.city ?? "",
-    state: prefill?.state ?? "",
-    country: prefill?.country ?? "",
-    budget_min: prefill?.budgetMin ?? "",
-    budget_max: prefill?.budgetMax ?? "",
+    budget: prefill?.budget ?? "",
     language: prefill?.language ?? "es",
     theme: prefill?.theme ?? "",
     message: prefill?.message ?? "",
@@ -76,7 +69,6 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
     defaultValues: buildDefaultValues(prefill),
   });
 
-  const countryOptions = useMemo(() => buildCountryOptions(prefill?.country ?? ""), [prefill?.country]);
   const languageOptions = useMemo(
     () =>
       language === "es"
@@ -120,25 +112,21 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
     language === "es"
       ? {
           guestCount: "Número de invitados",
-          city: "Ciudad",
-          state: "Estado/Región",
-          country: "País",
-          countryPlaceholder: "Selecciona un país",
-          budgetMin: "Presupuesto mínimo (USD)",
-          budgetMax: "Presupuesto máximo (USD)",
-          language: "Idioma",
+          city: "Ciudad (opcional)",
+          budget: "Presupuesto (USD, opcional)",
+          language: "Idioma (opcional)",
           theme: "Estilo de boda (opcional)",
+          optional: "opcional",
+          requiredHint: "* Campos requeridos",
         }
       : {
           guestCount: "Number of guests",
-          city: "City",
-          state: "State/Region",
-          country: "Country",
-          countryPlaceholder: "Select a country",
-          budgetMin: "Minimum budget (USD)",
-          budgetMax: "Maximum budget (USD)",
-          language: "Language",
+          city: "City (optional)",
+          budget: "Budget (USD, optional)",
+          language: "Language (optional)",
           theme: "Wedding style (optional)",
+          optional: "optional",
+          requiredHint: "* Required fields",
         };
 
   useEffect(() => {
@@ -161,11 +149,10 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
           email: values.email,
           phone: values.phone || null,
           guest_count: values.guest_count ? Number(values.guest_count) : null,
-          budget_min: values.budget_min ? Number(values.budget_min) : null,
-          budget_max: values.budget_max ? Number(values.budget_max) : null,
+          budget: values.budget ? Number(values.budget) : null,
           city: values.city || null,
-          state: values.state || null,
-          country: values.country || null,
+          state: null,
+          country: "Costa Rica",
           language: values.language || null,
           theme: values.theme || null,
           message: values.message,
@@ -246,18 +233,19 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
         {submitState !== "success" ? (
           <form className="row g-3" onSubmit={onSubmit} noValidate>
             <input type="text" className="d-none" tabIndex={-1} autoComplete="off" {...register("honeypot")} />
+            <div className="col-12"><p className="small text-muted mb-0">{extraLabels.requiredHint}</p></div>
             <div className="col-md-6">
-              <label htmlFor="first_name" className="form-label">{labels.firstName}</label>
+              <label htmlFor="first_name" className="form-label">{labels.firstName} *</label>
               <input id="first_name" type="text" className={`form-control ${formState.errors.first_name ? "is-invalid" : ""}`} {...register("first_name", { required: labels.firstNameRequired })} required />
               {formState.errors.first_name ? <div className="invalid-feedback">{formState.errors.first_name.message}</div> : null}
             </div>
             <div className="col-md-6">
-              <label htmlFor="last_name" className="form-label">{labels.lastName}</label>
+              <label htmlFor="last_name" className="form-label">{labels.lastName} *</label>
               <input id="last_name" type="text" className={`form-control ${formState.errors.last_name ? "is-invalid" : ""}`} {...register("last_name", { required: labels.lastNameRequired })} required />
               {formState.errors.last_name ? <div className="invalid-feedback">{formState.errors.last_name.message}</div> : null}
             </div>
             <div className="col-md-6">
-              <label htmlFor="email" className="form-label">{labels.email}</label>
+              <label htmlFor="email" className="form-label">{labels.email} *</label>
               <input id="email" type="email" className={`form-control ${formState.errors.email ? "is-invalid" : ""}`} {...register("email", { required: labels.emailRequired, pattern: { value: /.+@.+\..+/, message: labels.emailInvalid } })} required />
               {formState.errors.email ? <div className="invalid-feedback">{formState.errors.email.message}</div> : null}
             </div>
@@ -266,7 +254,7 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
               <input id="phone" type="tel" className="form-control" {...register("phone")} />
             </div>
             <div className="col-md-6">
-              <label htmlFor="event_date" className="form-label">{labels.eventDate}</label>
+              <label htmlFor="event_date" className="form-label">{labels.eventDate} ({extraLabels.optional})</label>
               <input id="event_date" type="date" className="form-control" {...register("event_date")} />
               <div className="form-check mt-2">
                 <input id="flexible" type="checkbox" className="form-check-input" {...register("flexible")} />
@@ -274,38 +262,19 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
               </div>
             </div>
             <div className="col-md-6">
-              <label htmlFor="guest_count" className="form-label">{extraLabels.guestCount}</label>
+              <label htmlFor="guest_count" className="form-label">{extraLabels.guestCount} *</label>
               <input id="guest_count" type="number" min={1} className={`form-control ${formState.errors.guest_count ? "is-invalid" : ""}`} {...register("guest_count", { required: labels.guestRangeRequired })} required />
               {formState.errors.guest_count ? <div className="invalid-feedback">{formState.errors.guest_count.message}</div> : null}
             </div>
-            <div className="col-md-4">
+            <div className="col-md-6">
               <label htmlFor="city" className="form-label">{extraLabels.city}</label>
               <input id="city" type="text" className="form-control" {...register("city")} />
             </div>
-            <div className="col-md-4">
-              <label htmlFor="state" className="form-label">{extraLabels.state}</label>
-              <input id="state" type="text" className="form-control" {...register("state")} />
+            <div className="col-md-6">
+              <label htmlFor="budget" className="form-label">{extraLabels.budget}</label>
+              <input id="budget" type="number" min={0} className="form-control" {...register("budget")} />
             </div>
-            <div className="col-md-4">
-              <label htmlFor="country" className="form-label">{extraLabels.country}</label>
-              <select id="country" className="form-select" {...register("country")}>
-                <option value="">{extraLabels.countryPlaceholder}</option>
-                {countryOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="col-md-4">
-              <label htmlFor="budget_min" className="form-label">{extraLabels.budgetMin}</label>
-              <input id="budget_min" type="number" min={0} className="form-control" {...register("budget_min")} />
-            </div>
-            <div className="col-md-4">
-              <label htmlFor="budget_max" className="form-label">{extraLabels.budgetMax}</label>
-              <input id="budget_max" type="number" min={0} className="form-control" {...register("budget_max")} />
-            </div>
-            <div className="col-md-4">
+            <div className="col-md-6">
               <label htmlFor="language" className="form-label">{extraLabels.language}</label>
               <select id="language" className="form-select" {...register("language")}>
                 {languageOptions.map((option) => (
@@ -315,7 +284,7 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
                 ))}
               </select>
             </div>
-            <div className="col-12">
+            <div className="col-md-6">
               <label htmlFor="theme" className="form-label">{extraLabels.theme}</label>
               <select id="theme" className="form-select" {...register("theme")}>
                 {themeOptions.map((option) => (
@@ -326,7 +295,7 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
               </select>
             </div>
             <div className="col-12">
-              <label htmlFor="message" className="form-label">{labels.message}</label>
+              <label htmlFor="message" className="form-label">{labels.message} *</label>
               <textarea id="message" className={`form-control ${formState.errors.message ? "is-invalid" : ""}`} rows={5} placeholder={labels.messagePlaceholder} {...register("message", { required: labels.messageRequired })} required />
               {formState.errors.message ? <div className="invalid-feedback">{formState.errors.message.message}</div> : null}
             </div>

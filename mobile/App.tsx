@@ -627,12 +627,17 @@ const copy = {
     eventDate: "Event date",
     guests: "Guests",
     flexibleDate: "Flexible date",
-    budgetMin: "Budget min",
-    budgetMax: "Budget max",
+    quoteBudget: "Budget (USD)",
     city: "City",
     state: "State",
     country: "Country",
     weddingTheme: "Wedding theme",
+    optional: "optional",
+    requiredHint: "* Required fields",
+    selectDate: "Select a date",
+    clearDate: "Clear date",
+    invalidEmail: "Enter a valid email address.",
+    quoteRequiredFields: "Please complete: {fields}.",
     sending: "Sending...",
     loadingProfile: "Loading profile",
     contact: "Contact",
@@ -956,12 +961,17 @@ const copy = {
     eventDate: "Fecha del evento",
     guests: "Invitados",
     flexibleDate: "Fecha flexible",
-    budgetMin: "Presupuesto min",
-    budgetMax: "Presupuesto máx",
+    quoteBudget: "Presupuesto (USD)",
     city: "Ciudad",
     state: "Estado",
     country: "País",
     weddingTheme: "Estilo de boda",
+    optional: "opcional",
+    requiredHint: "* Campos requeridos",
+    selectDate: "Selecciona una fecha",
+    clearDate: "Borrar fecha",
+    invalidEmail: "Ingresa un correo electrónico válido.",
+    quoteRequiredFields: "Completa: {fields}.",
     sending: "Enviando...",
     loadingProfile: "Cargando perfil",
     contact: "Contacto",
@@ -2757,6 +2767,97 @@ function VendorLogoCarousel({ language }: { language: "en" | "es" }) {
   );
 }
 
+function QuoteDateCalendar({
+  value,
+  language,
+  onChange,
+}: {
+  value: string;
+  language: "en" | "es";
+  onChange: (value: string) => void;
+}) {
+  const labels = copy[language];
+  const selectedParts = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  const [month, setMonth] = useState(() => {
+    if (selectedParts) return new Date(Number(selectedParts[1]), Number(selectedParts[2]) - 1, 1);
+    const today = new Date();
+    return new Date(today.getFullYear(), today.getMonth(), 1);
+  });
+
+  useEffect(() => {
+    const nextSelectedParts = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    if (nextSelectedParts) {
+      setMonth(new Date(Number(nextSelectedParts[1]), Number(nextSelectedParts[2]) - 1, 1));
+      return;
+    }
+    const today = new Date();
+    setMonth(new Date(today.getFullYear(), today.getMonth(), 1));
+  }, [value]);
+
+  const days = useMemo(() => {
+    const leadingBlanks = new Date(month.getFullYear(), month.getMonth(), 1).getDay();
+    const daysInMonth = new Date(month.getFullYear(), month.getMonth() + 1, 0).getDate();
+    return [
+      ...Array.from({ length: leadingBlanks }, () => null),
+      ...Array.from({ length: daysInMonth }, (_, index) => index + 1),
+    ];
+  }, [month]);
+  const monthLabel = new Intl.DateTimeFormat(language === "es" ? "es-CR" : "en-US", {
+    month: "long",
+    year: "numeric",
+  }).format(month);
+  const weekDays = language === "es" ? ["D", "L", "M", "X", "J", "V", "S"] : ["S", "M", "T", "W", "T", "F", "S"];
+  const selectedLabel = selectedParts
+    ? new Intl.DateTimeFormat(language === "es" ? "es-CR" : "en-US", { dateStyle: "long" }).format(
+        new Date(Number(selectedParts[1]), Number(selectedParts[2]) - 1, Number(selectedParts[3])),
+      )
+    : labels.selectDate;
+
+  return (
+    <View style={styles.datePickerCard}>
+      <View style={styles.datePickerHeader}>
+        <TouchableOpacity onPress={() => setMonth((current) => new Date(current.getFullYear(), current.getMonth() - 1, 1))} style={styles.datePickerArrow}>
+          <Ionicons name="chevron-back" size={18} color={colors.ink} />
+        </TouchableOpacity>
+        <Text style={styles.datePickerMonth}>{monthLabel}</Text>
+        <TouchableOpacity onPress={() => setMonth((current) => new Date(current.getFullYear(), current.getMonth() + 1, 1))} style={styles.datePickerArrow}>
+          <Ionicons name="chevron-forward" size={18} color={colors.ink} />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.datePickerWeekRow}>
+        {weekDays.map((day, index) => <Text key={`${day}-${index}`} style={styles.datePickerWeekday}>{day}</Text>)}
+      </View>
+      <View style={styles.datePickerGrid}>
+        {days.map((day, index) => {
+          if (!day) return <View key={`blank-${index}`} style={styles.datePickerDay} />;
+          const dateValue = `${month.getFullYear()}-${String(month.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+          const selected = value === dateValue;
+          return (
+            <TouchableOpacity
+              accessibilityLabel={dateValue}
+              accessibilityRole="button"
+              accessibilityState={{ selected }}
+              key={dateValue}
+              onPress={() => onChange(dateValue)}
+              style={[styles.datePickerDay, selected && styles.datePickerDaySelected]}
+            >
+              <Text style={[styles.datePickerDayText, selected && styles.datePickerDayTextSelected]}>{day}</Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+      <View style={styles.quoteSelectedDateRow}>
+        <Text style={styles.selectedDateText}>{selectedLabel}</Text>
+        {value ? (
+          <TouchableOpacity onPress={() => onChange("")}>
+            <Text style={styles.quoteClearDateText}>{labels.clearDate}</Text>
+          </TouchableOpacity>
+        ) : null}
+      </View>
+    </View>
+  );
+}
+
 function RequestQuoteModal({
   visible,
   vendors,
@@ -2783,43 +2884,79 @@ function RequestQuoteModal({
     firstName: nameParts[0] ?? "",
     lastName: nameParts.slice(1).join(" "),
     email: userEmail ?? "",
-    phone: "",
-    eventDate: "",
+    phone: profile?.phone ?? "",
+    eventDate: profile?.tentativeWeddingDate ?? "",
     flexible: false,
-    guestCount: "",
-    budgetMin: "",
-    budgetMax: "",
+    guestCount: profile?.guestCount != null ? String(profile.guestCount) : "",
+    budget: profile?.weddingBudget != null ? String(profile.weddingBudget) : "",
     city: "",
-    state: "",
-    country: "United States",
     language,
-    theme: "",
+    theme: profile?.weddingTheme ?? "",
     message: "",
   });
   const [status, setStatus] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [invalidFields, setInvalidFields] = useState<Array<keyof QuoteRequestInput>>([]);
 
   useEffect(() => {
     if (!visible || !primaryVendor) return;
     const latestNameParts = (profile?.fullName ?? "").trim().split(/\s+/).filter(Boolean);
-    setForm((current) => ({
-      ...current,
+    setForm({
       vendorId: primaryVendor.id,
-      firstName: current.firstName || latestNameParts[0] || "",
-      lastName: current.lastName || latestNameParts.slice(1).join(" "),
-      email: current.email || userEmail || "",
+      firstName: latestNameParts[0] || "",
+      lastName: latestNameParts.slice(1).join(" "),
+      email: userEmail || "",
+      phone: profile?.phone ?? "",
+      eventDate: profile?.tentativeWeddingDate ?? "",
+      flexible: false,
+      guestCount: profile?.guestCount != null ? String(profile.guestCount) : "",
+      budget: profile?.weddingBudget != null ? String(profile.weddingBudget) : "",
+      city: "",
       language,
-      message: current.message || (language === "en" ? "Hi, I would like to request a quote for my wedding." : "Hola, me gustaria solicitar una cotización para mi boda."),
-    }));
+      theme: profile?.weddingTheme ?? "",
+      message: language === "en" ? "Hi, I would like to request a quote for my wedding." : "Hola, me gustaría solicitar una cotización para mi boda.",
+    });
     setStatus("");
-  }, [visible, primaryVendor?.id, userEmail, profile?.fullName, language]);
+    setInvalidFields([]);
+  }, [
+    visible,
+    primaryVendor?.id,
+    userEmail,
+    profile?.fullName,
+    profile?.phone,
+    profile?.tentativeWeddingDate,
+    profile?.guestCount,
+    profile?.weddingBudget,
+    profile?.weddingTheme,
+    language,
+  ]);
 
   function updateField<Key extends keyof QuoteRequestInput>(key: Key, value: QuoteRequestInput[Key]) {
     setForm((current) => ({ ...current, [key]: value }));
+    setInvalidFields((current) => current.filter((field) => field !== key));
   }
 
   async function submit() {
     setStatus("");
+    const missing: Array<{ key: keyof QuoteRequestInput; label: string }> = [];
+    if (!form.firstName.trim()) missing.push({ key: "firstName", label: labels.firstName });
+    if (!form.lastName.trim()) missing.push({ key: "lastName", label: labels.lastName });
+    if (!form.email.trim()) missing.push({ key: "email", label: labels.email });
+    const guestCount = Number(form.guestCount);
+    if (!form.guestCount.trim() || !Number.isInteger(guestCount) || guestCount < 1) missing.push({ key: "guestCount", label: labels.guests });
+    if (!form.message.trim()) missing.push({ key: "message", label: labels.messageVendor });
+
+    if (missing.length) {
+      setInvalidFields(missing.map((field) => field.key));
+      setStatus(labels.quoteRequiredFields.replace("{fields}", missing.map((field) => field.label).join(", ")));
+      return;
+    }
+    if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) {
+      setInvalidFields(["email"]);
+      setStatus(labels.invalidEmail);
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       await createQuoteRequests(form, vendors.map((vendor) => vendor.id));
@@ -2855,73 +2992,54 @@ function RequestQuoteModal({
           </View>
 
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.quoteModalBody}>
+            <Text style={styles.requiredHint}>{labels.requiredHint}</Text>
             <View style={styles.formTwoColumn}>
               <View style={styles.formHalf}>
-                <FieldLabel text={labels.firstName} />
-                <TextInput style={styles.input} value={form.firstName} onChangeText={(value) => updateField("firstName", value)} />
+                <FieldLabel text={`${labels.firstName} *`} />
+                <TextInput style={[styles.input, invalidFields.includes("firstName") && styles.inputError]} value={form.firstName} onChangeText={(value) => updateField("firstName", value)} />
               </View>
               <View style={styles.formHalf}>
-                <FieldLabel text={labels.lastName} />
-                <TextInput style={styles.input} value={form.lastName} onChangeText={(value) => updateField("lastName", value)} />
+                <FieldLabel text={`${labels.lastName} *`} />
+                <TextInput style={[styles.input, invalidFields.includes("lastName") && styles.inputError]} value={form.lastName} onChangeText={(value) => updateField("lastName", value)} />
               </View>
             </View>
-            <FieldLabel text={labels.email} />
+            <FieldLabel text={`${labels.email} *`} />
             <TextInput
               autoCapitalize="none"
               keyboardType="email-address"
-              style={styles.input}
+              style={[styles.input, invalidFields.includes("email") && styles.inputError]}
               value={form.email}
               onChangeText={(value) => updateField("email", value)}
             />
-            <FieldLabel text={labels.phone} />
+            <FieldLabel text={`${labels.phone} (${labels.optional})`} />
             <TextInput keyboardType="phone-pad" style={styles.input} value={form.phone} onChangeText={(value) => updateField("phone", value)} />
-            <View style={styles.formTwoColumn}>
-              <View style={styles.formHalf}>
-                <FieldLabel text={labels.eventDate} />
-                <TextInput placeholder="YYYY-MM-DD" style={styles.input} value={form.eventDate} onChangeText={(value) => updateField("eventDate", value)} />
-              </View>
-              <View style={styles.formHalf}>
-                <FieldLabel text={labels.guests} />
-                <TextInput keyboardType="number-pad" style={styles.input} value={form.guestCount} onChangeText={(value) => updateField("guestCount", value)} />
-              </View>
-            </View>
+            <FieldLabel text={`${labels.eventDate} (${labels.optional})`} />
+            <QuoteDateCalendar
+              language={language}
+              value={form.eventDate}
+              onChange={(value) => updateField("eventDate", value)}
+            />
             <TouchableOpacity onPress={() => updateField("flexible", !form.flexible)} style={styles.checkboxRow}>
               <Ionicons name={form.flexible ? "checkbox" : "square-outline"} size={20} color={colors.tealDark} />
               <Text style={styles.checkboxText}>{labels.flexibleDate}</Text>
             </TouchableOpacity>
-            <View style={styles.formTwoColumn}>
-              <View style={styles.formHalf}>
-                <FieldLabel text={labels.budgetMin} />
-                <TextInput keyboardType="number-pad" style={styles.input} value={form.budgetMin} onChangeText={(value) => updateField("budgetMin", value)} />
-              </View>
-              <View style={styles.formHalf}>
-                <FieldLabel text={labels.budgetMax} />
-                <TextInput keyboardType="number-pad" style={styles.input} value={form.budgetMax} onChangeText={(value) => updateField("budgetMax", value)} />
-              </View>
-            </View>
-            <FieldLabel text={labels.city} />
+            <FieldLabel text={`${labels.guests} *`} />
+            <TextInput keyboardType="number-pad" style={[styles.input, invalidFields.includes("guestCount") && styles.inputError]} value={form.guestCount} onChangeText={(value) => updateField("guestCount", value)} />
+            <FieldLabel text={`${labels.quoteBudget} (${labels.optional})`} />
+            <TextInput keyboardType="number-pad" style={styles.input} value={form.budget} onChangeText={(value) => updateField("budget", value)} />
+            <FieldLabel text={`${labels.city} (${labels.optional})`} />
             <TextInput style={styles.input} value={form.city} onChangeText={(value) => updateField("city", value)} />
-            <View style={styles.formTwoColumn}>
-              <View style={styles.formHalf}>
-                <FieldLabel text={labels.state} />
-                <TextInput style={styles.input} value={form.state} onChangeText={(value) => updateField("state", value)} />
-              </View>
-              <View style={styles.formHalf}>
-                <FieldLabel text={labels.country} />
-                <TextInput style={styles.input} value={form.country} onChangeText={(value) => updateField("country", value)} />
-              </View>
-            </View>
             <NativeSelect
-              label={labels.weddingTheme}
+              label={`${labels.weddingTheme} (${labels.optional})`}
               value={form.theme}
               options={themeOptions(language)}
               onChange={(value) => updateField("theme", value)}
             />
-            <FieldLabel text={labels.messageVendor} />
+            <FieldLabel text={`${labels.messageVendor} *`} />
             <TextInput
               maxLength={2000}
               multiline
-              style={[styles.input, styles.textArea]}
+              style={[styles.input, styles.textArea, invalidFields.includes("message") && styles.inputError]}
               value={form.message}
               onChangeText={(value) => updateField("message", value)}
             />
@@ -4353,9 +4471,11 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
       currency: "USD",
       maximumFractionDigits: 0,
     }).format(value);
-    const requestedBudget = request.budgetMin != null || request.budgetMax != null
-      ? `${request.budgetMin != null ? formatRequestBudget(request.budgetMin) : "?"} – ${request.budgetMax != null ? formatRequestBudget(request.budgetMax) : "?"}`
-      : null;
+    const requestedBudget = request.budgetMin != null && request.budgetMax != null && request.budgetMin === request.budgetMax
+      ? formatRequestBudget(request.budgetMin)
+      : request.budgetMin != null || request.budgetMax != null
+        ? `${request.budgetMin != null ? formatRequestBudget(request.budgetMin) : "?"} – ${request.budgetMax != null ? formatRequestBudget(request.budgetMax) : "?"}`
+        : null;
     const requestedDate = request.eventDate
       ? `${parseDateValue(request.eventDate).toLocaleDateString(language === "es" ? "es-US" : "en-US")} · ${request.flexibleDate ? labels.flexible : labels.fixedDate}`
       : request.flexibleDate
@@ -6338,6 +6458,18 @@ const styles = StyleSheet.create({
     marginTop: 8,
     textAlign: "center",
   },
+  quoteSelectedDateRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    minHeight: 28,
+  },
+  quoteClearDateText: {
+    color: "#B42318",
+    fontSize: 12,
+    fontWeight: "800",
+    marginTop: 8,
+  },
   header: {
     alignItems: "center",
     backgroundColor: colors.paper,
@@ -6477,6 +6609,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     minHeight: 48,
     paddingHorizontal: 12,
+  },
+  inputError: {
+    borderColor: "#B42318",
+  },
+  requiredHint: {
+    color: colors.muted,
+    fontSize: 12,
+    fontWeight: "700",
   },
   textArea: {
     minHeight: 108,

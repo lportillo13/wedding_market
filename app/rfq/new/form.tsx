@@ -5,7 +5,6 @@ import { useActionState } from "react";
 import { useMemo, useState } from "react";
 import ContextualSponsoredUnits from "@/components/ads/ContextualSponsoredUnits";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { buildCountryOptions } from "@/lib/countries";
 import { tokenizeAdText } from "@/lib/content/vendorAds";
 import { clearShortlist, getShortlist, removeFromShortlist } from "@/lib/shortlist";
 import { useVendorSummaries } from "@/lib/useVendorSummaries";
@@ -14,7 +13,6 @@ import { createRfqAndInvites, type CreateRfqState } from "./actions";
 export type RfqPrefill = {
   eventDate?: string | null;
   guestCount?: number | null;
-  country?: string | null;
   budget?: number | null;
   theme?: string | null;
 };
@@ -29,12 +27,9 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
 
   const eventDate = prefill.eventDate ?? "";
   const guestCount = prefill.guestCount ?? "";
-  const country = prefill.country ?? "";
   const budgetValue = prefill.budget ?? "";
   const theme = prefill.theme ?? "";
-  const countryOptions = useMemo(() => buildCountryOptions(country), [country]);
   const [adGuestCount, setAdGuestCount] = useState<number | null>(prefill.guestCount ?? null);
-  const [adCountry, setAdCountry] = useState<string>(country);
   const [adBudget, setAdBudget] = useState<number | null>(prefill.budget ?? null);
   const [adTheme, setAdTheme] = useState<string>(theme);
   const [adNotes, setAdNotes] = useState("");
@@ -110,24 +105,25 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
             headline={labels.title}
             keywords={rfqAdKeywords}
             themes={adTheme ? [adTheme] : []}
-            countries={adCountry ? [adCountry] : []}
+            countries={["Costa Rica"]}
             budget={adBudget}
             guestCount={adGuestCount}
           />
 
           <form action={action} className="border rounded p-3 bg-body">
             <input type="hidden" name="vendor_ids_json" value={vendorIdsJson} />
+            <p className="small text-muted">{language === "es" ? "* Campos requeridos" : "* Required fields"}</p>
 
             <div className="row">
               <div className="col-md-6 mb-3">
                 <label className="form-label" htmlFor="rfq-event-date">
-                  {labels.eventDateLabel}
+                  {labels.eventDateLabel} ({language === "es" ? "opcional" : "optional"})
                 </label>
                 <input id="rfq-event-date" className="form-control" type="date" name="event_date" defaultValue={eventDate} />
               </div>
               <div className="col-md-6 mb-3">
                 <label className="form-label" htmlFor="rfq-guest-count">
-                  {labels.guestCountLabel}
+                  {labels.guestCountLabel} *
                 </label>
                 <input
                   id="rfq-guest-count"
@@ -135,6 +131,7 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
                   type="number"
                   name="guest_count"
                   min={1}
+                  required
                   defaultValue={guestCount}
                   onChange={(event) => setAdGuestCount(event.target.value ? Number(event.target.value) : null)}
                 />
@@ -142,71 +139,32 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
             </div>
 
             <div className="row">
-              <div className="col-md-4 mb-3">
+              <div className="col-md-6 mb-3">
                 <label className="form-label" htmlFor="rfq-city">
-                  {labels.cityLabel}
+                  {labels.cityLabel} ({language === "es" ? "opcional" : "optional"})
                 </label>
                 <input id="rfq-city" className="form-control" name="city" />
               </div>
-              <div className="col-md-4 mb-3">
-                <label className="form-label" htmlFor="rfq-state">
-                  {labels.stateLabel}
+              <div className="col-md-6 mb-3">
+                <label className="form-label" htmlFor="rfq-budget">
+                  {language === "es" ? "Presupuesto (USD, opcional)" : "Budget (USD, optional)"}
                 </label>
-                <input id="rfq-state" className="form-control" name="state" />
-              </div>
-              <div className="col-md-4 mb-3">
-                <label className="form-label" htmlFor="rfq-country">
-                  {labels.countryLabel}
-                </label>
-                <select
-                  id="rfq-country"
-                  className="form-select"
-                  name="country"
-                  defaultValue={country}
-                  onChange={(event) => setAdCountry(event.target.value)}
-                >
-                  <option value="">{labels.countryPlaceholder}</option>
-                  {countryOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
+                <input
+                  id="rfq-budget"
+                  className="form-control"
+                  type="number"
+                  name="budget"
+                  min={0}
+                  defaultValue={budgetValue}
+                  onChange={(event) => setAdBudget(event.target.value ? Number(event.target.value) : null)}
+                />
               </div>
             </div>
 
             <div className="row">
               <div className="col-md-4 mb-3">
-                <label className="form-label" htmlFor="rfq-budget-min">
-                  {labels.budgetMinLabel}
-                </label>
-                <input
-                  id="rfq-budget-min"
-                  className="form-control"
-                  type="number"
-                  name="budget_min"
-                  min={0}
-                  defaultValue={budgetValue}
-                  onChange={(event) => setAdBudget(event.target.value ? Number(event.target.value) : null)}
-                />
-              </div>
-              <div className="col-md-4 mb-3">
-                <label className="form-label" htmlFor="rfq-budget-max">
-                  {labels.budgetMaxLabel}
-                </label>
-                <input
-                  id="rfq-budget-max"
-                  className="form-control"
-                  type="number"
-                  name="budget_max"
-                  min={0}
-                  defaultValue={budgetValue}
-                  onChange={(event) => setAdBudget(event.target.value ? Number(event.target.value) : null)}
-                />
-              </div>
-              <div className="col-md-4 mb-3">
                 <label className="form-label" htmlFor="rfq-language">
-                  {labels.languageLabel}
+                  {labels.languageLabel} ({language === "es" ? "opcional" : "optional"})
                 </label>
                 <select id="rfq-language" className="form-select" name="language" defaultValue={language}>
                   <option value="es">{labels.languageOptions.es}</option>
@@ -219,7 +177,7 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
 
             <div className="mb-3">
               <label className="form-label" htmlFor="rfq-theme">
-                {labels.themeLabel}
+                {labels.themeLabel} ({language === "es" ? "opcional" : "optional"})
               </label>
               <select
                 id="rfq-theme"
@@ -241,7 +199,7 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
 
             <div className="mb-3">
               <label className="form-label" htmlFor="rfq-notes">
-                {labels.notesLabel}
+                {labels.notesLabel} *
               </label>
               <textarea
                 id="rfq-notes"
@@ -249,6 +207,7 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
                 name="notes"
                 rows={4}
                 maxLength={2000}
+                required
                 onChange={(event) => setAdNotes(event.target.value)}
               />
             </div>

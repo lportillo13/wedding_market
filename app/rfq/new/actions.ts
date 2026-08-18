@@ -63,16 +63,16 @@ export async function createRfqAndInvites(_: CreateRfqState, formData: FormData)
 
   const eventDate = trimmedFormValue(formData, "event_date");
   const guestCount = optionalNonNegativeInteger(trimmedFormValue(formData, "guest_count"));
-  const budgetMin = optionalNonNegativeInteger(trimmedFormValue(formData, "budget_min"));
-  const budgetMax = optionalNonNegativeInteger(trimmedFormValue(formData, "budget_max"));
+  const budget = optionalNonNegativeInteger(trimmedFormValue(formData, "budget"));
   const notes = trimmedFormValue(formData, "notes");
 
   if (
     (eventDate && !validDateOnly(eventDate)) ||
-    (guestCount !== null && (!Number.isFinite(guestCount) || guestCount < 1)) ||
-    (budgetMin !== null && !Number.isFinite(budgetMin)) ||
-    (budgetMax !== null && !Number.isFinite(budgetMax)) ||
-    (budgetMin !== null && budgetMax !== null && budgetMin > budgetMax) ||
+    guestCount === null ||
+    !Number.isFinite(guestCount) ||
+    guestCount < 1 ||
+    (budget !== null && !Number.isFinite(budget)) ||
+    !notes ||
     notes.length > 2000
   ) {
     return { ok: false, message: labels.submitFailed };
@@ -81,11 +81,11 @@ export async function createRfqAndInvites(_: CreateRfqState, formData: FormData)
   const basePayload = {
     event_date: eventDate || null,
     guest_count: guestCount,
-    budget_min: budgetMin,
-    budget_max: budgetMax,
+    budget_min: budget,
+    budget_max: budget,
     city: trimmedFormValue(formData, "city") || null,
-    state: trimmedFormValue(formData, "state") || null,
-    country: trimmedFormValue(formData, "country") || null,
+    state: null,
+    country: "Costa Rica",
     language: trimmedFormValue(formData, "language") || "en",
     theme: trimmedFormValue(formData, "theme") || null,
     notes: notes || null,
