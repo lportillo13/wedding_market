@@ -4,6 +4,7 @@ import { markAccountInboxThreadRead } from "@/app/account/inbox/actions";
 import { sendClientQuoteReply } from "@/app/quote-replies/actions";
 import ThreadReadSync from "@/components/inbox/ThreadReadSync";
 import ThreadTimeline from "@/components/inbox/ThreadTimeline";
+import InquirySummary from "@/components/inbox/InquirySummary";
 import QuoteReplyForm from "@/components/quotes/QuoteReplyForm";
 import { getLanguageLocale } from "@/lib/i18n";
 import { getRequestI18n } from "@/lib/i18n/server";
@@ -121,24 +122,14 @@ export default async function AccountInboxThreadPage({
           <div className="card mb-4">
             <div className="card-body">
               <div className="fw-semibold mb-3">{labels.inquirySummary}</div>
-              <div className="small text-secondary mb-2">
-                {detail.rfq.event_date
-                  ? new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(detail.rfq.event_date))
-                  : labels.dateTbd}
-              </div>
-              <div className="small text-secondary mb-2">{location}</div>
-              <div className="small text-secondary mb-2">
-                {typeof detail.rfq.guest_count === "number"
-                  ? `${detail.rfq.guest_count} ${language === "es" ? "invitados" : "guests"}`
-                  : detail.rfq.guest_count_range || labels.guestCountTbd}
-              </div>
-              {(detail.rfq.budget_min || detail.rfq.budget_max) && (
-                <div className="small text-secondary mb-2">
-                  {language === "es" ? "Presupuesto" : "Budget"}: {detail.rfq.budget_min ?? "?"} -{" "}
-                  {detail.rfq.budget_max ?? "?"}
-                </div>
-              )}
-              {detail.rfq.notes ? <div className="mt-3">{detail.rfq.notes}</div> : null}
+              <InquirySummary
+                rfq={detail.rfq}
+                language={language}
+                locale={locale}
+                eventDateTbd={labels.dateTbd}
+                guestCountTbd={labels.guestCountTbd}
+                locationTbd={dictionary.account.rfqsPage.formatting.locationTbd}
+              />
             </div>
           </div>
 

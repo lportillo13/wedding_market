@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { getSupabasePublicKey, getSupabaseUrl } from "@/lib/supabase/config";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 /**
@@ -6,6 +7,27 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
  * the bearer token sent by the native app.
  */
 export async function createAuthenticatedRequestClient(request: Request): Promise<SupabaseClient> {
+  const authorization = request.headers.get("authorization");
+  const url = getSupabaseUrl();
+  const publicKey = getSupabasePublicKey();
+
+  // Native requests do not have the web session cookie. Prefer their bearer
+  // token immediately and always attach the Supabase API key alongside it.
+  if (authorization?.startsWith("Bearer ") && url && publicKey) {
+    return createClient(url, publicKey, {
+      global: {
+        headers: {
+          apikey: publicKey,
+          Authorization: authorization,
+        },
+      },
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    });
+  }
+
   const cookieClient = await createSupabaseServerClient();
   const {
     data: { user },
@@ -15,19 +37,5 @@ export async function createAuthenticatedRequestClient(request: Request): Promis
     return cookieClient;
   }
 
-  const authorization = request.headers.get("authorization");
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!authorization?.startsWith("Bearer ") || !url || !anonKey) {
-    return cookieClient;
-  }
-
-  return createClient(url, anonKey, {
-    global: { headers: { Authorization: authorization } },
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  });
+  return cookieClient;
 }

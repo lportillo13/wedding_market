@@ -56,6 +56,12 @@ import {
 } from "./src/lib/rfqs";
 import { isQuoteThreadClosed } from "./src/lib/quoteUtils";
 import { getShortlist, toggleShortlist } from "./src/lib/shortlist";
+import {
+  getDeviceLanguage,
+  loadLanguagePreference,
+  saveLanguagePreference,
+  type AppLanguage,
+} from "./src/lib/languagePreference";
 import { addNotificationTapListener, registerForPushNotifications, unregisterPushNotifications } from "./src/lib/pushNotifications";
 import { externalMapUrl, publicWebUrl, vendorShareUrl } from "./src/lib/urls";
 import { mergeUniqueById } from "./src/lib/search";
@@ -495,6 +501,12 @@ const copy = {
     noConversation: "No messages yet.",
     contactDetails: "Shared contact details",
     noContactShared: "The client did not share email or phone.",
+    requestDetails: "Request details",
+    requestMessage: "Client message",
+    notProvided: "Not provided",
+    flexible: "Flexible",
+    fixedDate: "Fixed date",
+    budget: "Budget",
     refresh: "Refresh",
     conversationClosed: "This conversation is closed because another quote was selected or the request expired.",
     you: "You",
@@ -818,6 +830,12 @@ const copy = {
     noConversation: "Todavía no hay mensajes.",
     contactDetails: "Datos de contacto compartidos",
     noContactShared: "El cliente no compartió correo ni teléfono.",
+    requestDetails: "Detalles de la solicitud",
+    requestMessage: "Mensaje del cliente",
+    notProvided: "No indicado",
+    flexible: "Flexible",
+    fixedDate: "Fecha fija",
+    budget: "Presupuesto",
     refresh: "Actualizar",
     conversationClosed: "Esta conversación está cerrada porque se eligió otra cotización o venció la solicitud.",
     you: "Tú",
@@ -4325,6 +4343,38 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
         inboxMessage,
       })),
     ].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    const request = selectedThread.request;
+    const requestLocation = [request.city, request.state, request.country].filter(Boolean).join(", ");
+    const requestedGuests = typeof request.guestCount === "number"
+      ? String(request.guestCount)
+      : request.guestCountRange;
+    const formatRequestBudget = (value: number) => new Intl.NumberFormat(language === "es" ? "es-US" : "en-US", {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 0,
+    }).format(value);
+    const requestedBudget = request.budgetMin != null || request.budgetMax != null
+      ? `${request.budgetMin != null ? formatRequestBudget(request.budgetMin) : "?"} – ${request.budgetMax != null ? formatRequestBudget(request.budgetMax) : "?"}`
+      : null;
+    const requestedDate = request.eventDate
+      ? `${parseDateValue(request.eventDate).toLocaleDateString(language === "es" ? "es-US" : "en-US")} · ${request.flexibleDate ? labels.flexible : labels.fixedDate}`
+      : request.flexibleDate
+        ? labels.flexible
+        : null;
+    const requestedTheme = request.theme
+      ? themeOptions(language).find((option) => option.value === request.theme)?.label ?? formatCategory(request.theme)
+      : null;
+    const requestedLanguage = request.language
+      ? request.language.toLowerCase().startsWith("es") ? labels.spanish : labels.english
+      : null;
+    const requestRows = [
+      { label: labels.eventDate, value: requestedDate, icon: "calendar-outline" as IconName },
+      { label: labels.location, value: requestLocation || null, icon: "location-outline" as IconName },
+      { label: labels.guests, value: requestedGuests, icon: "people-outline" as IconName },
+      { label: labels.budget, value: requestedBudget, icon: "wallet-outline" as IconName },
+      { label: labels.weddingTheme, value: requestedTheme, icon: "sparkles-outline" as IconName },
+      { label: labels.preferredLanguage, value: requestedLanguage, icon: "language-outline" as IconName },
+    ];
 
     return (
       <View>
@@ -4346,6 +4396,25 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
         {message ? (
           <Text style={message === labels.quoteSent ? styles.successText : styles.errorText}>{message}</Text>
         ) : null}
+
+        <View style={styles.requestDetailsCard}>
+          <Text style={styles.sectionTitle}>{labels.requestDetails}</Text>
+          <View style={styles.requestDetailsList}>
+            {requestRows.map((item) => (
+              <View key={item.label} style={styles.requestDetailRow}>
+                <Ionicons name={item.icon} size={17} color={colors.teal} />
+                <View style={styles.requestDetailText}>
+                  <Text style={styles.requestDetailLabel}>{item.label}</Text>
+                  <Text style={styles.requestDetailValue}>{item.value ?? labels.notProvided}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+          <View style={styles.requestMessageBox}>
+            <Text style={styles.requestDetailLabel}>{labels.requestMessage}</Text>
+            <Text style={styles.requestMessageText}>{request.notes ?? labels.notProvided}</Text>
+          </View>
+        </View>
 
         {selectedThread.latestQuote ? (
           <View style={styles.quoteSummaryCard}>
@@ -5412,7 +5481,7 @@ export default function App() {
   const [isBooting, setIsBooting] = useState(true);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [profile, setProfile] = useState<AuthProfile | null>(null);
-  const [language, setLanguage] = useState<"en" | "es">("en");
+  const [language, setLanguage] = useState<AppLanguage>(getDeviceLanguage);
   const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const role = profile?.role ?? "guest";
@@ -5429,12 +5498,15 @@ export default function App() {
   const isHomeOpen = !isDetailOpen && visibleActiveTab === "home";
   const isVendorPublicOpen = !isDetailOpen && visibleActiveTab === "vendor";
   const configErrors = getMobileConfigErrors();
-  const applyAuthenticatedState = useCallback((state: AuthState) => {
+  const applyAuthenticatedState = useCallback(async (state: AuthState) => {
+    const nextLanguage = state.profile?.language ?? await loadLanguagePreference();
     setUserEmail(state.user?.email ?? null);
     setProfile(state.profile);
-    setLanguage(state.profile?.language ?? "en");
+    setLanguage(nextLanguage);
+    await saveLanguagePreference(nextLanguage);
     setActiveTab(roleTabs(state.profile?.role ?? (state.user ? "client" : "guest"))[0].key);
     setIsAccountMenuOpen(false);
+    return nextLanguage;
   }, []);
 
   useEffect(() => {
@@ -5447,9 +5519,10 @@ export default function App() {
         if (!result || !isMounted) return false;
 
         if (result.event === "password_recovery") {
+          const nextLanguage = result.state.profile?.language ?? await loadLanguagePreference();
           setUserEmail(null);
           setProfile(null);
-          setLanguage(result.state.profile?.language ?? "en");
+          setLanguage(nextLanguage);
           setActiveTab("home");
           setSelectedVendor(null);
           setIsAccountMenuOpen(false);
@@ -5457,9 +5530,9 @@ export default function App() {
           return true;
         }
 
-        applyAuthenticatedState(result.state);
+        const nextLanguage = await applyAuthenticatedState(result.state);
         if (showConfirmation) {
-          const labels = copy[result.state.profile?.language ?? "en"];
+          const labels = copy[nextLanguage];
           Alert.alert(labels.emailConfirmedTitle, labels.emailConfirmedBody);
         }
         return true;
@@ -5486,7 +5559,7 @@ export default function App() {
         const handled = initialUrl ? await handleAuthUrl(initialUrl, true) : false;
         if (!handled) {
           const state = await restoreMobileAuthState();
-          if (isMounted) applyAuthenticatedState(state);
+          if (isMounted) await applyAuthenticatedState(state);
         }
       } catch (error) {
         if (process.env.NODE_ENV !== "production") {
@@ -5600,9 +5673,11 @@ export default function App() {
   }
 
   const handleSignedIn = (nextState: { userEmail: string; profile: AuthProfile | null }) => {
+    const nextLanguage = nextState.profile?.language ?? language;
     setUserEmail(nextState.userEmail);
     setProfile(nextState.profile);
-    setLanguage(nextState.profile?.language ?? "en");
+    setLanguage(nextLanguage);
+    void saveLanguagePreference(nextLanguage);
     setActiveTab(roleTabs(nextState.profile?.role ?? "client")[0].key);
     setIsAccountMenuOpen(false);
   };
@@ -5622,6 +5697,7 @@ export default function App() {
 
     setLanguage(nextLanguage);
     setProfile((current) => current ? { ...current, language: nextLanguage } : current);
+    await saveLanguagePreference(nextLanguage);
 
     if (!supabase || !userEmail) return;
 
@@ -5787,7 +5863,10 @@ export default function App() {
             onSignedIn={handleSignedIn}
             userEmail={userEmail}
             onProfileUpdated={setProfile}
-            onLanguageUpdated={setLanguage}
+            onLanguageUpdated={(nextLanguage) => {
+              setLanguage(nextLanguage);
+              void saveLanguagePreference(nextLanguage);
+            }}
             onNavigate={(tab) => {
               setSelectedVendor(null);
               setActiveTab(tab);
@@ -6862,6 +6941,49 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 12,
     padding: 18,
+  },
+  requestDetailsCard: {
+    backgroundColor: colors.paper,
+    borderColor: colors.line,
+    borderRadius: 24,
+    borderWidth: 1,
+    gap: 14,
+    marginBottom: 12,
+    padding: 16,
+  },
+  requestDetailsList: {
+    gap: 11,
+  },
+  requestDetailRow: {
+    alignItems: "flex-start",
+    flexDirection: "row",
+    gap: 10,
+  },
+  requestDetailText: {
+    flex: 1,
+    gap: 2,
+  },
+  requestDetailLabel: {
+    color: colors.muted,
+    fontSize: 11,
+    fontWeight: "900",
+    textTransform: "uppercase",
+  },
+  requestDetailValue: {
+    color: colors.ink,
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  requestMessageBox: {
+    backgroundColor: colors.soft,
+    borderRadius: 16,
+    gap: 5,
+    padding: 12,
+  },
+  requestMessageText: {
+    color: colors.ink,
+    fontSize: 14,
+    lineHeight: 20,
   },
   quoteSummaryHeader: {
     alignItems: "center",

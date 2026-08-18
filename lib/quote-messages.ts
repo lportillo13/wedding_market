@@ -13,7 +13,7 @@ export type QuoteMessageRow = {
 };
 
 function shouldUseAdminFallback(message: string | undefined) {
-  return /policy|permission|row-level security|infinite recursion detected/i.test(message ?? "");
+  return /api key|policy|permission|row-level security|infinite recursion detected/i.test(message ?? "");
 }
 
 function isMissingQuoteMessagesTableError(message: string | undefined) {
@@ -205,12 +205,19 @@ export async function verifyVendorQuoteReplyAccess(
   const supabase = authenticatedClient ?? await createSupabaseServerClient();
   const supabaseAdmin = createSupabaseAdminClient();
 
-  const { data: vendor, error: vendorErr } = await supabase
+  const selectVendor = (client: SupabaseClient) => client
     .from("vendors")
     .select("id")
     .eq("id", vendorId)
     .eq("owner_id", userId)
     .maybeSingle();
+
+  let { data: vendor, error: vendorErr } = await selectVendor(supabase);
+  if ((vendorErr || !vendor) && supabaseAdmin) {
+    const retry = await selectVendor(supabaseAdmin);
+    vendor = retry.data;
+    vendorErr = retry.error;
+  }
 
   if (vendorErr) {
     return { allowed: false, message: vendorErr.message };

@@ -33,6 +33,7 @@ export type InboxRfqRow = {
   id: string;
   owner_id: string;
   event_date: string | null;
+  flexible_date: boolean | null;
   guest_count: number | null;
   guest_count_range: string | null;
   budget_min: number | null;
@@ -361,9 +362,9 @@ function resolveVendorStatus(invite: InboxInviteRow, rfq: InboxRfqRow | null, qu
 async function loadClientOwnedRfqs(client: SupabaseClient, userId: string) {
   const selectColumns = {
     owner_id:
-      "id, owner_id, event_date, guest_count, guest_count_range, budget_min, budget_max, city, state, country, language, theme, notes, contact_email, contact_phone, accepted_quote_id, created_at, updated_at",
+      "id, owner_id, event_date, flexible_date, guest_count, guest_count_range, budget_min, budget_max, city, state, country, language, theme, notes, contact_email, contact_phone, accepted_quote_id, created_at, updated_at",
     owner_uuid:
-      "id, owner_id:owner_uuid, event_date, guest_count, guest_count_range, budget_min, budget_max, city, state, country, language, theme, notes, contact_email, contact_phone, accepted_quote_id, created_at, updated_at",
+      "id, owner_id:owner_uuid, event_date, flexible_date, guest_count, guest_count_range, budget_min, budget_max, city, state, country, language, theme, notes, contact_email, contact_phone, accepted_quote_id, created_at, updated_at",
   } as const satisfies Record<OwnerColumn, string>;
 
   const selectRfqs = (supabase: SupabaseClient, ownerColumn: OwnerColumn) =>
@@ -575,13 +576,13 @@ export async function loadVendorInboxThreads(userId: string) {
 
   let { data: rfqs, error: rfqError } = await supabase
     .from("rfqs")
-    .select("id, owner_id, event_date, guest_count, guest_count_range, budget_min, budget_max, city, state, country, language, theme, notes, contact_email, contact_phone, accepted_quote_id, created_at, updated_at")
+    .select("id, owner_id, event_date, flexible_date, guest_count, guest_count_range, budget_min, budget_max, city, state, country, language, theme, notes, contact_email, contact_phone, accepted_quote_id, created_at, updated_at")
     .in("id", rfqIds);
 
   if (rfqError && supabaseAdmin && shouldUseAdminFallback(rfqError.message)) {
     const retry = await supabaseAdmin
       .from("rfqs")
-      .select("id, owner_id, event_date, guest_count, guest_count_range, budget_min, budget_max, city, state, country, language, theme, notes, contact_email, contact_phone, accepted_quote_id, created_at, updated_at")
+      .select("id, owner_id, event_date, flexible_date, guest_count, guest_count_range, budget_min, budget_max, city, state, country, language, theme, notes, contact_email, contact_phone, accepted_quote_id, created_at, updated_at")
       .in("id", rfqIds);
     rfqs = retry.data as InboxRfqRow[] | null;
     rfqError = retry.error;
@@ -756,14 +757,14 @@ export async function loadVendorThreadDetail(userId: string, threadKey: string):
 
   let { data: rfq, error: rfqError } = await supabase
     .from("rfqs")
-    .select("id, owner_id, event_date, guest_count, guest_count_range, budget_min, budget_max, city, state, country, language, theme, notes, contact_email, contact_phone, accepted_quote_id, created_at, updated_at")
+    .select("id, owner_id, event_date, flexible_date, guest_count, guest_count_range, budget_min, budget_max, city, state, country, language, theme, notes, contact_email, contact_phone, accepted_quote_id, created_at, updated_at")
     .eq("id", rfqId)
     .maybeSingle<InboxRfqRow>();
 
   if (rfqError && supabaseAdmin && shouldUseAdminFallback(rfqError.message)) {
     const retry = await supabaseAdmin
       .from("rfqs")
-      .select("id, owner_id, event_date, guest_count, guest_count_range, budget_min, budget_max, city, state, country, language, theme, notes, contact_email, contact_phone, accepted_quote_id, created_at, updated_at")
+      .select("id, owner_id, event_date, flexible_date, guest_count, guest_count_range, budget_min, budget_max, city, state, country, language, theme, notes, contact_email, contact_phone, accepted_quote_id, created_at, updated_at")
       .eq("id", rfqId)
       .maybeSingle<InboxRfqRow>();
     rfq = retry.data;

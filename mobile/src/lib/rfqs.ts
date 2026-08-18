@@ -41,6 +41,21 @@ export type MobileInboxQuote = {
   createdAt: string;
 };
 
+export type MobileQuoteRequestDetails = {
+  eventDate: string | null;
+  flexibleDate: boolean;
+  guestCount: number | null;
+  guestCountRange: string | null;
+  budgetMin: number | null;
+  budgetMax: number | null;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  language: string | null;
+  theme: string | null;
+  notes: string | null;
+};
+
 export type MobileInboxThread = {
   id: string;
   rfqId: string;
@@ -53,6 +68,7 @@ export type MobileInboxThread = {
   acceptedQuoteId: string | null;
   contactEmail: string | null;
   contactPhone: string | null;
+  request: MobileQuoteRequestDetails;
   quotes: MobileInboxQuote[];
   latestQuote: MobileInboxQuote | null;
   messages: MobileInboxMessage[];
@@ -111,6 +127,31 @@ function toMobileQuote(row: {
     currency: String(row.currency ?? "USD"),
     message: typeof row.message === "string" ? row.message : null,
     createdAt: String(row.created_at),
+  };
+}
+
+function nullableString(value: unknown) {
+  return typeof value === "string" && value.trim() ? value : null;
+}
+
+function nullableNumber(value: unknown) {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function toMobileRequestDetails(row: Record<string, unknown> | null | undefined): MobileQuoteRequestDetails {
+  return {
+    eventDate: nullableString(row?.event_date),
+    flexibleDate: row?.flexible_date === true,
+    guestCount: nullableNumber(row?.guest_count),
+    guestCountRange: nullableString(row?.guest_count_range),
+    budgetMin: nullableNumber(row?.budget_min),
+    budgetMax: nullableNumber(row?.budget_max),
+    city: nullableString(row?.city),
+    state: nullableString(row?.state),
+    country: nullableString(row?.country),
+    language: nullableString(row?.language),
+    theme: nullableString(row?.theme),
+    notes: nullableString(row?.notes),
   };
 }
 
@@ -251,7 +292,7 @@ export async function loadMobileInbox(role: Role, language: "en" | "es" = "en"):
     const [{ data: rfqs, error: rfqError }, { data: quotes, error: quoteError }] = await Promise.all([
       client
         .from("rfqs")
-        .select("id, event_date, guest_count, city, state, country, theme, notes, contact_email, contact_phone, accepted_quote_id, created_at, updated_at")
+        .select("id, event_date, flexible_date, guest_count, guest_count_range, budget_min, budget_max, city, state, country, language, theme, notes, contact_email, contact_phone, accepted_quote_id, created_at, updated_at")
         .in("id", rfqIds),
       client
         .from("quotes")
@@ -303,6 +344,7 @@ export async function loadMobileInbox(role: Role, language: "en" | "es" = "en"):
             && invite.reveal_email !== false ? String(rfq?.contact_email ?? "") || null : null,
           contactPhone: acceptedQuoteId && threadQuotes.some((quote) => quote.id === acceptedQuoteId)
             && invite.reveal_phone !== false ? String(rfq?.contact_phone ?? "") || null : null,
+          request: toMobileRequestDetails(rfq),
           quotes: threadQuotes,
           latestQuote: latest,
           messages: quoteMessages.sort((a, b) => timestamp(a.createdAt) - timestamp(b.createdAt)),
@@ -313,7 +355,7 @@ export async function loadMobileInbox(role: Role, language: "en" | "es" = "en"):
 
   const { data: rfqs, error: rfqError } = await client
     .from("rfqs")
-    .select("id, event_date, guest_count, city, state, country, theme, notes, accepted_quote_id, created_at, updated_at")
+    .select("id, event_date, flexible_date, guest_count, guest_count_range, budget_min, budget_max, city, state, country, language, theme, notes, accepted_quote_id, created_at, updated_at")
     .eq("owner_id", user.id)
     .order("created_at", { ascending: false })
     .limit(30);
@@ -378,6 +420,7 @@ export async function loadMobileInbox(role: Role, language: "en" | "es" = "en"):
         acceptedQuoteId,
         contactEmail: null,
         contactPhone: null,
+        request: toMobileRequestDetails(rfq),
         quotes: threadQuotes,
         latestQuote: latest,
         messages: quoteMessages.sort((a, b) => timestamp(a.createdAt) - timestamp(b.createdAt)),
