@@ -1,0 +1,88 @@
+{
+  "releaseCommit": "76a109e77368d11cc1554dd42bd806de9e288906",
+  "deployedBy": "assistant through installed gateway",
+  "publicTarget": "https://thewedmarket.com",
+  "results": [
+    {
+      "path": "/api/health",
+      "method": "GET",
+      "status": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "path": "/",
+      "method": "GET",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "newHeaderPresent": true,
+      "securityHeadersPassed": true
+    },
+    {
+      "path": "/vendors",
+      "method": "GET",
+      "status": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "path": "/api/vendors?pageSize=1",
+      "method": "GET",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "itemCount": 1
+    },
+    {
+      "path": "/api/uploads",
+      "method": "POST",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/ready",
+      "method": "GET",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/admin/blog-posts",
+      "method": "GET",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/mobile/quotes",
+      "method": "POST",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/mobile/quote-replies",
+      "method": "POST",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/mobile/quotes/accept",
+      "method": "POST",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/mobile/push-token",
+      "method": "POST",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    }
+  ],
+  "allPassed": true
+}

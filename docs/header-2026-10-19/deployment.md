@@ -1,6 +1,6 @@
 # Application release handoff — October 19, 2026
 
-Status: deployed successfully as `2f0a556d`. The corrected owner retry passed shadow and live probes. Independent public HTTP and browser checks passed. Direct deployment gateway setup is prepared and still awaits one-time owner installation.
+Status: the owner-assisted application rollout succeeded as `2f0a556d`, followed by the first successful assistant-operated rollout as `76a109e7`. Shadow/live and independent public checks passed. The direct deployment gateway is installed and verified; routine releases no longer require owner terminal commands.
 
 The owner explicitly requested deployment by default. The release includes code correctness (`c8a07804`), profile/editing UX (`fdc1306f`), the responsive website header (`098a5508`) and the tested deployment helper/default (`830791d4`). No new database migration or native binary publication is included.
 
@@ -36,7 +36,7 @@ The sanitized result was collected and required the exact target commit with `ap
 
 ## Assistant-operated deployment setup
 
-The owner explicitly requested that the assistant perform future deployments directly. A fixed root-owned deployment gateway and checksum-pinned one-time installer are prepared. They grant only the release command through the existing audit identity, validate uploaded data and use a fixed installed helper. Synthetic Linux security/checkout/privilege tests and a syntax check of the exact sudoers rule passed. The setup is not installed until owner execution and independent sudo/job verification succeed. See [the operational instructions](../../deploy/remediation/README.md#direct-deployment-gateway).
+The owner explicitly requested that the assistant perform future deployments directly and installed the checksum-pinned gateway. Its fixed sudo command, argument rejection and first assistant-operated deployment were independently verified. Synthetic Linux security/checkout/privilege tests and the exact sudoers rule check passed. See [the completed setup and release proof](direct-deployment-setup.md) and [operational instructions](../../deploy/remediation/README.md#direct-deployment-gateway). Live is `76a109e77368d11cc1554dd42bd806de9e288906`; the rollback path is `/var/www/wedding-market.before-20261019-213949`.
 
 ## First attempt and correction
 

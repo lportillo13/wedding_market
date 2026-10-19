@@ -1,6 +1,6 @@
 # Website header and mobile navigation — October 19, 2026
 
-The owner requested a better mobile menu and header. This batch updates the responsive website; it does not change the native Expo navigation. The website and earlier code/profile UX batches were subsequently deployed successfully as `2f0a556d`. See [the verified deployment receipt](deployment.md); native app binaries have not been republished.
+The owner requested a better mobile menu and header. This batch updates the responsive website; it does not change the native Expo navigation. The website and earlier code/profile UX batches were subsequently deployed successfully as `2f0a556d`, followed by assistant-operated release `76a109e7`. See [the verified deployment receipt](deployment.md); native app binaries have not been republished.
 
 ## Behavior
 

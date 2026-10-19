@@ -1,6 +1,6 @@
 # Wedding Market owner rollout
 
-These tools are scoped to Wedding Market on 89.167.111.168. They require the owner's existing root terminal; the audit SSH user has no sudo access. Review the source before execution. No script prints credentials or customer records. Paid Hetzner backups stay disabled.
+These tools are scoped to Wedding Market on 89.167.111.168. Privileged helper installation requires the owner's root terminal. Routine releases now use the installed, fixed deployment gateway through the audit identity's single authorized sudo command. Review the source before execution. No script prints credentials or customer records. Paid Hetzner backups stay disabled.
 
 ## Deployment
 
@@ -26,7 +26,7 @@ The existing R2 credential has broad scope. Creating or changing credentials in 
 
 ## Recovery and later deployments
 
-The owner requested automatic deployment of completed, verified application changes on October 19, 2026. The audit account remains unprivileged, so the final release switch still requires the owner's root terminal. Do not grant broad sudo as a workaround.
+The owner requested deployment of completed, verified application changes by default, then explicitly requested that the assistant perform deployments directly. The owner installed the gateway below; its fixed command and the first assistant-operated release were independently verified. Routine releases no longer require an owner terminal handoff. Do not grant broad sudo.
 
 ### Direct deployment gateway
 
