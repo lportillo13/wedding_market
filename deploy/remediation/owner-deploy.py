@@ -171,6 +171,7 @@ def main():
     shadow = None
     summary = {'releaseCommit': manifest['commit'], 'applicationDeployed': False, 'rollbackCopy': str(old_backup)}
     try:
+        summary['step'] = 'clone reviewed source'
         print('Building a separate Wedding Market release; the current application remains running.', flush=True)
         run(['git', 'clone', '--no-hardlinks', '--no-checkout', str(APP), str(stage)], env=env, as_deploy=True, log=build_log)
         git_config = configparser.RawConfigParser()
@@ -195,7 +196,9 @@ def main():
         env.update(overrides)
         new_env = original_env + '\n# Reviewed remediation overrides\n' + ''.join('%s=%s\n' % item for item in overrides.items())
         private_write(stage / '.env.production.local', new_env, DEPLOY.pw_uid, DEPLOY.pw_gid)
-        run(['nice', '-n', '10', 'npm', 'ci', '--no-fund', '--no-audit'], cwd=stage, env=env, as_deploy=True, log=build_log)
+        summary['step'] = 'install build dependencies'
+        run(['nice', '-n', '10', 'npm', 'ci', '--include=dev', '--no-fund', '--no-audit'], cwd=stage, env=env, as_deploy=True, log=build_log)
+        summary['step'] = 'build production application'
         run(['nice', '-n', '10', 'npm', 'run', 'build'], cwd=stage, env=env, as_deploy=True, log=build_log)
         standalone = stage / '.next/standalone'
         if not (standalone / 'server.js').is_file():
@@ -214,6 +217,7 @@ def main():
                                       env=dict(env, PORT='3012', HOSTNAME='127.0.0.1'),
                                       user=DEPLOY.pw_uid, group=DEPLOY.pw_gid, extra_groups=[],
                                       stdout=output, stderr=subprocess.STDOUT, start_new_session=True)
+        summary['step'] = 'probe isolated application'
         summary['shadowChecks'] = probes(3012)
         if shadow.poll() is not None:
             raise RuntimeError('Shadow application process exited unexpectedly.')
@@ -225,6 +229,7 @@ def main():
                                'env': dict(env, PORT='3001', HOSTNAME='127.0.0.1', WM_RELEASE_COMMIT=manifest['commit']),
                                'max_memory_restart': '1500M', 'restart_delay': 3000, 'kill_timeout': 5000}]}
         private_write(runtime_config, json.dumps(new_config), DEPLOY.pw_uid, DEPLOY.pw_gid)
+        summary['step'] = 'switch Wedding Market process'
         APP.rename(old_backup)
         APP.symlink_to(stage, target_is_directory=True)
         switched = True
@@ -235,9 +240,10 @@ def main():
         dump = Path('/home/deploy/.pm2/dump.pm2')
         if dump.exists(): dump.chmod(0o600)
         summary['applicationDeployed'] = True
+        summary['step'] = 'complete'
         print('Wedding Market deployed and probed. The full prior checkout is preserved for rollback.', flush=True)
         print('The historical deploy-wm.sh was not changed; review it before any future deployment.', flush=True)
-    except Exception:
+    except Exception as error:
         if shadow is not None:
             try: os.killpg(shadow.pid, signal.SIGKILL)
             except ProcessLookupError: pass
@@ -254,7 +260,8 @@ def main():
             run(['pm2', 'start', str(rollback), '--only', 'wedding-market'], env=deploy_env, as_deploy=True, log=build_log)
             run(['pm2', 'save', '--force'], env=deploy_env, as_deploy=True, log=build_log)
             summary['rolledBack'] = True
-        summary['error'] = 'Deployment did not complete. Owner-only logs are in ' + str(private)
+        summary['error'] = str(error) if isinstance(error, RuntimeError) else type(error).__name__
+        summary['privateLogDirectory'] = str(private)
         raise
     finally:
         audit = pwd.getpwnam('wm-audit-20261019')
@@ -267,4 +274,5 @@ if __name__ == '__main__':
     except Exception as error:
         # Never print subprocess args, environment, logs, or exception payloads.
         print('Deployment stopped safely. Review the owner-only log and sanitized result file.', flush=True)
+        if isinstance(error, RuntimeError): print(str(error), flush=True)
         raise SystemExit(1) from None

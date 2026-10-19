@@ -1,0 +1,6 @@
+{
+  "releaseCommit": "270f119ec4f2a184f366b28f5b421305508c7fe3",
+  "applicationDeployed": false,
+  "rollbackCopy": "/var/www/wedding-market.before-20261019-184816",
+  "error": "Deployment did not complete. Owner-only logs are in /var/backups/wedding-market-deploy/20261019-184816"
+}
