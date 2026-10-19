@@ -1,6 +1,6 @@
 # Application release handoff — October 19, 2026
 
-Status: live is `0b952c4acf1fe2f5027cab106c642aef1cdca7a3`, including the warmer wedding header/menu styling. Shadow/live and independent public checks passed. The direct deployment gateway is installed and verified; routine releases no longer require owner terminal commands. Earlier releases below are historical.
+Status: live is `3254c5b2f336299e8f5543301b385cb695de2f1b`, including the subsequent public vendor profile redesign. Its [release proof and screenshots](../vendor-profile-2026-10-19/implementation-review.md) record successful validation, deployment and independent public checks. The direct deployment gateway is installed and verified; routine releases no longer require owner terminal commands. Earlier header releases below are historical.
 
 ## Latest warm styling release
 

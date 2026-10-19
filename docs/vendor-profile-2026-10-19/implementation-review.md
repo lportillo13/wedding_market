@@ -23,4 +23,10 @@ Local Supabase is offline. Real signed-in saves, quote submission and native-dev
 
 ## Release status
 
-Validation is complete; gateway deployment is pending from verified live base `0b952c4acf1fe2f5027cab106c642aef1cdca7a3`. This document does not yet establish a live deployment.
+Deployed through the installed gateway as `3254c5b2f336299e8f5543301b385cb695de2f1b`, from verified live base `0b952c4acf1fe2f5027cab106c642aef1cdca7a3`. The detached unit finished successfully. [The exact-commit receipt](deployment-success.json) records successful shadow/live probes and rollback at `/var/www/wedding-market.before-20261019-220621`. Manifest SHA256: `c5c318950f9a7bd85e2753176cc171e2df1d72fb975ab938f1bf5e1527d7584d`.
+
+[Independent public checks](public-release-checks.json) passed for the supplied vendor page, directory, homepage, health and anonymous protected APIs. The new profile markup is present, security headers remain installed and direct-origin HTTPS returns 403.
+
+Live visual inspection checked the English 1440-pixel desktop profile and quote card, plus the Spanish phone profile at 390 and 320 pixels. Neither phone width overflowed horizontally; the quote bar reached the viewport bottom. Section navigation cleared the two sticky bars. The Spanish photo dialog advanced its counter, trapped Tab, restored focus to its trigger on Escape and released body scrolling. English was restored after testing. Signed-in states remain synthetic-only verification as described above.
+
+Live screenshots: [desktop introduction](live-desktop-en.png), [story and quote card](live-story-en.png), [Spanish phone introduction](live-mobile-es.png), [Spanish gallery](live-gallery-es.png). These show the existing public demo vendor's content, with no real-session customer data.

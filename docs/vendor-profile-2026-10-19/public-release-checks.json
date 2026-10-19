@@ -1,0 +1,101 @@
+{
+  "checkedAt": "2026-10-19T22:08:46.793134+00:00",
+  "releaseCommit": "3254c5b2f336299e8f5543301b385cb695de2f1b",
+  "publicTarget": "https://thewedmarket.com",
+  "results": [
+    {
+      "path": "/api/health",
+      "method": "GET",
+      "status": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "path": "/",
+      "method": "GET",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "warmHeaderPresent": true,
+      "securityHeadersPassed": true
+    },
+    {
+      "path": "/vendors",
+      "method": "GET",
+      "status": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "path": "/vendors/demo-destination-planning-golden-union-6",
+      "method": "GET",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "editorialProfilePresent": true
+    },
+    {
+      "path": "/api/vendors?pageSize=1",
+      "method": "GET",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "itemCount": 1
+    },
+    {
+      "path": "/api/uploads",
+      "method": "POST",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/ready",
+      "method": "GET",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/admin/blog-posts",
+      "method": "GET",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/mobile/quotes",
+      "method": "POST",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/mobile/quote-replies",
+      "method": "POST",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/mobile/quotes/accept",
+      "method": "POST",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/mobile/push-token",
+      "method": "POST",
+      "status": 401,
+      "expected": 401,
+      "passed": true
+    }
+  ],
+  "directOrigin": {
+    "status": 403,
+    "expected": 403,
+    "passed": true
+  },
+  "allPassed": true
+}
