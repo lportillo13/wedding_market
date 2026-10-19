@@ -1,6 +1,6 @@
 # Application release handoff — October 19, 2026
 
-Status: live is `21e91da8975ce008e36c2134e22ab24933dc8e72`, including the subsequent public vendor profile redesign and account inbox reorganization. The latest [inbox release proof and previews](../inbox-2026-10-19/implementation-review.md) record successful validation, deployment and independent public checks. The preceding [vendor profile release](../vendor-profile-2026-10-19/implementation-review.md) remains part of this release. The direct deployment gateway is installed and verified; routine releases no longer require owner terminal commands. Earlier header releases below are historical.
+Status: live is `ef0975b0ac58adf2d66ff57beacc3813fa4d3af6`, including the subsequent vendor profiles, inbox organization and functional inquiry/proposal/message fixes. The latest [workflow review and release evidence](../quote-flow-2026-10-19/implementation-review.md) records the applied migration, rollback-only production database tests, exact release receipt and independent public checks. The direct deployment gateway is installed and verified; routine releases no longer require owner terminal commands. Earlier header releases below are historical.
 
 ## Latest warm styling release
 

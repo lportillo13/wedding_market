@@ -1,0 +1,16 @@
+{
+  "verifiedAt": "2026-10-19T22:51:14.256639+00:00",
+  "groupCreation": true,
+  "contactPrivacy": true,
+  "singleCreation": true,
+  "acceptanceRetry": true,
+  "idempotentRetry": true,
+  "vendorIsolation": true,
+  "acceptedFollowUp": true,
+  "emptyFolderCounts": true,
+  "fixturesRolledBack": true,
+  "versionedProposals": true,
+  "preProposalMessages": true,
+  "staleAcceptanceDenied": true,
+  "unauthorizedSendDenied": true
+}

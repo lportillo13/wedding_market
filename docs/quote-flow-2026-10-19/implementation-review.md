@@ -23,9 +23,11 @@ Migration: [202610190006_inquiry_conversations.sql](../../supabase/migrations/20
 
 The shared workflow tests use the real Supabase JavaScript client with synthetic HTTP responses; PostgreSQL/PGlite tests execute the actual migration, policies, triggers and transaction functions. Browser checks use the actual reply/proposal components with fictional records: failed send retention, consecutive successful clears, Spanish feedback, phone layout, exact fractional price and draft retention through repeated background refreshes. The temporary preview route is removed before building the release. [Phone preview](preview-mobile-es.png) contains example data.
 
-The native source passes typecheck, lint and 48 tests, including group payload/retry tokens, pre-proposal messages, malformed numbers and closure checks. The Android Hermes export compiles successfully. This is source/build validation; a new native binary is not published by the website deployment.
+The native source passes typecheck, lint and 48 tests, including group payload/retry tokens, pre-proposal messages, malformed numbers and closure checks. A final native-only correction clears the submission token after a confirmed request, so a later identical inquiry can start a new conversation; the native checks and export were repeated afterward. The Android Hermes export compiles successfully. This is source/build validation; a new native binary is not published by the website deployment.
 
-The final production build passed with no preview route. All 62 web tests, 24 PostgreSQL/PGlite checks, web typecheck and lint pass. Deployment receipts follow after completion. The [rollback-only live verification script](live-transaction-check.sql) creates isolated fixtures inside an exception subtransaction, executes the real role-scoped workflow and always rolls the fixtures back. It calls no email/push delivery code. Its rollback behavior is also exercised in the local database suite.
+The final production build passed with no preview route. All 62 web tests, 24 PostgreSQL/PGlite checks, web typecheck and lint pass. The [rollback-only live verification script](live-transaction-check.sql) passed against the production Supabase database: [result](live-workflow-verification.json), [screenshot](live-workflow-verification.png). It checked individual/group creation, deduplicated retries, private messages before proposals, empty-folder counts, proposal versions, stale-acceptance rejection, acceptance retries, contact masking and accepted follow-up after invitation expiry. All fixture records were rolled back. It called no email/push delivery code. Its rollback behavior is also exercised in the local database suite.
+
+The [migration integrity check](migration-verification.json) confirms version 006 is recorded with the reviewed SHA256, all 13 historical messages remain valid, both new privileged functions deny anonymous execution and no fixture accounts remain. [Migration completion screenshot](migration-success.png).
 
 ## Product rule and practical limits
 
@@ -35,4 +37,8 @@ No real client/vendor login credentials were supplied for browser acceptance. UI
 
 ## Release status
 
-The production build passed. Pending migration verification and gateway deployment from verified live base `21e91da8975ce008e36c2134e22ab24933dc8e72`.
+Migration 006 is applied and independently verified. Application `ef0975b0ac58adf2d66ff57beacc3813fa4d3af6` is deployed through the installed gateway from verified live base `21e91da8975ce008e36c2134e22ab24933dc8e72`. Manifest SHA256: `9b3e315673b46d4ae51dc88bd3da5506db00aa2d31e30e4b94c3eb2774bc8f86`. The service exited successfully and the [exact-release receipt](deployment-success.json) confirms `applicationDeployed: true`, step `complete`, and successful shadow/live probes. Rollback copy: `/var/www/wedding-market.before-20261019-225149`.
+
+[Independent public checks](public-release-checks.json) passed: health, homepage, vendor directory/profile, bounded directory results, protected request/quote/reply/acceptance APIs, account/vendor login gates, new CSS assets, security headers and direct-origin rejection. The final native-only token correction does not alter the deployed website runtime; it is included in the source for the next native build.
+
+For an application rollback, preserve migration 006 and the message history. Old quote-linked writers remain supported. A preceding application reader does not show newly created pre-proposal messages; restoring the fixed reader makes that retained history visible again. Do not drop the new thread identifiers or restore the old `quote_id NOT NULL` constraint over newer messages.

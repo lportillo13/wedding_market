@@ -1,0 +1,152 @@
+{
+  "checkedAt": "2026-10-19T22:54:23.245052+00:00",
+  "releaseCommit": "ef0975b0ac58adf2d66ff57beacc3813fa4d3af6",
+  "publicTarget": "https://thewedmarket.com",
+  "results": [
+    {
+      "path": "/api/health",
+      "method": "GET",
+      "expected": 200,
+      "passed": true,
+      "status": 200
+    },
+    {
+      "path": "/",
+      "method": "GET",
+      "expected": 200,
+      "passed": true,
+      "status": 200,
+      "warmHeaderPresent": true,
+      "securityHeadersPassed": true
+    },
+    {
+      "path": "/vendors",
+      "method": "GET",
+      "expected": 200,
+      "passed": true,
+      "status": 200
+    },
+    {
+      "path": "/vendors/demo-destination-planning-golden-union-6",
+      "method": "GET",
+      "expected": 200,
+      "passed": true,
+      "status": 200,
+      "editorialProfilePresent": true
+    },
+    {
+      "path": "/api/vendors?pageSize=1",
+      "method": "GET",
+      "expected": 200,
+      "passed": true,
+      "status": 200,
+      "itemCount": 1
+    },
+    {
+      "path": "/api/rfqs/create",
+      "method": "POST",
+      "expected": 401,
+      "passed": true,
+      "status": 401
+    },
+    {
+      "path": "/api/uploads",
+      "method": "POST",
+      "expected": 401,
+      "passed": true,
+      "status": 401
+    },
+    {
+      "path": "/api/ready",
+      "method": "GET",
+      "expected": 401,
+      "passed": true,
+      "status": 401
+    },
+    {
+      "path": "/api/admin/blog-posts",
+      "method": "GET",
+      "expected": 401,
+      "passed": true,
+      "status": 401
+    },
+    {
+      "path": "/api/mobile/quotes",
+      "method": "POST",
+      "expected": 401,
+      "passed": true,
+      "status": 401
+    },
+    {
+      "path": "/api/mobile/quote-replies",
+      "method": "POST",
+      "expected": 401,
+      "passed": true,
+      "status": 401
+    },
+    {
+      "path": "/api/mobile/quotes/accept",
+      "method": "POST",
+      "expected": 401,
+      "passed": true,
+      "status": 401
+    },
+    {
+      "path": "/api/mobile/push-token",
+      "method": "POST",
+      "expected": 401,
+      "passed": true,
+      "status": 401
+    },
+    {
+      "path": "/account/inbox",
+      "anonymousAccess": "redirect",
+      "expectedDestination": "/signup",
+      "passed": true,
+      "status": 307,
+      "redirectPath": "/signup",
+      "privateInboxAbsent": true
+    },
+    {
+      "path": "/account/inbox?view=deleted",
+      "anonymousAccess": "redirect",
+      "expectedDestination": "/signup",
+      "passed": true,
+      "status": 307,
+      "redirectPath": "/signup",
+      "privateInboxAbsent": true
+    },
+    {
+      "path": "/vendor/inbox",
+      "anonymousAccess": "redirect",
+      "expectedDestination": "/signup/vendor",
+      "passed": true,
+      "status": 307,
+      "redirectPath": "/signup/vendor",
+      "privateInboxAbsent": true
+    }
+  ],
+  "stylesheets": {
+    "stylesheetCount": 3,
+    "statuses": [
+      200,
+      200,
+      200
+    ],
+    "markers": {
+      "wm-conversations": true,
+      "wm-conversation-card__details": true,
+      "wm-workspace-footer": true,
+      "wm-notification-page": true,
+      "wm-thread": true,
+      "wm-conversation-card--unread": true
+    },
+    "passed": true
+  },
+  "directOrigin": {
+    "status": 403,
+    "expected": 403,
+    "passed": true
+  },
+  "allPassed": true
+}

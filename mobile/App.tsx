@@ -2972,6 +2972,7 @@ function RequestQuoteModal({
       const fingerprint=JSON.stringify([form,vendorIds]);
       if (submission.current?.fingerprint !== fingerprint) submission.current={id:createSubmissionId(),fingerprint};
       await createQuoteRequests(form, vendorIds,submission.current.id);
+      submission.current = null;
       setStatus(isBatch
         ? language === "en"
           ? `One request was sent to ${vendors.length} vendors. Each private conversation is available in your inbox.`
