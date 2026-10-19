@@ -6,6 +6,28 @@ const common = {
     "english": "English",
     "spanish": "Spanish"
   },
+  "header": {
+    "menu": "Menu",
+    "openMenu": "Open navigation menu",
+    "closeMenu": "Close navigation menu",
+    "primaryNavigation": "Main navigation",
+    "tagline": "Weddings in Costa Rica",
+    "search": "Search vendors",
+    "searchPlaceholder": "Vendor name or service",
+    "explore": "Explore",
+    "categories": "Find your people",
+    "showCategories": "All categories",
+    "hideCategories": "Fewer categories",
+    "account": "Your space",
+    "guestTitle": "Your wedding starts here",
+    "guestDescription": "Save your favorites and keep every conversation together.",
+    "myWedding": "My wedding",
+    "vendorSpace": "Your business",
+    "loadingAccount": "Loading your account…",
+    "joinVendors": "Are you a wedding professional?",
+    "joinAction": "Join as a vendor",
+    "signUp": "Create an account"
+  },
   "nav": {
     "brand": "Wedding Market",
     "vendors": "Vendors",

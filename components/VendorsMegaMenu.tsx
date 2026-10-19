@@ -2,7 +2,16 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { type ChangeEvent, type FocusEvent, type KeyboardEvent, useEffect, useId, useMemo, useRef, useState } from "react";
+import {
+  type ChangeEvent,
+  type FocusEvent,
+  type KeyboardEvent,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export type HeaderVendorCategory = {
@@ -21,21 +30,20 @@ type VendorSuggestion = {
 
 type VendorsMegaMenuProps = {
   categories: HeaderVendorCategory[];
-  closeMobileNav?: () => void;
 };
 
 function normalizeTerm(value: string) {
   return value.trim();
 }
 
-export default function VendorsMegaMenu({ categories, closeMobileNav }: VendorsMegaMenuProps) {
+export default function VendorsMegaMenu({ categories }: VendorsMegaMenuProps) {
   const router = useRouter();
   const { dictionary, language } = useLanguage();
   const pathname = usePathname();
   const labels = dictionary.nav.vendorsMenu;
   const menuId = useId();
   const rootRef = useRef<HTMLLIElement | null>(null);
-  const closeTimeoutRef = useRef<number | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<VendorSuggestion[]>([]);
@@ -62,14 +70,6 @@ export default function VendorsMegaMenu({ categories, closeMobileNav }: VendorsM
   }, [isOpen]);
 
   useEffect(() => {
-    return () => {
-      if (closeTimeoutRef.current !== null) {
-        window.clearTimeout(closeTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
     if (!isOpen) {
       return undefined;
     }
@@ -80,8 +80,20 @@ export default function VendorsMegaMenu({ categories, closeMobileNav }: VendorsM
       }
     };
 
+    const root = rootRef.current;
+    const handleEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setIsOpen(false);
+        triggerRef.current?.focus();
+      }
+    };
     document.addEventListener("mousedown", handlePointerDown);
-    return () => document.removeEventListener("mousedown", handlePointerDown);
+    root?.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      root?.removeEventListener("keydown", handleEscape);
+    };
   }, [isOpen]);
 
   useEffect(() => {
@@ -96,23 +108,30 @@ export default function VendorsMegaMenu({ categories, closeMobileNav }: VendorsM
     const timeoutId = window.setTimeout(async () => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/vendors/suggest?q=${encodeURIComponent(normalized)}`, {
-          signal: controller.signal,
-        });
+        const response = await fetch(
+          `/api/vendors/suggest?q=${encodeURIComponent(normalized)}`,
+          {
+            signal: controller.signal,
+          },
+        );
 
         if (!response.ok) {
           throw new Error(`Suggestion request failed (${response.status})`);
         }
 
-        const payload = (await response.json()) as { items?: VendorSuggestion[] };
-        setSuggestions(payload.items ?? []);
-        setActiveIndex(-1);
+        const payload = (await response.json()) as {
+          items?: VendorSuggestion[];
+        };
+        if (!controller.signal.aborted) {
+          setSuggestions(payload.items ?? []);
+          setActiveIndex(-1);
+        }
       } catch (error) {
         if ((error as Error).name !== "AbortError") {
           setSuggestions([]);
         }
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     }, 180);
 
@@ -126,30 +145,6 @@ export default function VendorsMegaMenu({ categories, closeMobileNav }: VendorsM
     setIsOpen((prev) => !prev);
   };
 
-  const clearCloseTimeout = () => {
-    if (closeTimeoutRef.current !== null) {
-      window.clearTimeout(closeTimeoutRef.current);
-      closeTimeoutRef.current = null;
-    }
-  };
-
-  const handleMouseEnter = () => {
-    if (typeof window !== "undefined" && window.matchMedia("(min-width: 992px)").matches) {
-      clearCloseTimeout();
-      setIsOpen(true);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    if (typeof window !== "undefined" && window.matchMedia("(min-width: 992px)").matches) {
-      clearCloseTimeout();
-      closeTimeoutRef.current = window.setTimeout(() => {
-        setIsOpen(false);
-        closeTimeoutRef.current = null;
-      }, 1000);
-    }
-  };
-
   const handleBlur = (event: FocusEvent<HTMLLIElement>) => {
     if (!event.currentTarget.contains(event.relatedTarget)) {
       setIsOpen(false);
@@ -158,42 +153,36 @@ export default function VendorsMegaMenu({ categories, closeMobileNav }: VendorsM
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
+    setActiveIndex(-1);
   };
 
   const handleSearchKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (!suggestions.length) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      const selected = activeIndex >= 0 ? suggestions[activeIndex] : null;
+      const queryText = normalizeTerm(query);
+      router.push(
+        selected
+          ? `/vendors/${selected.slug}`
+          : queryText
+            ? `/vendors?q=${encodeURIComponent(queryText)}`
+            : "/vendors",
+      );
+      closeAll();
       return;
     }
-
+    if (!suggestions.length) return;
     if (event.key === "ArrowDown") {
       event.preventDefault();
       setActiveIndex((prev) => (prev + 1) % suggestions.length);
-      return;
-    }
-
-    if (event.key === "ArrowUp") {
+    } else if (event.key === "ArrowUp") {
       event.preventDefault();
       setActiveIndex((prev) => (prev <= 0 ? suggestions.length - 1 : prev - 1));
-      return;
-    }
-
-    if (event.key === "Enter" && activeIndex >= 0) {
-      event.preventDefault();
-      const selected = suggestions[activeIndex];
-      if (selected) {
-        router.push(`/vendors/${selected.slug}`);
-      }
-    }
-
-    if (event.key === "Escape") {
-      setIsOpen(false);
     }
   };
 
   const closeAll = () => {
-    clearCloseTimeout();
     setIsOpen(false);
-    closeMobileNav?.();
   };
 
   return (
@@ -201,18 +190,21 @@ export default function VendorsMegaMenu({ categories, closeMobileNav }: VendorsM
       className={`nav-item vendors-mega-nav${isOpen ? " is-open" : ""}`}
       ref={rootRef}
       onBlur={handleBlur}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
       <button
         type="button"
         className="nav-link vendors-mega-toggle btn btn-link"
+        ref={triggerRef}
+        aria-current={pathname?.startsWith("/vendors") ? "page" : undefined}
         aria-expanded={isOpen}
         aria-controls={menuId}
         onClick={handleToggle}
       >
         <span>{dictionary.nav.vendors}</span>
-        <span className={`vendors-mega-caret${isOpen ? " is-open" : ""}`} aria-hidden="true">
+        <span
+          className={`vendors-mega-caret${isOpen ? " is-open" : ""}`}
+          aria-hidden="true"
+        >
           ▾
         </span>
       </button>
@@ -227,11 +219,19 @@ export default function VendorsMegaMenu({ categories, closeMobileNav }: VendorsM
           <section className="vendors-mega-search">
             <div className="d-flex align-items-start justify-content-between gap-3 flex-wrap">
               <div>
-                <div className="vendors-mega-eyebrow">{labels.searchEyebrow}</div>
+                <div className="vendors-mega-eyebrow">
+                  {labels.searchEyebrow}
+                </div>
                 <h3 className="h5 mb-1">{labels.searchHeading}</h3>
-                <p className="text-secondary mb-0">{labels.searchDescription}</p>
+                <p className="text-secondary mb-0">
+                  {labels.searchDescription}
+                </p>
               </div>
-              <Link href="/vendors" className="btn btn-outline-secondary btn-sm" onClick={closeAll}>
+              <Link
+                href="/vendors"
+                className="btn btn-outline-secondary btn-sm"
+                onClick={closeAll}
+              >
                 {labels.browseAll}
               </Link>
             </div>
@@ -247,18 +247,44 @@ export default function VendorsMegaMenu({ categories, closeMobileNav }: VendorsM
                 onKeyDown={handleSearchKeyDown}
                 autoComplete="off"
                 aria-label={labels.searchPlaceholder}
+                role="combobox"
+                aria-expanded={
+                  isOpen &&
+                  (loading ||
+                    suggestions.length > 0 ||
+                    normalizeTerm(query).length >= 2)
+                }
                 aria-autocomplete="list"
                 aria-controls={`${menuId}-suggestions`}
-                aria-activedescendant={activeIndex >= 0 ? `${menuId}-suggestion-${activeIndex}` : undefined}
+                aria-activedescendant={
+                  activeIndex >= 0
+                    ? `${menuId}-suggestion-${activeIndex}`
+                    : undefined
+                }
               />
 
-              {(loading || suggestions.length > 0 || normalizeTerm(query).length >= 2) && (
-                <div className="vendors-suggestion-list shadow-sm" id={`${menuId}-suggestions`} role="listbox">
-                  {loading ? <div className="vendors-suggestion-empty">{labels.loading}</div> : null}
+              {(loading ||
+                suggestions.length > 0 ||
+                normalizeTerm(query).length >= 2) && (
+                <div
+                  className="vendors-suggestion-list shadow-sm"
+                  id={`${menuId}-suggestions`}
+                  role="listbox"
+                >
+                  {loading ? (
+                    <div className="vendors-suggestion-empty">
+                      {labels.loading}
+                    </div>
+                  ) : null}
                   {!loading && suggestions.length > 0
                     ? suggestions.map((suggestion, index) => {
                         const categoryText = (suggestion.categories ?? [])
-                          .map((categoryKey) => localizedCategories.find((item) => item.key === categoryKey)?.label ?? categoryKey)
+                          .map(
+                            (categoryKey) =>
+                              localizedCategories.find(
+                                (item) => item.key === categoryKey,
+                              )?.label ?? categoryKey,
+                          )
                           .slice(0, 2)
                           .join(" • ");
 
@@ -273,14 +299,24 @@ export default function VendorsMegaMenu({ categories, closeMobileNav }: VendorsM
                             onClick={closeAll}
                             onMouseEnter={() => setActiveIndex(index)}
                           >
-                            <span className="vendors-suggestion-name">{suggestion.business_name}</span>
-                            {categoryText ? <span className="vendors-suggestion-meta">{categoryText}</span> : null}
+                            <span className="vendors-suggestion-name">
+                              {suggestion.business_name}
+                            </span>
+                            {categoryText ? (
+                              <span className="vendors-suggestion-meta">
+                                {categoryText}
+                              </span>
+                            ) : null}
                           </Link>
                         );
                       })
                     : null}
-                  {!loading && suggestions.length === 0 && normalizeTerm(query).length >= 2 ? (
-                    <div className="vendors-suggestion-empty">{labels.noResults}</div>
+                  {!loading &&
+                  suggestions.length === 0 &&
+                  normalizeTerm(query).length >= 2 ? (
+                    <div className="vendors-suggestion-empty">
+                      {labels.noResults}
+                    </div>
                   ) : null}
                 </div>
               )}
@@ -288,7 +324,9 @@ export default function VendorsMegaMenu({ categories, closeMobileNav }: VendorsM
           </section>
 
           <section className="vendors-mega-categories">
-            <div className="vendors-mega-eyebrow">{labels.categoriesEyebrow}</div>
+            <div className="vendors-mega-eyebrow">
+              {labels.categoriesEyebrow}
+            </div>
             <h3 className="h5 mb-3">{labels.categoriesHeading}</h3>
             <div className="vendors-category-grid">
               {localizedCategories.map((category) => (

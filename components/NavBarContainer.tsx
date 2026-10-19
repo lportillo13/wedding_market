@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 import NavBar from "@/components/NavBar";
 import AuthDropdown from "@/components/AuthDropdown";
@@ -18,7 +17,6 @@ type NavBarContainerState = {
 };
 
 export default function NavBarContainer({ vendorCategories }: { vendorCategories: HeaderVendorCategory[] }) {
-  const pathname = usePathname();
   const [state, setState] = useState<NavBarContainerState>({
     user: null,
     isVendor: false,
@@ -98,13 +96,11 @@ export default function NavBarContainer({ vendorCategories }: { vendorCategories
     <GuestAuthActions />
   );
 
-  if (pathname === "/") {
-    return null;
-  }
-
   return (
     <NavBar
       authMenu={authMenu}
+      user={state.user}
+      authReady={state.ready}
       isAuthenticated={state.ready && !!state.user}
       isVendor={state.ready && state.isVendor}
       notificationLink={

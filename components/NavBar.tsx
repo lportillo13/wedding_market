@@ -1,13 +1,20 @@
 "use client";
 
 import type { ReactNode } from "react";
+import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { getShortlistCount } from "@/lib/shortlist";
-import { useTranslation } from "@/contexts/LanguageContext";
-import LanguageDropdown from "@/components/LanguageDropdown";
-import VendorsMegaMenu, { type HeaderVendorCategory } from "@/components/VendorsMegaMenu";
+import {
+  getHeaderAccountLinks,
+  isHeaderLinkCurrent,
+} from "@/lib/header-navigation";
+import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
+import HeaderSignOutButton from "./HeaderSignOutButton";
+import HeaderIcon from "./HeaderIcon";
+import HeaderLanguageSwitch from "./HeaderLanguageSwitch";
+import VendorsMegaMenu, { type HeaderVendorCategory } from "./VendorsMegaMenu";
 
 type NavBarProps = {
   authMenu?: ReactNode;
@@ -15,136 +22,441 @@ type NavBarProps = {
   isVendor?: boolean;
   notificationLink?: ReactNode;
   vendorCategories: HeaderVendorCategory[];
+  user?: User | null;
+  authReady?: boolean;
 };
-
 export default function NavBar({
   authMenu,
   isAuthenticated = false,
   isVendor = false,
   notificationLink,
   vendorCategories,
+  user,
+  authReady = true,
 }: NavBarProps) {
-  const [count, setCount] = useState(() => (typeof window !== "undefined" ? getShortlistCount() : 0));
-  const [mounted, setMounted] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isLargeScreen, setIsLargeScreen] = useState(false);
-  const pathname = usePathname();
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return undefined;
-    }
-    const sync = () => setCount(getShortlistCount());
-    window.addEventListener("wm-shortlist-changed", sync);
-    return () => window.removeEventListener("wm-shortlist-changed", sync);
-  }, []);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(min-width: 992px)");
-    const updateIsLargeScreen = (event: MediaQueryList | MediaQueryListEvent) => {
-      setIsLargeScreen(event.matches);
-    };
-
-    updateIsLargeScreen(mediaQuery);
-    const listener = (event: MediaQueryListEvent) => updateIsLargeScreen(event);
-
-    if (typeof mediaQuery.addEventListener === "function") {
-      mediaQuery.addEventListener("change", listener);
-      return () => mediaQuery.removeEventListener("change", listener);
-    }
-
-    mediaQuery.addListener(listener);
-    return () => mediaQuery.removeListener(listener);
-  }, []);
-
-  useEffect(() => {
-    if (!isLargeScreen) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsOpen(false);
-    }
-  }, [pathname, isLargeScreen]);
-
-  const navExpanded = isLargeScreen || isOpen;
+  const pathname = usePathname() ?? "/";
+  const { language, dictionary } = useLanguage();
   const t = useTranslation();
-  const closeMobileNav = () => setIsOpen(false);
+  const labels = dictionary.header;
+  const [count, setCount] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [allCategories, setAllCategories] = useState(false);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const searchInput = useRef<HTMLInputElement>(null);
+  const closeButton = useRef<HTMLButtonElement>(null);
+  const returnFocus = useRef<HTMLButtonElement | null>(null);
+  const focusSearch = useRef(false);
+  const menuId = useId();
+  const close = useCallback(() => setMenuOpen(false), []);
+  const name =
+    typeof user?.user_metadata?.full_name === "string"
+      ? user.user_metadata.full_name
+      : dictionary.auth.account;
+  const accountLinks = getHeaderAccountLinks(isVendor);
 
+  useEffect(() => {
+    const sync = () => setCount(getShortlistCount());
+    const frame = requestAnimationFrame(sync);
+    window.addEventListener("wm-shortlist-changed", sync);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("wm-shortlist-changed", sync);
+    };
+  }, []);
+  useEffect(() => {
+    const frame = requestAnimationFrame(close);
+    return () => cancelAnimationFrame(frame);
+  }, [pathname, close]);
+  useEffect(() => {
+    const query = window.matchMedia("(min-width: 1200px)");
+    const onResize = () => {
+      if (query.matches) close();
+    };
+    query.addEventListener("change", onResize);
+    return () => query.removeEventListener("change", onResize);
+  }, [close]);
+  useEffect(() => {
+    const element = dialog.current;
+    if (!menuOpen || !element) {
+      element?.close();
+      return;
+    }
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onBackdrop = (event: MouseEvent) => {
+      if (event.target !== element) return;
+      const rect = element.getBoundingClientRect();
+      if (
+        event.clientX < rect.left ||
+        event.clientX > rect.right ||
+        event.clientY < rect.top ||
+        event.clientY > rect.bottom
+      )
+        close();
+    };
+    element.addEventListener("click", onBackdrop);
+    element.showModal();
+    (focusSearch.current ? searchInput.current : closeButton.current)?.focus({
+      preventScroll: true,
+    });
+    return () => {
+      element.removeEventListener("click", onBackdrop);
+      element.close();
+      document.body.style.overflow = overflow;
+      returnFocus.current?.focus({ preventScroll: true });
+    };
+  }, [menuOpen, close]);
+  function open(trigger: HTMLButtonElement, search = false) {
+    returnFocus.current = trigger;
+    focusSearch.current = search;
+    setAllCategories(false);
+    setMenuOpen(true);
+  }
+  const brand = (
+    <>
+      <span className="wm-site-header__wordmark">{dictionary.nav.brand}</span>
+      <span className="wm-site-header__tagline">{labels.tagline}</span>
+    </>
+  );
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm wm-navbar-shell wm-site-navbar">
-      <div className="container position-relative">
-        <Link href="/" className="navbar-brand">{t("nav.brand")}</Link>
-
-        <button
-          className="navbar-toggler"
-          type="button"
-          aria-controls="wmNav"
-          aria-expanded={navExpanded}
-          aria-label="Toggle navigation"
-          onClick={() => setIsOpen((prev) => !prev)}
+    <header
+      className={`wm-site-header${pathname === "/" ? " wm-site-header--home" : ""}`}
+    >
+      <div className="container wm-site-header__inner">
+        <Link href="/" className="wm-site-header__brand">
+          {brand}
+        </Link>
+        <nav
+          className="wm-site-header__desktop-nav"
+          aria-label={labels.primaryNavigation}
         >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-
-        <div className={`collapse navbar-collapse${navExpanded ? " show" : ""}`} id="wmNav">
-          <ul className="navbar-nav me-auto">
-            <VendorsMegaMenu categories={vendorCategories} closeMobileNav={closeMobileNav} />
-            <li className="nav-item"><Link href="/about" className="nav-link">{t("nav.about")}</Link></li>
-            <li className="nav-item"><Link href="/blog" className="nav-link">{t("nav.blog")}</Link></li>
-            {isAuthenticated && !isVendor && (
-              <li className="nav-item"><Link href="/account/inbox" className="nav-link">{t("nav.myRequests")}</Link></li>
-            )}
-            {isAuthenticated && isVendor && (
-              <li className="nav-item"><Link href="/vendor/inbox" className="nav-link">{t("vendorRfqs.title")}</Link></li>
-            )}
-          </ul>
-
-          <div className="wm-navbar-actions d-flex align-items-center gap-2 flex-wrap flex-lg-nowrap ms-lg-auto">
-            {!isVendor && (
-              <Link href="/rfq/new" className="btn btn-primary btn-sm wm-header-action">
-                {t("nav.requestQuotes")}
-              </Link>
-            )}
-            {notificationLink}
-            {isAuthenticated && !isVendor && (
+          <ul>
+            <VendorsMegaMenu categories={vendorCategories} />
+            <li>
               <Link
-                href="/shortlist"
-                className="btn btn-outline-secondary btn-sm position-relative d-inline-flex align-items-center justify-content-center wm-header-action wm-header-action--icon"
-                aria-label={t("nav.shortlist")}
-                title={t("nav.shortlist")}
-                style={{ padding: 0 }}
+                href="/about"
+                aria-current={
+                  isHeaderLinkCurrent(pathname, "/about") ? "page" : undefined
+                }
               >
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 24 24"
-                  width="18"
-                  height="18"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="m12 21-1.4-1.3C5.4 14.9 2 11.8 2 8a5 5 0 0 1 9.1-2.9L12 6.3l.9-1.2A5 5 0 0 1 22 8c0 3.8-3.4 6.9-8.6 11.7z" />
-                </svg>
-                <span className="visually-hidden">{t("nav.shortlist")}</span>
-                {/* render badge after mount to avoid hydration mismatch */}
-                {mounted && (
-                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    {count}
-                    <span className="visually-hidden">{t("nav.shortlistCountLabel")}</span>
-                  </span>
-                )}
+                {dictionary.nav.about}
               </Link>
+            </li>
+            <li>
+              <Link
+                href="/blog"
+                aria-current={
+                  isHeaderLinkCurrent(pathname, "/blog") ? "page" : undefined
+                }
+              >
+                {dictionary.nav.blog}
+              </Link>
+            </li>
+          </ul>
+        </nav>
+        <div className="wm-site-header__desktop-actions">
+          <HeaderLanguageSwitch compact />
+          {authReady && !isVendor ? (
+            <Link href="/rfq/new" className="wm-site-header__cta">
+              {dictionary.nav.requestQuotes}
+              <HeaderIcon name="arrow" width="16" height="16" />
+            </Link>
+          ) : null}
+          {isAuthenticated ? (
+            <Link
+              href={isVendor ? "/vendor/inbox" : "/account/inbox"}
+              className="wm-site-header__icon"
+              aria-label={
+                isVendor
+                  ? dictionary.auth.vendorRfqs
+                  : dictionary.nav.myRequests
+              }
+              title={
+                isVendor
+                  ? dictionary.auth.vendorRfqs
+                  : dictionary.nav.myRequests
+              }
+            >
+              <HeaderIcon name="inbox" />
+            </Link>
+          ) : null}
+          {notificationLink}
+          {isAuthenticated && !isVendor ? (
+            <Link
+              href="/shortlist"
+              className="wm-site-header__icon"
+              aria-label={`${dictionary.nav.shortlist}${count ? ` (${count})` : ""}`}
+            >
+              <HeaderIcon name="heart" />
+              {count > 0 ? (
+                <span className="wm-site-header__count">
+                  {count > 99 ? "99+" : count}
+                </span>
+              ) : null}
+            </Link>
+          ) : null}
+          <div className="wm-site-header__auth">
+            {authReady ? (
+              authMenu
+            ) : (
+              <span className="wm-site-header__loading" role="status">
+                <span className="visually-hidden">{labels.loadingAccount}</span>
+              </span>
             )}
-            {!isAuthenticated && <LanguageDropdown />}
-            {authMenu}
           </div>
         </div>
+        <div className="wm-site-header__mobile-actions">
+          <button
+            type="button"
+            className="wm-site-header__icon"
+            aria-label={labels.search}
+            aria-controls={menuId}
+            aria-haspopup="dialog"
+            onClick={(event) => open(event.currentTarget, true)}
+          >
+            <HeaderIcon name="search" />
+          </button>
+          <button
+            type="button"
+            className="wm-site-header__menu-button"
+            aria-label={labels.openMenu}
+            aria-controls={menuId}
+            aria-haspopup="dialog"
+            aria-expanded={menuOpen}
+            onClick={(event) => open(event.currentTarget)}
+          >
+            <HeaderIcon name="menu" />
+            <span>{labels.menu}</span>
+          </button>
+        </div>
       </div>
-    </nav>
+      <dialog
+        ref={dialog}
+        id={menuId}
+        className="wm-mobile-navigation"
+        aria-label={labels.primaryNavigation}
+        onCancel={(event) => {
+          event.preventDefault();
+          close();
+        }}
+      >
+        <div className="wm-mobile-navigation__shell">
+          <div className="wm-mobile-navigation__top">
+            <Link href="/" className="wm-site-header__brand" onClick={close}>
+              {brand}
+            </Link>
+            <button
+              ref={closeButton}
+              type="button"
+              className="wm-site-header__icon"
+              aria-label={labels.closeMenu}
+              onClick={close}
+            >
+              <HeaderIcon name="close" />
+            </button>
+          </div>
+          <div className="wm-mobile-navigation__body">
+            <form
+              className="wm-header-search"
+              action="/vendors"
+              method="get"
+              role="search"
+            >
+              <HeaderIcon name="search" />
+              <input
+                ref={searchInput}
+                type="search"
+                name="q"
+                autoComplete="off"
+                placeholder={labels.searchPlaceholder}
+                aria-label={labels.search}
+              />
+              <button type="submit" aria-label={labels.search}>
+                <HeaderIcon name="arrow" />
+              </button>
+            </form>
+            <nav aria-label={labels.explore}>
+              <Link
+                className="wm-mobile-navigation__primary"
+                href="/vendors"
+                onClick={close}
+                aria-current={
+                  pathname.startsWith("/vendors") ? "page" : undefined
+                }
+              >
+                {dictionary.nav.vendors}
+                <HeaderIcon name="arrow" />
+              </Link>
+              <div className="wm-mobile-navigation__section-heading">
+                <span>{labels.categories}</span>
+                {vendorCategories.length > 6 ? (
+                  <button
+                    type="button"
+                    aria-expanded={allCategories}
+                    aria-controls={`${menuId}-categories`}
+                    onClick={() => setAllCategories((value) => !value)}
+                  >
+                    {allCategories
+                      ? labels.hideCategories
+                      : labels.showCategories}
+                    <HeaderIcon name="chevron" width="14" height="14" />
+                  </button>
+                ) : null}
+              </div>
+              <div
+                className="wm-mobile-navigation__categories"
+                id={`${menuId}-categories`}
+              >
+                {(allCategories
+                  ? vendorCategories
+                  : vendorCategories.slice(0, 6)
+                ).map((category) => (
+                  <Link
+                    key={category.key}
+                    href={`/vendors?category=${encodeURIComponent(category.key)}`}
+                    onClick={close}
+                  >
+                    {category.label[language]}
+                    <HeaderIcon name="arrow" width="14" height="14" />
+                  </Link>
+                ))}
+              </div>
+              {!isVendor ? (
+                <Link
+                  className="wm-mobile-navigation__row"
+                  href="/shortlist"
+                  onClick={close}
+                >
+                  <HeaderIcon name="heart" />
+                  <span>{dictionary.nav.shortlist}</span>
+                  {count > 0 ? (
+                    <span className="wm-mobile-navigation__badge">
+                      {count > 99 ? "99+" : count}
+                    </span>
+                  ) : null}
+                  <HeaderIcon name="arrow" width="16" height="16" />
+                </Link>
+              ) : null}
+              <div className="wm-mobile-navigation__explore">
+                <Link
+                  href="/about"
+                  onClick={close}
+                  aria-current={
+                    isHeaderLinkCurrent(pathname, "/about") ? "page" : undefined
+                  }
+                >
+                  {dictionary.nav.about}
+                </Link>
+                <Link
+                  href="/blog"
+                  onClick={close}
+                  aria-current={
+                    isHeaderLinkCurrent(pathname, "/blog") ? "page" : undefined
+                  }
+                >
+                  {dictionary.nav.blog}
+                </Link>
+              </div>
+            </nav>
+            <div className="wm-mobile-navigation__account">
+              {!authReady ? (
+                <p role="status">{labels.loadingAccount}</p>
+              ) : isAuthenticated ? (
+                <>
+                  <Link
+                    href={isVendor ? "/vendor" : "/account/profile"}
+                    className="wm-mobile-navigation__identity"
+                    onClick={close}
+                  >
+                    <span aria-hidden="true">
+                      {name.charAt(0).toUpperCase()}
+                    </span>
+                    <div>
+                      <strong>{name}</strong>
+                      <span>
+                        {isVendor ? labels.vendorSpace : labels.myWedding}
+                      </span>
+                    </div>
+                    <HeaderIcon name="arrow" />
+                  </Link>
+                  <nav aria-label={labels.account}>
+                    {accountLinks.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="wm-mobile-navigation__row"
+                        onClick={close}
+                        aria-current={
+                          isHeaderLinkCurrent(pathname, link.href)
+                            ? "page"
+                            : undefined
+                        }
+                      >
+                        <HeaderIcon name={link.icon} />
+                        <span>{t(link.label)}</span>
+                        <HeaderIcon name="arrow" width="16" height="16" />
+                      </Link>
+                    ))}
+                  </nav>
+                  <HeaderSignOutButton
+                    className="wm-mobile-navigation__signout"
+                    onSignedOut={close}
+                  />
+                </>
+              ) : (
+                <>
+                  <strong>{labels.guestTitle}</strong>
+                  <p>{labels.guestDescription}</p>
+                  <div className="wm-mobile-navigation__guest-actions">
+                    <Link href="/login" onClick={close}>
+                      {dictionary.nav.logIn}
+                    </Link>
+                    <Link href="/signup" onClick={close}>
+                      {labels.signUp}
+                      <HeaderIcon name="arrow" width="15" height="15" />
+                    </Link>
+                  </div>
+                </>
+              )}
+            </div>
+            {authReady && !isAuthenticated ? (
+              <Link
+                href="/signup/vendor"
+                className="wm-mobile-navigation__vendor-join"
+                onClick={close}
+              >
+                <span>{labels.joinVendors}</span>
+                {labels.joinAction}
+                <HeaderIcon name="arrow" width="15" height="15" />
+              </Link>
+            ) : null}
+          </div>
+          <div className="wm-mobile-navigation__footer">
+            <Link
+              href={
+                !authReady
+                  ? "/vendors"
+                  : isVendor
+                    ? "/vendor/inbox"
+                    : "/rfq/new"
+              }
+              className="wm-site-header__cta"
+              onClick={close}
+            >
+              {!authReady
+                ? dictionary.nav.vendors
+                : isVendor
+                  ? dictionary.auth.vendorRfqs
+                  : dictionary.nav.requestQuotes}
+              <HeaderIcon name="arrow" width="18" height="18" />
+            </Link>
+            <div className="wm-mobile-navigation__language">
+              <span>{dictionary.languageSelector.label}</span>
+              <HeaderLanguageSwitch />
+            </div>
+          </div>
+        </div>
+      </dialog>
+    </header>
   );
 }

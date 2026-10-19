@@ -5,7 +5,6 @@ import CategoriesSection from "@/components/home/CategoriesSection";
 import DigitalMagazineSection from "@/components/home/DigitalMagazineSection";
 import EditorialFeaturesSection from "@/components/home/EditorialFeaturesSection";
 import FoundersHeroSection from "@/components/home/FoundersHeroSection";
-import HomeNavigation from "@/components/home/HomeNavigation";
 import PremiumProcessSection from "@/components/home/PremiumProcessSection";
 import SponsoredSection from "@/components/home/SponsoredSection";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -51,7 +50,6 @@ export default function Home() {
 
   return (
     <main className="wm-site-page wm-home-premium">
-      <HomeNavigation categoryItems={categories.items} />
       <FoundersHeroSection hero={hero} />
       <SponsoredSection hero={hero} categories={categories} />
       <EditorialFeaturesSection />

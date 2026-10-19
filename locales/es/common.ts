@@ -6,6 +6,28 @@ const common = {
     "english": "Inglés",
     "spanish": "Español"
   },
+  "header": {
+    "menu": "Menú",
+    "openMenu": "Abrir menú de navegación",
+    "closeMenu": "Cerrar menú de navegación",
+    "primaryNavigation": "Navegación principal",
+    "tagline": "Bodas en Costa Rica",
+    "search": "Buscar proveedores",
+    "searchPlaceholder": "Nombre del proveedor o servicio",
+    "explore": "Descubre",
+    "categories": "Encuentra tu equipo",
+    "showCategories": "Todas las categorías",
+    "hideCategories": "Menos categorías",
+    "account": "Tu espacio",
+    "guestTitle": "Tu boda empieza aquí",
+    "guestDescription": "Guarda tus favoritos y reúne todas tus conversaciones.",
+    "myWedding": "Mi boda",
+    "vendorSpace": "Tu negocio",
+    "loadingAccount": "Cargando tu cuenta…",
+    "joinVendors": "¿Eres profesional de bodas?",
+    "joinAction": "Únete como proveedor",
+    "signUp": "Crear una cuenta"
+  },
   "nav": {
     "brand": "Mercado de Bodas",
     "vendors": "Proveedores",
