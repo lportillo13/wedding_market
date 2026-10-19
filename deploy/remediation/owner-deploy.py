@@ -65,7 +65,7 @@ def http(path, port=3001, method='GET'):
         return error.code, {key.lower(): value for key, value in error.headers.items()}, b''
 
 
-def probes(port):
+def probes(port, required_markup=()):
     for _ in range(30):
         try:
             if http('/api/health', port)[0] == 200:
@@ -79,6 +79,10 @@ def probes(port):
         ('/api/vendors?pageSize=1', 200, 'GET'),
         ('/api/uploads', 401, 'POST'), ('/api/ready', 401, 'GET'),
         ('/api/admin/blog-posts', 401, 'GET'),
+        ('/api/mobile/quotes', 401, 'POST'),
+        ('/api/mobile/quote-replies', 401, 'POST'),
+        ('/api/mobile/quotes/accept', 401, 'POST'),
+        ('/api/mobile/push-token', 401, 'POST'),
     ]:
         status, headers, body = http(path, port, method)
         if status != expected:
@@ -86,12 +90,27 @@ def probes(port):
         if path == '/':
             if headers.get('x-content-type-options') != 'nosniff' or headers.get('x-frame-options') != 'DENY':
                 raise RuntimeError('Expected security headers are missing.')
+            if any(marker.encode() not in body for marker in required_markup):
+                raise RuntimeError('Expected release markup is missing.')
         if path.startswith('/api/vendors'):
             data = json.loads(body)
             if len(data.get('items', [])) > 1 or 'error' in data:
                 raise RuntimeError('Bounded directory check failed.')
         checks[path] = status
     return checks
+
+
+def checked_app_directory(app, release_parent):
+    """Accept the original checkout or a direct child of the managed releases."""
+    if app.is_symlink():
+        resolved = app.resolve(strict=True)
+        if release_parent.is_symlink() or resolved.parent != release_parent.resolve(strict=True):
+            raise RuntimeError('The application symlink is outside the managed release directory.')
+    else:
+        resolved = app
+    if not resolved.is_dir() or not (resolved / '.git').is_dir():
+        raise RuntimeError('The managed application checkout is missing.')
+    return resolved
 
 
 def main():
@@ -112,10 +131,19 @@ def main():
     bundle = ARTIFACTS / 'wedding-market-remediation.bundle'
     if digest(bundle) != manifest['bundleSha256']:
         raise RuntimeError('Release bundle checksum mismatch.')
-    if APP.is_symlink() or not APP.is_dir() or not (APP / '.git').exists():
-        raise RuntimeError('The audited checkout layout changed. Recheck it before deploying.')
-    if run(['git', '-C', str(APP), 'rev-parse', 'HEAD'], as_deploy=True) != EXPECTED_BASE:
+    release_parent = Path('/var/www/wedding-market-releases')
+    current_release = checked_app_directory(APP, release_parent)
+    expected_base = manifest.get('expectedBaseCommit', EXPECTED_BASE)
+    if not re.fullmatch(r'[a-f0-9]{40}', expected_base):
+        raise RuntimeError('Invalid expected production commit.')
+    if run(['git', '-C', str(APP), 'rev-parse', 'HEAD'], as_deploy=True) != expected_base:
         raise RuntimeError('The deployed source changed since the audit. Recheck before deploying.')
+    required_markup = manifest.get('requiredPublicMarkup', [])
+    if not isinstance(required_markup, list) or any(
+        not isinstance(marker, str) or not re.fullmatch(r'[a-zA-Z0-9_-]{1,100}', marker)
+        for marker in required_markup
+    ):
+        raise RuntimeError('Invalid public release markers.')
     status = run(['git', '-C', str(APP), 'status', '--porcelain'], as_deploy=True)
     allowed = set(manifest['preservedProductionPatchFiles'])
     if any(line[3:] not in allowed for line in status.splitlines()):
@@ -133,9 +161,13 @@ def main():
     deploy_env = dict(os.environ, HOME='/home/deploy', USER='deploy', LOGNAME='deploy', PM2_HOME='/home/deploy/.pm2')
     processes = json.loads(run(['pm2', 'jlist'], env=deploy_env, as_deploy=True))
     targets = [item for item in processes if item['name'] == 'wedding-market']
-    if len(targets) != 1 or targets[0]['pm2_env']['pm_cwd'] != str(APP):
+    allowed_cwds = {str(APP), str(APP / '.next/standalone'), str(current_release / '.next/standalone')}
+    if len(targets) != 1 or targets[0]['pm2_env']['pm_cwd'] not in allowed_cwds:
         raise RuntimeError('The audited Wedding Market PM2 configuration changed.')
     current = targets[0]['pm2_env']
+    recorded_release = current.get('WM_RELEASE_COMMIT') or current.get('env', {}).get('WM_RELEASE_COMMIT')
+    if recorded_release and recorded_release != expected_base:
+        raise RuntimeError('The running process and expected source revision disagree.')
     node = str(Path('/proc/%s/exe' % targets[0]['pid']).resolve())
     major = int(run([node, '-p', 'process.versions.node.split(".")[0]']))
     if major not in (22, 24):
@@ -144,7 +176,6 @@ def main():
     private = Path('/var/backups/wedding-market-deploy') / stamp
     private.mkdir(parents=True, mode=0o700)
     private.chmod(0o700)
-    release_parent = Path('/var/www/wedding-market-releases')
     if release_parent.is_symlink():
         raise RuntimeError('Unexpected symlink for the release parent.')
     release_parent.mkdir(exist_ok=True, mode=0o755)
@@ -161,7 +192,7 @@ def main():
                NODE_ENV='production', NEXT_TELEMETRY_DISABLED='1', NODE_OPTIONS='--max-old-space-size=2048')
     env['PATH'] = str(Path(node).parent) + ':' + env.get('PATH', os.environ['PATH'])
     old_config = {'apps': [{'name': 'wedding-market', 'script': current['pm_exec_path'],
-                           'cwd': str(APP), 'args': current.get('args', []),
+                           'cwd': current['pm_cwd'], 'args': current.get('args', []),
                            'interpreter': current.get('exec_interpreter', node), 'env': old_env}]}
     private_write(private / 'rollback.json', json.dumps(old_config))
     # PM2 runs as deploy, so its temporary config is private to that existing owner.
@@ -210,7 +241,7 @@ os.chmod('.git/config',0o600)
             overrides.update(R2_PUBLIC_BASE_URL='https://media.thewedmarket.com', NEXT_PUBLIC_R2_PUBLIC_BASE_URL='https://media.thewedmarket.com',
                              R2_LEGACY_PUBLIC_BASE_URL=legacy, NEXT_PUBLIC_R2_LEGACY_PUBLIC_BASE_URL=legacy)
         env.update(overrides)
-        new_env = original_env + '\n# Reviewed remediation overrides\n' + ''.join('%s=%s\n' % item for item in overrides.items())
+        new_env = original_env + ('\n# Reviewed remediation overrides\n' + ''.join('%s=%s\n' % item for item in overrides.items()) if overrides else '')
         private_write(stage / '.env.production.local', new_env, DEPLOY.pw_uid, DEPLOY.pw_gid)
         summary['step'] = 'install build dependencies'
         run(['nice', '-n', '10', 'npm', 'ci', '--include=dev', '--no-fund', '--no-audit'], cwd=stage, env=env, as_deploy=True, log=build_log)
@@ -231,7 +262,7 @@ os.chmod('.git/config',0o600)
                                       user=DEPLOY.pw_uid, group=DEPLOY.pw_gid, extra_groups=[],
                                       stdout=output, stderr=subprocess.STDOUT, start_new_session=True)
         summary['step'] = 'probe isolated application'
-        summary['shadowChecks'] = probes(3012)
+        summary['shadowChecks'] = probes(3012, required_markup)
         if shadow.poll() is not None:
             raise RuntimeError('Shadow application process exited unexpectedly.')
         os.killpg(shadow.pid, signal.SIGTERM)
@@ -248,7 +279,7 @@ os.chmod('.git/config',0o600)
         switched = True
         run(['pm2', 'delete', 'wedding-market'], env=deploy_env, as_deploy=True, log=build_log)
         run(['pm2', 'start', str(runtime_config), '--only', 'wedding-market'], env=deploy_env, as_deploy=True, log=build_log)
-        summary['liveChecks'] = probes(3001)
+        summary['liveChecks'] = probes(3001, required_markup)
         run(['pm2', 'save', '--force'], env=deploy_env, as_deploy=True, log=build_log)
         dump = Path('/home/deploy/.pm2/dump.pm2')
         if dump.exists(): dump.chmod(0o600)

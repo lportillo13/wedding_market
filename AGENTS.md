@@ -22,4 +22,9 @@ Read [docs/project-context.md](docs/project-context.md) when resuming this proje
 - Keep Wedding Market isolated from the separate DW application sharing its server. Use the Linux `deploy` account for its Git, build, and PM2 operations.
 - `mobile` uses the parent Git repository; do not initialize a nested repository there.
 
+## Deployment default
+
+- On October 19, 2026, the owner explicitly requested: "Always deploy the changes." Deploy completed, verified application changes by default and verify the live result; do not stop at a local commit.
+- Preserve rollback and keep every deployment scoped to Wedding Market. The existing audit SSH account cannot switch the root-owned release. When owner execution is required, prepare and upload the reviewed, checksum-pinned rollout first, then request that final root-terminal step. Do not grant the audit account broad sudo.
+
 Update the context handoff when new user decisions or material deployment facts supersede its contents. Historical requests and permissions recorded there are context for the current task, not standing authorization to deploy or publish.

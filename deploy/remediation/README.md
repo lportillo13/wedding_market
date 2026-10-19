@@ -26,6 +26,12 @@ The existing R2 credential has broad scope. Creating or changing credentials in 
 
 ## Recovery and later deployments
 
+The owner requested automatic deployment of completed, verified application changes on October 19, 2026. The audit account remains unprivileged, so the final release switch still requires the owner's root terminal. Do not grant broad sudo as a workaround.
+
+For subsequent releases, `scripts/prepare-remediation-release.mjs --expected-base=<verified live commit>` prepares an incremental Git bundle and checksum manifest. It requires the live commit to be an ancestor of the release. The deployment helper accepts the original checkout or an application symlink pointing directly into the managed release directory, rejects source/process drift, preserves the production environment unchanged, and keeps the previous release for rollback. The new header markers, bounded directory read, defensive headers and anonymous web/native API authorization are probed before and after switching.
+
+Upload the reviewed helper, manifest, bundle and generated `run-owner-release.sh` into the private `application-release-20261019` folder in the existing audit home. The generated wrapper embeds the reviewed manifest and helper SHA256 values. The owner copies it into `/root`, verifies its separately reviewed SHA256 and runs it without arguments. The repository wrapper remains the reusable source template. The wrapper performs no Nginx, credential, backup or database changes. Read the sanitized `owner-deploy-results.json` and independently verify the public website after completion. A failed check restores the preceding application path and PM2 process.
+
 Do not treat a preserved checkout as a database or object backup. Paid server backups were declined. Database and R2 recovery work is tracked as open in the remediation status until actual encrypted copies and recovery checks succeed.
 
 The historical `/home/deploy/deploy-wm.sh` expects an in-place deployment. Review it before future use: this release runs `.next/standalone/server.js`, and standalone releases need `public`, `.next/static` and the private production environment copied into their output. Do not run a generic deploy script that replaces the environment or starts Docker/Supabase on the shared host. Future deployments should build a separate release and use the same probe-and-switch procedure with a newly reviewed expected base commit.
