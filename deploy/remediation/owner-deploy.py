@@ -114,6 +114,11 @@ def main():
     allowed = set(manifest['preservedProductionPatchFiles'])
     if any(line[3:] not in allowed for line in status.splitlines()):
         raise RuntimeError('Unexpected server worktree changes need review before deployment.')
+    if set(manifest.get('preservedProductionHashes', {})) != allowed:
+        raise RuntimeError('The preserved production patch manifest is incomplete.')
+    for name, expected in manifest['preservedProductionHashes'].items():
+        if digest(APP / name) != expected:
+            raise RuntimeError('A production patch changed since its reviewed import; recheck before deploying.')
     if shutil.disk_usage('/var/www').free < 6 * 1024**3:
         raise RuntimeError('Insufficient disk space for a separate build and rollback copy.')
     memory = {line.split(':')[0]: int(line.split()[1]) for line in Path('/proc/meminfo').read_text().splitlines()}

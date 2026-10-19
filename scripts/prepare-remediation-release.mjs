@@ -24,6 +24,7 @@ const manifest = {
   commit,
   bundleSha256: sha(await readFile(`${output}/wedding-market-remediation.bundle`)),
   preservedProductionPatchFiles: patch.files.map(file => file.file),
+  preservedProductionHashes: Object.fromEntries(patch.files.map(file => [file.file, file.server_sha256])),
   mediaDomainReady: true,
   toolHashes,
 };
