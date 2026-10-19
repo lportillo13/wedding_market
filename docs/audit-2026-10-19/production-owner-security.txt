@@ -1,0 +1,69 @@
+2026-10-19T17:25:21Z
+
+Firewall
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), disabled (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22/tcp (OpenSSH)           ALLOW IN    Anywhere                  
+80,443/tcp (Nginx Full)    ALLOW IN    Anywhere                  
+22/tcp (OpenSSH (v6))      ALLOW IN    Anywhere (v6)             
+80,443/tcp (Nginx Full (v6)) ALLOW IN    Anywhere (v6)             
+
+
+SSH effective policy
+maxauthtries 3
+permitrootlogin without-password
+pubkeyauthentication yes
+passwordauthentication no
+permitemptypasswords no
+
+Wedding Market PM2 metadata only
+[
+  {
+    "name": "wedding-market",
+    "pid": 1022,
+    "status": "online",
+    "restarts": 0,
+    "started": 1792182808949,
+    "node": "22.23.3",
+    "resources": {
+      "memory": 396652544,
+      "cpu": 0.3
+    }
+  }
+]
+
+Origin certificate dates
+notBefore=Sep 26 22:08:17 2026 GMT
+notAfter=Dec 25 22:08:16 2026 GMT
+issuer=C = US, O = Let's Encrypt, CN = YE1
+
+Relevant rotation configuration
+/var/log/nginx/*.log {
+	daily
+	missingok
+	rotate 14
+	compress
+	delaycompress
+	notifempty
+	create 0640 www-data adm
+	sharedscripts
+	prerotate
+		if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
+			run-parts /etc/logrotate.d/httpd-prerotate; \
+		fi \
+	endscript
+	postrotate
+		invoke-rc.d nginx rotate >/dev/null 2>&1
+	endscript
+}
+9582 bytes wedding-market-out.log
+55673 bytes wedding-market-error.log
+
+Credential validation: status only, no rows or values
+credential_variable=SUPABASE_SERVICE_ROLE_KEY
+server_database_credential_http_status=401

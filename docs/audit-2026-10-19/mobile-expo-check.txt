@@ -1,0 +1,10 @@
+
+> the-wedding-market-mobile@0.1.0 expo:check
+> expo install --check
+
+env: load .env
+env: export EXPO_PUBLIC_SUPABASE_ANON_KEY EXPO_PUBLIC_WEB_API_URL EXPO_PUBLIC_SUPABASE_URL
+Networking has been disabled
+Unable to reach well-known versions endpoint. Using local dependency map expo/bundledNativeModules.json for version validation
+Dependency validation is unreliable in offline-mode
+Dependencies are up to date

@@ -262,7 +262,7 @@ export default function SignUpForm({
 
     if (targetStep === 5) {
       if (!form.password.trim()) return labels.validation.passwordRequired;
-      if (form.password.trim().length < 6) return labels.validation.passwordTooShort;
+      if (form.password.length < 8) return labels.validation.passwordTooShort;
       return null;
     }
 
@@ -645,7 +645,7 @@ export default function SignUpForm({
                         value={form.password}
                         onChange={(event) => updateField('password', event.target.value)}
                         autoComplete="new-password"
-                        minLength={6}
+                        minLength={8}
                       />
                       <div className="form-text">{labels.passwordHelp}</div>
                     </div>

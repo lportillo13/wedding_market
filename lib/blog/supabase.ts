@@ -1,12 +1,5 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabasePublicClient } from '@/lib/supabase/public';
 
-export async function getSupabaseForBlog(): Promise<SupabaseClient> {
-  const admin = createSupabaseAdminClient();
-  if (admin) {
-    return admin;
-  }
-
-  return createSupabaseServerClient();
+export async function getSupabaseForBlog() {
+  return createSupabasePublicClient();
 }

@@ -1,0 +1,3 @@
+Browser tab: 2, Title: "Backups | Database | WedMarket | CR Wedding Destination | Supabase", URL: "https://supabase.com/dashboard/project/aousexbvujjnvbudpsmz/database/backups/scheduled".
+There has been no change in the accessibility tree.
+The focused UI element is 1 AXWebArea Backups | Database | WedMarket | CR Wedding Destination | Supabase, URL: supabase.com/dashboard/project/aousexbvujjnvbudpsmz/database/backups/scheduled

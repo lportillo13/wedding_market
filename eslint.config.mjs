@@ -18,6 +18,7 @@ export default [
       "**/node_modules/**",
       "**/.claude/**",
       "**/.next/**",
+      "**/.cache/**",
       "**/dist-tests/**",
       "mobile/**",
       "out/**",

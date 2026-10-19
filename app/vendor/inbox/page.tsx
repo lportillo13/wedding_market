@@ -72,7 +72,7 @@ function trimPreview(text: string | null | undefined, maxLength = 96) {
 export default async function VendorInboxPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ q?: string; view?: string }>;
+  searchParams?: Promise<{ q?: string; view?: string; page?: string }>;
 }) {
   const { user, isVendor } = await getRoles();
   if (!user || !isVendor) redirect("/signup/vendor");
@@ -105,20 +105,11 @@ export default async function VendorInboxPage({
   };
   const params = searchParams ? await searchParams : undefined;
 
-  const { vendor, items } = await loadVendorInboxThreads(user.id);
   const deletedView = params?.view === "deleted";
-  const query = params?.q?.trim().toLowerCase() ?? "";
-  const isArchived = (item: (typeof items)[number]) => item.invite.closed_reason === "archived_by_vendor";
-  const activeCount = items.filter((item) => !isArchived(item)).length;
-  const deletedCount = items.filter(isArchived).length;
-  const scopeItems = items.filter((item) => (deletedView ? isArchived(item) : !isArchived(item)));
-  const visibleItems = scopeItems.filter((item) => {
-    const location =
-      [item.rfq?.city, item.rfq?.state, item.rfq?.country].filter(Boolean).join(", ") || labels.untitledLocation;
-    const preview = trimPreview(item.rfq?.notes) ?? labels.notesFallback;
-    const haystack = [item.rfq?.id, location, preview, item.rfq?.guest_count_range].filter(Boolean).join(" ").toLowerCase();
-    return !query || haystack.includes(query);
-  });
+  const page = Math.max(1,Math.min(Number.parseInt(params?.page ?? "1",10) || 1,1000));
+  const { vendor, items, total, activeCount, archivedCount: deletedCount } = await loadVendorInboxThreads(user.id,{page,query:params?.q,archived:deletedView});
+  const scopeItems = items;
+  const visibleItems = items;
   const searchSuggestions = buildAutocompleteSuggestions(
     scopeItems.flatMap((item) => {
       const location =
@@ -145,6 +136,7 @@ export default async function VendorInboxPage({
     const values = {
       q: params?.q?.trim() ? params.q.trim() : null,
       view: deletedView ? "deleted" : null,
+      page: null,
       ...overrides,
     };
 
@@ -289,6 +281,11 @@ export default async function VendorInboxPage({
           </div>
         </div>
       )}
+      {(page > 1 || page * 50 < total) && <nav className="d-flex justify-content-between py-3" aria-label={language === "es" ? "Páginas" : "Pages"}>
+        {page > 1 ? <Link href={makeInboxHref({page:String(page-1)})}>{language === "es" ? "Anterior" : "Previous"}</Link> : <span />}
+        <span>{page} / {Math.max(page,Math.ceil(total/50))}</span>
+        {page * 50 < total && <Link href={makeInboxHref({page:String(page+1)})}>{language === "es" ? "Siguiente" : "Next"}</Link>}
+      </nav>}
     </main>
   );
 }

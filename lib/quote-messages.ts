@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 
@@ -12,10 +12,6 @@ export type QuoteMessageRow = {
   created_at: string;
 };
 
-function shouldUseAdminFallback(message: string | undefined) {
-  return /api key|policy|permission|row-level security|infinite recursion detected/i.test(message ?? "");
-}
-
 function isMissingQuoteMessagesTableError(message: string | undefined) {
   return /quote_messages/i.test(message ?? "") && /does not exist|could not find/i.test(message ?? "");
 }
@@ -25,71 +21,9 @@ type ClientReplyPermission = {
   message?: string;
 };
 
-async function verifyQuoteThreadOpen(
-  supabase: SupabaseClient,
-  supabaseAdmin: SupabaseClient | null,
-  rfqId: string,
-  vendorId: string,
-): Promise<ClientReplyPermission> {
-  const selectInvite = (client: SupabaseClient) =>
-    client
-      .from("rfq_invites")
-      .select("status, expires_at")
-      .eq("rfq_id", rfqId)
-      .eq("vendor_id", vendorId)
-      .maybeSingle<{ status: string | null; expires_at: string | null }>();
-
-  let { data: invite, error } = await selectInvite(supabase);
-  if (error && supabaseAdmin && shouldUseAdminFallback(error.message)) {
-    const retry = await selectInvite(supabaseAdmin);
-    invite = retry.data;
-    error = retry.error;
-  }
-
-  if (error) return { allowed: false, message: error.message };
-  if (!invite) return { allowed: false, message: "Quote request not found." };
-
-  const status = invite.status?.trim().toLowerCase();
-  if (status === "declined" || status === "expired") {
-    return { allowed: false, message: "This quote conversation is closed." };
-  }
-
-  const selectRfq = (client: SupabaseClient) =>
-    client
-      .from("rfqs")
-      .select("accepted_quote_id")
-      .eq("id", rfqId)
-      .maybeSingle<{ accepted_quote_id: string | null }>();
-
-  let { data: rfq, error: rfqError } = await selectRfq(supabase);
-  if ((rfqError || !rfq) && supabaseAdmin) {
-    const retry = await selectRfq(supabaseAdmin);
-    rfq = retry.data;
-    rfqError = retry.error;
-  }
-  if (rfqError) return { allowed: false, message: rfqError.message };
-  if (!rfq) return { allowed: false, message: "Quote request not found." };
-
-  if (rfq.accepted_quote_id) {
-    const { data: acceptedQuote, error: acceptedQuoteError } = await (supabaseAdmin ?? supabase)
-      .from("quotes")
-      .select("vendor_id")
-      .eq("id", rfq.accepted_quote_id)
-      .maybeSingle<{ vendor_id: string }>();
-
-    if (acceptedQuoteError) return { allowed: false, message: acceptedQuoteError.message };
-    if (!acceptedQuote || acceptedQuote.vendor_id !== vendorId) {
-      return { allowed: false, message: "This quote conversation is closed." };
-    }
-    return { allowed: true };
-  }
-
-  const expiresAt = invite.expires_at ? Date.parse(invite.expires_at) : Number.NaN;
-  if (Number.isFinite(expiresAt) && expiresAt <= Date.now()) {
-    return { allowed: false, message: "This quote conversation is closed." };
-  }
-
-  return { allowed: true };
+async function verifyQuoteThreadOpen(supabase: SupabaseClient,quoteId: string): Promise<ClientReplyPermission> {
+  const {data,error}=await supabase.rpc("wm_thread_is_open",{p_quote:quoteId});
+  return error || !data ? {allowed:false,message:"This quote conversation is closed."} : {allowed:true};
 }
 
 export async function fetchQuoteMessagesByQuoteIds(
@@ -101,7 +35,6 @@ export async function fetchQuoteMessagesByQuoteIds(
   }
 
   const supabase = await createSupabaseServerClient();
-  const supabaseAdmin = createSupabaseAdminClient();
 
   const selectMessages = async (client: SupabaseClient) =>
     client
@@ -110,16 +43,10 @@ export async function fetchQuoteMessagesByQuoteIds(
       .in("quote_id", quoteIds)
       .order("created_at", { ascending: true });
 
-  let { data, error } = await selectMessages(supabase);
+  const { data, error } = await selectMessages(supabase);
 
   if (error && isMissingQuoteMessagesTableError(error.message)) {
     return byQuoteId;
-  }
-
-  if (error && supabaseAdmin && shouldUseAdminFallback(error.message)) {
-    const retry = await selectMessages(supabaseAdmin);
-    data = retry.data;
-    error = retry.error;
   }
 
   if (error) {
@@ -144,7 +71,6 @@ export async function verifyClientQuoteReplyAccess(
   authenticatedClient?: SupabaseClient,
 ): Promise<ClientReplyPermission> {
   const supabase = authenticatedClient ?? await createSupabaseServerClient();
-  const supabaseAdmin = createSupabaseAdminClient();
 
   const selectQuote = (client: SupabaseClient) =>
     client
@@ -153,12 +79,8 @@ export async function verifyClientQuoteReplyAccess(
       .eq("id", quoteId)
       .maybeSingle<{ id: string; rfq_id: string; vendor_id: string }>();
 
-  let { data: quote, error: quoteErr } = await selectQuote(supabase);
-  if (quoteErr && supabaseAdmin && shouldUseAdminFallback(quoteErr.message)) {
-    const retry = await selectQuote(supabaseAdmin);
-    quote = retry.data;
-    quoteErr = retry.error;
-  }
+  const { data: quote, error: quoteErr } = await selectQuote(supabase);
+
   if (quoteErr) {
     return { allowed: false, message: quoteErr.message };
   }
@@ -167,7 +89,7 @@ export async function verifyClientQuoteReplyAccess(
   }
 
   const selectRfq = (client: SupabaseClient, column: OwnerColumn) =>
-    client.from("rfqs").select(column === "owner_id" ? "id, owner_id" : "id, owner_id:owner_uuid").eq("id", rfqId).maybeSingle<{ id: string; owner_id: string }>();
+    client.from("rfqs_visible").select(column === "owner_id" ? "id, owner_id" : "id, owner_id:owner_uuid").eq("id", rfqId).maybeSingle<{ id: string; owner_id: string }>();
 
   let ownerColumn: OwnerColumn = "owner_id";
   let { data: rfq, error: rfqErr } = await selectRfq(supabase, ownerColumn);
@@ -179,12 +101,6 @@ export async function verifyClientQuoteReplyAccess(
     rfqErr = retry.error;
   }
 
-  if (rfqErr && supabaseAdmin && shouldUseAdminFallback(rfqErr.message)) {
-    const retry = await selectRfq(supabaseAdmin, ownerColumn);
-    rfq = retry.data;
-    rfqErr = retry.error;
-  }
-
   if (rfqErr) {
     return { allowed: false, message: rfqErr.message };
   }
@@ -192,7 +108,7 @@ export async function verifyClientQuoteReplyAccess(
     return { allowed: false, message: "You do not have access to this quote." };
   }
 
-  return verifyQuoteThreadOpen(supabase, supabaseAdmin, rfqId, vendorId);
+  return verifyQuoteThreadOpen(supabase, quoteId);
 }
 
 export async function verifyVendorQuoteReplyAccess(
@@ -203,7 +119,6 @@ export async function verifyVendorQuoteReplyAccess(
   authenticatedClient?: SupabaseClient,
 ): Promise<ClientReplyPermission> {
   const supabase = authenticatedClient ?? await createSupabaseServerClient();
-  const supabaseAdmin = createSupabaseAdminClient();
 
   const selectVendor = (client: SupabaseClient) => client
     .from("vendors")
@@ -212,12 +127,7 @@ export async function verifyVendorQuoteReplyAccess(
     .eq("owner_id", userId)
     .maybeSingle();
 
-  let { data: vendor, error: vendorErr } = await selectVendor(supabase);
-  if ((vendorErr || !vendor) && supabaseAdmin) {
-    const retry = await selectVendor(supabaseAdmin);
-    vendor = retry.data;
-    vendorErr = retry.error;
-  }
+  const { data: vendor, error: vendorErr } = await selectVendor(supabase);
 
   if (vendorErr) {
     return { allowed: false, message: vendorErr.message };
@@ -233,12 +143,8 @@ export async function verifyVendorQuoteReplyAccess(
       .eq("id", quoteId)
       .maybeSingle<{ id: string; rfq_id: string; vendor_id: string }>();
 
-  let { data: quote, error: quoteErr } = await selectQuote(supabase);
-  if (quoteErr && supabaseAdmin && shouldUseAdminFallback(quoteErr.message)) {
-    const retry = await selectQuote(supabaseAdmin);
-    quote = retry.data;
-    quoteErr = retry.error;
-  }
+  const { data: quote, error: quoteErr } = await selectQuote(supabase);
+
   if (quoteErr) {
     return { allowed: false, message: quoteErr.message };
   }
@@ -246,5 +152,5 @@ export async function verifyVendorQuoteReplyAccess(
     return { allowed: false, message: "Quote not found." };
   }
 
-  return verifyQuoteThreadOpen(supabase, supabaseAdmin, rfqId, vendorId);
+  return verifyQuoteThreadOpen(supabase, quoteId);
 }

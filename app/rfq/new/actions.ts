@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { getRequestI18n } from "@/lib/i18n/server";
 import { createVendorNewRequestNotification } from "@/lib/notifications";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 
@@ -91,9 +91,8 @@ export async function createRfqAndInvites(_: CreateRfqState, formData: FormData)
     notes: notes || null,
   } satisfies Record<string, unknown>;
 
-  const supabaseAdmin = createSupabaseAdminClient();
-  const dbClient = supabaseAdmin ?? supabase;
-  const profileClient = supabaseAdmin ?? supabase;
+  const dbClient = supabase;
+  const profileClient = supabase;
   const { data: profile } = await profileClient
     .from("profiles")
     .select("full_name, phone")
@@ -131,11 +130,7 @@ export async function createRfqAndInvites(_: CreateRfqState, formData: FormData)
   }
 
   if (rfqErr || !rfq) {
-    if (!supabaseAdmin && /policy for relation "rfqs"/i.test(rfqErr?.message ?? "")) {
-      console.warn(
-        "RFQ creation blocked by row-level security. Configure SUPABASE_SERVICE_ROLE_KEY to allow server-side RFQ creation."
-      );
-    }
+
     if (rfqErr) {
       console.error("Failed to create RFQ", rfqErr);
     }
@@ -147,11 +142,7 @@ export async function createRfqAndInvites(_: CreateRfqState, formData: FormData)
   const { error: inviteErr } = await dbClient.from("rfq_invites").insert(invites);
 
   if (inviteErr) {
-    if (!supabaseAdmin && /policy for relation "rfq_invites"/i.test(inviteErr.message ?? "")) {
-      console.warn(
-        "RFQ invite creation blocked by row-level security. Configure SUPABASE_SERVICE_ROLE_KEY to allow server-side RFQ creation."
-      );
-    }
+
     console.error("Failed to create RFQ invites", inviteErr);
     await dbClient.from("rfqs").delete().eq("id", rfq.id);
     return { ok: false, message: labels.inviteFailed };

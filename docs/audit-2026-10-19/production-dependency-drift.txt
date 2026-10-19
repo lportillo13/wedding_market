@@ -1,0 +1,15 @@
+2026-10-19T17:13:57Z
+## dev...origin/dev
+ M app/api/uploads/route.ts
+ M app/signup/vendor/actions.ts
+ M app/vendor/profile/actions.ts
+ M lib/r2.ts
+ M package-lock.json
+ M package.json
+?? lib/r2-ownership.ts
+{"name":"next","locked":"16.3.8"}
+{"name":"sharp","locked":"0.35.5"}
+{"name":"react","locked":"19.2.8"}
+2026-10-16 18:17:28.895418713 +0000 /var/www/wedding-market/package.json
+2026-10-16 18:17:28.895418713 +0000 /var/www/wedding-market/package-lock.json
+2026-10-16 18:15:53.114948936 +0000 /var/www/wedding-market/.next/BUILD_ID

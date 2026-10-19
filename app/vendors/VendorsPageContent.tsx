@@ -17,6 +17,7 @@ import { resolveMediaUrl, shouldRenderUnoptimizedMedia } from "@/lib/media-url";
 import type { CategoryOption, VendorListItem } from "./types";
 
 type VendorsPageContentProps = {
+  error?: boolean;
   items: VendorListItem[];
   isVendor: boolean;
   page: number;
@@ -49,6 +50,7 @@ function getVendorInitials(name: string) {
 }
 
 export default function VendorsPageContent({
+  error,
   items,
   isVendor,
   page,
@@ -191,7 +193,9 @@ export default function VendorsPageContent({
             />
           </div>
 
-          {items.length === 0 ? (
+          {error ? (
+            <div role="alert" className="alert alert-warning">{language === "es" ? "No pudimos cargar los proveedores. Inténtalo de nuevo en unos minutos." : "We could not load vendors. Please try again shortly."}</div>
+          ) : items.length === 0 ? (
             <div className="wm-vendors-empty">
               <p>{labels.empty}</p>
             </div>

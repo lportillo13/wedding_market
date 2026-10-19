@@ -11,7 +11,10 @@ function supabasePublic() {
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
-    const ids = url.searchParams.get("ids")?.split(",").filter(Boolean);
+    const ids = [...new Set(url.searchParams.get("ids")?.split(",").map((id) => id.trim()).filter(Boolean) ?? [])];
+    if (ids.length > 50 || ids.some((id) => !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id))) {
+      return NextResponse.json({ items: [], error: "Supply at most 50 valid vendor IDs." }, { status: 400 });
+    }
     if (!ids?.length) return NextResponse.json({ items: [] });
 
     const supabase = supabasePublic();

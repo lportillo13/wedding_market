@@ -1,8 +1,7 @@
 'use server';
 
-import { headers } from 'next/headers';
 import { z } from 'zod';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { getSiteUrl } from '@/lib/site-url';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
 const weddingThemeValues = ['classic', 'boho', 'rustic', 'beach', 'garden', 'modern', 'vintage'] as const;
@@ -12,7 +11,7 @@ const priorityServiceValues = ['venue', 'photography', 'planner', 'beauty', 'dec
 const SignUpSchema = z.object({
   full_name: z.string().trim().min(1, 'Name is required.').max(200, 'Name is too long.'),
   email: z.string().email('Enter a valid email address.'),
-  password: z.string().min(6, 'Password must be at least 6 characters.'),
+  password: z.string().min(8, 'Password must be at least 8 characters.'),
   phone: z.string().trim().max(40, 'Phone number is too long.').optional(),
   celebration_city: z.string().trim().max(120, 'City is too long.').optional(),
   celebration_region: z.string().trim().max(120, 'Region is too long.').optional(),
@@ -84,15 +83,7 @@ export async function signUp(_: SignUpState, formData: FormData): Promise<SignUp
   } = parsed.data;
   const supabase = await createSupabaseServerClient();
 
-  const headerList = await headers();
-  const proto = headerList.get('x-forwarded-proto');
-  const host = headerList.get('x-forwarded-host') ?? headerList.get('host');
-
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    (proto && host ? `${proto}://${host}` : host ? `https://${host}` : 'http://localhost:3000');
-
-  const emailRedirectTo = new URL('/auth/callback', siteUrl).toString();
+  const emailRedirectTo = new URL('/auth/callback?next=/account/profile', getSiteUrl()).toString();
 
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -100,7 +91,7 @@ export async function signUp(_: SignUpState, formData: FormData): Promise<SignUp
     options: {
       emailRedirectTo,
       data: {
-        full_name,
+        full_name, phone: phone || null, country, tentative_wedding_date, guest_count, wedding_budget, wedding_theme,
         celebration_city: celebration_city || null,
         celebration_region: celebration_region || null,
         planning_stage,
@@ -113,62 +104,7 @@ export async function signUp(_: SignUpState, formData: FormData): Promise<SignUp
     return { ok: false, message: error.message };
   }
 
-  const userId = data.user?.id ?? data.session?.user.id;
-  if (!userId) {
-    return {
-      ok: false,
-      message:
-        'Sign up succeeded but user information is missing. Please check your email to confirm your account.',
-    };
-  }
-
-  const supabaseAdmin = createSupabaseAdminClient();
-
-  if (supabaseAdmin) {
-    const { error: confirmErr } = await supabaseAdmin.auth.admin.updateUserById(userId, {
-      email_confirm: true,
-    });
-    if (confirmErr) {
-      return { ok: false, message: confirmErr.message };
-    }
-  }
-
-  const profileClient = supabaseAdmin ?? supabase;
-  const { error: profileErr } = await profileClient
-    .from('profiles')
-    .upsert(
-      {
-        id: userId,
-        role: 'user',
-        full_name,
-        phone: phone || null,
-        country: country || null,
-        tentative_wedding_date,
-        guest_count,
-        wedding_budget,
-        wedding_theme,
-        language,
-      },
-      { onConflict: 'id' },
-    );
-
-  if (profileErr) {
-    const message = profileErr.message.toLowerCase();
-    if (!supabaseAdmin && message.includes('row-level security')) {
-      console.warn(
-        'Profile creation blocked by row-level security. Configure SUPABASE_SERVICE_ROLE_KEY to allow server-side profile provisioning.',
-      );
-    } else {
-      return { ok: false, message: profileErr.message };
-    }
-  }
-
-  if (!data.session) {
-    const { error: signInErr } = await supabase.auth.signInWithPassword({ email, password });
-    if (signInErr) {
-      return { ok: false, message: signInErr.message };
-    }
-  }
-
-  return { ok: true, redirectTo: '/account/profile' };
+  // A database Auth trigger creates the safe default profile. Email ownership
+  // must be confirmed by the user before any authenticated onboarding work.
+  return { ok: true, redirectTo: data.session ? '/account/profile' : `/signup/check-email?lang=${language}` };
 }

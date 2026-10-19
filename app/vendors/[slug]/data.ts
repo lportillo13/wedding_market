@@ -479,7 +479,7 @@ export async function fetchVendorContactPrefill(vendorId: string): Promise<Vendo
   }
 
   const { data: existingRfq, error: existingRfqError } = await supabase
-    .from("rfqs")
+    .from("rfqs_visible")
     .select("id, event_date, guest_count, guest_count_range, budget_min, budget_max, city, language, theme, notes, flexible_date, guest_first_name, guest_last_name, contact_email, contact_phone")
     .eq("owner_id", user.id)
     .eq("vendor_id", vendorId)

@@ -13,7 +13,6 @@ import {
   type VendorAdsVendorOption,
   type VendorAdsVendorSummary,
 } from "@/lib/content/vendorAds";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -47,7 +46,7 @@ type RfqIntentRow = {
 };
 
 async function getSiteSupabase() {
-  return createSupabaseAdminClient() ?? (await createSupabaseServerClient());
+  return createSupabaseServerClient();
 }
 
 function toVendorSummary(row: VendorSearchRow): VendorAdsVendorSummary | null {
@@ -74,7 +73,7 @@ async function loadLatestUserRfqIntent(userId: string): Promise<RfqIntentRow | n
 
   for (const column of ownerColumns) {
     const { data, error } = await supabase
-      .from("rfqs")
+      .from("rfqs_visible")
       .select("country, guest_count, budget_min, budget_max, theme, notes, created_at")
       .eq(column, userId)
       .order("created_at", { ascending: false })

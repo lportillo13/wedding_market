@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
   DEFAULT_LANGUAGE,
@@ -75,9 +76,9 @@ type CreateThreadReplyNotificationInput = {
   messagePreview: string | null;
 };
 
-async function getRecipientLanguage(client: SupabaseClient, recipientId: string) {
-  const { data } = await client.from("profiles").select("language").eq("id", recipientId).maybeSingle();
-  return isSupportedLanguage(data?.language) ? data.language : DEFAULT_LANGUAGE;
+async function getRecipientLanguage(client: SupabaseClient, recipientId: string, rfqId: string, vendorId: string) {
+  const { data } = await client.rpc('notification_recipient_language', { p_recipient:recipientId,p_rfq:rfqId,p_vendor:vendorId });
+  return isSupportedLanguage(data) ? data : DEFAULT_LANGUAGE;
 }
 
 async function insertNotification(
@@ -92,10 +93,12 @@ async function insertNotification(
     language: SupportedLanguage;
   }
 ) {
+  const notificationId = randomUUID();
   const result = await client
     .from("notifications")
     .insert([
       {
+        id: notificationId,
         recipient_id: input.recipientId,
         actor_id: input.actorId,
         type: input.type,
@@ -103,14 +106,12 @@ async function insertNotification(
         body: input.body,
         data: input.data,
       },
-    ])
-    .select("id")
-    .single<{ id: string }>();
+    ]);
 
-  if (!result.error && result.data?.id) {
+  if (!result.error) {
     await Promise.all([
       sendMobilePushNotification(client, {
-        notificationId: result.data.id,
+        notificationId,
         recipientId: input.recipientId,
         type: input.type,
         title: input.title,
@@ -118,7 +119,7 @@ async function insertNotification(
         data: input.data,
       }),
       deliverNotificationEmail({
-        notificationId: result.data.id,
+        notificationId,
         recipientId: input.recipientId,
         type: input.type,
         title: input.title,
@@ -129,7 +130,7 @@ async function insertNotification(
     ]);
   }
 
-  return { data: result.data, error: result.error };
+  return { data: result.error ? null : { id: notificationId }, error: result.error };
 }
 
 function formatAmount(amountCents: number | null, language: "en" | "es") {
@@ -148,7 +149,7 @@ export async function createQuoteAnsweredNotification(
   client: SupabaseClient,
   input: CreateQuoteAnsweredNotificationInput
 ) {
-  const language = await getRecipientLanguage(client, input.recipientId);
+  const language = await getRecipientLanguage(client, input.recipientId, input.rfqId, input.vendorId);
   const labels = dictionaries[language].account.notificationsPage;
   const amountLabel = formatAmount(input.amountCents, language);
   const amountSuffix = amountLabel ? fillTemplate(labels.messages.amountSuffix, { amount: amountLabel }) : "";
@@ -186,7 +187,7 @@ export async function createVendorNewRequestNotification(
   client: SupabaseClient,
   input: CreateVendorNewRequestNotificationInput
 ) {
-  const language = await getRecipientLanguage(client, input.recipientId);
+  const language = await getRecipientLanguage(client, input.recipientId, input.rfqId, input.vendorId);
   const requesterLabel =
     input.requesterName?.trim() || (language === "es" ? "Una pareja" : "A couple");
   const locationLabel = formatLocation(input.city, input.state, input.country);
@@ -220,7 +221,7 @@ export async function createVendorQuoteAcceptedNotification(
   client: SupabaseClient,
   input: CreateVendorQuoteAcceptedNotificationInput
 ) {
-  const language = await getRecipientLanguage(client, input.recipientId);
+  const language = await getRecipientLanguage(client, input.recipientId, input.rfqId, input.vendorId);
   const acceptedByLabel =
     input.acceptedByName?.trim() || (language === "es" ? "Un cliente" : "A client");
   const contactSuffix =
@@ -258,7 +259,7 @@ export async function createThreadReplyNotification(
   client: SupabaseClient,
   input: CreateThreadReplyNotificationInput
 ) {
-  const language = await getRecipientLanguage(client, input.recipientId);
+  const language = await getRecipientLanguage(client, input.recipientId, input.rfqId, input.vendorId);
   const senderLabel =
     input.senderName?.trim() ||
     (input.senderRole === "vendor"

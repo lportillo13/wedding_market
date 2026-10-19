@@ -1,11 +1,10 @@
 'use server';
 import { revalidatePath } from 'next/cache';
-import { headers } from 'next/headers';
 import { z } from 'zod';
 import { parseMediaAsset } from '@/lib/images';
 import { buildStorageKey, processCarouselLogoUpload, processImageUpload, validateImageUpload } from '@/lib/media-processing';
-import { deleteFromR2, getR2ObjectKeyFromUrl, isR2Configured, uploadToR2 } from '@/lib/r2';
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { deleteFromR2, getOwnedR2ObjectKey, isR2Configured, uploadToR2 } from '@/lib/r2';
+import { getSiteUrl } from '@/lib/site-url';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { slugify } from '@/lib/slugify';
 import type { MediaAsset } from '@/types/images';
@@ -13,7 +12,7 @@ import type { MediaAsset } from '@/types/images';
 const VendorSignupSchema = z.object({
   owner_name: z.string().trim().max(200, 'Name is too long.').optional(),
   email: z.string().trim().email('Enter a valid email address.').optional(),
-  password: z.string().trim().min(6, 'Password must be at least 6 characters.').optional(),
+  password: z.string().min(8, 'Password must be at least 8 characters.').optional(),
   account_language: z.enum(['en', 'es']).optional().default('en'),
   business_name: z.string().trim().min(2, 'Business name is required.').max(120, 'Business name is too long.'),
   tagline: z.string().trim().min(12, 'Add a short intro for couples.').max(320, 'Intro is too long.'),
@@ -132,14 +131,14 @@ async function uploadVendorCarouselLogo(parts: string[], file: File): Promise<Me
   };
 }
 
-async function cleanupUploadedAssets(assets: MediaAsset[]) {
+async function cleanupUploadedAssets(assets: MediaAsset[], ownerId: string) {
   await Promise.all(
     assets
       .map((asset) => asset.public_id)
       .filter(Boolean)
       .map(async (publicId) => {
         try {
-          await deleteFromR2(publicId);
+          await deleteFromR2(publicId, `vendors/${ownerId}/`);
         } catch (error) {
           if (process.env.NODE_ENV !== 'production') {
             console.warn('Failed to clean up uploaded vendor asset', error);
@@ -153,12 +152,13 @@ async function removePreviousVendorAssets(
   previousLogoUrl: string | null | undefined,
   previousCarouselLogoUrl: string | null | undefined,
   previousHero: unknown,
+  ownerId: string,
 ) {
   const previousHeroAsset = parseMediaAsset(previousHero);
   const keys = [
-    previousLogoUrl ? getR2ObjectKeyFromUrl(previousLogoUrl) : null,
-    previousCarouselLogoUrl ? getR2ObjectKeyFromUrl(previousCarouselLogoUrl) : null,
-    previousHeroAsset?.url ? getR2ObjectKeyFromUrl(previousHeroAsset.url) : null,
+    previousLogoUrl ? getOwnedR2ObjectKey(previousLogoUrl, `vendors/${ownerId}/`) : null,
+    previousCarouselLogoUrl ? getOwnedR2ObjectKey(previousCarouselLogoUrl, `vendors/${ownerId}/`) : null,
+    previousHeroAsset?.url ? getOwnedR2ObjectKey(previousHeroAsset.url, `vendors/${ownerId}/`) : null,
   ]
     .filter((value): value is string => Boolean(value))
     .filter((value, index, items) => items.indexOf(value) === index);
@@ -166,7 +166,7 @@ async function removePreviousVendorAssets(
   await Promise.all(
     keys.map(async (key) => {
       try {
-        await deleteFromR2(key);
+        await deleteFromR2(key, `vendors/${ownerId}/`);
       } catch (error) {
         if (process.env.NODE_ENV !== 'production') {
           console.warn('Failed to remove previous vendor asset', error);
@@ -177,17 +177,22 @@ async function removePreviousVendorAssets(
 }
 
 async function uploadRequiredVendorAssets(params: {
+  ownerId: string;
   businessName: string;
   slug: string;
   heroFile: File;
   logoFile: File;
 }) {
-  const vendorFolder = slugify(params.businessName || params.slug) || params.slug;
-  const [hero, logo, carouselLogo] = await Promise.all([
+  const vendorFolder = params.ownerId;
+  const uploaded: MediaAsset[] = [];
+  const results = await Promise.allSettled([
     uploadVendorImage(['vendors', vendorFolder, 'hero'], params.heroFile),
     uploadVendorImage(['vendors', vendorFolder, 'logo'], params.logoFile),
     uploadVendorCarouselLogo(['vendors', vendorFolder, 'carousel-logo'], params.logoFile),
-  ]);
+  ].map(async (pending) => { const asset=await pending; uploaded.push(asset); return asset; }));
+  const failed=results.find(result=>result.status==='rejected');
+  if (failed?.status==='rejected') { await cleanupUploadedAssets(uploaded,params.ownerId); throw failed.reason; }
+  const [hero,logo,carouselLogo]=results.map(result=>(result as PromiseFulfilledResult<MediaAsset>).value);
 
   return { hero, logo, carouselLogo } satisfies UploadedVendorAssets;
 }
@@ -229,7 +234,7 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
   }
 
   if (!isR2Configured()) {
-    return { ok: false, message: 'Image storage is not configured. Add the R2 environment variables first.' };
+    return { ok: false, message: 'Image uploads are temporarily unavailable. Please try again later.' };
   }
 
   const logoFileResult = readRequiredImageFile(formData.get('logo_file'), 'Please upload a logo image.');
@@ -276,7 +281,7 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
   } = await supabase.auth.getUser();
   let user = initialUser;
 
-  if (userErr) {
+  if (userErr && userErr.name !== 'AuthSessionMissingError') {
     return { ok: false, message: userErr.message };
   }
 
@@ -291,15 +296,7 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
       return { ok: false, message: 'Password is required.' };
     }
 
-    const headerList = await headers();
-    const proto = headerList.get('x-forwarded-proto');
-    const host = headerList.get('x-forwarded-host') ?? headerList.get('host');
-
-    const siteUrl =
-      process.env.NEXT_PUBLIC_SITE_URL ??
-      (proto && host ? `${proto}://${host}` : host ? `https://${host}` : 'http://localhost:3000');
-
-    const emailRedirectTo = new URL('/auth/callback', siteUrl).toString();
+    const emailRedirectTo = new URL('/auth/callback?next=/signup/vendor', getSiteUrl()).toString();
 
     const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
       email,
@@ -307,7 +304,7 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
       options: {
         emailRedirectTo,
         data: {
-          full_name: owner_name,
+          full_name: owner_name, phone: phone || null, country: country || null,
           language: account_language,
         },
       },
@@ -317,53 +314,10 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
       return { ok: false, message: signUpErr.message };
     }
 
-    const userId = signUpData.user?.id ?? signUpData.session?.user.id;
-    if (!userId) {
-      return {
-        ok: false,
-        message:
-          'Sign up succeeded but user information is missing. Please check your email to confirm your account.',
-      };
-    }
-
-    const supabaseAdmin = createSupabaseAdminClient();
-    if (supabaseAdmin) {
-      const { error: confirmErr } = await supabaseAdmin.auth.admin.updateUserById(userId, {
-        email_confirm: true,
-      });
-      if (confirmErr) {
-        return { ok: false, message: confirmErr.message };
-      }
-    }
-
-    const profileClient = supabaseAdmin ?? supabase;
-    const { error: bootstrapProfileErr } = await profileClient
-      .from('profiles')
-      .upsert(
-        {
-          id: userId,
-          full_name: owner_name,
-          phone: phone || null,
-          country: country || null,
-          language: account_language,
-          role: 'user',
-        },
-        { onConflict: 'id' },
-      );
-
-    if (bootstrapProfileErr) {
-      return { ok: false, message: bootstrapProfileErr.message };
-    }
-
     if (!signUpData.session) {
-      const { error: signInErr } = await supabase.auth.signInWithPassword({ email, password });
-      if (signInErr) {
-        return { ok: false, message: signInErr.message };
-      }
+      return { ok: true, redirectTo: `/signup/check-email?lang=${account_language}&vendor=1` };
     }
-
-    const currentUserResult = await supabase.auth.getUser();
-    user = currentUserResult.data.user;
+    user = signUpData.session.user;
   }
 
   if (!user) {
@@ -429,6 +383,7 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
   let uploadedAssets: UploadedVendorAssets;
   try {
     uploadedAssets = await uploadRequiredVendorAssets({
+      ownerId: user.id,
       businessName: business_name,
       slug,
       heroFile: heroFileResult.file,
@@ -477,7 +432,7 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
       .single();
 
     if (insertErr) {
-      await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo]);
+      await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo], user.id);
       return { ok: false, message: insertErr.message };
     }
 
@@ -488,13 +443,13 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
       .update(vendorPayload)
       .eq('id', vendorId);
     if (updateErr) {
-      await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo]);
+      await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo], user.id);
       return { ok: false, message: updateErr.message };
     }
   }
 
   if (!vendorId) {
-    await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo]);
+    await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo], user.id);
     return { ok: false, message: 'Could not determine vendor profile.' };
   }
 
@@ -515,7 +470,7 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
     );
 
   if (locationErr) {
-    await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo]);
+    await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo], user.id);
     return { ok: false, message: locationErr.message };
   }
 
@@ -527,7 +482,7 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
       .in('key', categories);
 
     if (categoryErr) {
-      await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo]);
+      await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo], user.id);
       return { ok: false, message: categoryErr.message };
     }
 
@@ -540,7 +495,7 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
     .eq('vendor_id', vendorId);
 
   if (deleteCategoryErr) {
-    await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo]);
+    await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo], user.id);
     return { ok: false, message: deleteCategoryErr.message };
   }
 
@@ -550,7 +505,7 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
       .insert(categoryRows.map((category) => ({ vendor_id: vendorId, category_id: category.id })));
 
     if (insertCategoryErr) {
-      await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo]);
+      await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo], user.id);
       return { ok: false, message: insertCategoryErr.message };
     }
   }
@@ -565,12 +520,12 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
       { onConflict: 'id' },
     );
   if (profileErr) {
-    await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo]);
+    await cleanupUploadedAssets([uploadedAssets.hero, uploadedAssets.logo, uploadedAssets.carouselLogo], user.id);
     return { ok: false, message: profileErr.message };
   }
 
   if (existingVendor?.logo_url || existingVendor?.carousel_logo_url || existingVendor?.hero_image) {
-    await removePreviousVendorAssets(existingVendor.logo_url, existingVendor.carousel_logo_url, existingVendor.hero_image);
+    await removePreviousVendorAssets(existingVendor.logo_url, existingVendor.carousel_logo_url, existingVendor.hero_image, user.id);
   }
 
   revalidatePath('/vendor/profile');

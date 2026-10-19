@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+
 import { ACCOUNT_NOTIFICATION_TYPES, VENDOR_NOTIFICATION_TYPES } from "@/lib/notification-types";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
@@ -28,7 +28,7 @@ function getNotificationIds(formData: FormData) {
 
 async function getAuthenticatedContext() {
   const supabase = await getSupabaseServer();
-  const supabaseAdmin = createSupabaseAdminClient();
+
   const {
     data: { user },
     error,
@@ -38,19 +38,15 @@ async function getAuthenticatedContext() {
     throw new Error("Not authenticated.");
   }
 
-  return { supabase, supabaseAdmin, userId: user.id };
+  return { supabase, userId: user.id };
 }
 
 async function runWithPermissionFallback(
   execute: (client: NotificationClient, userId: string) => Promise<MutationResult>
 ) {
-  const { supabase, supabaseAdmin, userId } = await getAuthenticatedContext();
+  const { supabase, userId } = await getAuthenticatedContext();
 
-  let result = await execute(supabase, userId);
-
-  if (result.error?.message?.toLowerCase().includes("permission denied") && supabaseAdmin) {
-    result = await execute(supabaseAdmin, userId);
-  }
+  const result = await execute(supabase, userId);
 
   if (result.error) {
     throw new Error(result.error.message);

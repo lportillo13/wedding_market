@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createThreadReplyNotification } from "@/lib/notifications";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+
 import { createAuthenticatedRequestClient } from "@/lib/supabase/request";
 import { verifyClientQuoteReplyAccess, verifyVendorQuoteReplyAccess } from "@/lib/quote-messages";
 
@@ -13,13 +13,9 @@ const payloadSchema = z.object({
   senderRole: z.enum(["client", "vendor"]),
 });
 
-function isMissingThreadColumnsError(message: string | undefined) {
-  return /last_activity_at|viewed_at|client_last_read_at|vendor_last_read_at|closed_at|closed_reason/i.test(message ?? "");
-}
-
 export async function POST(request: Request) {
   const supabase = await createAuthenticatedRequestClient(request);
-  const supabaseAdmin = createSupabaseAdminClient();
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -53,7 +49,7 @@ export async function POST(request: Request) {
     );
   }
 
-  let { error } = await supabase.from("quote_messages").insert([
+  const { error } = await supabase.from("quote_messages").insert([
     {
       quote_id: input.quoteId,
       sender_id: user.id,
@@ -62,23 +58,11 @@ export async function POST(request: Request) {
     },
   ]);
 
-  if (error && supabaseAdmin) {
-    const retry = await supabaseAdmin.from("quote_messages").insert([
-      {
-        quote_id: input.quoteId,
-        sender_id: user.id,
-        sender_role: input.senderRole,
-        body: input.body,
-      },
-    ]);
-    error = retry.error;
-  }
-
   if (error) {
     return NextResponse.json({ ok: false, message: error.message }, { status: 500 });
   }
 
-  let { error: inviteUpdateError } = await supabase
+  const { error: inviteUpdateError } = await supabase
     .from("rfq_invites")
     .update({
       last_activity_at: new Date().toISOString(),
@@ -87,19 +71,8 @@ export async function POST(request: Request) {
     .eq("rfq_id", input.rfqId)
     .eq("vendor_id", input.vendorId);
 
-  if (inviteUpdateError && !isMissingThreadColumnsError(inviteUpdateError.message) && supabaseAdmin) {
-    const retry = await supabaseAdmin
-      .from("rfq_invites")
-      .update({
-        last_activity_at: new Date().toISOString(),
-        [input.senderRole === "vendor" ? "vendor_last_read_at" : "client_last_read_at"]: new Date().toISOString(),
-      })
-      .eq("rfq_id", input.rfqId)
-      .eq("vendor_id", input.vendorId);
-    inviteUpdateError = retry.error;
-  }
-
-  const notificationClient = supabaseAdmin ?? supabase;
+  if (inviteUpdateError && process.env.NODE_ENV !== "production") console.warn("Message saved; activity could not be updated.");
+  const notificationClient = supabase;
 
   if (input.senderRole === "vendor") {
     const [{ data: vendor }, { data: rfq }] = await Promise.all([
@@ -109,7 +82,7 @@ export async function POST(request: Request) {
         .eq("id", input.vendorId)
         .maybeSingle<{ business_name: string | null }>(),
       notificationClient
-        .from("rfqs")
+        .from("rfqs_visible")
         .select("owner_id")
         .eq("id", input.rfqId)
         .maybeSingle<{ owner_id: string | null }>(),

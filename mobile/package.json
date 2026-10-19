@@ -18,7 +18,7 @@
     "export:android": "expo export --platform android --output-dir dist/android",
     "expo:check": "expo install --check",
     "lint": "eslint App.tsx src --max-warnings=0",
-    "test": "jest --runInBand",
+    "test": "jest --runInBand --cacheDirectory .cache/jest",
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck && npm run lint && npm run test && npm run expo:check"
   },
@@ -28,12 +28,12 @@
     "@react-native-async-storage/async-storage": "2.2.0",
     "@supabase/supabase-js": "^2.106.1",
     "expo": "~56.0.20",
-    "expo-dev-client": "~56.0.25",
+    "expo-dev-client": "~56.0.27",
     "expo-font": "~56.0.7",
-    "expo-image-picker": "~56.0.24",
+    "expo-image-picker": "~56.0.25",
     "expo-localization": "~56.0.6",
-    "expo-notifications": "~56.0.24",
-    "expo-splash-screen": "~56.0.14",
+    "expo-notifications": "~56.0.26",
+    "expo-splash-screen": "~56.0.15",
     "expo-status-bar": "~56.0.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
@@ -53,10 +53,11 @@
     "typescript-eslint": "^8.67.0"
   },
   "overrides": {
-    "shell-quote": "1.10.0",
+    "shell-quote": "1.11.0",
     "xcode": {
       "uuid": "11.1.1"
-    }
+    },
+    "image-size": "2.0.4"
   },
   "jest": {
     "preset": "jest-expo",

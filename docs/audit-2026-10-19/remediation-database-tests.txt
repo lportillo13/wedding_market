@@ -1,0 +1,26 @@
+▶ live-schema authorization and transaction regressions
+  ✔ baseline reproduces anonymous data writes and self-admin escalation (4.8111ms)
+  ✔ anonymous cannot mutate any formerly unprotected table (7.884ms)
+  ✔ self-admin, other profiles, and schema creation are blocked (8.921ms)
+  ✔ Auth provisioning ignores administrative metadata and invalid optional numbers (2.7536ms)
+  ✔ private views honor row ownership and published views hide drafts (12.5656ms)
+  ✔ child data can only be changed by its owner or admin (6.7837ms)
+  ✔ invited proposals receive atomic versions and cannot be overwritten (23.3689ms)
+  ✔ reviews require the correct accepted booking, force real dates, and update ratings (11.5556ms)
+  ✔ notification injection is blocked but member notification/read flows work (6.0152ms)
+  ✔ failed section replacement rolls back rows and settings; other owners cannot replace (14.1552ms)
+  ✔ acceptance verifies ownership, closes competing invitations, and is idempotent (22.6436ms)
+  ✔ vendor RFQ reads mask email and phone until consent; base rows cannot bypass the projection (9.4438ms)
+  ✔ inbox summaries paginate all owned threads without loading message bodies or exposing other users (35.2746ms)
+  ✔ public directory excludes drafts and returns only bounded card fields (2.919ms)
+  ✔ admin database writes require a verified MFA session (4.0917ms)
+  ✔ media limits are atomic and failed appends preserve existing assets (4.6129ms)
+✔ live-schema authorization and transaction regressions (1216.5444ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1307.7412

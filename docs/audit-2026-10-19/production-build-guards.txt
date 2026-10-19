@@ -1,0 +1,3 @@
+2026-10-16 18:17:28.895418713 +0000 /var/www/wedding-market/lib/r2-ownership.ts
+2026-10-16 18:17:28.895418713 +0000 /var/www/wedding-market/app/api/uploads/route.ts
+Compiled R2 ownership guard: ['app/api/uploads/route.js', 'app/media/[...key]/route.js', 'app/vendor/profile/page.js', 'app/signup/vendor/page.js']

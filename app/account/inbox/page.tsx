@@ -66,35 +66,10 @@ function trimPreview(text: string | null | undefined, maxLength = 96) {
   return `${normalized.slice(0, maxLength).trimEnd()}...`;
 }
 
-function matchesSearch(
-  item: Awaited<ReturnType<typeof loadClientInboxThreads>>[number],
-  query: string,
-  location: string,
-  preview: string
-) {
-  if (!query) {
-    return true;
-  }
-
-  const haystack = [
-    item.vendor?.business_name,
-    item.vendor?.slug,
-    item.invite.rfq_id,
-    location,
-    preview,
-    item.rfq?.notes,
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
-
-  return haystack.includes(query);
-}
-
 export default async function AccountInboxPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ rfq?: string; q?: string; view?: string }>;
+  searchParams?: Promise<{ rfq?: string; q?: string; view?: string; page?: string }>;
 }) {
   const { dictionary, language } = await getRequestI18n();
   const locale = getLanguageLocale(language);
@@ -144,19 +119,11 @@ export default async function AccountInboxPage({
     );
   }
 
-  const items = await loadClientInboxThreads(user.id, params?.rfq ?? null);
   const deletedView = params?.view === "deleted";
-  const query = params?.q?.trim().toLowerCase() ?? "";
-  const isArchived = (item: (typeof items)[number]) => item.invite.closed_reason === "archived_by_client";
-  const activeCount = items.filter((item) => !isArchived(item)).length;
-  const deletedCount = items.filter(isArchived).length;
-  const scopeItems = items.filter((item) => (deletedView ? isArchived(item) : !isArchived(item)));
-  const visibleItems = scopeItems.filter((item) => {
-    const location =
-      [item.rfq?.city, item.rfq?.state, item.rfq?.country].filter(Boolean).join(", ") || labels.locationTbd;
-    const preview = trimPreview(item.latestQuote?.message) ?? labels.notesFallback;
-    return matchesSearch(item, query, location, preview);
-  });
+  const page = Math.max(1,Math.min(Number.parseInt(params?.page ?? "1",10) || 1,1000));
+  const { items, total, activeCount, archivedCount: deletedCount } = await loadClientInboxThreads(user.id,params?.rfq ?? null,{page,query:params?.q,archived:deletedView});
+  const scopeItems = items;
+  const visibleItems = items;
   const searchSuggestions = buildAutocompleteSuggestions(
     scopeItems.flatMap((item) => {
       const location =
@@ -172,6 +139,7 @@ export default async function AccountInboxPage({
       rfq: params?.rfq ?? null,
       q: params?.q?.trim() ? params.q.trim() : null,
       view: deletedView ? "deleted" : null,
+      page: null,
       ...overrides,
     };
 
@@ -325,6 +293,11 @@ export default async function AccountInboxPage({
           </div>
         </div>
       )}
+      {(page > 1 || page * 50 < total) && <nav className="d-flex justify-content-between py-3" aria-label={language === "es" ? "Páginas" : "Pages"}>
+        {page > 1 ? <Link href={makeInboxHref({page:String(page-1)})}>{language === "es" ? "Anterior" : "Previous"}</Link> : <span />}
+        <span>{page} / {Math.max(page,Math.ceil(total/50))}</span>
+        {page * 50 < total && <Link href={makeInboxHref({page:String(page+1)})}>{language === "es" ? "Siguiente" : "Next"}</Link>}
+      </nav>}
     </main>
   );
 }

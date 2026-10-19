@@ -1,0 +1,188 @@
+
+> wedding-market@0.1.0 test
+> npm run test:build && npm run test:run
+
+
+> wedding-market@0.1.0 test:build
+> tsc -p tsconfig.test.json
+
+
+> wedding-market@0.1.0 test:run
+> node ./scripts/run-tests.mjs
+
+✔ all Supabase Auth emails use the branded responsive template (1.0204ms)
+✔ password recovery always opens the web reset flow (0.2409ms)
+▶ buildFindPlaceQuery
+  ✔ prefers explicit q parameter (0.6185ms)
+  ✔ extracts readable text from place path (0.1114ms)
+  ✔ falls back to raw input when no better candidate is available (0.0937ms)
+✔ buildFindPlaceQuery (1.3973ms)
+✔ routes each notification to the independent client or vendor conversation (1.1797ms)
+✔ builds a localized, escaped notification email with a stable idempotency key (0.5977ms)
+✔ does not build an email without a valid independent thread (0.0819ms)
+✔ escapes untrusted values in transactional email HTML (0.7397ms)
+✔ renders localized email chrome and rejects unsafe action protocols (0.2093ms)
+✔ normalizes vendor ads config with sensible fallbacks (3.1183ms)
+✔ resolves localized copy with language fallback (0.0957ms)
+✔ creates empty sponsored placements with shared copy scaffolding (0.1059ms)
+✔ builds ad intent context from explicit page signals (0.3407ms)
+✔ scores sponsored placements higher when search and profile intent match (0.2409ms)
+✔ legacy media is migrated only from the configured public bucket host (0.6978ms)
+✔ R2 deletion permits only exact owner namespaces on the configured host (0.8827ms)
+✔ multipart size is checked even when Content-Length is absent or false (13.2544ms)
+✔ normal multipart uploads survive the bounded reader (5.2234ms)
+✔ upload admission rejects excess work and releases slots exactly once (0.1581ms)
+✔ media limits reject oversized videos and disguised vector content (4.1951ms)
+✔ renders vendor summary and spaces (4.8534ms)
+✔ renders pricing rows (10.4023ms)
+✔ filters legacy catering rows from photographer pricing (0.8261ms)
+✔ renders amenity groups (0.7838ms)
+✔ does not show capacity for photo details (0.5746ms)
+ℹ tests 26
+ℹ suites 1
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 143.9252
+
+> wedding-market@0.1.0 test:database
+> node --test scripts/test-database-security.mjs
+
+▶ live-schema authorization and transaction regressions
+  ✔ baseline reproduces anonymous data writes and self-admin escalation (7.2145ms)
+  ✔ anonymous cannot mutate any formerly unprotected table (7.949ms)
+  ✔ self-admin, other profiles, and schema creation are blocked (8.4776ms)
+  ✔ Auth provisioning ignores administrative metadata and invalid optional numbers (2.563ms)
+  ✔ private views honor row ownership and published views hide drafts (14.4083ms)
+  ✔ child data can only be changed by its owner or admin (6.8644ms)
+  ✔ invited proposals receive atomic versions and cannot be overwritten (21.448ms)
+  ✔ reviews require the correct accepted booking, force real dates, and update ratings (11.4832ms)
+  ✔ notification injection is blocked but member notification/read flows work (5.6699ms)
+  ✔ failed section replacement rolls back rows and settings; other owners cannot replace (14.5179ms)
+  ✔ acceptance verifies ownership, closes competing invitations, and is idempotent (22.0059ms)
+  ✔ vendor RFQ reads mask email and phone until consent; base rows cannot bypass the projection (8.8104ms)
+  ✔ inbox summaries paginate all owned threads without loading message bodies or exposing other users (35.9055ms)
+  ✔ public directory excludes drafts and returns only bounded card fields (2.8798ms)
+  ✔ admin database writes require a verified MFA session (1.9353ms)
+  ✔ media limits are atomic and failed appends preserve existing assets (4.713ms)
+✔ live-schema authorization and transaction regressions (1234.1812ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1317.9021
+
+> wedding-market@0.1.0 check
+> npm run typecheck && npm run lint && npm run build
+
+
+> wedding-market@0.1.0 typecheck
+> tsc --noEmit
+
+
+> wedding-market@0.1.0 lint
+> eslint .
+
+
+> wedding-market@0.1.0 build
+> next build --webpack
+
+▲ Next.js 16.3.8 (webpack)
+- Environments: .env.local
+✓ Running next.config.ts took 18ms
+- Experiments (use with caution):
+  · serverActions
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 3.1s
+  Running TypeScript ...
+  Finished TypeScript in 1389ms ...
+  Collecting page data using 27 workers ...
+  Generating static pages using 27 workers (0/58) ...
+  Generating static pages using 27 workers (14/58) 
+  Generating static pages using 27 workers (28/58) 
+  Generating static pages using 27 workers (43/58) 
+✓ Generating static pages using 27 workers (58/58) in 7.6s
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /about
+├ ƒ /account-deletion
+├ ƒ /account/inbox
+├ ƒ /account/inbox/[threadKey]
+├ ƒ /account/notifications
+├ ƒ /account/notifications/deleted
+├ ƒ /account/profile
+├ ƒ /account/quotes
+├ ƒ /account/reviews
+├ ƒ /account/reviews/new/[rfq_id]
+├ ƒ /account/rfqs
+├ ƒ /account/rfqs/[id]
+├ ƒ /api/admin/blog-posts
+├ ƒ /api/admin/site-settings
+├ ƒ /api/admin/vendor-ads
+├ ƒ /api/ads/contextual
+├ ƒ /api/content/site-settings
+├ ƒ /api/dev/my-vendor
+├ ƒ /api/health
+├ ƒ /api/mobile/push-token
+├ ƒ /api/mobile/quote-replies
+├ ƒ /api/mobile/quotes
+├ ƒ /api/mobile/quotes/accept
+├ ƒ /api/newsletter/subscribe
+├ ƒ /api/ready
+├ ƒ /api/rfqs/create
+├ ƒ /api/uploads
+├ ƒ /api/vendors
+├ ƒ /api/vendors/[slug]
+├ ƒ /api/vendors/by-ids
+├ ƒ /api/vendors/suggest
+├ ƒ /api/whoami
+├ ƒ /auth/callback
+├ ƒ /auth/confirm
+├ ƒ /auth/signout
+├ ƒ /blog
+├ ƒ /blog/[slug]
+├ ƒ /forgot-password
+├ ƒ /login
+├ ƒ /media/[...key]
+├ ƒ /privacy
+├ ƒ /private-control-room-hub
+├ ƒ /private-control-room-hub/blog-posts
+├ ƒ /private-control-room-hub/operations
+├ ƒ /private-control-room-hub/site-settings
+├ ƒ /private-control-room-hub/vendor-ads
+├ ƒ /reset-password
+├ ƒ /rfq/new
+├ ƒ /rfq/sent
+├ ƒ /shortlist
+├ ƒ /signup
+├ ƒ /signup/check-email
+├ ƒ /signup/vendor
+├ ƒ /terms
+├ ƒ /vendor
+├ ƒ /vendor/categories
+├ ƒ /vendor/inbox
+├ ƒ /vendor/inbox/[threadKey]
+├ ƒ /vendor/location
+├ ƒ /vendor/me
+├ ƒ /vendor/notifications
+├ ƒ /vendor/notifications/deleted
+├ ƒ /vendor/profile
+├ ƒ /vendor/publish
+├ ƒ /vendor/quotes
+├ ƒ /vendor/rfqs
+├ ƒ /vendors
+└ ƒ /vendors/[slug]
+
+
+ƒ  (Dynamic)  server-rendered on demand
+

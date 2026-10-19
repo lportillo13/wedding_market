@@ -231,45 +231,29 @@ export async function saveVendorPricing(vendorId: string, values: Record<string,
     }))
     .filter((row) => row.contact_for_price || row.price_cents !== null || row.notes);
 
-  await db.from("vendor_pricing").delete().eq("vendor_id", vendorId);
-  if (rows.length) {
-    const { error } = await db.from("vendor_pricing").insert(rows);
-    if (error) throw new Error(error.message);
-  }
-
-  const { error } = await db
-    .from("vendors")
-    .update({
+  const { error } = await db.rpc("replace_vendor_section", {
+    p_vendor: vendorId, p_section: "pricing", p_rows: rows,
+    p_settings: {
       pricing_typical_spend_cents: moneyToCents(values.typical_spend),
       pricing_typical_spend_currency: currency,
       pricing_peak_seasons: csvToArray(values.peak_seasons),
-    })
-    .eq("id", vendorId);
+    },
+  });
   if (error) throw new Error(error.message);
 }
 
 export async function saveVendorAmenities(vendorId: string, selectedKeys: string[], values: Record<string, string>) {
   const db = client();
-  await db.from("vendor_amenities").delete().eq("vendor_id", vendorId);
-  if (selectedKeys.length) {
-    const { error } = await db
-      .from("vendor_amenities")
-      .insert(selectedKeys.map((amenity_key) => ({ vendor_id: vendorId, amenity_key })));
-    if (error) throw new Error(error.message);
-  }
-  const { error } = await db
-    .from("vendors")
-    .update({
-      capacity_max: toInteger(values.capacity_max),
-      event_types: csvToArray(values.event_types),
-    })
-    .eq("id", vendorId);
+  const { error } = await db.rpc("replace_vendor_section", {
+    p_vendor: vendorId, p_section: "amenities",
+    p_rows: selectedKeys.map((amenity_key) => ({ amenity_key })),
+    p_settings: { capacity_max: toInteger(values.capacity_max), event_types: csvToArray(values.event_types) },
+  });
   if (error) throw new Error(error.message);
 }
 
 export async function saveVendorTeam(vendorId: string, members: Record<string, string>[]) {
   const db = client();
-  await db.from("vendor_team").delete().eq("vendor_id", vendorId);
   const rows = members
     .filter((member) => member.name.trim())
     .map((member, index) => ({
@@ -281,15 +265,12 @@ export async function saveVendorTeam(vendorId: string, members: Record<string, s
       responds_within_hours: toInteger(member.responds_within_hours),
       sort_order: index,
     }));
-  if (rows.length) {
-    const { error } = await db.from("vendor_team").insert(rows);
-    if (error) throw new Error(error.message);
-  }
+  const { error } = await db.rpc("replace_vendor_section", { p_vendor: vendorId, p_section: "team", p_rows: rows });
+  if (error) throw new Error(error.message);
 }
 
 export async function saveVendorAvailability(vendorId: string, dates: Record<string, string>[]) {
   const db = client();
-  await db.from("vendor_availability").delete().eq("vendor_id", vendorId);
   const rows = dates
     .filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date.date))
     .map((date) => ({
@@ -297,10 +278,8 @@ export async function saveVendorAvailability(vendorId: string, dates: Record<str
       available_on: date.date,
       availability_status: date.status === "busy" ? "busy" : "available",
     }));
-  if (rows.length) {
-    const { error } = await db.from("vendor_availability").insert(rows);
-    if (error) throw new Error(error.message);
-  }
+  const { error } = await db.rpc("replace_vendor_section", { p_vendor: vendorId, p_section: "availability", p_rows: rows });
+  if (error) throw new Error(error.message);
 }
 
 export async function saveVendorReviews(vendorId: string, values: Record<string, string>, currentExtraInfo: Record<string, unknown> | null) {
@@ -344,7 +323,7 @@ export async function uploadVendorMedia(target: string, file: { uri: string; nam
       Authorization: `Bearer ${session.access_token}`,
     },
     body: payload,
-  }, 45_000);
+  }, 120_000);
 }
 
 export function uploadedAssetUrl(result: unknown) {

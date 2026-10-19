@@ -1,0 +1,22 @@
+2026-10-19T17:33:29Z
+
+Cached update status
+Expanded Security Maintenance for Applications is not enabled.
+
+1 update can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+Reboot required
+No reboot-required marker
+
+Service activation metadata
+enabled
+active
+inactive
+
+Pending package names from cached package lists
+Listing...
+snapd/noble-updates 2.77.1+ubuntu24.04 amd64 [upgradable from: 2.76+ubuntu24.04.1]

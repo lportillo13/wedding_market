@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 
 type PushTokenRow = {
   token: string;
@@ -25,7 +26,8 @@ export async function sendMobilePushNotification(
   client: SupabaseClient,
   payload: PushNotificationPayload
 ) {
-  const { data: rows, error } = await client
+  const deliveryClient=createSupabaseAdminClient() ?? client;
+  const { data: rows, error } = await deliveryClient
     .from("user_push_tokens")
     .select("token")
     .eq("user_id", payload.recipientId)
@@ -67,6 +69,7 @@ export async function sendMobilePushNotification(
         "Content-Type": "application/json",
       },
       body: JSON.stringify(messages),
+      signal: AbortSignal.timeout(5000),
     });
 
     if (!response.ok) {

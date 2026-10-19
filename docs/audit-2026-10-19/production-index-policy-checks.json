@@ -1,0 +1,872 @@
+{
+  "missing_fk_indexes": [
+    {
+      "relname": "profiles",
+      "conname": "profiles_language_fkey",
+      "definition": "FOREIGN KEY (language) REFERENCES languages(code) ON UPDATE CASCADE"
+    },
+    {
+      "relname": "quote_messages",
+      "conname": "quote_messages_sender_id_fkey",
+      "definition": "FOREIGN KEY (sender_id) REFERENCES profiles(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "vendor_amenities",
+      "conname": "vendor_amenities_amenity_key_fkey",
+      "definition": "FOREIGN KEY (amenity_key) REFERENCES amenity_lookup(key) ON DELETE CASCADE"
+    },
+    {
+      "relname": "profile_translated_fields",
+      "conname": "profile_translated_fields_language_fkey",
+      "definition": "FOREIGN KEY (language) REFERENCES languages(code) ON DELETE CASCADE"
+    },
+    {
+      "relname": "vendor_categories",
+      "conname": "vendor_categories_category_id_fkey",
+      "definition": "FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "vendor_spaces",
+      "conname": "vendor_spaces_vendor_id_fkey",
+      "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "notifications",
+      "conname": "notifications_actor_id_fkey",
+      "definition": "FOREIGN KEY (actor_id) REFERENCES profiles(id) ON DELETE SET NULL"
+    }
+  ],
+  "all_policies": [
+    {
+      "tablename": "blog_posts",
+      "policyname": "Allow admins to manage blog posts",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "((auth.role() = 'service_role'::text) OR (EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = auth.uid()) AND (profiles.role = 'admin'::text)))))",
+      "with_check": "((auth.role() = 'service_role'::text) OR (EXISTS ( SELECT 1\n   FROM profiles\n  WHERE ((profiles.id = auth.uid()) AND (profiles.role = 'admin'::text)))))"
+    },
+    {
+      "tablename": "blog_posts",
+      "policyname": "Allow service role to manage blog posts",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(auth.role() = 'service_role'::text)",
+      "with_check": "(auth.role() = 'service_role'::text)"
+    },
+    {
+      "tablename": "categories",
+      "policyname": "categories_public_read",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "notifications",
+      "policyname": "notifications_recipient_delete",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "DELETE",
+      "qual": "(recipient_id = auth.uid())",
+      "with_check": null
+    },
+    {
+      "tablename": "notifications",
+      "policyname": "notifications_recipient_insert",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "((actor_id = auth.uid()) OR (auth.role() = 'service_role'::text))"
+    },
+    {
+      "tablename": "notifications",
+      "policyname": "notifications_recipient_select",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "SELECT",
+      "qual": "(recipient_id = auth.uid())",
+      "with_check": null
+    },
+    {
+      "tablename": "notifications",
+      "policyname": "notifications_recipient_update",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "UPDATE",
+      "qual": "(recipient_id = auth.uid())",
+      "with_check": "(recipient_id = auth.uid())"
+    },
+    {
+      "tablename": "profile_translated_fields",
+      "policyname": "Users manage their own profile translations",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(profile_id = auth.uid())",
+      "with_check": "(profile_id = auth.uid())"
+    },
+    {
+      "tablename": "profiles",
+      "policyname": "profiles_admin_all",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "ALL",
+      "qual": "(COALESCE((auth.jwt() ->> 'role'::text), ''::text) = 'admin'::text)",
+      "with_check": "(COALESCE((auth.jwt() ->> 'role'::text), ''::text) = 'admin'::text)"
+    },
+    {
+      "tablename": "profiles",
+      "policyname": "profiles_self_insert",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "(auth.uid() = id)"
+    },
+    {
+      "tablename": "profiles",
+      "policyname": "profiles_self_select",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "SELECT",
+      "qual": "(auth.uid() = id)",
+      "with_check": null
+    },
+    {
+      "tablename": "profiles",
+      "policyname": "profiles_self_update",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "UPDATE",
+      "qual": "(auth.uid() = id)",
+      "with_check": "(auth.uid() = id)"
+    },
+    {
+      "tablename": "quote_messages",
+      "policyname": "quote_messages_client_insert",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "((sender_id = auth.uid()) AND (sender_role = 'client'::text) AND (EXISTS ( SELECT 1\n   FROM (quotes q\n     JOIN rfqs r ON ((r.id = q.rfq_id)))\n  WHERE ((q.id = quote_messages.quote_id) AND (r.owner_id = auth.uid())))))"
+    },
+    {
+      "tablename": "quote_messages",
+      "policyname": "quote_messages_client_select",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM (quotes q\n     JOIN rfqs r ON ((r.id = q.rfq_id)))\n  WHERE ((q.id = quote_messages.quote_id) AND (r.owner_id = auth.uid()))))",
+      "with_check": null
+    },
+    {
+      "tablename": "quote_messages",
+      "policyname": "quote_messages_vendor_insert",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "((sender_id = auth.uid()) AND (sender_role = 'vendor'::text) AND (EXISTS ( SELECT 1\n   FROM (quotes q\n     JOIN vendors v ON ((v.id = q.vendor_id)))\n  WHERE ((q.id = quote_messages.quote_id) AND (v.owner_id = auth.uid())))))"
+    },
+    {
+      "tablename": "quote_messages",
+      "policyname": "quote_messages_vendor_select",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM (quotes q\n     JOIN vendors v ON ((v.id = q.vendor_id)))\n  WHERE ((q.id = quote_messages.quote_id) AND (v.owner_id = auth.uid()))))",
+      "with_check": null
+    },
+    {
+      "tablename": "quotes",
+      "policyname": "quotes_owner_read",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM rfqs r\n  WHERE ((r.id = quotes.rfq_id) AND (r.owner_id = auth.uid()))))",
+      "with_check": null
+    },
+    {
+      "tablename": "quotes",
+      "policyname": "quotes_owner_select",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM rfqs r\n  WHERE ((r.id = quotes.rfq_id) AND (r.owner_id = auth.uid()))))",
+      "with_check": null
+    },
+    {
+      "tablename": "quotes",
+      "policyname": "quotes_vendor_crud",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = quotes.vendor_id) AND (v.owner_id = auth.uid()))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = quotes.vendor_id) AND (v.owner_id = auth.uid()))))"
+    },
+    {
+      "tablename": "quotes",
+      "policyname": "quotes_vendor_insert",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "((EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = quotes.vendor_id) AND (v.owner_id = auth.uid())))) AND (EXISTS ( SELECT 1\n   FROM rfqs r\n  WHERE ((r.id = quotes.rfq_id) AND (r.accepted_quote_id IS NULL)))))"
+    },
+    {
+      "tablename": "quotes",
+      "policyname": "quotes_vendor_read",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = quotes.vendor_id) AND (v.owner_id = auth.uid()))))",
+      "with_check": null
+    },
+    {
+      "tablename": "quotes",
+      "policyname": "quotes_vendor_select",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = quotes.vendor_id) AND (v.owner_id = auth.uid()))))",
+      "with_check": null
+    },
+    {
+      "tablename": "quotes",
+      "policyname": "quotes_vendor_update",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "UPDATE",
+      "qual": "(EXISTS ( SELECT 1\n   FROM (vendors v\n     JOIN rfq_invites i ON ((i.vendor_id = v.id)))\n  WHERE ((v.owner_id = auth.uid()) AND (i.rfq_id = quotes.rfq_id) AND (i.vendor_id = quotes.vendor_id))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM (vendors v\n     JOIN rfq_invites i ON ((i.vendor_id = v.id)))\n  WHERE ((v.owner_id = auth.uid()) AND (i.rfq_id = quotes.rfq_id) AND (i.vendor_id = quotes.vendor_id))))"
+    },
+    {
+      "tablename": "reviews",
+      "policyname": "reviews_delete_author",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "DELETE",
+      "qual": "(author_id = auth.uid())",
+      "with_check": null
+    },
+    {
+      "tablename": "reviews",
+      "policyname": "reviews_delete_owner_7d",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "DELETE",
+      "qual": "((auth.uid() = author_id) AND is_user(auth.uid()) AND ((now() - created_at) <= '7 days'::interval))",
+      "with_check": null
+    },
+    {
+      "tablename": "reviews",
+      "policyname": "reviews_insert_if_hired",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "((auth.uid() = author_id) AND is_user(auth.uid()) AND can_user_review(auth.uid(), vendor_id, rfq_id) AND (NOT has_user_reviewed(auth.uid(), vendor_id, rfq_id)))"
+    },
+    {
+      "tablename": "reviews",
+      "policyname": "reviews_insert_owner_post_hire",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "((auth.uid() IS NOT NULL) AND (EXISTS ( SELECT 1\n   FROM (rfqs r\n     JOIN quotes q ON ((q.id = r.accepted_quote_id)))\n  WHERE ((r.id = q.rfq_id) AND (r.owner_id = auth.uid()) AND (q.vendor_id = q.vendor_id)))))"
+    },
+    {
+      "tablename": "reviews",
+      "policyname": "reviews_read_all",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "reviews",
+      "policyname": "reviews_select_all",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "reviews",
+      "policyname": "reviews_update_author",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "UPDATE",
+      "qual": "(author_id = auth.uid())",
+      "with_check": null
+    },
+    {
+      "tablename": "reviews",
+      "policyname": "reviews_update_owner_7d",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "UPDATE",
+      "qual": "((auth.uid() = author_id) AND is_user(auth.uid()) AND ((now() - created_at) <= '7 days'::interval))",
+      "with_check": "((auth.uid() = author_id) AND is_user(auth.uid()) AND ((now() - created_at) <= '7 days'::interval))"
+    },
+    {
+      "tablename": "rfq_invites",
+      "policyname": "rfq_invites_owner_insert",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "(EXISTS ( SELECT 1\n   FROM rfqs r\n  WHERE ((r.id = rfq_invites.rfq_id) AND (r.owner_id = auth.uid()))))"
+    },
+    {
+      "tablename": "rfq_invites",
+      "policyname": "rfq_invites_owner_read",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM rfqs r\n  WHERE ((r.id = rfq_invites.rfq_id) AND (r.owner_id = auth.uid()))))",
+      "with_check": null
+    },
+    {
+      "tablename": "rfq_invites",
+      "policyname": "rfq_invites_owner_update",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "UPDATE",
+      "qual": "(EXISTS ( SELECT 1\n   FROM rfqs r\n  WHERE ((r.id = rfq_invites.rfq_id) AND (r.owner_id = auth.uid()))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM rfqs r\n  WHERE ((r.id = rfq_invites.rfq_id) AND (r.owner_id = auth.uid()))))"
+    },
+    {
+      "tablename": "rfq_invites",
+      "policyname": "rfq_invites_vendor_read",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = rfq_invites.vendor_id) AND (v.owner_id = auth.uid()))))",
+      "with_check": null
+    },
+    {
+      "tablename": "rfq_invites",
+      "policyname": "rfq_invites_vendor_update",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "UPDATE",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = rfq_invites.vendor_id) AND (v.owner_id = auth.uid()))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = rfq_invites.vendor_id) AND (v.owner_id = auth.uid()))))"
+    },
+    {
+      "tablename": "rfqs",
+      "policyname": "rfqs_owner_delete",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "DELETE",
+      "qual": "((owner_id = auth.uid()) AND is_user(auth.uid()))",
+      "with_check": null
+    },
+    {
+      "tablename": "rfqs",
+      "policyname": "rfqs_owner_insert",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "((owner_id = auth.uid()) AND is_user(auth.uid()))"
+    },
+    {
+      "tablename": "rfqs",
+      "policyname": "rfqs_owner_select",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "SELECT",
+      "qual": "(owner_id = auth.uid())",
+      "with_check": null
+    },
+    {
+      "tablename": "rfqs",
+      "policyname": "rfqs_owner_update",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "UPDATE",
+      "qual": "((owner_id = auth.uid()) AND is_user(auth.uid()))",
+      "with_check": "((owner_id = auth.uid()) AND is_user(auth.uid()))"
+    },
+    {
+      "tablename": "rfqs",
+      "policyname": "rfqs_vendor_select",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "SELECT",
+      "qual": "can_vendor_view_rfq(auth.uid(), id)",
+      "with_check": null
+    },
+    {
+      "tablename": "site_settings",
+      "policyname": "Allow service role to manage site settings",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(auth.role() = 'service_role'::text)",
+      "with_check": "(auth.role() = 'service_role'::text)"
+    },
+    {
+      "tablename": "user_push_tokens",
+      "policyname": "user_push_tokens_owner_delete",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "DELETE",
+      "qual": "(user_id = auth.uid())",
+      "with_check": null
+    },
+    {
+      "tablename": "user_push_tokens",
+      "policyname": "user_push_tokens_owner_insert",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "(user_id = auth.uid())"
+    },
+    {
+      "tablename": "user_push_tokens",
+      "policyname": "user_push_tokens_owner_select",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "SELECT",
+      "qual": "(user_id = auth.uid())",
+      "with_check": null
+    },
+    {
+      "tablename": "user_push_tokens",
+      "policyname": "user_push_tokens_owner_update",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "UPDATE",
+      "qual": "(user_id = auth.uid())",
+      "with_check": "(user_id = auth.uid())"
+    },
+    {
+      "tablename": "vendor_availability",
+      "policyname": "vendor_availability_owner_crud",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_availability.vendor_id) AND (v.owner_id = auth.uid()))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_availability.vendor_id) AND (v.owner_id = auth.uid()))))"
+    },
+    {
+      "tablename": "vendor_availability",
+      "policyname": "vendor_availability_public_read",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_availability.vendor_id) AND (v.is_published = true))))",
+      "with_check": null
+    },
+    {
+      "tablename": "vendor_categories",
+      "policyname": "vendor_categories_admin_all",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = auth.uid()) AND (p.role = 'admin'::text))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = auth.uid()) AND (p.role = 'admin'::text))))"
+    },
+    {
+      "tablename": "vendor_categories",
+      "policyname": "vendor_categories_auth_read_published",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_categories.vendor_id) AND (v.is_published = true))))",
+      "with_check": null
+    },
+    {
+      "tablename": "vendor_categories",
+      "policyname": "vendor_categories_owner_all",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_categories.vendor_id) AND (v.owner_id = auth.uid()))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_categories.vendor_id) AND (v.owner_id = auth.uid()))))"
+    },
+    {
+      "tablename": "vendor_categories",
+      "policyname": "vendor_categories_owner_crud",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_categories.vendor_id) AND (v.owner_id = auth.uid()))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_categories.vendor_id) AND (v.owner_id = auth.uid()))))"
+    },
+    {
+      "tablename": "vendor_categories",
+      "policyname": "vendor_categories_public_read",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_categories.vendor_id) AND (v.is_published = true))))",
+      "with_check": null
+    },
+    {
+      "tablename": "vendor_categories",
+      "policyname": "vendor_categories_public_read_published",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "anon"
+      ],
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_categories.vendor_id) AND (v.is_published = true))))",
+      "with_check": null
+    },
+    {
+      "tablename": "vendor_locations",
+      "policyname": "vendor_locations_admin_all",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = auth.uid()) AND (p.role = 'admin'::text))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = auth.uid()) AND (p.role = 'admin'::text))))"
+    },
+    {
+      "tablename": "vendor_locations",
+      "policyname": "vendor_locations_auth_read_published",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_locations.vendor_id) AND (v.is_published = true))))",
+      "with_check": null
+    },
+    {
+      "tablename": "vendor_locations",
+      "policyname": "vendor_locations_owner_all",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_locations.vendor_id) AND (v.owner_id = auth.uid()))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_locations.vendor_id) AND (v.owner_id = auth.uid()))))"
+    },
+    {
+      "tablename": "vendor_locations",
+      "policyname": "vendor_locations_owner_crud",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_locations.vendor_id) AND (v.owner_id = auth.uid()))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_locations.vendor_id) AND (v.owner_id = auth.uid()))))"
+    },
+    {
+      "tablename": "vendor_locations",
+      "policyname": "vendor_locations_public_read",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_locations.vendor_id) AND (v.is_published = true))))",
+      "with_check": null
+    },
+    {
+      "tablename": "vendor_locations",
+      "policyname": "vendor_locations_public_read_published",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "anon"
+      ],
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_locations.vendor_id) AND (v.is_published = true))))",
+      "with_check": null
+    },
+    {
+      "tablename": "vendor_media",
+      "policyname": "vendor_media_admin_all",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = auth.uid()) AND (p.role = 'admin'::text))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = auth.uid()) AND (p.role = 'admin'::text))))"
+    },
+    {
+      "tablename": "vendor_media",
+      "policyname": "vendor_media_owner_crud",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_media.vendor_id) AND (v.owner_id = auth.uid()))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_media.vendor_id) AND (v.owner_id = auth.uid()))))"
+    },
+    {
+      "tablename": "vendor_media",
+      "policyname": "vendor_media_public_read",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM vendors v\n  WHERE ((v.id = vendor_media.vendor_id) AND (v.is_published = true))))",
+      "with_check": null
+    },
+    {
+      "tablename": "vendors",
+      "policyname": "vendors_admin_all",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = auth.uid()) AND (p.role = 'admin'::text))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = auth.uid()) AND (p.role = 'admin'::text))))"
+    },
+    {
+      "tablename": "vendors",
+      "policyname": "vendors_auth_read_published",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "SELECT",
+      "qual": "(is_published = true)",
+      "with_check": null
+    },
+    {
+      "tablename": "vendors",
+      "policyname": "vendors_owner_all",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "authenticated"
+      ],
+      "cmd": "ALL",
+      "qual": "(auth.uid() = owner_id)",
+      "with_check": "(auth.uid() = owner_id)"
+    },
+    {
+      "tablename": "vendors",
+      "policyname": "vendors_owner_crud",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(auth.uid() = owner_id)",
+      "with_check": "(auth.uid() = owner_id)"
+    },
+    {
+      "tablename": "vendors",
+      "policyname": "vendors_owner_cud",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "ALL",
+      "qual": "(owner_id = auth.uid())",
+      "with_check": "(owner_id = auth.uid())"
+    },
+    {
+      "tablename": "vendors",
+      "policyname": "vendors_public_read",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "SELECT",
+      "qual": "(is_published = true)",
+      "with_check": null
+    },
+    {
+      "tablename": "vendors",
+      "policyname": "vendors_public_read_published",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "anon"
+      ],
+      "cmd": "SELECT",
+      "qual": "(is_published = true)",
+      "with_check": null
+    },
+    {
+      "tablename": "vendors",
+      "policyname": "vendors_read_all",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "public"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    }
+  ],
+  "extensions": [
+    {
+      "name": "plpgsql",
+      "version": "1.0",
+      "schema": "pg_catalog"
+    },
+    {
+      "name": "pg_stat_statements",
+      "version": "1.11",
+      "schema": "extensions"
+    },
+    {
+      "name": "uuid-ossp",
+      "version": "1.1",
+      "schema": "extensions"
+    },
+    {
+      "name": "pgcrypto",
+      "version": "1.3",
+      "schema": "extensions"
+    },
+    {
+      "name": "supabase_vault",
+      "version": "0.3.1",
+      "schema": "vault"
+    },
+    {
+      "name": "pg_net",
+      "version": "0.20.0",
+      "schema": "extensions"
+    },
+    {
+      "name": "pg_graphql",
+      "version": "1.5.11",
+      "schema": "graphql"
+    },
+    {
+      "name": "pg_trgm",
+      "version": "1.6",
+      "schema": "public"
+    },
+    {
+      "name": "pgjwt",
+      "version": "0.2.0",
+      "schema": "extensions"
+    }
+  ],
+  "stats_relation": [
+    "extensions"
+  ]
+}

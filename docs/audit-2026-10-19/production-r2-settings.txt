@@ -1,0 +1,3 @@
+Browser tab: 3, Title: "R2 Object Storage | [account-email-redacted]'s Account | Cloudflare", URL: "https://dash.cloudflare.com/25d3ff9e595c0bf20100641457bea5e8/r2/default/buckets/the-wedding-market/settings".
+There has been no change in the accessibility tree.
+The focused UI element is 131 tab (selected, settable, boolean) Settings, Value: 1, ID: base-ui-:r8t:

@@ -2,14 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+
 import { buildThreadKey, markClientThreadRead, parseThreadKey } from "@/lib/inbox";
 import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 import { getSupabaseServer } from "@/lib/supabase/server";
-
-function shouldUseAdminFallback(message: string | undefined) {
-  return /policy|permission|row-level security|infinite recursion detected/i.test(message ?? "");
-}
 
 function getThreadKeys(formData: FormData) {
   const onlyThreadKey = formData.get("onlyThreadKey")?.toString();
@@ -30,7 +26,7 @@ async function loadOwnedRfqIds(client: SupabaseClient, userId: string) {
   } as const satisfies Record<OwnerColumn, string>;
 
   const selectRfqs = (supabase: SupabaseClient, ownerColumn: OwnerColumn) =>
-    supabase.from("rfqs").select(selectColumns[ownerColumn]).eq(ownerColumn, userId);
+    supabase.from("rfqs_visible").select(selectColumns[ownerColumn]).eq(ownerColumn, userId);
 
   let ownerColumn: OwnerColumn = "owner_id";
   let { data, error } = await selectRfqs(client, ownerColumn);
@@ -51,12 +47,9 @@ async function updateThreads(
   update: { closed_at: string | null; closed_reason: string | null }
 ) {
   const supabase = await getSupabaseServer();
-  const supabaseAdmin = createSupabaseAdminClient();
 
-  let ownedRfqsResult = await loadOwnedRfqIds(supabase, userId);
-  if (ownedRfqsResult.error && supabaseAdmin && shouldUseAdminFallback(ownedRfqsResult.error.message)) {
-    ownedRfqsResult = await loadOwnedRfqIds(supabaseAdmin, userId);
-  }
+  const ownedRfqsResult = await loadOwnedRfqIds(supabase, userId);
+
   if (ownedRfqsResult.error) {
     throw new Error(ownedRfqsResult.error.message);
   }
@@ -72,20 +65,11 @@ async function updateThreads(
   }
 
   for (const pair of validPairs) {
-    let { error } = await supabase
+    const { error } = await supabase
       .from("rfq_invites")
       .update(update)
       .eq("rfq_id", pair.rfqId)
       .eq("vendor_id", pair.vendorId);
-
-    if (error && supabaseAdmin && shouldUseAdminFallback(error.message)) {
-      const retry = await supabaseAdmin
-        .from("rfq_invites")
-        .update(update)
-        .eq("rfq_id", pair.rfqId)
-        .eq("vendor_id", pair.vendorId);
-      error = retry.error;
-    }
 
     if (error) {
       throw new Error(error.message);

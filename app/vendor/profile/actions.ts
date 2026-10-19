@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import type { VendorImage } from "@/types/vendor";
-import { deleteFromR2, getR2ObjectKeyFromUrl } from "@/lib/r2";
+import { deleteFromR2, getOwnedR2ObjectKey } from "@/lib/r2";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { translateTextWithAI } from "@/lib/ai/translate";
 
@@ -345,13 +345,13 @@ export async function removeLogoImage(
   _state: ImageActionState
 ): Promise<ImageActionState> {
   void _state;
-  const { supabase, vendor, error } = await requireAuthVendor();
-  if (error || !vendor) {
+  const { supabase, user, vendor, error } = await requireAuthVendor();
+  if (error || !vendor || !user) {
     return { ok: false, message: error ?? "Vendor profile not found." };
   }
 
-  const previousKey = vendor.logo_url ? getR2ObjectKeyFromUrl(vendor.logo_url) : null;
-  const previousCarouselKey = vendor.carousel_logo_url ? getR2ObjectKeyFromUrl(vendor.carousel_logo_url) : null;
+  const previousKey = vendor.logo_url ? getOwnedR2ObjectKey(vendor.logo_url, `vendors/${user.id}/`) : null;
+  const previousCarouselKey = vendor.carousel_logo_url ? getOwnedR2ObjectKey(vendor.carousel_logo_url, `vendors/${user.id}/`) : null;
 
   const { error: updateError } = await supabase
     .from("vendors")
@@ -364,7 +364,7 @@ export async function removeLogoImage(
 
   for (const key of [previousKey, previousCarouselKey].filter((value): value is string => Boolean(value))) {
     try {
-      await deleteFromR2(key);
+      await deleteFromR2(key, `vendors/${user.id}/`);
     } catch (deleteError) {
       if (process.env.NODE_ENV !== "production") {
         console.warn("Failed to remove previous logo asset", deleteError);
@@ -749,21 +749,21 @@ function handleError(message: string): ImageActionState {
 }
 
 async function ensureVendorForImages() {
-  const { supabase, error, vendor } = await requireAuthVendor();
+  const { supabase, user, error, vendor } = await requireAuthVendor();
   if (error || !vendor) {
-    return { supabase, vendor: null, error: error ?? "Vendor profile not found." } as const;
+    return { supabase, user: null, vendor: null, error: error ?? "Vendor profile not found." } as const;
   }
-  return { supabase, vendor, error: null } as const;
+  return { supabase, user, vendor, error: null } as const;
 }
 
-async function destroyPreviousAsset(publicId: string | undefined) {
+async function destroyPreviousAsset(publicId: string | undefined, ownerId: string) {
   if (!publicId) {
     return;
   }
 
   try {
-    const key = getR2ObjectKeyFromUrl(publicId) ?? publicId;
-    await deleteFromR2(key);
+    const key = getOwnedR2ObjectKey(publicId, `vendors/${ownerId}/`);
+    if (key) await deleteFromR2(key, `vendors/${ownerId}/`);
   } catch (err) {
     if (process.env.NODE_ENV !== "production") {
       console.warn("Failed to delete R2 asset", err);
@@ -801,8 +801,8 @@ export async function removeHeroImage(
 ): Promise<ImageActionState> {
   void prev;
   void formData;
-  const { supabase, vendor, error } = await ensureVendorForImages();
-  if (error || !vendor) {
+  const { supabase, user, vendor, error } = await ensureVendorForImages();
+  if (error || !vendor || !user) {
     return handleError(error ?? "Unable to load vendor profile.");
   }
 
@@ -819,7 +819,7 @@ export async function removeHeroImage(
     return handleError(`Save failed: ${updateError.message}`);
   }
 
-  await destroyPreviousAsset(vendor.hero_image.public_id);
+  await destroyPreviousAsset(vendor.hero_image.public_id, user.id);
   revalidatePath("/vendor/profile");
   revalidatePath(`/vendors/${vendor.slug}`);
   revalidatePath("/vendors");
@@ -832,8 +832,8 @@ export async function removeThumbnailImage(
 ): Promise<ImageActionState> {
   void prev;
   void formData;
-  const { supabase, vendor, error } = await ensureVendorForImages();
-  if (error || !vendor) {
+  const { supabase, user, vendor, error } = await ensureVendorForImages();
+  if (error || !vendor || !user) {
     return handleError(error ?? "Unable to load vendor profile.");
   }
 
@@ -850,7 +850,7 @@ export async function removeThumbnailImage(
     return handleError(`Save failed: ${updateError.message}`);
   }
 
-  await destroyPreviousAsset(vendor.thumbnail_image.public_id);
+  await destroyPreviousAsset(vendor.thumbnail_image.public_id, user.id);
   revalidatePath("/vendor/profile");
   revalidatePath(`/vendors/${vendor.slug}`);
   revalidatePath("/vendors");
@@ -866,8 +866,8 @@ export async function removeGalleryImage(
     return handleError("Missing image identifier.");
   }
 
-  const { supabase, vendor, error } = await ensureVendorForImages();
-  if (error || !vendor) {
+  const { supabase, user, vendor, error } = await ensureVendorForImages();
+  if (error || !vendor || !user) {
     return handleError(error ?? "Unable to load vendor profile.");
   }
 
@@ -887,7 +887,7 @@ export async function removeGalleryImage(
     return handleError(`Save failed: ${updateError.message}`);
   }
 
-  await destroyPreviousAsset(publicId);
+  await destroyPreviousAsset(publicId, user.id);
 
   revalidatePath("/vendor/profile");
   revalidatePath(`/vendors/${vendor.slug}`);

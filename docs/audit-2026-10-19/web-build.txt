@@ -1,0 +1,96 @@
+
+> wedding-market@0.1.0 build
+> next build --webpack
+
+▲ Next.js 16.3.0 (webpack)
+- Environments: .env.local
+✓ Running next.config.ts took 21ms
+- Experiments (use with caution):
+  · serverActions
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 32.2s
+  Running TypeScript ...
+  Finished TypeScript in 1940ms ...
+  Collecting page data using 27 workers ...
+  Generating static pages using 27 workers (0/57) ...
+  Generating static pages using 27 workers (14/57) 
+  Generating static pages using 27 workers (28/57) 
+  Generating static pages using 27 workers (42/57) 
+✓ Generating static pages using 27 workers (57/57) in 14.5s
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /about
+├ ƒ /account-deletion
+├ ƒ /account/inbox
+├ ƒ /account/inbox/[threadKey]
+├ ƒ /account/notifications
+├ ƒ /account/notifications/deleted
+├ ƒ /account/profile
+├ ƒ /account/quotes
+├ ƒ /account/reviews
+├ ƒ /account/reviews/new/[rfq_id]
+├ ƒ /account/rfqs
+├ ƒ /account/rfqs/[id]
+├ ƒ /api/admin/blog-posts
+├ ƒ /api/admin/site-settings
+├ ƒ /api/admin/vendor-ads
+├ ƒ /api/ads/contextual
+├ ƒ /api/content/site-settings
+├ ƒ /api/dev/my-vendor
+├ ƒ /api/health
+├ ƒ /api/mobile/push-token
+├ ƒ /api/mobile/quote-replies
+├ ƒ /api/mobile/quotes
+├ ƒ /api/mobile/quotes/accept
+├ ƒ /api/newsletter/subscribe
+├ ƒ /api/rfqs/create
+├ ƒ /api/uploads
+├ ƒ /api/vendors
+├ ƒ /api/vendors/[slug]
+├ ƒ /api/vendors/by-ids
+├ ƒ /api/vendors/suggest
+├ ƒ /api/whoami
+├ ƒ /auth/callback
+├ ƒ /auth/confirm
+├ ƒ /auth/signout
+├ ƒ /blog
+├ ƒ /blog/[slug]
+├ ƒ /forgot-password
+├ ƒ /login
+├ ƒ /media/[...key]
+├ ƒ /privacy
+├ ƒ /private-control-room-hub
+├ ƒ /private-control-room-hub/blog-posts
+├ ƒ /private-control-room-hub/operations
+├ ƒ /private-control-room-hub/site-settings
+├ ƒ /private-control-room-hub/vendor-ads
+├ ƒ /reset-password
+├ ƒ /rfq/new
+├ ƒ /rfq/sent
+├ ƒ /shortlist
+├ ƒ /signup
+├ ƒ /signup/vendor
+├ ƒ /terms
+├ ƒ /vendor
+├ ƒ /vendor/categories
+├ ƒ /vendor/inbox
+├ ƒ /vendor/inbox/[threadKey]
+├ ƒ /vendor/location
+├ ƒ /vendor/me
+├ ƒ /vendor/notifications
+├ ƒ /vendor/notifications/deleted
+├ ƒ /vendor/profile
+├ ƒ /vendor/publish
+├ ƒ /vendor/quotes
+├ ƒ /vendor/rfqs
+├ ƒ /vendors
+└ ƒ /vendors/[slug]
+
+
+ƒ  (Dynamic)  server-rendered on demand
+

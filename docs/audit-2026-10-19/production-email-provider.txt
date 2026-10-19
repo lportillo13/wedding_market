@@ -1,0 +1,3 @@
+Browser tab: 2, Title: "Sign In / Providers | Authentication | WedMarket | CR Wedding Destination | Supabase", URL: "https://supabase.com/dashboard/project/aousexbvujjnvbudpsmz/auth/providers?provider=Email".
+There has been no change in the accessibility tree.
+The focused UI element is 68 switch Description: Enable email provider, Value: 1

@@ -1,0 +1,126 @@
+
+> the-wedding-market-mobile@0.1.0 check
+> npm run typecheck && npm run lint && npm run test && npm run expo:check
+
+
+> the-wedding-market-mobile@0.1.0 typecheck
+> tsc --noEmit
+
+
+> the-wedding-market-mobile@0.1.0 lint
+> eslint App.tsx src --max-warnings=0
+
+
+> the-wedding-market-mobile@0.1.0 test
+> jest --runInBand
+
+FAIL __tests__/rfqs.test.ts
+  ● Test suite failed to run
+
+    jest: failed to cache transform results in: C:/Users/lport/AppData/Local/Packages/sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}/AC/Temp/jest/jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338/1e/reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map
+    Failure message: EPERM: operation not permitted, rename 'C:\Users\lport\AppData\Local\Packages\sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}\AC\Temp\jest\jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338\1e\reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map.2923169770' -> 'C:\Users\lport\AppData\Local\Packages\sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}\AC\Temp\jest\jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338\1e\reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map'
+
+      at writeFileSync (node_modules/write-file-atomic/lib/index.js:252:8)
+      at writeCacheFile (node_modules/@jest/transform/build/ScriptTransformer.js:908:33)
+      at ScriptTransformer._buildTransformResult (node_modules/@jest/transform/build/ScriptTransformer.js:510:7)
+      at ScriptTransformer.transformSource (node_modules/@jest/transform/build/ScriptTransformer.js:554:17)
+      at revertHook.exts (node_modules/@jest/transform/build/ScriptTransformer.js:776:18)
+      at Module._compile (node_modules/pirates/lib/index.js:124:29)
+      at Object.newLoader (node_modules/pirates/lib/index.js:134:7)
+      at ScriptTransformer.requireAndTranspileModule (node_modules/@jest/transform/build/ScriptTransformer.js:798:66)
+
+FAIL __tests__/authUtils.test.ts
+  ● Test suite failed to run
+
+    jest: failed to cache transform results in: C:/Users/lport/AppData/Local/Packages/sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}/AC/Temp/jest/jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338/1e/reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map
+    Failure message: EPERM: operation not permitted, rename 'C:\Users\lport\AppData\Local\Packages\sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}\AC\Temp\jest\jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338\1e\reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map.632884766' -> 'C:\Users\lport\AppData\Local\Packages\sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}\AC\Temp\jest\jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338\1e\reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map'
+
+      at writeFileSync (node_modules/write-file-atomic/lib/index.js:252:8)
+      at writeCacheFile (node_modules/@jest/transform/build/ScriptTransformer.js:908:33)
+      at ScriptTransformer._buildTransformResult (node_modules/@jest/transform/build/ScriptTransformer.js:510:7)
+      at ScriptTransformer.transformSource (node_modules/@jest/transform/build/ScriptTransformer.js:554:17)
+      at revertHook.exts (node_modules/@jest/transform/build/ScriptTransformer.js:776:18)
+      at Module._compile (node_modules/pirates/lib/index.js:124:29)
+      at Object.newLoader (node_modules/pirates/lib/index.js:134:7)
+      at ScriptTransformer.requireAndTranspileModule (node_modules/@jest/transform/build/ScriptTransformer.js:798:66)
+
+FAIL __tests__/config.test.ts
+  ● Test suite failed to run
+
+    jest: failed to cache transform results in: C:/Users/lport/AppData/Local/Packages/sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}/AC/Temp/jest/jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338/1e/reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map
+    Failure message: EPERM: operation not permitted, rename 'C:\Users\lport\AppData\Local\Packages\sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}\AC\Temp\jest\jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338\1e\reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map.2014576156' -> 'C:\Users\lport\AppData\Local\Packages\sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}\AC\Temp\jest\jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338\1e\reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map'
+
+      at writeFileSync (node_modules/write-file-atomic/lib/index.js:252:8)
+      at writeCacheFile (node_modules/@jest/transform/build/ScriptTransformer.js:908:33)
+      at ScriptTransformer._buildTransformResult (node_modules/@jest/transform/build/ScriptTransformer.js:510:7)
+      at ScriptTransformer.transformSource (node_modules/@jest/transform/build/ScriptTransformer.js:554:17)
+      at revertHook.exts (node_modules/@jest/transform/build/ScriptTransformer.js:776:18)
+      at Module._compile (node_modules/pirates/lib/index.js:124:29)
+      at Object.newLoader (node_modules/pirates/lib/index.js:134:7)
+      at ScriptTransformer.requireAndTranspileModule (node_modules/@jest/transform/build/ScriptTransformer.js:798:66)
+
+FAIL __tests__/urls.test.ts
+  ● Test suite failed to run
+
+    jest: failed to cache transform results in: C:/Users/lport/AppData/Local/Packages/sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}/AC/Temp/jest/jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338/1e/reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map
+    Failure message: EPERM: operation not permitted, rename 'C:\Users\lport\AppData\Local\Packages\sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}\AC\Temp\jest\jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338\1e\reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map.1427183567' -> 'C:\Users\lport\AppData\Local\Packages\sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}\AC\Temp\jest\jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338\1e\reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map'
+
+      at writeFileSync (node_modules/write-file-atomic/lib/index.js:252:8)
+      at writeCacheFile (node_modules/@jest/transform/build/ScriptTransformer.js:908:33)
+      at ScriptTransformer._buildTransformResult (node_modules/@jest/transform/build/ScriptTransformer.js:510:7)
+      at ScriptTransformer.transformSource (node_modules/@jest/transform/build/ScriptTransformer.js:554:17)
+      at revertHook.exts (node_modules/@jest/transform/build/ScriptTransformer.js:776:18)
+      at Module._compile (node_modules/pirates/lib/index.js:124:29)
+      at Object.newLoader (node_modules/pirates/lib/index.js:134:7)
+      at ScriptTransformer.requireAndTranspileModule (node_modules/@jest/transform/build/ScriptTransformer.js:798:66)
+
+FAIL __tests__/http.test.ts
+  ● Test suite failed to run
+
+    jest: failed to cache transform results in: C:/Users/lport/AppData/Local/Packages/sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}/AC/Temp/jest/jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338/1e/reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map
+    Failure message: EPERM: operation not permitted, rename 'C:\Users\lport\AppData\Local\Packages\sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}\AC\Temp\jest\jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338\1e\reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map.2038458969' -> 'C:\Users\lport\AppData\Local\Packages\sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}\AC\Temp\jest\jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338\1e\reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map'
+
+      at writeFileSync (node_modules/write-file-atomic/lib/index.js:252:8)
+      at writeCacheFile (node_modules/@jest/transform/build/ScriptTransformer.js:908:33)
+      at ScriptTransformer._buildTransformResult (node_modules/@jest/transform/build/ScriptTransformer.js:510:7)
+      at ScriptTransformer.transformSource (node_modules/@jest/transform/build/ScriptTransformer.js:554:17)
+      at revertHook.exts (node_modules/@jest/transform/build/ScriptTransformer.js:776:18)
+      at Module._compile (node_modules/pirates/lib/index.js:124:29)
+      at Object.newLoader (node_modules/pirates/lib/index.js:134:7)
+      at ScriptTransformer.requireAndTranspileModule (node_modules/@jest/transform/build/ScriptTransformer.js:798:66)
+
+FAIL __tests__/languagePreference.test.ts
+  ● Test suite failed to run
+
+    jest: failed to cache transform results in: C:/Users/lport/AppData/Local/Packages/sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}/AC/Temp/jest/jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338/1e/reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map
+    Failure message: EPERM: operation not permitted, rename 'C:\Users\lport\AppData\Local\Packages\sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}\AC\Temp\jest\jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338\1e\reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map.3967915911' -> 'C:\Users\lport\AppData\Local\Packages\sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}\AC\Temp\jest\jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338\1e\reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map'
+
+      at writeFileSync (node_modules/write-file-atomic/lib/index.js:252:8)
+      at writeCacheFile (node_modules/@jest/transform/build/ScriptTransformer.js:908:33)
+      at ScriptTransformer._buildTransformResult (node_modules/@jest/transform/build/ScriptTransformer.js:510:7)
+      at ScriptTransformer.transformSource (node_modules/@jest/transform/build/ScriptTransformer.js:554:17)
+      at revertHook.exts (node_modules/@jest/transform/build/ScriptTransformer.js:776:18)
+      at Module._compile (node_modules/pirates/lib/index.js:124:29)
+      at Object.newLoader (node_modules/pirates/lib/index.js:134:7)
+      at ScriptTransformer.requireAndTranspileModule (node_modules/@jest/transform/build/ScriptTransformer.js:798:66)
+
+FAIL __tests__/search.test.ts
+  ● Test suite failed to run
+
+    jest: failed to cache transform results in: C:/Users/lport/AppData/Local/Packages/sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}/AC/Temp/jest/jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338/1e/reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map
+    Failure message: EPERM: operation not permitted, rename 'C:\Users\lport\AppData\Local\Packages\sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}\AC\Temp\jest\jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338\1e\reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map.899677668' -> 'C:\Users\lport\AppData\Local\Packages\sandbox.{5d9cc16e-93c3-405b-b242-efc13eb7f0e0}\AC\Temp\jest\jest-transform-cache-31c81e2482c2e7d86c324f587adc4f92-79ef2876fae7ca75eedb2aa53dc48338\1e\reactnativeenv_1e440d5a07c5277aaadffcbf2243e2d3.map'
+
+      at writeFileSync (node_modules/write-file-atomic/lib/index.js:252:8)
+      at writeCacheFile (node_modules/@jest/transform/build/ScriptTransformer.js:908:33)
+      at ScriptTransformer._buildTransformResult (node_modules/@jest/transform/build/ScriptTransformer.js:510:7)
+      at ScriptTransformer.transformSource (node_modules/@jest/transform/build/ScriptTransformer.js:554:17)
+      at revertHook.exts (node_modules/@jest/transform/build/ScriptTransformer.js:776:18)
+      at Module._compile (node_modules/pirates/lib/index.js:124:29)
+      at Object.newLoader (node_modules/pirates/lib/index.js:134:7)
+      at ScriptTransformer.requireAndTranspileModule (node_modules/@jest/transform/build/ScriptTransformer.js:798:66)
+
+Test Suites: 7 failed, 7 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        6.968 s
+Ran all test suites.

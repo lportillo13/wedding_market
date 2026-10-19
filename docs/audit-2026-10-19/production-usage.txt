@@ -1,0 +1,55 @@
+Browser tab: 2, Title: "Usage | CR Wedding Destination | Supabase", URL: "https://supabase.com/dashboard/org/cgzfxohacxshcsqmyiam/usage".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
++				465 image
++					466 text 08 Oct
++					467 text 09 Oct
++					468 text 10 Oct
++					469 text 11 Oct
++					470 text 12 Oct
++					471 text 13 Oct
++					472 text 14 Oct
++					473 text 15 Oct
++					474 text 16 Oct
++					475 text 17 Oct
++					476 text 18 Oct
++					477 text 19 Oct
++					478 text 0
++					479 text 2MB
++					480 text 5MB
++					481 text 9MB
++				482 container
++					483 text No data in period May take up to 24 hours to show
++				484 container
++					485 text No data in period May take up to 24 hours to show
++				486 container
++					487 text No data in period May take up to 24 hours to show
++				488 container
++					489 text No data in period May take up to 24 hours to show
++				490 container
++					491 text No data in period May take up to 24 hours to show
++				492 container
++					493 text No data in period May take up to 24 hours to show
++				494 image
++					495 text 08 Oct
++					496 text 09 Oct
++					497 text 10 Oct
++					498 text 11 Oct
++					499 text 12 Oct
++					500 text 13 Oct
++					501 text 14 Oct
++					502 text 15 Oct
++					503 text 16 Oct
++					504 text 17 Oct
++					505 text 18 Oct
++					506 text 19 Oct
++					507 text 0
++					508 text 2MB
++					509 text 5MB
++					510 text 8MB
++				511 container
++					512 text No data in period May take up to 24 hours to show
++				513 container
++					514 text No data in period May take up to 24 hours to show
++				515 container
++					516 text No data in period May take up to 24 hours to show
+The focused UI element is 1 AXWebArea Usage | CR Wedding Destination | Supabase, URL: supabase.com/dashboard/org/cgzfxohacxshcsqmyiam/usage

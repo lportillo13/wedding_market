@@ -1,0 +1,1381 @@
+{
+  "postgres_version": "17.6",
+  "database_bytes": 19025043,
+  "catalog": [
+    {
+      "relname": "amenity_lookup",
+      "relkind": "r",
+      "relrowsecurity": false,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "blog_posts",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "categories",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "languages",
+      "relkind": "r",
+      "relrowsecurity": false,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "notifications",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "profile_translated_fields",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "profiles",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "profiles_resolved",
+      "relkind": "v",
+      "relrowsecurity": false,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "quote_messages",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "quotes",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "reviews",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "reviews_public",
+      "relkind": "v",
+      "relrowsecurity": false,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "rfq_invites",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "rfqs",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "site_settings",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "user_push_tokens",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "vendor_amenities",
+      "relkind": "r",
+      "relrowsecurity": false,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "vendor_availability",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "vendor_categories",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "vendor_latest_quotes",
+      "relkind": "v",
+      "relrowsecurity": false,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "vendor_locations",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "vendor_media",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "vendor_pricing",
+      "relkind": "r",
+      "relrowsecurity": false,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "vendor_profile_view",
+      "relkind": "v",
+      "relrowsecurity": false,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "vendor_public_search",
+      "relkind": "v",
+      "relrowsecurity": false,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "vendor_ratings",
+      "relkind": "v",
+      "relrowsecurity": false,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "vendor_spaces",
+      "relkind": "r",
+      "relrowsecurity": false,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "vendor_team",
+      "relkind": "r",
+      "relrowsecurity": false,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    },
+    {
+      "relname": "vendors",
+      "relkind": "r",
+      "relrowsecurity": true,
+      "anon_select": true,
+      "anon_insert": true,
+      "anon_update": true,
+      "anon_delete": true,
+      "auth_update": true
+    }
+  ],
+  "tables": [
+    {
+      "schemaname": "public",
+      "relname": "vendors",
+      "bytes": 811008,
+      "n_live_tup": 156,
+      "n_dead_tup": 3,
+      "last_autovacuum": null,
+      "last_autoanalyze": "2026-05-23T16:46:48.109587+00:00",
+      "seq_scan": 14511,
+      "idx_scan": 211570
+    },
+    {
+      "schemaname": "public",
+      "relname": "vendor_availability",
+      "bytes": 581632,
+      "n_live_tup": 2065,
+      "n_dead_tup": 0,
+      "last_autovacuum": "2026-05-23T16:46:48.078711+00:00",
+      "last_autoanalyze": "2026-05-23T16:46:48.08409+00:00",
+      "seq_scan": 17,
+      "idx_scan": 15961
+    },
+    {
+      "schemaname": "public",
+      "relname": "reviews",
+      "bytes": 532480,
+      "n_live_tup": 552,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": "2026-05-23T16:46:48.137743+00:00",
+      "seq_scan": 51,
+      "idx_scan": 15937
+    },
+    {
+      "schemaname": "public",
+      "relname": "vendor_pricing",
+      "bytes": 393216,
+      "n_live_tup": 608,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": "2026-05-23T16:46:48.150799+00:00",
+      "seq_scan": 12,
+      "idx_scan": 15961
+    },
+    {
+      "schemaname": "public",
+      "relname": "rfqs",
+      "bytes": 360448,
+      "n_live_tup": 561,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": "2026-05-23T16:46:48.091306+00:00",
+      "seq_scan": 97,
+      "idx_scan": 172
+    },
+    {
+      "schemaname": "public",
+      "relname": "rfq_invites",
+      "bytes": 311296,
+      "n_live_tup": 563,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": "2026-05-23T16:46:48.142043+00:00",
+      "seq_scan": 30,
+      "idx_scan": 23
+    },
+    {
+      "schemaname": "public",
+      "relname": "quotes",
+      "bytes": 286720,
+      "n_live_tup": 559,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": "2026-05-23T16:46:48.132803+00:00",
+      "seq_scan": 53,
+      "idx_scan": 43117
+    },
+    {
+      "schemaname": "public",
+      "relname": "vendor_media",
+      "bytes": 253952,
+      "n_live_tup": 456,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": "2026-05-23T16:46:48.146904+00:00",
+      "seq_scan": 11,
+      "idx_scan": 15931
+    },
+    {
+      "schemaname": "public",
+      "relname": "vendor_team",
+      "bytes": 237568,
+      "n_live_tup": 310,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": "2026-05-23T16:46:48.157225+00:00",
+      "seq_scan": 11,
+      "idx_scan": 15961
+    },
+    {
+      "schemaname": "public",
+      "relname": "vendor_spaces",
+      "bytes": 196608,
+      "n_live_tup": 304,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": "2026-05-23T16:46:48.153754+00:00",
+      "seq_scan": 15937,
+      "idx_scan": 0
+    },
+    {
+      "schemaname": "public",
+      "relname": "vendor_amenities",
+      "bytes": 180224,
+      "n_live_tup": 980,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": "2026-05-23T16:46:48.076113+00:00",
+      "seq_scan": 9,
+      "idx_scan": 15962
+    },
+    {
+      "schemaname": "public",
+      "relname": "vendor_locations",
+      "bytes": 90112,
+      "n_live_tup": 156,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": "2026-05-23T16:46:48.143815+00:00",
+      "seq_scan": 13807,
+      "idx_scan": 106821
+    },
+    {
+      "schemaname": "public",
+      "relname": "notifications",
+      "bytes": 81920,
+      "n_live_tup": 9,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": null,
+      "seq_scan": 21,
+      "idx_scan": 2469
+    },
+    {
+      "schemaname": "public",
+      "relname": "blog_posts",
+      "bytes": 81920,
+      "n_live_tup": 6,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": null,
+      "seq_scan": 435,
+      "idx_scan": 318
+    },
+    {
+      "schemaname": "storage",
+      "relname": "objects",
+      "bytes": 73728,
+      "n_live_tup": 0,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": null,
+      "seq_scan": 18,
+      "idx_scan": 0
+    },
+    {
+      "schemaname": "public",
+      "relname": "profiles",
+      "bytes": 73728,
+      "n_live_tup": 163,
+      "n_dead_tup": 1,
+      "last_autovacuum": null,
+      "last_autoanalyze": "2026-05-23T16:46:48.073934+00:00",
+      "seq_scan": 31,
+      "idx_scan": 582
+    },
+    {
+      "schemaname": "storage",
+      "relname": "migrations",
+      "bytes": 73728,
+      "n_live_tup": 74,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": "2026-05-23T09:44:38.696753+00:00",
+      "seq_scan": 5,
+      "idx_scan": 3
+    },
+    {
+      "schemaname": "public",
+      "relname": "quote_messages",
+      "bytes": 65536,
+      "n_live_tup": 13,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": null,
+      "seq_scan": 17,
+      "idx_scan": 18
+    },
+    {
+      "schemaname": "public",
+      "relname": "amenity_lookup",
+      "bytes": 65536,
+      "n_live_tup": 99,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": "2026-05-23T16:46:48.092868+00:00",
+      "seq_scan": 15963,
+      "idx_scan": 32668
+    },
+    {
+      "schemaname": "public",
+      "relname": "categories",
+      "bytes": 65536,
+      "n_live_tup": 19,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": null,
+      "seq_scan": 10,
+      "idx_scan": 368928
+    },
+    {
+      "schemaname": "public",
+      "relname": "site_settings",
+      "bytes": 49152,
+      "n_live_tup": 1,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": null,
+      "seq_scan": 5,
+      "idx_scan": 8332
+    },
+    {
+      "schemaname": "public",
+      "relname": "languages",
+      "bytes": 32768,
+      "n_live_tup": 2,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": null,
+      "seq_scan": 3,
+      "idx_scan": 6
+    },
+    {
+      "schemaname": "public",
+      "relname": "profile_translated_fields",
+      "bytes": 32768,
+      "n_live_tup": 5,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": null,
+      "seq_scan": 7,
+      "idx_scan": 4
+    },
+    {
+      "schemaname": "public",
+      "relname": "user_push_tokens",
+      "bytes": 32768,
+      "n_live_tup": 0,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": null,
+      "seq_scan": 3,
+      "idx_scan": 1
+    },
+    {
+      "schemaname": "storage",
+      "relname": "buckets",
+      "bytes": 24576,
+      "n_live_tup": 0,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": null,
+      "seq_scan": 32,
+      "idx_scan": 130
+    },
+    {
+      "schemaname": "public",
+      "relname": "vendor_categories",
+      "bytes": 24576,
+      "n_live_tup": 157,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": "2026-05-23T16:46:48.093968+00:00",
+      "seq_scan": 13804,
+      "idx_scan": 74156
+    },
+    {
+      "schemaname": "storage",
+      "relname": "buckets_analytics",
+      "bytes": 24576,
+      "n_live_tup": 0,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": null,
+      "seq_scan": 4,
+      "idx_scan": 0
+    },
+    {
+      "schemaname": "storage",
+      "relname": "vector_indexes",
+      "bytes": 24576,
+      "n_live_tup": 0,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": null,
+      "seq_scan": 2,
+      "idx_scan": 0
+    },
+    {
+      "schemaname": "storage",
+      "relname": "s3_multipart_uploads",
+      "bytes": 24576,
+      "n_live_tup": 0,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": null,
+      "seq_scan": 5,
+      "idx_scan": 0
+    },
+    {
+      "schemaname": "storage",
+      "relname": "s3_multipart_uploads_parts",
+      "bytes": 16384,
+      "n_live_tup": 0,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": null,
+      "seq_scan": 3,
+      "idx_scan": 0
+    },
+    {
+      "schemaname": "storage",
+      "relname": "buckets_vectors",
+      "bytes": 16384,
+      "n_live_tup": 0,
+      "n_dead_tup": 0,
+      "last_autovacuum": null,
+      "last_autoanalyze": null,
+      "seq_scan": 1,
+      "idx_scan": 0
+    }
+  ],
+  "indexes": [
+    {
+      "tablename": "blog_posts",
+      "indexname": "blog_posts_pkey",
+      "indexdef": "CREATE UNIQUE INDEX blog_posts_pkey ON public.blog_posts USING btree (id)"
+    },
+    {
+      "tablename": "blog_posts",
+      "indexname": "blog_posts_slug_idx",
+      "indexdef": "CREATE UNIQUE INDEX blog_posts_slug_idx ON public.blog_posts USING btree (slug)"
+    },
+    {
+      "tablename": "categories",
+      "indexname": "categories_key_key",
+      "indexdef": "CREATE UNIQUE INDEX categories_key_key ON public.categories USING btree (key)"
+    },
+    {
+      "tablename": "categories",
+      "indexname": "categories_pkey",
+      "indexdef": "CREATE UNIQUE INDEX categories_pkey ON public.categories USING btree (id)"
+    },
+    {
+      "tablename": "categories",
+      "indexname": "categories_slug_key",
+      "indexdef": "CREATE UNIQUE INDEX categories_slug_key ON public.categories USING btree (slug)"
+    },
+    {
+      "tablename": "profiles",
+      "indexname": "profiles_pkey",
+      "indexdef": "CREATE UNIQUE INDEX profiles_pkey ON public.profiles USING btree (id)"
+    },
+    {
+      "tablename": "quote_messages",
+      "indexname": "quote_messages_pkey",
+      "indexdef": "CREATE UNIQUE INDEX quote_messages_pkey ON public.quote_messages USING btree (id)"
+    },
+    {
+      "tablename": "quote_messages",
+      "indexname": "quote_messages_quote_created_idx",
+      "indexdef": "CREATE INDEX quote_messages_quote_created_idx ON public.quote_messages USING btree (quote_id, created_at)"
+    },
+    {
+      "tablename": "quote_messages",
+      "indexname": "quote_messages_quote_id_created_at_idx",
+      "indexdef": "CREATE INDEX quote_messages_quote_id_created_at_idx ON public.quote_messages USING btree (quote_id, created_at)"
+    },
+    {
+      "tablename": "vendor_amenities",
+      "indexname": "vendor_amenities_pkey",
+      "indexdef": "CREATE UNIQUE INDEX vendor_amenities_pkey ON public.vendor_amenities USING btree (vendor_id, amenity_key)"
+    },
+    {
+      "tablename": "vendor_availability",
+      "indexname": "vendor_availability_pkey",
+      "indexdef": "CREATE UNIQUE INDEX vendor_availability_pkey ON public.vendor_availability USING btree (id)"
+    },
+    {
+      "tablename": "vendor_availability",
+      "indexname": "vendor_availability_vendor_id_available_on_key",
+      "indexdef": "CREATE UNIQUE INDEX vendor_availability_vendor_id_available_on_key ON public.vendor_availability USING btree (vendor_id, available_on)"
+    },
+    {
+      "tablename": "vendor_availability",
+      "indexname": "idx_vendor_availability_vendor_date",
+      "indexdef": "CREATE INDEX idx_vendor_availability_vendor_date ON public.vendor_availability USING btree (vendor_id, available_on)"
+    },
+    {
+      "tablename": "rfqs",
+      "indexname": "rfqs_pkey",
+      "indexdef": "CREATE UNIQUE INDEX rfqs_pkey ON public.rfqs USING btree (id)"
+    },
+    {
+      "tablename": "rfqs",
+      "indexname": "rfqs_accepted_quote_id_idx",
+      "indexdef": "CREATE INDEX rfqs_accepted_quote_id_idx ON public.rfqs USING btree (accepted_quote_id)"
+    },
+    {
+      "tablename": "rfqs",
+      "indexname": "rfqs_owner_id_idx",
+      "indexdef": "CREATE INDEX rfqs_owner_id_idx ON public.rfqs USING btree (owner_id)"
+    },
+    {
+      "tablename": "site_settings",
+      "indexname": "site_settings_pkey",
+      "indexdef": "CREATE UNIQUE INDEX site_settings_pkey ON public.site_settings USING btree (key)"
+    },
+    {
+      "tablename": "site_settings",
+      "indexname": "site_settings_key_idx",
+      "indexdef": "CREATE UNIQUE INDEX site_settings_key_idx ON public.site_settings USING btree (key)"
+    },
+    {
+      "tablename": "profile_translated_fields",
+      "indexname": "profile_translated_fields_pkey",
+      "indexdef": "CREATE UNIQUE INDEX profile_translated_fields_pkey ON public.profile_translated_fields USING btree (profile_id, field, language)"
+    },
+    {
+      "tablename": "amenity_lookup",
+      "indexname": "amenity_lookup_pkey",
+      "indexdef": "CREATE UNIQUE INDEX amenity_lookup_pkey ON public.amenity_lookup USING btree (key)"
+    },
+    {
+      "tablename": "vendor_categories",
+      "indexname": "vendor_categories_pkey",
+      "indexdef": "CREATE UNIQUE INDEX vendor_categories_pkey ON public.vendor_categories USING btree (vendor_id, category_id)"
+    },
+    {
+      "tablename": "languages",
+      "indexname": "languages_pkey",
+      "indexdef": "CREATE UNIQUE INDEX languages_pkey ON public.languages USING btree (code)"
+    },
+    {
+      "tablename": "quotes",
+      "indexname": "quotes_pkey",
+      "indexdef": "CREATE UNIQUE INDEX quotes_pkey ON public.quotes USING btree (id)"
+    },
+    {
+      "tablename": "quotes",
+      "indexname": "quotes_rfq_id_idx",
+      "indexdef": "CREATE INDEX quotes_rfq_id_idx ON public.quotes USING btree (rfq_id)"
+    },
+    {
+      "tablename": "quotes",
+      "indexname": "quotes_rfq_vendor_idx",
+      "indexdef": "CREATE INDEX quotes_rfq_vendor_idx ON public.quotes USING btree (rfq_id, vendor_id, version)"
+    },
+    {
+      "tablename": "quotes",
+      "indexname": "quotes_vendor_id_idx",
+      "indexdef": "CREATE INDEX quotes_vendor_id_idx ON public.quotes USING btree (vendor_id)"
+    },
+    {
+      "tablename": "reviews",
+      "indexname": "reviews_pkey",
+      "indexdef": "CREATE UNIQUE INDEX reviews_pkey ON public.reviews USING btree (id)"
+    },
+    {
+      "tablename": "reviews",
+      "indexname": "reviews_unique_author_vendor_rfq",
+      "indexdef": "CREATE UNIQUE INDEX reviews_unique_author_vendor_rfq ON public.reviews USING btree (author_id, vendor_id, rfq_id)"
+    },
+    {
+      "tablename": "reviews",
+      "indexname": "unique_author_per_rfq",
+      "indexdef": "CREATE UNIQUE INDEX unique_author_per_rfq ON public.reviews USING btree (rfq_id, author_id)"
+    },
+    {
+      "tablename": "reviews",
+      "indexname": "reviews_author_id_idx",
+      "indexdef": "CREATE INDEX reviews_author_id_idx ON public.reviews USING btree (author_id)"
+    },
+    {
+      "tablename": "reviews",
+      "indexname": "reviews_author_vendor_rfq_idx",
+      "indexdef": "CREATE INDEX reviews_author_vendor_rfq_idx ON public.reviews USING btree (author_id, vendor_id, rfq_id)"
+    },
+    {
+      "tablename": "reviews",
+      "indexname": "reviews_rfq_id_idx",
+      "indexdef": "CREATE INDEX reviews_rfq_id_idx ON public.reviews USING btree (rfq_id)"
+    },
+    {
+      "tablename": "reviews",
+      "indexname": "reviews_vendor_id_idx",
+      "indexdef": "CREATE INDEX reviews_vendor_id_idx ON public.reviews USING btree (vendor_id)"
+    },
+    {
+      "tablename": "rfq_invites",
+      "indexname": "rfq_invites_pkey",
+      "indexdef": "CREATE UNIQUE INDEX rfq_invites_pkey ON public.rfq_invites USING btree (rfq_id, vendor_id)"
+    },
+    {
+      "tablename": "rfq_invites",
+      "indexname": "rfq_invites_id_idx",
+      "indexdef": "CREATE UNIQUE INDEX rfq_invites_id_idx ON public.rfq_invites USING btree (id)"
+    },
+    {
+      "tablename": "rfq_invites",
+      "indexname": "rfq_invites_rfq_last_activity_idx",
+      "indexdef": "CREATE INDEX rfq_invites_rfq_last_activity_idx ON public.rfq_invites USING btree (rfq_id, last_activity_at DESC)"
+    },
+    {
+      "tablename": "rfq_invites",
+      "indexname": "rfq_invites_vendor_last_activity_idx",
+      "indexdef": "CREATE INDEX rfq_invites_vendor_last_activity_idx ON public.rfq_invites USING btree (vendor_id, last_activity_at DESC)"
+    },
+    {
+      "tablename": "vendor_locations",
+      "indexname": "vendor_locations_pkey",
+      "indexdef": "CREATE UNIQUE INDEX vendor_locations_pkey ON public.vendor_locations USING btree (vendor_id)"
+    },
+    {
+      "tablename": "vendor_locations",
+      "indexname": "vendor_locations_vendor_id_key",
+      "indexdef": "CREATE UNIQUE INDEX vendor_locations_vendor_id_key ON public.vendor_locations USING btree (vendor_id)"
+    },
+    {
+      "tablename": "vendor_media",
+      "indexname": "vendor_media_pkey",
+      "indexdef": "CREATE UNIQUE INDEX vendor_media_pkey ON public.vendor_media USING btree (id)"
+    },
+    {
+      "tablename": "vendor_media",
+      "indexname": "idx_vendor_media_vendor_sort",
+      "indexdef": "CREATE INDEX idx_vendor_media_vendor_sort ON public.vendor_media USING btree (vendor_id, sort_order)"
+    },
+    {
+      "tablename": "vendor_pricing",
+      "indexname": "vendor_pricing_pkey",
+      "indexdef": "CREATE UNIQUE INDEX vendor_pricing_pkey ON public.vendor_pricing USING btree (id)"
+    },
+    {
+      "tablename": "vendor_pricing",
+      "indexname": "idx_vendor_pricing_vendor_item",
+      "indexdef": "CREATE UNIQUE INDEX idx_vendor_pricing_vendor_item ON public.vendor_pricing USING btree (vendor_id, item_key)"
+    },
+    {
+      "tablename": "vendor_spaces",
+      "indexname": "vendor_spaces_pkey",
+      "indexdef": "CREATE UNIQUE INDEX vendor_spaces_pkey ON public.vendor_spaces USING btree (id)"
+    },
+    {
+      "tablename": "vendor_team",
+      "indexname": "vendor_team_pkey",
+      "indexdef": "CREATE UNIQUE INDEX vendor_team_pkey ON public.vendor_team USING btree (id)"
+    },
+    {
+      "tablename": "vendor_team",
+      "indexname": "idx_vendor_team_vendor_sort",
+      "indexdef": "CREATE INDEX idx_vendor_team_vendor_sort ON public.vendor_team USING btree (vendor_id, sort_order)"
+    },
+    {
+      "tablename": "vendors",
+      "indexname": "vendors_pkey",
+      "indexdef": "CREATE UNIQUE INDEX vendors_pkey ON public.vendors USING btree (id)"
+    },
+    {
+      "tablename": "vendors",
+      "indexname": "vendors_slug_key",
+      "indexdef": "CREATE UNIQUE INDEX vendors_slug_key ON public.vendors USING btree (slug)"
+    },
+    {
+      "tablename": "vendors",
+      "indexname": "vendors_name_trgm",
+      "indexdef": "CREATE INDEX vendors_name_trgm ON public.vendors USING gin (business_name gin_trgm_ops)"
+    },
+    {
+      "tablename": "vendors",
+      "indexname": "vendors_owner_id_idx",
+      "indexdef": "CREATE INDEX vendors_owner_id_idx ON public.vendors USING btree (owner_id)"
+    },
+    {
+      "tablename": "vendors",
+      "indexname": "vendors_published_idx",
+      "indexdef": "CREATE INDEX vendors_published_idx ON public.vendors USING btree (is_published)"
+    },
+    {
+      "tablename": "notifications",
+      "indexname": "notifications_pkey",
+      "indexdef": "CREATE UNIQUE INDEX notifications_pkey ON public.notifications USING btree (id)"
+    },
+    {
+      "tablename": "notifications",
+      "indexname": "notifications_recipient_created_idx",
+      "indexdef": "CREATE INDEX notifications_recipient_created_idx ON public.notifications USING btree (recipient_id, created_at DESC)"
+    },
+    {
+      "tablename": "notifications",
+      "indexname": "notifications_recipient_deleted_idx",
+      "indexdef": "CREATE INDEX notifications_recipient_deleted_idx ON public.notifications USING btree (recipient_id, deleted_at, created_at DESC)"
+    },
+    {
+      "tablename": "notifications",
+      "indexname": "notifications_recipient_unread_idx",
+      "indexdef": "CREATE INDEX notifications_recipient_unread_idx ON public.notifications USING btree (recipient_id, read_at, created_at DESC)"
+    },
+    {
+      "tablename": "user_push_tokens",
+      "indexname": "user_push_tokens_pkey",
+      "indexdef": "CREATE UNIQUE INDEX user_push_tokens_pkey ON public.user_push_tokens USING btree (id)"
+    },
+    {
+      "tablename": "user_push_tokens",
+      "indexname": "user_push_tokens_token_key",
+      "indexdef": "CREATE UNIQUE INDEX user_push_tokens_token_key ON public.user_push_tokens USING btree (token)"
+    },
+    {
+      "tablename": "user_push_tokens",
+      "indexname": "user_push_tokens_user_active_idx",
+      "indexdef": "CREATE INDEX user_push_tokens_user_active_idx ON public.user_push_tokens USING btree (user_id, is_active, last_seen_at DESC)"
+    }
+  ],
+  "constraints": [
+    {
+      "relname": "blog_posts",
+      "conname": "blog_posts_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relname": "blog_posts",
+      "conname": "blog_posts_status_check",
+      "contype": "c",
+      "definition": "CHECK ((status = ANY (ARRAY['draft'::text, 'published'::text])))"
+    },
+    {
+      "relname": "categories",
+      "conname": "categories_key_key",
+      "contype": "u",
+      "definition": "UNIQUE (key)"
+    },
+    {
+      "relname": "categories",
+      "conname": "categories_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relname": "categories",
+      "conname": "categories_slug_key",
+      "contype": "u",
+      "definition": "UNIQUE (slug)"
+    },
+    {
+      "relname": "profiles",
+      "conname": "profiles_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "profiles",
+      "conname": "profiles_language_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (language) REFERENCES languages(code) ON UPDATE CASCADE"
+    },
+    {
+      "relname": "profiles",
+      "conname": "profiles_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relname": "profiles",
+      "conname": "profiles_role_check",
+      "contype": "c",
+      "definition": "CHECK ((role = ANY (ARRAY['user'::text, 'vendor'::text, 'admin'::text])))"
+    },
+    {
+      "relname": "quote_messages",
+      "conname": "quote_messages_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relname": "quote_messages",
+      "conname": "quote_messages_quote_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (quote_id) REFERENCES quotes(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "quote_messages",
+      "conname": "quote_messages_sender_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (sender_id) REFERENCES profiles(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "quote_messages",
+      "conname": "quote_messages_sender_role_check",
+      "contype": "c",
+      "definition": "CHECK ((sender_role = ANY (ARRAY['client'::text, 'vendor'::text])))"
+    },
+    {
+      "relname": "vendor_amenities",
+      "conname": "vendor_amenities_amenity_key_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (amenity_key) REFERENCES amenity_lookup(key) ON DELETE CASCADE"
+    },
+    {
+      "relname": "vendor_amenities",
+      "conname": "vendor_amenities_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (vendor_id, amenity_key)"
+    },
+    {
+      "relname": "vendor_amenities",
+      "conname": "vendor_amenities_vendor_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "vendor_availability",
+      "conname": "vendor_availability_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relname": "vendor_availability",
+      "conname": "vendor_availability_status_check",
+      "contype": "c",
+      "definition": "CHECK ((availability_status = ANY (ARRAY['available'::text, 'busy'::text])))"
+    },
+    {
+      "relname": "vendor_availability",
+      "conname": "vendor_availability_vendor_id_available_on_key",
+      "contype": "u",
+      "definition": "UNIQUE (vendor_id, available_on)"
+    },
+    {
+      "relname": "vendor_availability",
+      "conname": "vendor_availability_vendor_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "rfqs",
+      "conname": "rfqs_accepted_quote_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (accepted_quote_id) REFERENCES quotes(id)"
+    },
+    {
+      "relname": "rfqs",
+      "conname": "rfqs_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relname": "site_settings",
+      "conname": "site_settings_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (key)"
+    },
+    {
+      "relname": "profile_translated_fields",
+      "conname": "profile_translated_fields_field_check",
+      "contype": "c",
+      "definition": "CHECK ((field ~ '^[a-z0-9_]+$'::text))"
+    },
+    {
+      "relname": "profile_translated_fields",
+      "conname": "profile_translated_fields_language_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (language) REFERENCES languages(code) ON DELETE CASCADE"
+    },
+    {
+      "relname": "profile_translated_fields",
+      "conname": "profile_translated_fields_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (profile_id, field, language)"
+    },
+    {
+      "relname": "profile_translated_fields",
+      "conname": "profile_translated_fields_profile_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "amenity_lookup",
+      "conname": "amenity_lookup_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (key)"
+    },
+    {
+      "relname": "vendor_categories",
+      "conname": "vendor_categories_category_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "vendor_categories",
+      "conname": "vendor_categories_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (vendor_id, category_id)"
+    },
+    {
+      "relname": "vendor_categories",
+      "conname": "vendor_categories_vendor_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "languages",
+      "conname": "languages_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (code)"
+    },
+    {
+      "relname": "quotes",
+      "conname": "quotes_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relname": "quotes",
+      "conname": "quotes_rfq_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (rfq_id) REFERENCES rfqs(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "quotes",
+      "conname": "quotes_vendor_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "reviews",
+      "conname": "reviews_author_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (author_id) REFERENCES auth.users(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "reviews",
+      "conname": "reviews_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relname": "reviews",
+      "conname": "reviews_rfq_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (rfq_id) REFERENCES rfqs(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "reviews",
+      "conname": "reviews_stars_check",
+      "contype": "c",
+      "definition": "CHECK (((stars >= 1) AND (stars <= 5)))"
+    },
+    {
+      "relname": "reviews",
+      "conname": "reviews_unique_author_vendor_rfq",
+      "contype": "u",
+      "definition": "UNIQUE (author_id, vendor_id, rfq_id)"
+    },
+    {
+      "relname": "reviews",
+      "conname": "reviews_vendor_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "reviews",
+      "conname": "unique_author_per_rfq",
+      "contype": "u",
+      "definition": "UNIQUE (rfq_id, author_id)"
+    },
+    {
+      "relname": "rfq_invites",
+      "conname": "rfq_invites_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (rfq_id, vendor_id)"
+    },
+    {
+      "relname": "rfq_invites",
+      "conname": "rfq_invites_rfq_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (rfq_id) REFERENCES rfqs(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "rfq_invites",
+      "conname": "rfq_invites_vendor_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "vendor_locations",
+      "conname": "vendor_locations_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (vendor_id)"
+    },
+    {
+      "relname": "vendor_locations",
+      "conname": "vendor_locations_radius_chk",
+      "contype": "c",
+      "definition": "CHECK (((service_radius_km >= 1) AND (service_radius_km <= 500)))"
+    },
+    {
+      "relname": "vendor_locations",
+      "conname": "vendor_locations_vendor_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "vendor_locations",
+      "conname": "vendor_locations_vendor_id_key",
+      "contype": "u",
+      "definition": "UNIQUE (vendor_id)"
+    },
+    {
+      "relname": "vendor_media",
+      "conname": "vendor_media_kind_check",
+      "contype": "c",
+      "definition": "CHECK ((kind = ANY (ARRAY['image'::text, 'video'::text])))"
+    },
+    {
+      "relname": "vendor_media",
+      "conname": "vendor_media_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relname": "vendor_media",
+      "conname": "vendor_media_vendor_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "vendor_pricing",
+      "conname": "vendor_pricing_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relname": "vendor_pricing",
+      "conname": "vendor_pricing_vendor_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "vendor_spaces",
+      "conname": "vendor_spaces_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relname": "vendor_spaces",
+      "conname": "vendor_spaces_vendor_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "vendor_team",
+      "conname": "vendor_team_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relname": "vendor_team",
+      "conname": "vendor_team_vendor_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "vendors",
+      "conname": "vendors_owner_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (owner_id) REFERENCES profiles(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "vendors",
+      "conname": "vendors_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relname": "vendors",
+      "conname": "vendors_slug_key",
+      "contype": "u",
+      "definition": "UNIQUE (slug)"
+    },
+    {
+      "relname": "notifications",
+      "conname": "notifications_actor_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (actor_id) REFERENCES profiles(id) ON DELETE SET NULL"
+    },
+    {
+      "relname": "notifications",
+      "conname": "notifications_email_status_check",
+      "contype": "c",
+      "definition": "CHECK ((email_status = ANY (ARRAY['pending'::text, 'queued'::text, 'sent'::text, 'failed'::text, 'skipped'::text])))"
+    },
+    {
+      "relname": "notifications",
+      "conname": "notifications_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relname": "notifications",
+      "conname": "notifications_recipient_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (recipient_id) REFERENCES profiles(id) ON DELETE CASCADE"
+    },
+    {
+      "relname": "notifications",
+      "conname": "notifications_type_check",
+      "contype": "c",
+      "definition": "CHECK ((type = ANY (ARRAY['quote_answered'::text, 'vendor_new_request'::text, 'vendor_quote_accepted'::text, 'thread_reply'::text])))"
+    },
+    {
+      "relname": "user_push_tokens",
+      "conname": "user_push_tokens_pkey",
+      "contype": "p",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "relname": "user_push_tokens",
+      "conname": "user_push_tokens_platform_check",
+      "contype": "c",
+      "definition": "CHECK ((platform = ANY (ARRAY['ios'::text, 'android'::text, 'web'::text, 'unknown'::text])))"
+    },
+    {
+      "relname": "user_push_tokens",
+      "conname": "user_push_tokens_token_key",
+      "contype": "u",
+      "definition": "UNIQUE (token)"
+    },
+    {
+      "relname": "user_push_tokens",
+      "conname": "user_push_tokens_user_id_fkey",
+      "contype": "f",
+      "definition": "FOREIGN KEY (user_id) REFERENCES profiles(id) ON DELETE CASCADE"
+    }
+  ],
+  "connections": [
+    {
+      "state": "active",
+      "wait_event_type": null,
+      "count": 1
+    },
+    {
+      "state": "idle",
+      "wait_event_type": "Client",
+      "count": 6
+    },
+    {
+      "state": null,
+      "wait_event_type": "Extension",
+      "count": 2
+    }
+  ],
+  "database_stats": {
+    "numbackends": 9,
+    "xact_commit": 6702401,
+    "xact_rollback": 519,
+    "blks_read": 1795,
+    "blks_hit": 141133674,
+    "temp_bytes": 316817408,
+    "deadlocks": 0,
+    "stats_reset": "2026-05-07T18:19:10.020686+00:00"
+  },
+  "storage_policies": null
+}

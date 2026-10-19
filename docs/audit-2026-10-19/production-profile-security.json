@@ -1,0 +1,11 @@
+{
+  "role_update": true,
+  "role_insert": true,
+  "triggers": null,
+  "constraints": [
+    "FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE",
+    "FOREIGN KEY (language) REFERENCES languages(code) ON UPDATE CASCADE",
+    "PRIMARY KEY (id)",
+    "CHECK ((role = ANY (ARRAY['user'::text, 'vendor'::text, 'admin'::text])))"
+  ]
+}

@@ -1,10 +1,10 @@
-import { getR2ObjectKeyFromUrl } from "@/lib/r2";
+import { publicR2Bases, publicR2ObjectKey } from '@/lib/r2-public-url';
 
 export function isR2Url(url: string | null | undefined) {
   if (!url) return false;
   return (
     url.includes(".r2.cloudflarestorage.com/") ||
-    url.includes(".r2.dev/")
+    url.includes(".r2.dev/") || publicR2Bases().some(base=>url.startsWith(base+'/'))
   );
 }
 
@@ -40,7 +40,7 @@ export function resolveMediaUrl(url: string | null | undefined) {
     return url;
   }
 
-  const key = getR2ObjectKeyFromUrl(url);
+  const key = publicR2ObjectKey(url);
   const publicBase = process.env.NEXT_PUBLIC_R2_PUBLIC_BASE_URL?.replace(/\/+$/, "");
 
   if (key && publicBase) {

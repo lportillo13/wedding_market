@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import AdminMobileNav from "@/components/admin/AdminMobileNav";
 import AdminSidebarNav from "@/components/admin/AdminSidebarNav";
 import { getUserAndRole } from "@/lib/auth/guards";
+import { getAdminAccess } from '@/lib/admin/requireAdmin';
+import AdminMfaGate from '@/components/admin/AdminMfaGate';
 
 export const metadata = {
   title: "Content Studio",
@@ -18,6 +20,8 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   if (role !== "admin") {
     redirect("/");
   }
+  const { mfaVerified }=await getAdminAccess();
+  if (!mfaVerified) return <AdminMfaGate />;
 
   const navigation = [
     {

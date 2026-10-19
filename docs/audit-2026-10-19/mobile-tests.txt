@@ -1,0 +1,17 @@
+
+> the-wedding-market-mobile@0.1.0 test
+> jest --runInBand --cacheDirectory=C:\wedding-market\docs\audit-2026-10-19\jest-cache
+
+PASS __tests__/rfqs.test.ts
+PASS __tests__/authUtils.test.ts
+PASS __tests__/config.test.ts
+PASS __tests__/urls.test.ts
+PASS __tests__/http.test.ts
+PASS __tests__/languagePreference.test.ts
+PASS __tests__/search.test.ts
+
+Test Suites: 7 passed, 7 total
+Tests:       28 passed, 28 total
+Snapshots:   0 total
+Time:        8.652 s
+Ran all test suites.

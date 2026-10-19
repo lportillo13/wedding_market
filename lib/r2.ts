@@ -1,4 +1,5 @@
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { ownedR2ObjectKey } from "./r2-ownership";
 
 function stripTrailingSlash(value: string) {
   return value.replace(/\/+$/, "");
@@ -70,6 +71,7 @@ function getClient() {
     region: "auto",
     endpoint,
     forcePathStyle: true,
+    maxAttempts: 2,
     credentials: {
       accessKeyId,
       secretAccessKey,
@@ -105,7 +107,7 @@ export async function uploadToR2(params: {
       Body: params.body,
       ContentType: params.contentType,
       CacheControl: params.cacheControl ?? "public, max-age=31536000, immutable",
-    })
+    }), {abortSignal:AbortSignal.timeout(15000)}
   );
 
   return {
@@ -114,7 +116,13 @@ export async function uploadToR2(params: {
   };
 }
 
-export async function deleteFromR2(key: string) {
+export function getOwnedR2ObjectKey(value: string | null | undefined, ownerPrefix: string) {
+  return ownedR2ObjectKey(value, ownerPrefix, readPublicBaseUrl()) ??
+    ownedR2ObjectKey(value,ownerPrefix,process.env.R2_LEGACY_PUBLIC_BASE_URL?.trim() ?? null);
+}
+
+export async function deleteFromR2(key: string, ownerPrefix: string) {
+  if (getOwnedR2ObjectKey(key, ownerPrefix) !== key) throw new Error("Asset ownership could not be verified.");
   const bucket = readBucket();
   const r2Client = getClient();
 
@@ -122,7 +130,7 @@ export async function deleteFromR2(key: string) {
     new DeleteObjectCommand({
       Bucket: bucket,
       Key: key,
-    })
+    }), {abortSignal:AbortSignal.timeout(15000)}
   );
 }
 

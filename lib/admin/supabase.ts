@@ -1,11 +1,6 @@
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
+// Admin APIs enforce the role and MFA; database policies remain in force.
 export async function getSupabaseForAdmin() {
-  const admin = createSupabaseAdminClient();
-  if (admin) {
-    return admin;
-  }
-
   return createSupabaseServerClient();
 }

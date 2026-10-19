@@ -1,0 +1,9 @@
+{
+  "collectedAt": "2026-10-19T16:57:00.405Z",
+  "scope": "local database metadata only",
+  "checks": {},
+  "connectionError": {
+    "code": "ECONNREFUSED",
+    "message": "Local database is not running or reachable."
+  }
+}

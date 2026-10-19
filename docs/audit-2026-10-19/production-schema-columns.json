@@ -1,0 +1,2114 @@
+{
+  "columns": [
+    {
+      "table_name": "amenity_lookup",
+      "column_name": "key",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "amenity_lookup",
+      "column_name": "group_key",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "amenity_lookup",
+      "column_name": "label",
+      "type": "jsonb",
+      "not_null": true,
+      "default_value": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "amenity_lookup",
+      "column_name": "created_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "blog_posts",
+      "column_name": "id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "blog_posts",
+      "column_name": "title",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "blog_posts",
+      "column_name": "slug",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "blog_posts",
+      "column_name": "status",
+      "type": "text",
+      "not_null": true,
+      "default_value": "'draft'::text",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "blog_posts",
+      "column_name": "excerpt",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "blog_posts",
+      "column_name": "hero_image_url",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "blog_posts",
+      "column_name": "body",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "blog_posts",
+      "column_name": "published_at",
+      "type": "timestamp with time zone",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "blog_posts",
+      "column_name": "created_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "blog_posts",
+      "column_name": "updated_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "categories",
+      "column_name": "id",
+      "type": "bigint",
+      "not_null": true,
+      "default_value": "nextval('categories_id_seq'::regclass)",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "categories",
+      "column_name": "key",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "categories",
+      "column_name": "label",
+      "type": "jsonb",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "categories",
+      "column_name": "slug",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "languages",
+      "column_name": "code",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "languages",
+      "column_name": "name",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "languages",
+      "column_name": "is_default",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "false",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "languages",
+      "column_name": "created_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "notifications",
+      "column_name": "id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "notifications",
+      "column_name": "recipient_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "notifications",
+      "column_name": "actor_id",
+      "type": "uuid",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "notifications",
+      "column_name": "type",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "notifications",
+      "column_name": "title",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "notifications",
+      "column_name": "body",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "notifications",
+      "column_name": "data",
+      "type": "jsonb",
+      "not_null": true,
+      "default_value": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "notifications",
+      "column_name": "read_at",
+      "type": "timestamp with time zone",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "notifications",
+      "column_name": "email_status",
+      "type": "text",
+      "not_null": true,
+      "default_value": "'pending'::text",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "notifications",
+      "column_name": "email_sent_at",
+      "type": "timestamp with time zone",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "notifications",
+      "column_name": "created_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "notifications",
+      "column_name": "updated_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "notifications",
+      "column_name": "deleted_at",
+      "type": "timestamp with time zone",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "profile_translated_fields",
+      "column_name": "profile_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "profile_translated_fields",
+      "column_name": "field",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "profile_translated_fields",
+      "column_name": "language",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "profile_translated_fields",
+      "column_name": "value",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "profile_translated_fields",
+      "column_name": "translated_via",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "profile_translated_fields",
+      "column_name": "created_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "profile_translated_fields",
+      "column_name": "updated_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "profiles",
+      "column_name": "id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "profiles",
+      "column_name": "full_name",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "profiles",
+      "column_name": "role",
+      "type": "text",
+      "not_null": true,
+      "default_value": "'user'::text",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "profiles",
+      "column_name": "created_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "profiles",
+      "column_name": "phone",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "profiles",
+      "column_name": "country",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "profiles",
+      "column_name": "tentative_wedding_date",
+      "type": "date",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "profiles",
+      "column_name": "guest_count",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "profiles",
+      "column_name": "wedding_budget",
+      "type": "numeric",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "profiles",
+      "column_name": "wedding_theme",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "profiles",
+      "column_name": "language",
+      "type": "text",
+      "not_null": true,
+      "default_value": "'en'::text",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "quote_messages",
+      "column_name": "id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "quote_messages",
+      "column_name": "quote_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "quote_messages",
+      "column_name": "sender_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "quote_messages",
+      "column_name": "sender_role",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "quote_messages",
+      "column_name": "body",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "quote_messages",
+      "column_name": "created_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "quote_messages",
+      "column_name": "updated_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "quotes",
+      "column_name": "id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "quotes",
+      "column_name": "rfq_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "quotes",
+      "column_name": "vendor_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "quotes",
+      "column_name": "version",
+      "type": "integer",
+      "not_null": true,
+      "default_value": "1",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "quotes",
+      "column_name": "amount_cents",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "quotes",
+      "column_name": "currency",
+      "type": "text",
+      "not_null": false,
+      "default_value": "'USD'::text",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "quotes",
+      "column_name": "message",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "quotes",
+      "column_name": "created_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "quotes",
+      "column_name": "updated_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "reviews",
+      "column_name": "id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "reviews",
+      "column_name": "rfq_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "reviews",
+      "column_name": "vendor_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "reviews",
+      "column_name": "author_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "reviews",
+      "column_name": "stars",
+      "type": "smallint",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "reviews",
+      "column_name": "title",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "reviews",
+      "column_name": "body",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "reviews",
+      "column_name": "created_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "reviews",
+      "column_name": "updated_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfq_invites",
+      "column_name": "rfq_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfq_invites",
+      "column_name": "vendor_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfq_invites",
+      "column_name": "status",
+      "type": "rfq_invite_status",
+      "not_null": true,
+      "default_value": "'invited'::rfq_invite_status",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfq_invites",
+      "column_name": "expires_at",
+      "type": "timestamp with time zone",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfq_invites",
+      "column_name": "created_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfq_invites",
+      "column_name": "updated_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfq_invites",
+      "column_name": "reveal_email",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "false",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfq_invites",
+      "column_name": "reveal_phone",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "false",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfq_invites",
+      "column_name": "id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfq_invites",
+      "column_name": "viewed_at",
+      "type": "timestamp with time zone",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfq_invites",
+      "column_name": "last_activity_at",
+      "type": "timestamp with time zone",
+      "not_null": false,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfq_invites",
+      "column_name": "closed_at",
+      "type": "timestamp with time zone",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfq_invites",
+      "column_name": "closed_reason",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfq_invites",
+      "column_name": "client_last_read_at",
+      "type": "timestamp with time zone",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfq_invites",
+      "column_name": "vendor_last_read_at",
+      "type": "timestamp with time zone",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "owner_id",
+      "type": "uuid",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "created_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "event_date",
+      "type": "date",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "guest_count",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "budget_min",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "budget_max",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "city",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "state",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "country",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "language",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "theme",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "notes",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "accepted_quote_id",
+      "type": "uuid",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "accepted_at",
+      "type": "timestamp with time zone",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "updated_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "contact_email",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "contact_phone",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "flexible_date",
+      "type": "boolean",
+      "not_null": false,
+      "default_value": "false",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "guest_count_range",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "guest_first_name",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "guest_last_name",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "guest_lead_email",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "guest_phone",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "rfqs",
+      "column_name": "vendor_id",
+      "type": "uuid",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "site_settings",
+      "column_name": "key",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "site_settings",
+      "column_name": "value",
+      "type": "jsonb",
+      "not_null": true,
+      "default_value": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "site_settings",
+      "column_name": "updated_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "user_push_tokens",
+      "column_name": "id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "user_push_tokens",
+      "column_name": "user_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "user_push_tokens",
+      "column_name": "token",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "user_push_tokens",
+      "column_name": "platform",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "user_push_tokens",
+      "column_name": "device_id",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "user_push_tokens",
+      "column_name": "is_active",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "true",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "user_push_tokens",
+      "column_name": "last_seen_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "user_push_tokens",
+      "column_name": "created_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "user_push_tokens",
+      "column_name": "updated_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_amenities",
+      "column_name": "vendor_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_amenities",
+      "column_name": "amenity_key",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_availability",
+      "column_name": "id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_availability",
+      "column_name": "vendor_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_availability",
+      "column_name": "available_on",
+      "type": "date",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_availability",
+      "column_name": "created_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_availability",
+      "column_name": "availability_status",
+      "type": "text",
+      "not_null": true,
+      "default_value": "'available'::text",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_categories",
+      "column_name": "vendor_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_categories",
+      "column_name": "category_id",
+      "type": "bigint",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_locations",
+      "column_name": "vendor_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_locations",
+      "column_name": "country",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_locations",
+      "column_name": "region",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_locations",
+      "column_name": "city",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_locations",
+      "column_name": "lat",
+      "type": "double precision",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_locations",
+      "column_name": "lng",
+      "type": "double precision",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_locations",
+      "column_name": "address",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_locations",
+      "column_name": "state",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_locations",
+      "column_name": "service_radius_km",
+      "type": "integer",
+      "not_null": true,
+      "default_value": "50",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_locations",
+      "column_name": "updated_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_media",
+      "column_name": "id",
+      "type": "bigint",
+      "not_null": true,
+      "default_value": "nextval('vendor_media_id_seq'::regclass)",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_media",
+      "column_name": "vendor_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_media",
+      "column_name": "kind",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_media",
+      "column_name": "url",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_media",
+      "column_name": "is_cover",
+      "type": "boolean",
+      "not_null": false,
+      "default_value": "false",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_media",
+      "column_name": "created_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_media",
+      "column_name": "caption",
+      "type": "jsonb",
+      "not_null": false,
+      "default_value": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_media",
+      "column_name": "sort_order",
+      "type": "integer",
+      "not_null": false,
+      "default_value": "0",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_media",
+      "column_name": "media_type",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_pricing",
+      "column_name": "id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_pricing",
+      "column_name": "vendor_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_pricing",
+      "column_name": "item_key",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_pricing",
+      "column_name": "price_cents",
+      "type": "bigint",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_pricing",
+      "column_name": "currency",
+      "type": "text",
+      "not_null": false,
+      "default_value": "'USD'::text",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_pricing",
+      "column_name": "contact_for_price",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "false",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_pricing",
+      "column_name": "notes",
+      "type": "jsonb",
+      "not_null": false,
+      "default_value": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_pricing",
+      "column_name": "created_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_spaces",
+      "column_name": "id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_spaces",
+      "column_name": "vendor_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_spaces",
+      "column_name": "name",
+      "type": "jsonb",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_spaces",
+      "column_name": "description",
+      "type": "jsonb",
+      "not_null": false,
+      "default_value": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_spaces",
+      "column_name": "capacity_min",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_spaces",
+      "column_name": "capacity_max",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_spaces",
+      "column_name": "created_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_team",
+      "column_name": "id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_team",
+      "column_name": "vendor_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_team",
+      "column_name": "name",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_team",
+      "column_name": "title",
+      "type": "jsonb",
+      "not_null": false,
+      "default_value": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_team",
+      "column_name": "bio",
+      "type": "jsonb",
+      "not_null": false,
+      "default_value": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_team",
+      "column_name": "headshot_url",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_team",
+      "column_name": "responds_within_hours",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_team",
+      "column_name": "sort_order",
+      "type": "integer",
+      "not_null": false,
+      "default_value": "0",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendor_team",
+      "column_name": "created_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "owner_id",
+      "type": "uuid",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "slug",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "business_name",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "bio",
+      "type": "jsonb",
+      "not_null": false,
+      "default_value": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "rating_avg",
+      "type": "numeric(3,2)",
+      "not_null": false,
+      "default_value": "0",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "rating_count",
+      "type": "integer",
+      "not_null": false,
+      "default_value": "0",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "is_published",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "false",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "created_at",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "hero_image",
+      "type": "jsonb",
+      "not_null": false,
+      "default_value": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "thumbnail_image",
+      "type": "jsonb",
+      "not_null": false,
+      "default_value": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "gallery_images",
+      "type": "jsonb",
+      "not_null": false,
+      "default_value": "'[]'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "extra_info",
+      "type": "jsonb",
+      "not_null": false,
+      "default_value": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "address_label",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "map_url",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "phone",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "website_url",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "logo_url",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "starting_price_cents",
+      "type": "bigint",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "starting_price_currency",
+      "type": "text",
+      "not_null": false,
+      "default_value": "'USD'::text",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "capacity_max",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "event_types",
+      "type": "text[]",
+      "not_null": false,
+      "default_value": "'{}'::text[]",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "years_in_business",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "languages",
+      "type": "text[]",
+      "not_null": false,
+      "default_value": "'{}'::text[]",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "team_size_range",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "pricing_typical_spend_cents",
+      "type": "bigint",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "pricing_typical_spend_currency",
+      "type": "text",
+      "not_null": false,
+      "default_value": "'USD'::text",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "pricing_peak_seasons",
+      "type": "text[]",
+      "not_null": false,
+      "default_value": "'{}'::text[]",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "review_ai_summary",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "table_name": "vendors",
+      "column_name": "carousel_logo_url",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": "",
+      "generated": ""
+    }
+  ],
+  "enums": [
+    {
+      "typname": "rfq_invite_status",
+      "labels": [
+        "invited",
+        "viewed",
+        "responded",
+        "declined",
+        "expired",
+        "accepted"
+      ]
+    }
+  ],
+  "acls": [
+    {
+      "name": "blog_posts",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "categories",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "profiles",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "profiles_resolved",
+      "kind": "v",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "quote_messages",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "vendor_amenities",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "reviews_public",
+      "kind": "v",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "vendor_latest_quotes",
+      "kind": "v",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "vendor_media_id_seq",
+      "kind": "S",
+      "acl": "{postgres=rwU/postgres,anon=rwU/postgres,authenticated=rwU/postgres,service_role=rwU/postgres}",
+      "options": null
+    },
+    {
+      "name": "vendor_profile_view",
+      "kind": "v",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "vendor_ratings",
+      "kind": "v",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "vendor_public_search",
+      "kind": "v",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "categories_id_seq",
+      "kind": "S",
+      "acl": "{postgres=rwU/postgres,anon=rwU/postgres,authenticated=rwU/postgres,service_role=rwU/postgres}",
+      "options": null
+    },
+    {
+      "name": "vendor_availability",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "rfqs",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "site_settings",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "profile_translated_fields",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "amenity_lookup",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "vendor_categories",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "languages",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "quotes",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "reviews",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "rfq_invites",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "vendor_locations",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "vendor_media",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "vendor_pricing",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "vendor_spaces",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "vendor_team",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "vendors",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "notifications",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    },
+    {
+      "name": "user_push_tokens",
+      "kind": "r",
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "options": null
+    }
+  ],
+  "schema_acl": "{postgres=UC/postgres,anon=U/postgres,authenticated=UC/postgres,service_role=UC/postgres}"
+}

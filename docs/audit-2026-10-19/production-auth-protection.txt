@@ -1,0 +1,49 @@
+Browser tab: 2, Title: "Attack Protection | Authentication | WedMarket | CR Wedding Destination | Supabase", URL: "https://supabase.com/dashboard/project/aousexbvujjnvbudpsmz/auth/protection".
+1 AXWebArea Attack Protection | Authentication | WedMarket | CR Wedding Destination | Supabase, URL: supabase.com/dashboard/project/aousexbvujjnvbudpsmz/auth/protection
+	2 container
+		76 link Description: Skip to content, Value: supabase.com/dashboard/project/aousexbvujjnvbudpsmz/auth/protection#main
+		77 container
+			78 button C WedMarket main
+				79 text C
+				80 text WedMarket
+				81 text main
+			82 button Connect
+			83 pop up button (collapsed) ID: radix-_r_24_, Secondary Actions: Expand
+			84 button Description: Open menu, Help: Menu dropdown button
+		85 container Floating toolbar
+			86 container mobile-nav-actions
+				87 button search-trigger
+				88 button Help, ID: help-dropdown-button
+				89 button Advisor Center, ID: advisor-center-trigger
+				90 button SQL Editor, ID: editor-trigger
+					91 image
+					92 text SQL Editor
+				93 button AI Assistant, ID: assistant-trigger
+					94 text AI Assistant
+		62 container
+			63 heading Attack Protection, Value: 1
+				64 text Attack Protection
+			65 text Configure security settings to protect your project from attacks
+			66 heading Bot and Abuse Protection, Value: 2
+				67 text Bot and Abuse Protection
+			68 container
+				69 switch Description: Toggle Captcha protection, Value: 0
+				70 text Enable Captcha protection Protect authentication endpoints from bots and abuse.
+			71 container
+				72 text DISABLED
+				73 link Description: Configure in email provider, Value: supabase.com/dashboard/project/aousexbvujjnvbudpsmz/auth/providers?provider=Email
+				74 text Prevent use of leaked passwords Rejects the use of known or easy to guess passwords on sign up or password change.
+			75 button (disabled) Save changes
+		95 container
+			96 button Close banner
+			97 text PREVIEW
+			98 text User growth
+			99 text Track how your user base is trending.
+			100 container
+				101 text select date_trunc('week', last_sign_in_at) as week, count(distinct id) as active_users
+			102 text Explorer & Notebooks
+			103 text New unified workspace for querying data and chatting with Assistant.
+			104 button Enable Explorer
+		61 text Attack Protection | Authentication | WedMarket | CR Wedding Destination | Supabase
+
+The focused UI element is 1 AXWebArea Attack Protection | Authentication | WedMarket | CR Wedding Destination | Supabase, URL: supabase.com/dashboard/project/aousexbvujjnvbudpsmz/auth/protection

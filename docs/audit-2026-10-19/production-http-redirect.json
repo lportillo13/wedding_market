@@ -1,0 +1,10 @@
+{
+  "check": "Anonymous HTTP HEAD redirect check",
+  "headers": [
+    "HTTP/1.1 301 Moved Permanently",
+    "Server: cloudflare",
+    "Location: https://thewedmarket.com/"
+  ],
+  "exit_code": 0,
+  "error": ""
+}

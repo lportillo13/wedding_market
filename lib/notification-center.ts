@@ -1,4 +1,4 @@
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+
 import { ACCOUNT_NOTIFICATION_TYPES, VENDOR_NOTIFICATION_TYPES } from "@/lib/notification-types";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -29,25 +29,13 @@ function getScopeTypes(scope: NotificationMailboxScope) {
 
 export async function loadNotifications(userId: string, scope: NotificationMailboxScope) {
   const supabase = await createSupabaseServerClient();
-  const supabaseAdmin = createSupabaseAdminClient();
 
-  let { data, error } = await supabase
+  const { data, error } = await supabase
     .from("notifications")
     .select("id, type, title, body, data, read_at, deleted_at, created_at")
     .eq("recipient_id", userId)
     .in("type", getScopeTypes(scope))
     .order("created_at", { ascending: false });
-
-  if (isNotificationPermissionError(error?.message) && supabaseAdmin) {
-    const retry = await supabaseAdmin
-      .from("notifications")
-      .select("id, type, title, body, data, read_at, deleted_at, created_at")
-      .eq("recipient_id", userId)
-      .in("type", getScopeTypes(scope))
-      .order("created_at", { ascending: false });
-    data = retry.data;
-    error = retry.error;
-  }
 
   return {
     data: (data ?? []) as NotificationRow[],

@@ -1,0 +1,157 @@
+{
+  "collectedAt": "2026-10-19T16:57:01.160Z",
+  "origin": "https://thewedmarket.com",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "elapsedMs": 1204,
+      "bytes": 34639,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache, no-store, max-age=0, must-revalidate",
+        "server": "cloudflare",
+        "x-powered-by": "Next.js",
+        "content-encoding": "br"
+      }
+    },
+    {
+      "path": "/api/health",
+      "status": 200,
+      "elapsedMs": 178,
+      "bytes": 15,
+      "headers": {
+        "content-type": "application/json",
+        "cache-control": "no-store",
+        "server": "cloudflare",
+        "content-encoding": "br"
+      },
+      "jsonKeys": [
+        "status"
+      ]
+    },
+    {
+      "path": "/api/vendors?pageSize=1",
+      "status": 200,
+      "elapsedMs": 848,
+      "bytes": 2404,
+      "headers": {
+        "content-type": "application/json",
+        "server": "cloudflare",
+        "content-encoding": "br"
+      },
+      "jsonKeys": [
+        "items",
+        "total",
+        "page",
+        "pageSize"
+      ],
+      "itemCount": 1,
+      "itemFields": [
+        "id",
+        "slug",
+        "business_name",
+        "hero_image",
+        "thumbnail_image",
+        "gallery_images",
+        "rating_avg",
+        "rating_count",
+        "is_published",
+        "created_at",
+        "bio_en",
+        "bio_es",
+        "extra_info_en",
+        "extra_info_es",
+        "city",
+        "region",
+        "country",
+        "lat",
+        "lng",
+        "categories",
+        "logo_url",
+        "logo_image"
+      ]
+    },
+    {
+      "path": "/api/content/site-settings?lang=en",
+      "status": 200,
+      "elapsedMs": 178,
+      "bytes": 2564,
+      "headers": {
+        "content-type": "application/json",
+        "server": "cloudflare",
+        "content-encoding": "br"
+      },
+      "jsonKeys": [
+        "language",
+        "homepage",
+        "blogIndex"
+      ]
+    },
+    {
+      "path": "/api/admin/site-settings",
+      "status": 401,
+      "elapsedMs": 186,
+      "bytes": 24,
+      "headers": {
+        "content-type": "application/json",
+        "server": "cloudflare"
+      },
+      "jsonKeys": [
+        "error"
+      ],
+      "error": "Unauthorized"
+    },
+    {
+      "path": "/api/admin/blog-posts",
+      "status": 401,
+      "elapsedMs": 571,
+      "bytes": 24,
+      "headers": {
+        "content-type": "application/json",
+        "server": "cloudflare"
+      },
+      "jsonKeys": [
+        "error"
+      ],
+      "error": "Unauthorized"
+    },
+    {
+      "path": "/api/admin/vendor-ads",
+      "status": 405,
+      "elapsedMs": 450,
+      "bytes": 0,
+      "headers": {
+        "server": "cloudflare"
+      }
+    },
+    {
+      "path": "/private-control-room-hub",
+      "status": 307,
+      "elapsedMs": 358,
+      "bytes": 19135,
+      "headers": {
+        "content-type": "text/html; charset=utf-8",
+        "cache-control": "private, no-cache, no-store, max-age=0, must-revalidate",
+        "server": "cloudflare",
+        "x-powered-by": "Next.js",
+        "location": "/login?next=/private-control-room-hub"
+      }
+    },
+    {
+      "path": "/api/whoami",
+      "status": 200,
+      "elapsedMs": 172,
+      "bytes": 13,
+      "headers": {
+        "content-type": "application/json",
+        "server": "cloudflare",
+        "content-encoding": "br"
+      },
+      "jsonKeys": [
+        "user"
+      ],
+      "authenticated": false
+    }
+  ]
+}

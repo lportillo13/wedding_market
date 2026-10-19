@@ -1,0 +1,24 @@
+Browser tab: 4, Title: "OpenClaw · Hetzner Console", URL: "https://console.hetzner.com/projects/13668669/servers/122654139/overview".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 152-166, 182, 189-190, 198, 204
++		204 container
++			205 image exclamation-circle
++			206 text Object Storage in location HEL1 partially degraded Created: 2026-09-09 08:00 GMT-4 Last updated: 11 days ago
++			207 link Description: Details, Value: status.hetzner.com/incident/382ed0e5-f1c4-45ec-a7a3-326d3970d6b3
++			208 image clear
++		209 container
++			210 image exclamation-circle
++			211 text Hetzner Accounts routine maintenance work Start at: 2026-10-19 15:30 GMT-4 End at: 2026-10-19 16:00 GMT-4 Last updated: about 8 hours ago
++			212 link Description: Details, Value: status.hetzner.com/incident/649df072-093e-4a5a-9e53-50ebe78bc959
++			213 image clear
++		214 container
++			215 image exclamation-circle
++			216 text Urgent maintenance on all core routers Start at: 2026-10-15 06:00 GMT-4 Last updated: 4 days ago
++			217 link Description: Details, Value: status.hetzner.com/incident/cd31dd45-f431-4639-8f9a-d4bfb5353f30
++			218 image clear
++		219 container
++			220 image sad-smiley
++			221 text No activities within the last 90 days.
++				222 container
++					223 text + +
+The focused UI element is 131 link Description: Overview, URL: console.hetzner.com/projects/13668669/servers/122654139/overview, ID: secondary-nav__overview

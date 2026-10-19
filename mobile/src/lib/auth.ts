@@ -480,8 +480,8 @@ export async function signUpWithEmail(input: MobileSignUpInput): Promise<MobileS
   const fullName = requireText(input.fullName, "Name is required.");
   const email = requireText(input.email, "Email is required.").toLowerCase();
   const password = requireText(input.password, "Password is required.");
-  if (password.length < 6) {
-    throw new Error("Password must be at least 6 characters.");
+  if (password.length < 8) {
+    throw new Error("Password must be at least 8 characters.");
   }
 
   const isVendor = input.role === "vendor";

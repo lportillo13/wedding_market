@@ -1,0 +1,952 @@
+{
+  "counts": {
+    "info": 0,
+    "low": 0,
+    "moderate": 2,
+    "high": 53,
+    "critical": 1,
+    "total": 56
+  },
+  "packages": [
+    {
+      "package": "@expo/cli",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "56.1.24"
+      ],
+      "fixAvailable": {
+        "name": "expo",
+        "version": "44.0.6",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "@expo/code-signing-certificates",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "0.0.6"
+      ],
+      "fixAvailable": true,
+      "directAdvisories": []
+    },
+    {
+      "package": "@expo/metro",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "56.0.0"
+      ],
+      "fixAvailable": {
+        "name": "expo",
+        "version": "44.0.6",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "@expo/metro-config",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "56.0.18"
+      ],
+      "fixAvailable": {
+        "name": "expo",
+        "version": "44.0.6",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "@expo/metro-file-map",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "56.0.3"
+      ],
+      "fixAvailable": {
+        "name": "expo",
+        "version": "44.0.6",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "@jest/console",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "@jest/core",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "@jest/environment",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "@jest/expect",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "@jest/fake-timers",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "@jest/globals",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "@jest/reporters",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": true,
+      "directAdvisories": []
+    },
+    {
+      "package": "@jest/test-result",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "@jest/test-sequencer",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "@jest/transform",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest-expo",
+        "version": "58.0.11",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "@react-native/community-cli-plugin",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "0.85.3"
+      ],
+      "fixAvailable": {
+        "name": "react-native",
+        "version": "0.72.17",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "@react-native/jest-preset",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "0.85.3"
+      ],
+      "fixAvailable": {
+        "name": "react-native",
+        "version": "0.72.17",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "@react-native/virtualized-lists",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "0.85.3"
+      ],
+      "fixAvailable": {
+        "name": "react-native",
+        "version": "0.72.17",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "@types/jest",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.5.14"
+      ],
+      "fixAvailable": {
+        "name": "@types/jest",
+        "version": "30.0.0",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "@xmldom/xmldom",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "0.8.13",
+        "0.9.10"
+      ],
+      "fixAvailable": true,
+      "directAdvisories": [
+        {
+          "title": "xmldom: XML fragment injection via invalid EntityReference.nodeName during requireWellFormed serialization",
+          "url": "https://github.com/advisories/GHSA-6gmq-8vp8-gcm6",
+          "range": ">=0.9.0 <=0.9.11"
+        },
+        {
+          "title": "xmldom: XML fragment injection via invalid EntityReference.nodeName during requireWellFormed serialization",
+          "url": "https://github.com/advisories/GHSA-6gmq-8vp8-gcm6",
+          "range": ">=0.7.0 <=0.8.14"
+        },
+        {
+          "title": "xmldom: HTML raw-text closing-tag case mismatch causes output amplification",
+          "url": "https://github.com/advisories/GHSA-6mj3-qw4j-hgrw",
+          "range": ">=0.9.0-beta.1 <=0.9.11"
+        },
+        {
+          "title": "xmldom PI grammar regex ReDoS: quadratic backtracking on unterminated processing instructions",
+          "url": "https://github.com/advisories/GHSA-g53g-w8rj-fmg7",
+          "range": ">=0.9.0-beta.9 <=0.9.10"
+        },
+        {
+          "title": "xmldom: Element name injection via createElement() bypasses requireWellFormed",
+          "url": "https://github.com/advisories/GHSA-w2rr-34g9-rvrj",
+          "range": ">=0.7.0 <=0.8.13"
+        },
+        {
+          "title": "xmldom: Element name injection via createElement() bypasses requireWellFormed",
+          "url": "https://github.com/advisories/GHSA-w2rr-34g9-rvrj",
+          "range": ">=0.9.0 <=0.9.10"
+        },
+        {
+          "title": "xmldom: Attribute name injection via setAttribute() bypasses requireWellFormed",
+          "url": "https://github.com/advisories/GHSA-4w3w-2rp5-g8jm",
+          "range": ">=0.7.0 <=0.8.13"
+        },
+        {
+          "title": "xmldom: Attribute name injection via setAttribute() bypasses requireWellFormed",
+          "url": "https://github.com/advisories/GHSA-4w3w-2rp5-g8jm",
+          "range": ">=0.9.0 <=0.9.10"
+        },
+        {
+          "title": "xmldom: Processing Instruction Target Injection Bypasses requireWellFormed",
+          "url": "https://github.com/advisories/GHSA-c7q8-3ch8-vqpv",
+          "range": ">=0.9.0 <=0.9.11"
+        },
+        {
+          "title": "xmldom: Processing Instruction Target Injection Bypasses requireWellFormed",
+          "url": "https://github.com/advisories/GHSA-c7q8-3ch8-vqpv",
+          "range": ">=0.7.0 <=0.8.14"
+        },
+        {
+          "title": "xmldom: DocType `name` Injection Bypasses requireWellFormed",
+          "url": "https://github.com/advisories/GHSA-27p8-2357-5qqv",
+          "range": ">=0.9.0 <=0.9.11"
+        },
+        {
+          "title": "xmldom: DocType `name` Injection Bypasses requireWellFormed",
+          "url": "https://github.com/advisories/GHSA-27p8-2357-5qqv",
+          "range": ">=0.7.0 <=0.8.14"
+        },
+        {
+          "title": "xmldom: Creation-time XML Name/QName validation is bypassable via an embedded line terminator, allowing injection on the default serialization path",
+          "url": "https://github.com/advisories/GHSA-3px3-54cx-rmw9",
+          "range": ">=0.9.0 <=0.9.11"
+        },
+        {
+          "title": "xmldom: requireWellFormed DocType publicId/systemId validation is bypassable via an embedded line terminator",
+          "url": "https://github.com/advisories/GHSA-vr34-hp96-76pp",
+          "range": ">=0.9.10 <=0.9.11"
+        },
+        {
+          "title": "xmldom: Parser silently accepts a not-well-formed end tag whose name is followed by a line break and trailing content",
+          "url": "https://github.com/advisories/GHSA-6h8r-xr42-gp59",
+          "range": ">=0.9.0 <=0.9.11"
+        },
+        {
+          "title": "xmldom: Parser silently accepts a not-well-formed end tag whose name is followed by a line break and trailing content",
+          "url": "https://github.com/advisories/GHSA-6h8r-xr42-gp59",
+          "range": ">=0.7.0 <=0.8.14"
+        },
+        {
+          "title": "xmldom: Quadratic-time attribute deduplication",
+          "url": "https://github.com/advisories/GHSA-8344-3jmq-59r6",
+          "range": ">=0.9.0 <=0.9.11"
+        },
+        {
+          "title": "xmldom: Quadratic-time attribute deduplication",
+          "url": "https://github.com/advisories/GHSA-8344-3jmq-59r6",
+          "range": ">=0.7.0 <=0.8.14"
+        },
+        {
+          "title": "xmldom: End-tag Whitespace-Trim Regex ReDoS \u2014 quadratic backtracking in the 0.8.x end-tag parser",
+          "url": "https://github.com/advisories/GHSA-x4fp-j954-r2f4",
+          "range": ">=0.7.0 <=0.8.14"
+        },
+        {
+          "title": "xmldom: Quadratic-memory consumption",
+          "url": "https://github.com/advisories/GHSA-965w-775f-mr7g",
+          "range": ">=0.9.0 <=0.9.11"
+        },
+        {
+          "title": "xmldom: Quadratic-memory consumption",
+          "url": "https://github.com/advisories/GHSA-965w-775f-mr7g",
+          "range": ">=0.7.0 <=0.8.14"
+        },
+        {
+          "title": "xmldom: Quadratic-time parsing via the malformed-input recovery path \u2014 `parseElementStartPart` re-scan and `normalize()` adjacent-text merge",
+          "url": "https://github.com/advisories/GHSA-93r5-fhx6-vmg9",
+          "range": ">=0.9.0 <=0.9.11"
+        },
+        {
+          "title": "xmldom: Quadratic-time parsing via the malformed-input recovery path \u2014 `parseElementStartPart` re-scan and `normalize()` adjacent-text merge",
+          "url": "https://github.com/advisories/GHSA-93r5-fhx6-vmg9",
+          "range": ">=0.7.0 <=0.8.14"
+        }
+      ]
+    },
+    {
+      "package": "argparse",
+      "severity": "moderate",
+      "production": true,
+      "versions": [
+        "1.0.10"
+      ],
+      "fixAvailable": true,
+      "directAdvisories": []
+    },
+    {
+      "package": "babel-jest",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest-expo",
+        "version": "58.0.11",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "brace-expansion",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "1.1.18",
+        "5.0.9"
+      ],
+      "fixAvailable": true,
+      "directAdvisories": [
+        {
+          "title": "brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service",
+          "url": "https://github.com/advisories/GHSA-q2hr-2g5m-vwhr",
+          "range": "<1.1.21"
+        },
+        {
+          "title": "brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service",
+          "url": "https://github.com/advisories/GHSA-q2hr-2g5m-vwhr",
+          "range": ">=4.0.0 <5.0.12"
+        },
+        {
+          "title": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+          "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7",
+          "range": "<1.1.20"
+        },
+        {
+          "title": "brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion",
+          "url": "https://github.com/advisories/GHSA-qhr7-859c-m2p7",
+          "range": ">=4.0.0 <5.0.11"
+        },
+        {
+          "title": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+          "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p",
+          "range": "<1.1.19"
+        },
+        {
+          "title": "brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion",
+          "url": "https://github.com/advisories/GHSA-6j4f-fj2g-mc7p",
+          "range": ">=4.0.0 <5.0.10"
+        }
+      ]
+    },
+    {
+      "package": "braces",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "3.0.3"
+      ],
+      "fixAvailable": {
+        "name": "expo",
+        "version": "44.0.6",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": [
+        {
+          "title": "braces vulnerable to stack-exhaustion denial of service through deeply nested patterns",
+          "url": "https://github.com/advisories/GHSA-vfj7-8cjw-p6xm",
+          "range": "<=3.0.3"
+        }
+      ]
+    },
+    {
+      "package": "compression",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "1.8.1"
+      ],
+      "fixAvailable": true,
+      "directAdvisories": [
+        {
+          "title": "compression vulnerable to Denial of Service via memory leak on premature response close",
+          "url": "https://github.com/advisories/GHSA-vc2v-76pw-4v95",
+          "range": "<1.8.2"
+        }
+      ]
+    },
+    {
+      "package": "create-jest",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "expect",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "expo",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "56.0.20"
+      ],
+      "fixAvailable": {
+        "name": "expo",
+        "version": "44.0.6",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "image-size",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "1.2.1"
+      ],
+      "fixAvailable": true,
+      "directAdvisories": [
+        {
+          "title": "image-size: JXL and HEIF parsers allow denial of service through infinite loops",
+          "url": "https://github.com/advisories/GHSA-5p2g-fcmc-qvqq",
+          "range": ">=1.2.0 <=2.0.2"
+        },
+        {
+          "title": "image-size: ICNS parser allows denial of service through an infinite loop",
+          "url": "https://github.com/advisories/GHSA-w3rx-r6r6-pgpr",
+          "range": ">=0.6.3 <=2.0.2"
+        }
+      ]
+    },
+    {
+      "package": "jest",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "jest-circus",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "jest-cli",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "jest-config",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "jest-environment-jsdom",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest-expo",
+        "version": "58.0.11",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "jest-environment-node",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "jest-expo",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "56.0.5"
+      ],
+      "fixAvailable": {
+        "name": "jest-expo",
+        "version": "58.0.11",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "jest-haste-map",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "jest-message-util",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "jest-resolve",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "jest-resolve-dependencies",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": true,
+      "directAdvisories": []
+    },
+    {
+      "package": "jest-runner",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "jest-runtime",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "jest-snapshot",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "jest-watch-typeahead",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "2.2.1"
+      ],
+      "fixAvailable": {
+        "name": "jest-expo",
+        "version": "58.0.11",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "jest-watcher",
+      "severity": "high",
+      "production": false,
+      "versions": [
+        "29.7.0"
+      ],
+      "fixAvailable": {
+        "name": "jest",
+        "version": "30.5.2",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "js-yaml",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "3.15.1",
+        "4.3.1"
+      ],
+      "fixAvailable": true,
+      "directAdvisories": [
+        {
+          "title": "js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources",
+          "url": "https://github.com/advisories/GHSA-2883-xcg3-v3hh",
+          "range": ">=3.0.0 <3.15.2"
+        },
+        {
+          "title": "js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources",
+          "url": "https://github.com/advisories/GHSA-2883-xcg3-v3hh",
+          "range": ">=4.0.0 <4.3.2"
+        }
+      ]
+    },
+    {
+      "package": "metro",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "0.84.4"
+      ],
+      "fixAvailable": {
+        "name": "react-native",
+        "version": "0.72.17",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "metro-config",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "0.84.4"
+      ],
+      "fixAvailable": {
+        "name": "react-native",
+        "version": "0.72.17",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "metro-file-map",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "0.84.4"
+      ],
+      "fixAvailable": {
+        "name": "expo",
+        "version": "44.0.6",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "metro-transform-worker",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "0.84.4"
+      ],
+      "fixAvailable": true,
+      "directAdvisories": []
+    },
+    {
+      "package": "micromatch",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "4.0.8"
+      ],
+      "fixAvailable": {
+        "name": "expo",
+        "version": "44.0.6",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "node-forge",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "1.4.0"
+      ],
+      "fixAvailable": {
+        "name": "expo",
+        "version": "44.0.6",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": [
+        {
+          "title": "node-forge RSA PKCS#1 v1.5 signature verification accepts extra nested DigestAlgorithm elements",
+          "url": "https://github.com/advisories/GHSA-86w9-cpqp-85rv",
+          "range": "<=1.4.0"
+        }
+      ]
+    },
+    {
+      "package": "react-native",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "0.85.3"
+      ],
+      "fixAvailable": {
+        "name": "react-native",
+        "version": "0.72.17",
+        "isSemVerMajor": true
+      },
+      "directAdvisories": []
+    },
+    {
+      "package": "shell-quote",
+      "severity": "critical",
+      "production": true,
+      "versions": [
+        "1.10.0"
+      ],
+      "fixAvailable": true,
+      "directAdvisories": [
+        {
+          "title": "shell-quote: `quote()` command injection via a line terminator in a token after a `{ comment }` token",
+          "url": "https://github.com/advisories/GHSA-pqg4-j6r4-53mv",
+          "range": ">=1.8.4 <1.11.0"
+        }
+      ]
+    },
+    {
+      "package": "source-map-js",
+      "severity": "high",
+      "production": true,
+      "versions": [
+        "1.2.1"
+      ],
+      "fixAvailable": true,
+      "directAdvisories": [
+        {
+          "title": "source-map-js allows event-loop denial of service through indexed source-map section offsets",
+          "url": "https://github.com/advisories/GHSA-68fv-2mgg-jv7q",
+          "range": ">=1.0.0 <1.2.2"
+        }
+      ]
+    },
+    {
+      "package": "sprintf-js",
+      "severity": "moderate",
+      "production": true,
+      "versions": [
+        "1.0.3"
+      ],
+      "fixAvailable": true,
+      "directAdvisories": [
+        {
+          "title": "sprintf-js vulnerable to denial of service through unbounded precision specifiers",
+          "url": "https://github.com/advisories/GHSA-hp3w-g68c-fv3c",
+          "range": "<=1.1.3"
+        }
+      ]
+    }
+  ]
+}

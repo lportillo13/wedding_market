@@ -2,7 +2,7 @@
 "use server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getSupabaseServer } from "@/lib/supabase/server";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+
 import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 import { redirect } from "next/navigation";
 
@@ -13,7 +13,7 @@ const QUOTE_EXPIRES_DAYS = 14;
 
 async function handleCreateRfqAndInvites(formData: FormData): Promise<CreateRfqState> {
   const supabase = await getSupabaseServer();
-  const supabaseAdmin = createSupabaseAdminClient();
+
   const { data: { user }, error: userErr } = await supabase.auth.getUser();
   if (userErr || !user) return { ok: false, message: "Not authenticated." };
 
@@ -76,25 +76,14 @@ async function handleCreateRfqAndInvites(formData: FormData): Promise<CreateRfqS
     return { data: null, error: lastError } as const;
   };
 
-  let { data: rfq, error: rfqErr } = await insertRfq(supabase);
-
-  if (rfqErr && supabaseAdmin && /infinite recursion detected in policy/i.test(rfqErr.message ?? "")) {
-    const retry = await insertRfq(supabaseAdmin);
-    rfq = retry.data;
-    rfqErr = retry.error;
-  }
+  const { data: rfq, error: rfqErr } = await insertRfq(supabase);
 
   if (rfqErr || !rfq) return { ok: false, message: rfqErr?.message || "Failed to create RFQ." };
 
   // 2) Create invites
   const expires_at = new Date(Date.now() + QUOTE_EXPIRES_DAYS * 24 * 60 * 60 * 1000).toISOString();
   const inviteRows = vendorIds.map((vendor_id) => ({ rfq_id: rfq.id, vendor_id, expires_at }));
-  let { error: invErr } = await supabase.from("rfq_invites").insert(inviteRows);
-
-  if (invErr && supabaseAdmin && /infinite recursion detected in policy/i.test(invErr.message)) {
-    const retry = await supabaseAdmin.from("rfq_invites").insert(inviteRows);
-    invErr = retry.error;
-  }
+  const { error: invErr } = await supabase.from("rfq_invites").insert(inviteRows);
 
   if (invErr) return { ok: false, message: invErr.message };
 

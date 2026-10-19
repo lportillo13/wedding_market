@@ -5,12 +5,10 @@ import {
   normalizeBlogIndexContent,
   normalizeHomepageContent,
 } from "@/lib/content/siteContent";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabasePublicClient } from "@/lib/supabase/public";
 
 async function loadRawSettings(keys: string[]) {
-  const admin = createSupabaseAdminClient();
-  const supabase = admin ?? (await createSupabaseServerClient());
+  const supabase = createSupabasePublicClient();
 
   const { data, error } = await supabase.from("site_settings").select("key, value").in("key", keys);
 

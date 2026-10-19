@@ -1,0 +1,36 @@
+
+> the-wedding-market-mobile@0.1.0 check
+> npm run typecheck && npm run lint && npm run test && npm run expo:check
+
+
+> the-wedding-market-mobile@0.1.0 typecheck
+> tsc --noEmit
+
+
+> the-wedding-market-mobile@0.1.0 lint
+> eslint App.tsx src --max-warnings=0
+
+
+> the-wedding-market-mobile@0.1.0 test
+> jest --runInBand --cacheDirectory .cache/jest
+
+PASS __tests__/rfqs.test.ts
+PASS __tests__/http.test.ts
+PASS __tests__/urls.test.ts
+PASS __tests__/languagePreference.test.ts
+PASS __tests__/config.test.ts
+PASS __tests__/authUtils.test.ts
+PASS __tests__/search.test.ts
+
+Test Suites: 7 passed, 7 total
+Tests:       28 passed, 28 total
+Snapshots:   0 total
+Time:        0.798 s, estimated 1 s
+Ran all test suites.
+
+> the-wedding-market-mobile@0.1.0 expo:check
+> expo install --check
+
+env: load .env
+env: export EXPO_PUBLIC_SUPABASE_ANON_KEY EXPO_PUBLIC_WEB_API_URL EXPO_PUBLIC_SUPABASE_URL
+Dependencies are up to date

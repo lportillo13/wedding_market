@@ -1,4 +1,4 @@
-import { headers } from "next/headers";
+import { directoryInteger, searchVendorDirectory } from "@/lib/vendor-directory";
 import { getRoles } from "@/lib/auth/roles";
 import { VENDOR_ADS_PUBLICLY_VISIBLE } from "@/lib/content/vendorAds";
 import { loadSponsoredVendorAds, loadVendorAdsConfig } from "@/lib/content/vendorAdsServer";
@@ -6,48 +6,9 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import VendorsPageContent from "./VendorsPageContent";
 import type { CategoryOption, VendorListItem, VendorsResponse } from "./types";
 
-async function fetchVendors(sp: Record<string, string>): Promise<VendorsResponse> {
-  const qs = new URLSearchParams();
-  if (sp.q) qs.set("q", sp.q);
-  if (sp.category) qs.set("category", sp.category);
-  if (sp.page) qs.set("page", sp.page);
-  const page = Number(sp.page || 1);
-  const pageSize = 12;
-
-  const h = await headers();
-  const proto = h.get("x-forwarded-proto") ?? "http";
-  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
-  const requestBase = `${proto}://${host}`;
-  const configuredBase = process.env.NEXT_PUBLIC_APP_URL;
-
-  let base = requestBase;
-  if (configuredBase) {
-    try {
-      const requestUrl = new URL(requestBase);
-      const configuredUrl = new URL(configuredBase);
-      const isLocalRequest = /^(localhost|127\.0\.0\.1)$/i.test(requestUrl.hostname);
-      base = isLocalRequest ? requestBase : configuredUrl.origin;
-    } catch {
-      base = requestBase;
-    }
-  }
-
-  const url = `${base}/api/vendors${qs.toString() ? `?${qs.toString()}` : ""}`;
-
-  try {
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) {
-      throw new Error(`No se pudieron cargar los proveedores (${res.status})`);
-    }
-
-    return res.json();
-  } catch (error) {
-    if (process.env.NODE_ENV !== "production") {
-      console.warn("Unable to load vendors; rendering an empty directory state.", error);
-    }
-
-    return { items: [], total: 0, page, pageSize };
-  }
+async function fetchVendors(params: Record<string,string>): Promise<VendorsResponse> {
+  try { return await searchVendorDirectory(params); }
+  catch { return {items:[],total:0,page:directoryInteger(params.page,1,1000),pageSize:12,error:true}; }
 }
 
 async function fetchVendorCategories(): Promise<CategoryOption[]> {
@@ -75,7 +36,7 @@ export default async function VendorsPage({
 }) {
   const sp = await searchParams;
   const { user, isVendor } = await getRoles();
-  const [{ items, total }, adsConfig, categories] = await Promise.all([
+  const [{ items, total, error }, adsConfig, categories] = await Promise.all([
     fetchVendors(sp),
     loadVendorAdsConfig(),
     fetchVendorCategories(),
@@ -88,12 +49,13 @@ export default async function VendorsPage({
       })
     : [];
 
-  const page = Number(sp.page || 1);
+  const page = directoryInteger(sp.page,1,1000);
   const pageSize = 12;
   const totalPages = Math.max(1, Math.ceil((total || 0) / pageSize));
 
   return (
     <VendorsPageContent
+      error={error}
       items={items as VendorListItem[]}
       isVendor={isVendor}
       page={page}

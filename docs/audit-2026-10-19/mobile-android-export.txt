@@ -1,0 +1,24 @@
+
+> the-wedding-market-mobile@0.1.0 export:android
+> expo export --platform android --output-dir dist/android
+
+env: load .env
+env: export EXPO_PUBLIC_SUPABASE_ANON_KEY EXPO_PUBLIC_WEB_API_URL EXPO_PUBLIC_SUPABASE_URL
+Starting Metro Bundler
+
+Android Bundled 11469ms node_modules\expo\AppEntry.js (745 modules)
+
+› Assets (5):
+node_modules\@expo-google-fonts\playfair-display\400Regular\PlayfairDisplay_400Regular.ttf (193KB)
+node_modules\@expo-google-fonts\playfair-display\500Medium\PlayfairDisplay_500Medium.ttf (194KB)
+node_modules\@expo-google-fonts\playfair-display\700Bold\PlayfairDisplay_700Bold.ttf (194KB)
+node_modules\@expo-google-fonts\playfair-display\900Black\PlayfairDisplay_900Black.ttf (194KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\Ionicons.ttf (390KB)
+
+› android bundles (1):
+_expo/static/js/android/AppEntry-a1fe8d1efe416c9cff018841eb3eb81f.hbc (2.8MB)
+
+› Files (1):
+metadata.json (472B)
+
+Exported: dist/android

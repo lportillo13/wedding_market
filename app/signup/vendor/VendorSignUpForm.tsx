@@ -265,7 +265,7 @@ export default function VendorSignUpForm({
         if (!form.owner_name.trim()) return labels.validation.ownerNameRequired;
         if (!form.email.trim()) return labels.validation.emailRequired;
         if (!form.password.trim()) return labels.validation.passwordRequired;
-        if (form.password.trim().length < 6) return labels.validation.passwordTooShort;
+        if (form.password.length < 8) return labels.validation.passwordTooShort;
       }
       if (!form.business_name.trim()) return labels.validation.businessNameRequired;
       if (!form.tagline.trim()) return labels.validation.taglineRequired;
@@ -413,7 +413,7 @@ export default function VendorSignUpForm({
                   value={form.password}
                   onChange={(event) => updateField('password', event.target.value)}
                   autoComplete="new-password"
-                  minLength={6}
+                  minLength={8}
                   required={requiresAccount}
                 />
                 <div className="form-text">{signupLabels.passwordHelp}</div>

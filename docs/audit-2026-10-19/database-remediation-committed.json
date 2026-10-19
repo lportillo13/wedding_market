@@ -1,0 +1,15 @@
+{
+  "verifiedAt": "2026-10-19T18:03:01.887181+00:00",
+  "migrations": [
+    "202610190000",
+    "202610190001",
+    "202610190002"
+  ],
+  "publicTablesWithoutRls": 0,
+  "anonQuoteView": false,
+  "anonTruncateVendors": false,
+  "authTruncateRfqs": false,
+  "authSchemaCreate": false,
+  "historyRls": true,
+  "authProfileTrigger": 1
+}

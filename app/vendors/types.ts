@@ -26,6 +26,7 @@ export type VendorListItem = {
 };
 
 export type VendorsResponse = {
+  error?: boolean;
   items: VendorListItem[];
   total: number;
   page: number;

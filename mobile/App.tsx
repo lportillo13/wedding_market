@@ -49,6 +49,7 @@ import {
   acceptMobileQuote,
   createQuoteRequests,
   loadMobileInbox,
+  loadMobileInboxThread,
   sendQuoteThreadReply,
   sendVendorQuote,
   type MobileInboxThread,
@@ -4343,6 +4344,10 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
   const labels = copy[language];
   const [threads, setThreads] = useState<MobileInboxThread[]>([]);
   const [selectedThread, setSelectedThread] = useState<MobileInboxThread | null>(null);
+  const selectedThreadRef = useRef<MobileInboxThread | null>(null);
+  const [inboxPage,setInboxPage] = useState(1);
+  const [totalThreads,setTotalThreads] = useState(0);
+  useEffect(()=>{selectedThreadRef.current=selectedThread;},[selectedThread]);
   const [replyBody, setReplyBody] = useState("");
   const [quoteAmount, setQuoteAmount] = useState("");
   const [quoteMessage, setQuoteMessage] = useState("");
@@ -4359,19 +4364,19 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
     setIsLoading(true);
     setMessage("");
     try {
-      const nextThreads = await loadMobileInbox(role, language);
+      const {threads:nextThreads,total} = await loadMobileInbox(role, language,inboxPage);
       if (!shouldApply()) return;
-      setThreads(nextThreads);
-      setSelectedThread((current) => {
-        if (!current) return null;
-        return nextThreads.find((thread) => thread.id === current.id) ?? null;
-      });
+      setThreads(nextThreads); setTotalThreads(total);
+      if (selectedThreadRef.current) {
+        const detail=await loadMobileInboxThread(role,language,selectedThreadRef.current);
+        if (shouldApply()) setSelectedThread(detail);
+      }
     } catch (error) {
       if (shouldApply()) setMessage(error instanceof Error ? error.message : "Unable to load inbox.");
     } finally {
       if (shouldApply()) setIsLoading(false);
     }
-  }, [language, role]);
+  }, [language, role,inboxPage]);
 
   useEffect(() => {
     let isMounted = true;
@@ -4388,6 +4393,13 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
     setQuoteMessage(selectedThread.latestQuote?.message ?? "");
     setReplyBody("");
   }, [selectedThread]);
+
+  async function openThread(thread: MobileInboxThread) {
+    setIsLoading(true); setMessage("");
+    try { setSelectedThread(await loadMobileInboxThread(role,language,thread)); }
+    catch(error) { setMessage(error instanceof Error ? error.message : "Unable to open conversation."); }
+    finally { setIsLoading(false); }
+  }
 
   async function submitReply() {
     if (!selectedThread) return;
@@ -4729,10 +4741,15 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
         <Text style={styles.title}>{labels.inboxTitle}</Text>
         {message ? <Text style={styles.errorText}>{message}</Text> : null}
       </View>
+      {(inboxPage>1 || inboxPage*50<totalThreads) && <View style={{flexDirection:"row",justifyContent:"space-between",marginBottom:16}}>
+        <TouchableOpacity disabled={inboxPage<=1} onPress={()=>setInboxPage(value=>value-1)}><Text>{language === "es" ? "Anterior" : "Previous"}</Text></TouchableOpacity>
+        <Text>{inboxPage} / {Math.max(inboxPage,Math.ceil(totalThreads/50))}</Text>
+        <TouchableOpacity disabled={inboxPage*50>=totalThreads} onPress={()=>setInboxPage(value=>value+1)}><Text>{language === "es" ? "Siguiente" : "Next"}</Text></TouchableOpacity>
+      </View>}
       {threads.length ? (
         <View style={styles.inboxList}>
           {threads.map((item) => (
-            <TouchableOpacity key={item.id} onPress={() => setSelectedThread(item)} style={styles.inboxCard}>
+            <TouchableOpacity key={item.id} onPress={() => void openThread(item)} style={styles.inboxCard}>
               <View style={styles.inboxIcon}>
                 <Ionicons name="chatbubble-ellipses-outline" size={20} color={colors.ink} />
               </View>

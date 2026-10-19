@@ -2,7 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createQuoteAnsweredNotification } from "@/lib/notifications";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+
 import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 import { createAuthenticatedRequestClient } from "@/lib/supabase/request";
 
@@ -20,7 +20,7 @@ function isMissingThreadColumnsError(message: string | undefined) {
 async function loadRfq(client: SupabaseClient, rfqId: string) {
   const selectRfq = (column: OwnerColumn) =>
     client
-      .from("rfqs")
+      .from("rfqs_visible")
       .select(column === "owner_id" ? "id, owner_id, accepted_quote_id" : "id, owner_id:owner_uuid, accepted_quote_id")
       .eq("id", rfqId)
       .maybeSingle<{ id: string; owner_id: string | null; accepted_quote_id: string | null }>();
@@ -36,7 +36,7 @@ async function loadRfq(client: SupabaseClient, rfqId: string) {
 
 export async function POST(request: Request) {
   const supabase = await createAuthenticatedRequestClient(request);
-  const supabaseAdmin = createSupabaseAdminClient();
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -66,17 +66,7 @@ export async function POST(request: Request) {
       .eq("owner_id", ownerId)
       .maybeSingle<{ id: string; business_name: string | null }>();
 
-  let { data: vendor, error: vendorError } = await selectVendor(user.id);
-  if ((!vendor || vendorError) && supabaseAdmin) {
-    const retry = await supabaseAdmin
-      .from("vendors")
-      .select("id, business_name")
-      .eq("id", input.vendorId)
-      .eq("owner_id", user.id)
-      .maybeSingle<{ id: string; business_name: string | null }>();
-    vendor = retry.data;
-    vendorError = retry.error;
-  }
+  const { data: vendor, error: vendorError } = await selectVendor(user.id);
 
   if (vendorError) {
     return NextResponse.json({ ok: false, message: vendorError.message }, { status: 500 });
@@ -85,23 +75,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, message: "Vendor access required." }, { status: 403 });
   }
 
-  let { data: invite, error: inviteError } = await supabase
+  const { data: invite, error: inviteError } = await supabase
     .from("rfq_invites")
     .select("rfq_id, vendor_id, status, expires_at")
     .eq("rfq_id", input.rfqId)
     .eq("vendor_id", input.vendorId)
     .maybeSingle<{ rfq_id: string; vendor_id: string; status: string | null; expires_at: string | null }>();
-
-  if ((!invite || inviteError) && supabaseAdmin) {
-    const retry = await supabaseAdmin
-      .from("rfq_invites")
-      .select("rfq_id, vendor_id, status, expires_at")
-      .eq("rfq_id", input.rfqId)
-      .eq("vendor_id", input.vendorId)
-      .maybeSingle<{ rfq_id: string; vendor_id: string; status: string | null; expires_at: string | null }>();
-    invite = retry.data;
-    inviteError = retry.error;
-  }
 
   if (inviteError) {
     return NextResponse.json({ ok: false, message: inviteError.message }, { status: 500 });
@@ -118,7 +97,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, message: "This quote request is closed or expired." }, { status: 409 });
   }
 
-  const workflowClient = supabaseAdmin ?? supabase;
+  const workflowClient = supabase;
   const { data: rfq, error: rfqError } = await loadRfq(workflowClient, input.rfqId);
 
   if (rfqError) {
@@ -131,34 +110,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, message: "This request already has an accepted quote." }, { status: 409 });
   }
 
-  const { data: latestQuote, error: latestQuoteError } = await workflowClient
-    .from("quotes")
-    .select("id, version")
-    .eq("rfq_id", input.rfqId)
-    .eq("vendor_id", input.vendorId)
-    .order("version", { ascending: false })
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle<{ id: string; version: number }>();
-
-  if (latestQuoteError) {
-    return NextResponse.json({ ok: false, message: latestQuoteError.message }, { status: 500 });
-  }
-
-  const isUpdate = Boolean(latestQuote);
-  const version = (latestQuote?.version ?? 0) + 1;
   const { data: quote, error: quoteError } = await workflowClient
     .from("quotes")
     .insert([{
       rfq_id: input.rfqId,
       vendor_id: input.vendorId,
-      version,
       amount_cents: input.amountCents,
       currency: "USD",
       message: input.message || null,
     }])
-    .select("id, created_at")
-    .single<{ id: string; created_at: string }>();
+    .select("id, version, created_at")
+    .single<{ id: string; version: number; created_at: string }>();
 
   if (quoteError || !quote) {
     return NextResponse.json({ ok: false, message: quoteError?.message ?? "Unable to send quote." }, { status: 500 });
@@ -195,7 +157,7 @@ export async function POST(request: Request) {
       vendorId: input.vendorId,
       vendorName: vendor.business_name,
       amountCents: input.amountCents,
-      isUpdate,
+      isUpdate: quote.version > 1,
     });
 
     if (notificationError && process.env.NODE_ENV !== "production") {
@@ -207,7 +169,7 @@ export async function POST(request: Request) {
     ok: true,
     quote: {
       id: quote.id,
-      version,
+      version: quote.version,
       amountCents: input.amountCents,
       currency: "USD",
       message: input.message || null,

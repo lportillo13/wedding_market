@@ -6,11 +6,29 @@ import path from "node:path";
 import crypto from "node:crypto";
 import ffmpegPath from "ffmpeg-static";
 import sharp from "sharp";
+import { UploadLimitError } from "@/lib/upload-limits";
 import type { MediaAsset } from "@/types/images";
 
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
 const MAX_IMAGE_WIDTH = 1920;
+const SHARP_INPUT_OPTIONS = { limitInputPixels: 50_000_000, animated: false };
+sharp.concurrency(1);
+sharp.cache({memory:32,files:0,items:50});
+const IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/avif", "image/heic", "image/heif", "image/gif"]);
+const VIDEO_TYPES = new Set(["video/mp4", "video/quicktime", "video/webm", "video/x-matroska", "video/x-msvideo"]);
+let activeImages = 0;
+let activeVideos = 0;
+async function imageInput(file: File) {
+  const invalid = validateImageUpload(file);
+  if (invalid) throw new UploadLimitError(invalid, 400);
+  const input = Buffer.from(await file.arrayBuffer());
+  const metadata = await sharp(input, SHARP_INPUT_OPTIONS).metadata();
+  if (!metadata.format || !["jpeg", "png", "webp", "avif", "heif", "gif"].includes(metadata.format)) {
+    throw new UploadLimitError("Unsupported image content.", 415);
+  }
+  return input;
+}
 const MAX_LOGO_WIDTH = 640;
 const packageRequire = createRequire(__filename);
 
@@ -52,7 +70,7 @@ export function validateImageUpload(file: File | null) {
   if (file.size <= 0) {
     return "The selected image is empty.";
   }
-  if (!file.type.startsWith("image/")) {
+  if (!IMAGE_TYPES.has(file.type)) {
     return "Unsupported image type.";
   }
   if (file.size > MAX_IMAGE_BYTES) {
@@ -68,24 +86,25 @@ export function validateVideoUpload(file: File | null) {
   if (file.size <= 0) {
     return "The selected video is empty.";
   }
-  if (!file.type.startsWith("video/")) {
+  if (!VIDEO_TYPES.has(file.type)) {
     return "Unsupported video type.";
   }
+  if (file.size > MAX_VIDEO_BYTES) return "Each video must be 50MB or smaller.";
   return null;
 }
 
-export async function processImageUpload(file: File): Promise<{
+async function encodeImageUpload(file: File): Promise<{
   asset: MediaAsset;
   buffer: Buffer;
   contentType: string;
   extension: string;
 }> {
-  const input = Buffer.from(await file.arrayBuffer());
-  const transformer = sharp(input).rotate().resize({ width: MAX_IMAGE_WIDTH, withoutEnlargement: true }).webp({
+  const input = await imageInput(file);
+  const transformer = sharp(input, SHARP_INPUT_OPTIONS).rotate().resize({ width: MAX_IMAGE_WIDTH, height: MAX_IMAGE_WIDTH, fit: "inside", withoutEnlargement: true }).webp({
     quality: 82,
     effort: 5,
   });
-  const { data, info } = await transformer.toBuffer({ resolveWithObject: true });
+  const { data, info } = await transformer.timeout({seconds:20}).toBuffer({ resolveWithObject: true });
 
   return {
     asset: {
@@ -103,15 +122,15 @@ export async function processImageUpload(file: File): Promise<{
   };
 }
 
-export async function processCarouselLogoUpload(file: File): Promise<{
+async function encodeCarouselLogoUpload(file: File): Promise<{
   asset: MediaAsset;
   buffer: Buffer;
   contentType: string;
   extension: string;
 }> {
-  const input = Buffer.from(await file.arrayBuffer());
-  const base = sharp(input).rotate().resize({ width: MAX_LOGO_WIDTH, withoutEnlargement: true }).ensureAlpha();
-  const { data, info } = await base.raw().toBuffer({ resolveWithObject: true });
+  const input = await imageInput(file);
+  const base = sharp(input, SHARP_INPUT_OPTIONS).rotate().resize({ width: MAX_LOGO_WIDTH, height: MAX_LOGO_WIDTH, fit: "inside", withoutEnlargement: true }).ensureAlpha();
+  const { data, info } = await base.raw().timeout({seconds:20}).toBuffer({ resolveWithObject: true });
   const channels = info.channels;
   const width = info.width ?? 0;
   const height = info.height ?? 0;
@@ -210,13 +229,16 @@ async function runFfmpeg(args: string[]) {
   await new Promise<void>((resolve, reject) => {
     const child = spawn(binaryPath, args, { stdio: ["ignore", "ignore", "pipe"] }) as unknown as ChildProcessWithoutNullStreams;
     let stderr = "";
+    const timer = setTimeout(() => { child.kill("SIGKILL"); }, 60_000);
+    timer.unref();
 
     child.stderr?.on("data", (chunk: Buffer | string) => {
-      stderr += String(chunk);
+      stderr = (stderr + String(chunk)).slice(-16_384);
     });
 
-    child.on("error", reject);
+    child.on("error", (error) => { clearTimeout(timer); reject(error); });
     child.on("close", (code: number | null) => {
+      clearTimeout(timer);
       if (code === 0) {
         resolve();
         return;
@@ -226,7 +248,7 @@ async function runFfmpeg(args: string[]) {
   });
 }
 
-export async function processVideoUpload(file: File): Promise<{
+async function encodeVideoUpload(file: File): Promise<{
   asset: MediaAsset;
   buffer: Buffer;
   contentType: string;
@@ -241,9 +263,13 @@ export async function processVideoUpload(file: File): Promise<{
     await mkdir(workdir, { recursive: true });
 
     await runFfmpeg([
-      "-y",
+      "-y", "-nostdin", "-v", "error",
+      "-protocol_whitelist", "file,pipe",
+      "-format_whitelist", "mov,matroska,webm,avi",
+      "-threads", "2",
       "-i",
       inputPath,
+      "-threads", "2", "-filter_threads", "1",
       "-vf",
       "scale='min(1920,iw)':-2",
       "-c:v",
@@ -292,4 +318,23 @@ export async function processVideoUpload(file: File): Promise<{
 export function buildStorageKey(parts: string[], extension: string) {
   const prefix = parts.map(sanitizeSegment).filter(Boolean).join("/");
   return `${prefix}/${Date.now()}-${makeId()}.${extension}`;
+}
+
+async function limitedImage<T>(work: () => Promise<T>) {
+  if (activeImages >= 3) throw new UploadLimitError("Image processing is busy. Please try again shortly.", 429);
+  activeImages += 1;
+  try { return await work(); } finally { activeImages -= 1; }
+}
+export function processImageUpload(file: File) {
+  return limitedImage(() => encodeImageUpload(file));
+}
+export function processCarouselLogoUpload(file: File) {
+  return limitedImage(() => encodeCarouselLogoUpload(file));
+}
+export async function processVideoUpload(file: File) {
+  const invalid = validateVideoUpload(file);
+  if (invalid) throw new UploadLimitError(invalid, 400);
+  if (activeVideos >= 1) throw new UploadLimitError("Video processing is busy. Please try again shortly.", 429);
+  activeVideos += 1;
+  try { return await encodeVideoUpload(file); } finally { activeVideos -= 1; }
 }

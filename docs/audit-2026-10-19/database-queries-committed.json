@@ -1,0 +1,14 @@
+{
+  "verifiedAt": "2026-10-19T18:35:53.27988+00:00",
+  "migrations": [
+    "202610190000",
+    "202610190001",
+    "202610190002",
+    "202610190003"
+  ],
+  "privateContactViewAnonAccess": false,
+  "directoryItems": 12,
+  "directoryCardBytes": 9982,
+  "oldDirectoryRowBytes": 24789,
+  "inboxLimit": 50
+}

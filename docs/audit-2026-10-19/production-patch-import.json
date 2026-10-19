@@ -1,0 +1,40 @@
+{
+  "collected_at": "2026-10-19T17:39:51.671134+00:00",
+  "files": [
+    {
+      "file": "app/api/uploads/route.ts",
+      "server_sha256": "04947a53506bd36da0b9d2178e66e21c3964f137e53ad9d2a07422de5702cda1",
+      "normalized_sha256": "04947a53506bd36da0b9d2178e66e21c3964f137e53ad9d2a07422de5702cda1"
+    },
+    {
+      "file": "app/signup/vendor/actions.ts",
+      "server_sha256": "35d1dcf153653a4933dde12423fa2aa43963db286424daa83cb1bcfca4055947",
+      "normalized_sha256": "35d1dcf153653a4933dde12423fa2aa43963db286424daa83cb1bcfca4055947"
+    },
+    {
+      "file": "app/vendor/profile/actions.ts",
+      "server_sha256": "3fc93948c17038a6783b1439c57f28880152841799430cca5ef04ce77d58407e",
+      "normalized_sha256": "3fc93948c17038a6783b1439c57f28880152841799430cca5ef04ce77d58407e"
+    },
+    {
+      "file": "lib/r2.ts",
+      "server_sha256": "1b890a8b91cc990863e05da66084061bec626b329a0a77076b0d20c4bcbd4ebc",
+      "normalized_sha256": "1b890a8b91cc990863e05da66084061bec626b329a0a77076b0d20c4bcbd4ebc"
+    },
+    {
+      "file": "lib/r2-ownership.ts",
+      "server_sha256": "d1c10030daae700c955bb3fa76af95d6c4f5d56012b0411228ce2b7597bf18d9",
+      "normalized_sha256": "d1c10030daae700c955bb3fa76af95d6c4f5d56012b0411228ce2b7597bf18d9"
+    },
+    {
+      "file": "package.json",
+      "server_sha256": "fc95ccfacff2cb80053bf350b72d7ca83d8a4fed01ec4b68d3b27632be61ce5d",
+      "normalized_sha256": "4206c0027e126fc05a81774d355d6eb1eac7eb3621774c65114d7b0b03bbb7ff"
+    },
+    {
+      "file": "package-lock.json",
+      "server_sha256": "44b03d0f077a07da0e9dd7004fc7fdd7276e9b7b56fd078ccf7c94a3a0b99290",
+      "normalized_sha256": "0894fb1810e233a1dfd6b0f90b713db6e3ffce221377deaf7e9197f175cbd064"
+    }
+  ]
+}

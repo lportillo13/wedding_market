@@ -2,7 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createVendorNewRequestNotification } from "@/lib/notifications";
-import { createSupabaseAdminClient } from "@/lib/supabase/admin";
+
 import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 import { createAuthenticatedRequestClient } from "@/lib/supabase/request";
 
@@ -52,7 +52,6 @@ const QUOTE_EXPIRES_DAYS = 14;
 
 export async function POST(request: Request) {
   const supabase = await createAuthenticatedRequestClient(request);
-  const supabaseAdmin = createSupabaseAdminClient();
 
   let json: unknown;
   try {
@@ -104,7 +103,7 @@ export async function POST(request: Request) {
 
   const loadExistingEditableRfq = async (client: SupabaseClient, ownerId: string, rfqId?: string | null) => {
     let query = client
-      .from("rfqs")
+      .from("rfqs_visible")
       .select("id")
       .eq("owner_id", ownerId)
       .eq("vendor_id", vendorIds[0])
@@ -159,22 +158,12 @@ export async function POST(request: Request) {
     existingEditableRfqError = existingAttempt.error;
   }
 
-  if (existingEditableRfqError && supabaseAdmin && /policy/i.test(existingEditableRfqError.message ?? "")) {
-    const retry = await loadExistingEditableRfq(supabaseAdmin, user.id, input.rfq_id);
-    existingEditableRfq = retry.data;
-    existingEditableRfqError = retry.error;
-  }
-
   if (existingEditableRfqError) {
     return NextResponse.json({ ok: false, message: existingEditableRfqError.message || "Unable to load request." }, { status: 500 });
   }
 
   if (existingEditableRfq?.id) {
-    let vendorReplyCheck = await hasVendorResponse(supabase, existingEditableRfq.id);
-
-    if (vendorReplyCheck.error && supabaseAdmin && /policy/i.test(vendorReplyCheck.error.message ?? "")) {
-      vendorReplyCheck = await hasVendorResponse(supabaseAdmin, existingEditableRfq.id);
-    }
+    const vendorReplyCheck = await hasVendorResponse(supabase, existingEditableRfq.id);
 
     if (vendorReplyCheck.error) {
       return NextResponse.json({ ok: false, message: vendorReplyCheck.error.message || "Unable to load request." }, { status: 500 });
@@ -182,21 +171,12 @@ export async function POST(request: Request) {
 
     if (vendorReplyCheck.count === 0) {
       const updatePayload = { ...basePayload, updated_at: new Date().toISOString() };
-      let updateError = await supabase
+      const updateError = await supabase
         .from("rfqs")
         .update(updatePayload)
         .eq("id", existingEditableRfq.id)
         .eq("owner_id", user.id)
         .then((res) => res.error);
-
-      if (updateError && supabaseAdmin && /policy/i.test(updateError.message ?? "")) {
-        const retry = await supabaseAdmin
-          .from("rfqs")
-          .update(updatePayload)
-          .eq("id", existingEditableRfq.id)
-          .eq("owner_id", user.id);
-        updateError = retry.error;
-      }
 
       if (updateError) {
         return NextResponse.json({ ok: false, message: updateError.message || "Unable to update request." }, { status: 500 });
@@ -210,12 +190,6 @@ export async function POST(request: Request) {
   rfqId = attempt.data?.id ?? null;
   insertError = attempt.error;
 
-  if (insertError && supabaseAdmin && /policy/i.test(insertError.message ?? "")) {
-    const retry = await insertRfq(supabaseAdmin, user.id);
-    rfqId = retry.data?.id ?? null;
-    insertError = retry.error;
-  }
-
   if (insertError || !rfqId) {
     return NextResponse.json({ ok: false, message: insertError?.message || "Unable to create request." }, { status: 500 });
   }
@@ -224,20 +198,15 @@ export async function POST(request: Request) {
 
   const invitePayload = vendorIds.map((vendorId) => ({ rfq_id: rfqId, vendor_id: vendorId, expires_at }));
 
-  let inviteError = await supabase.from("rfq_invites").insert(invitePayload).then((res) => res.error);
-
-  if (inviteError && supabaseAdmin && /policy/i.test(inviteError.message ?? "")) {
-    const retry = await supabaseAdmin.from("rfq_invites").insert(invitePayload);
-    inviteError = retry.error;
-  }
+  const inviteError = await supabase.from("rfq_invites").insert(invitePayload).then((res) => res.error);
 
   if (inviteError) {
     // Avoid leaving an orphan request when the invite batch fails atomically.
-    await (supabaseAdmin ?? supabase).from("rfqs").delete().eq("id", rfqId);
+    await (supabase).from("rfqs").delete().eq("id", rfqId);
     return NextResponse.json({ ok: false, message: inviteError.message || "Failed to notify vendor." }, { status: 500 });
   }
 
-  const vendorLookupClient = supabaseAdmin ?? supabase;
+  const vendorLookupClient = supabase;
   const { data: vendorRecipients } = await vendorLookupClient
     .from("vendors")
     .select("id, owner_id")

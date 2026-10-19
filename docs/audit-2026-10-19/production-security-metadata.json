@@ -1,0 +1,397 @@
+{
+  "functions": [
+    {
+      "proname": "gtrgm_out",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.gtrgm_out(gtrgm)\n RETURNS cstring\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$gtrgm_out$function$\n"
+    },
+    {
+      "proname": "gtrgm_consistent",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.gtrgm_consistent(internal, text, smallint, oid, internal)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$gtrgm_consistent$function$\n"
+    },
+    {
+      "proname": "gtrgm_distance",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.gtrgm_distance(internal, text, smallint, oid, internal)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$gtrgm_distance$function$\n"
+    },
+    {
+      "proname": "gtrgm_compress",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.gtrgm_compress(internal)\n RETURNS internal\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$gtrgm_compress$function$\n"
+    },
+    {
+      "proname": "gtrgm_decompress",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.gtrgm_decompress(internal)\n RETURNS internal\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$gtrgm_decompress$function$\n"
+    },
+    {
+      "proname": "gtrgm_penalty",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.gtrgm_penalty(internal, internal, internal)\n RETURNS internal\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$gtrgm_penalty$function$\n"
+    },
+    {
+      "proname": "gtrgm_picksplit",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.gtrgm_picksplit(internal, internal)\n RETURNS internal\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$gtrgm_picksplit$function$\n"
+    },
+    {
+      "proname": "gtrgm_union",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.gtrgm_union(internal, internal)\n RETURNS gtrgm\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$gtrgm_union$function$\n"
+    },
+    {
+      "proname": "gtrgm_same",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.gtrgm_same(gtrgm, gtrgm, internal)\n RETURNS internal\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$gtrgm_same$function$\n"
+    },
+    {
+      "proname": "gin_extract_value_trgm",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.gin_extract_value_trgm(text, internal)\n RETURNS internal\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$gin_extract_value_trgm$function$\n"
+    },
+    {
+      "proname": "gin_extract_query_trgm",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.gin_extract_query_trgm(text, internal, smallint, internal, internal, internal, internal)\n RETURNS internal\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$gin_extract_query_trgm$function$\n"
+    },
+    {
+      "proname": "gin_trgm_consistent",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.gin_trgm_consistent(internal, smallint, text, integer, internal, internal, internal, internal)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$gin_trgm_consistent$function$\n"
+    },
+    {
+      "proname": "gin_trgm_triconsistent",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.gin_trgm_triconsistent(internal, smallint, text, integer, internal, internal, internal)\n RETURNS \"char\"\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$gin_trgm_triconsistent$function$\n"
+    },
+    {
+      "proname": "strict_word_similarity",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.strict_word_similarity(text, text)\n RETURNS real\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$strict_word_similarity$function$\n"
+    },
+    {
+      "proname": "strict_word_similarity_op",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.strict_word_similarity_op(text, text)\n RETURNS boolean\n LANGUAGE c\n STABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$strict_word_similarity_op$function$\n"
+    },
+    {
+      "proname": "strict_word_similarity_commutator_op",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.strict_word_similarity_commutator_op(text, text)\n RETURNS boolean\n LANGUAGE c\n STABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$strict_word_similarity_commutator_op$function$\n"
+    },
+    {
+      "proname": "strict_word_similarity_dist_op",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.strict_word_similarity_dist_op(text, text)\n RETURNS real\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$strict_word_similarity_dist_op$function$\n"
+    },
+    {
+      "proname": "strict_word_similarity_dist_commutator_op",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.strict_word_similarity_dist_commutator_op(text, text)\n RETURNS real\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$strict_word_similarity_dist_commutator_op$function$\n"
+    },
+    {
+      "proname": "gtrgm_options",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.gtrgm_options(internal)\n RETURNS void\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE\nAS '$libdir/pg_trgm', $function$gtrgm_options$function$\n"
+    },
+    {
+      "proname": "set_limit",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.set_limit(real)\n RETURNS real\n LANGUAGE c\n STRICT\nAS '$libdir/pg_trgm', $function$set_limit$function$\n"
+    },
+    {
+      "proname": "show_limit",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.show_limit()\n RETURNS real\n LANGUAGE c\n STABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$show_limit$function$\n"
+    },
+    {
+      "proname": "show_trgm",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.show_trgm(text)\n RETURNS text[]\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$show_trgm$function$\n"
+    },
+    {
+      "proname": "similarity",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.similarity(text, text)\n RETURNS real\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$similarity$function$\n"
+    },
+    {
+      "proname": "similarity_op",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.similarity_op(text, text)\n RETURNS boolean\n LANGUAGE c\n STABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$similarity_op$function$\n"
+    },
+    {
+      "proname": "word_similarity",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.word_similarity(text, text)\n RETURNS real\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$word_similarity$function$\n"
+    },
+    {
+      "proname": "word_similarity_op",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.word_similarity_op(text, text)\n RETURNS boolean\n LANGUAGE c\n STABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$word_similarity_op$function$\n"
+    },
+    {
+      "proname": "word_similarity_commutator_op",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.word_similarity_commutator_op(text, text)\n RETURNS boolean\n LANGUAGE c\n STABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$word_similarity_commutator_op$function$\n"
+    },
+    {
+      "proname": "similarity_dist",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.similarity_dist(text, text)\n RETURNS real\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$similarity_dist$function$\n"
+    },
+    {
+      "proname": "word_similarity_dist_op",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.word_similarity_dist_op(text, text)\n RETURNS real\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$word_similarity_dist_op$function$\n"
+    },
+    {
+      "proname": "word_similarity_dist_commutator_op",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.word_similarity_dist_commutator_op(text, text)\n RETURNS real\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$word_similarity_dist_commutator_op$function$\n"
+    },
+    {
+      "proname": "gtrgm_in",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.gtrgm_in(cstring)\n RETURNS gtrgm\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/pg_trgm', $function$gtrgm_in$function$\n"
+    },
+    {
+      "proname": "is_user",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.is_user(_uid uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE\nAS $function$\n  select exists(\n    select 1 from public.profiles_resolved p\n    where p.user_id = _uid and p.role = 'user'\n  );\n$function$\n"
+    },
+    {
+      "proname": "is_vendor",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.is_vendor(_uid uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE\nAS $function$\n  -- Either explicitly marked vendor OR owns a vendor row\n  select exists(\n    select 1 from public.profiles_resolved p\n    where p.user_id = _uid and p.role = 'vendor'\n  )\n  or exists(\n    select 1 from public.vendors v\n    where v.owner_id = _uid\n  );\n$function$\n"
+    },
+    {
+      "proname": "touch_rfq_invite_activity_from_message",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.touch_rfq_invite_activity_from_message()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\ndeclare\n  target_rfq_id uuid;\n  target_vendor_id uuid;\nbegin\n  select q.rfq_id, q.vendor_id\n    into target_rfq_id, target_vendor_id\n  from public.quotes q\n  where q.id = new.quote_id;\n\n  if target_rfq_id is not null and target_vendor_id is not null then\n    update public.rfq_invites\n    set last_activity_at = coalesce(new.created_at, now())\n    where rfq_id = target_rfq_id\n      and vendor_id = target_vendor_id;\n  end if;\n\n  return new;\nend;\n$function$\n"
+    },
+    {
+      "proname": "touch_rfq_invite_activity_from_quote",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.touch_rfq_invite_activity_from_quote()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nbegin\n  update public.rfq_invites\n  set last_activity_at = coalesce(new.created_at, now())\n  where rfq_id = new.rfq_id\n    and vendor_id = new.vendor_id;\n\n  return new;\nend;\n$function$\n"
+    },
+    {
+      "proname": "can_user_review",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.can_user_review(_uid uuid, _vendor_id uuid, _rfq_id uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE\nAS $function$\n  select exists(\n    select 1\n    from public.rfqs r\n    join public.quotes q on q.id = r.accepted_quote_id\n    where r.id = _rfq_id\n      and q.vendor_id = _vendor_id\n      and r.owner_id  = _uid\n      and r.accepted_quote_id is not null\n  );\n$function$\n"
+    },
+    {
+      "proname": "tg_reviews_after_write",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.tg_reviews_after_write()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nbegin\n  perform public.recalc_vendor_rating(coalesce(new.vendor_id, old.vendor_id));\n  return null;\nend$function$\n"
+    },
+    {
+      "proname": "recalc_vendor_rating",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.recalc_vendor_rating(p_vendor_id uuid)\n RETURNS void\n LANGUAGE sql\nAS $function$\n  with agg as (\n    select\n      coalesce(avg(stars)::numeric(10,2), 0)::numeric as avg_rating,\n      count(*)::int as cnt\n    from public.reviews\n    where vendor_id = p_vendor_id\n  )\n  update public.vendors v\n  set rating_avg = a.avg_rating,\n      rating_count = a.cnt\n  from agg a\n  where v.id = p_vendor_id;\n$function$\n"
+    },
+    {
+      "proname": "touch_updated_at",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.touch_updated_at()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN\n    NEW.updated_at = now();\n    RETURN NEW;\nEND;\n$function$\n"
+    },
+    {
+      "proname": "upsert_profile_translation",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.upsert_profile_translation(p_profile_id uuid, p_field text, p_language text, p_value text, p_translated_via text DEFAULT NULL::text)\n RETURNS profile_translated_fields\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n    v_record public.profile_translated_fields;\nBEGIN\n    INSERT INTO public.profile_translated_fields (profile_id, field, language, value, translated_via)\n    VALUES (p_profile_id, p_field, p_language, p_value, p_translated_via)\n    ON CONFLICT (profile_id, field, language) DO UPDATE\n    SET value = EXCLUDED.value,\n        translated_via = COALESCE(EXCLUDED.translated_via, public.profile_translated_fields.translated_via),\n        updated_at = now()\n    RETURNING * INTO v_record;\n\n    RETURN v_record;\nEND;\n$function$\n"
+    },
+    {
+      "proname": "tg_set_updated_at",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.tg_set_updated_at()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nbegin\n  new.updated_at := now();\n  return new;\nend$function$\n"
+    },
+    {
+      "proname": "user_hired_vendor",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.user_hired_vendor(_uid uuid, _vendor_id uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE\nAS $function$\n  select exists(\n    select 1\n    from public.rfqs r\n    join public.quotes q on q.id = r.accepted_quote_id\n    where q.vendor_id = _vendor_id\n      and r.owner_id  = _uid\n      and r.accepted_quote_id is not null\n  );\n$function$\n"
+    },
+    {
+      "proname": "trigger_set_timestamp",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.trigger_set_timestamp()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nbegin\n  new.updated_at = now();\n  return new;\nend;\n$function$\n"
+    },
+    {
+      "proname": "can_vendor_view_rfq",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=public"
+      ],
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.can_vendor_view_rfq(_uid uuid, _rfq_id uuid)\n RETURNS boolean\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\nbegin\n  return exists (\n    select 1\n    from public.quotes q\n    join public.vendors v on v.id = q.vendor_id\n    where q.rfq_id = _rfq_id\n      and v.owner_id = _uid\n  )\n  -- Uncomment to also allow invited-but-not-yet-quoted vendors:\n  -- or exists (\n  --   select 1\n  --   from public.rfq_invites ri\n  --   join public.vendors v2 on v2.id = ri.vendor_id\n  --   where ri.rfq_id = _rfq_id\n  --     and v2.owner_id = _uid\n  -- )\n  ;\nend;\n$function$\n"
+    },
+    {
+      "proname": "first_eligible_review_rfq",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.first_eligible_review_rfq(_uid uuid, _vendor_id uuid)\n RETURNS uuid\n LANGUAGE sql\n STABLE\nAS $function$\n  select r.id\n  from public.rfqs r\n  join public.quotes q on q.id = r.accepted_quote_id\n  left join public.reviews v\n    on v.rfq_id = r.id and v.vendor_id = _vendor_id and v.author_id = _uid\n  where q.vendor_id = _vendor_id\n    and r.owner_id  = _uid\n    and r.accepted_quote_id is not null\n    and v.id is null\n  order by r.created_at desc nulls last\n  limit 1;\n$function$\n"
+    },
+    {
+      "proname": "handle_new_user",
+      "prosecdef": true,
+      "proconfig": [
+        "search_path=public"
+      ],
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.handle_new_user()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\nbegin\n  insert into public.profiles (id, full_name)\n  values (new.id, coalesce(new.raw_user_meta_data->>'full_name', ''));\n  return new;\nend;\n$function$\n"
+    },
+    {
+      "proname": "has_user_reviewed",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.has_user_reviewed(_uid uuid, _vendor_id uuid, _rfq_id uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE\nAS $function$\n  select exists(\n    select 1\n    from public.reviews v\n    where v.author_id = _uid\n      and v.vendor_id = _vendor_id\n      and v.rfq_id    = _rfq_id\n  );\n$function$\n"
+    },
+    {
+      "proname": "profile_field_translation",
+      "prosecdef": false,
+      "proconfig": null,
+      "anon_execute": true,
+      "definition": "CREATE OR REPLACE FUNCTION public.profile_field_translation(p_profile_id uuid, p_field text, p_language text, p_fallback_language text DEFAULT NULL::text)\n RETURNS text\n LANGUAGE sql\nAS $function$\n    SELECT COALESCE(\n        (SELECT value\n         FROM public.profile_translated_fields\n         WHERE profile_id = p_profile_id\n           AND field = p_field\n           AND language = p_language),\n        (SELECT value\n         FROM public.profile_translated_fields\n         WHERE profile_id = p_profile_id\n           AND field = p_field\n           AND language = COALESCE(p_fallback_language, (SELECT language FROM public.profiles WHERE id = p_profile_id))),\n        (SELECT CASE p_field\n                    WHEN 'full_name' THEN full_name\n                    WHEN 'country' THEN country\n                    WHEN 'wedding_theme' THEN wedding_theme\n                    ELSE NULL\n                END\n         FROM public.profiles\n         WHERE id = p_profile_id)\n    );\n$function$\n"
+    }
+  ],
+  "schema_usage": true,
+  "triggers": [
+    {
+      "table": "quote_messages",
+      "name": "quote_messages_touch_rfq_invite_activity",
+      "definition": "CREATE TRIGGER quote_messages_touch_rfq_invite_activity AFTER INSERT ON quote_messages FOR EACH ROW EXECUTE FUNCTION touch_rfq_invite_activity_from_message()"
+    },
+    {
+      "table": "quotes",
+      "name": "quotes_set_updated_at",
+      "definition": "CREATE TRIGGER quotes_set_updated_at BEFORE UPDATE ON quotes FOR EACH ROW EXECUTE FUNCTION tg_set_updated_at()"
+    },
+    {
+      "table": "quotes",
+      "name": "quotes_touch_rfq_invite_activity",
+      "definition": "CREATE TRIGGER quotes_touch_rfq_invite_activity AFTER INSERT ON quotes FOR EACH ROW EXECUTE FUNCTION touch_rfq_invite_activity_from_quote()"
+    },
+    {
+      "table": "reviews",
+      "name": "reviews_after_write",
+      "definition": "CREATE TRIGGER reviews_after_write AFTER INSERT OR DELETE OR UPDATE ON reviews FOR EACH ROW EXECUTE FUNCTION tg_reviews_after_write()"
+    },
+    {
+      "table": "reviews",
+      "name": "reviews_set_updated_at",
+      "definition": "CREATE TRIGGER reviews_set_updated_at BEFORE UPDATE ON reviews FOR EACH ROW EXECUTE FUNCTION tg_set_updated_at()"
+    },
+    {
+      "table": "rfq_invites",
+      "name": "rfq_invites_set_updated_at",
+      "definition": "CREATE TRIGGER rfq_invites_set_updated_at BEFORE UPDATE ON rfq_invites FOR EACH ROW EXECUTE FUNCTION tg_set_updated_at()"
+    },
+    {
+      "table": "rfqs",
+      "name": "rfqs_set_updated_at",
+      "definition": "CREATE TRIGGER rfqs_set_updated_at BEFORE UPDATE ON rfqs FOR EACH ROW EXECUTE FUNCTION tg_set_updated_at()"
+    },
+    {
+      "table": "blog_posts",
+      "name": "set_timestamp",
+      "definition": "CREATE TRIGGER set_timestamp BEFORE UPDATE ON blog_posts FOR EACH ROW EXECUTE FUNCTION trigger_set_timestamp()"
+    },
+    {
+      "table": "profile_translated_fields",
+      "name": "trg_profile_translated_fields_updated_at",
+      "definition": "CREATE TRIGGER trg_profile_translated_fields_updated_at BEFORE UPDATE ON profile_translated_fields FOR EACH ROW EXECUTE FUNCTION touch_updated_at()"
+    },
+    {
+      "table": "quotes",
+      "name": "trg_quotes_touch",
+      "definition": "CREATE TRIGGER trg_quotes_touch BEFORE UPDATE ON quotes FOR EACH ROW EXECUTE FUNCTION touch_updated_at()"
+    }
+  ]
+}

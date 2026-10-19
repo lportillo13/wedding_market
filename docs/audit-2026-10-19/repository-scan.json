@@ -1,0 +1,1065 @@
+{
+  "scope": "local tracked files and local historical schema; not a production database inspection",
+  "tracked_files": 413,
+  "environment_history_commits": 2,
+  "credential_findings": [
+    {
+      "path": "scripts/apply-vendor-availability.js",
+      "revision": "working-tree",
+      "line": 6,
+      "kind": "database_url_with_password",
+      "fingerprint": "cf6453a9f9e4",
+      "classification": "local development default or documentation placeholder; not confirmed secret"
+    },
+    {
+      "path": "scripts/check-db-compat.js",
+      "revision": "working-tree",
+      "line": 6,
+      "kind": "database_url_with_password",
+      "fingerprint": "cf6453a9f9e4",
+      "classification": "local development default or documentation placeholder; not confirmed secret"
+    },
+    {
+      "path": "scripts/create-admin-account.js",
+      "revision": "working-tree",
+      "line": 34,
+      "kind": "database_url_with_password",
+      "fingerprint": "cf6453a9f9e4",
+      "classification": "local development default or documentation placeholder; not confirmed secret"
+    },
+    {
+      "path": "scripts/generate-supabase-schema-pg-no-tpl.mjs",
+      "revision": "working-tree",
+      "line": 8,
+      "kind": "database_url_with_password",
+      "fingerprint": "6ce8fb99641a",
+      "classification": "local development default or documentation placeholder; not confirmed secret"
+    },
+    {
+      "path": "scripts/generate-supabase-schema-pg.mjs",
+      "revision": "working-tree",
+      "line": 8,
+      "kind": "database_url_with_password",
+      "fingerprint": "6ce8fb99641a",
+      "classification": "local development default or documentation placeholder; not confirmed secret"
+    },
+    {
+      "path": "scripts/generate-supabase-schema.mjs",
+      "revision": "working-tree",
+      "line": 8,
+      "kind": "database_url_with_password",
+      "fingerprint": "b85baadb945d",
+      "classification": "local development default or documentation placeholder; not confirmed secret"
+    },
+    {
+      "path": "scripts/inspect-vendor-media.cjs",
+      "revision": "working-tree",
+      "line": 11,
+      "kind": "database_url_with_password",
+      "fingerprint": "cf6453a9f9e4",
+      "classification": "local development default or documentation placeholder; not confirmed secret"
+    },
+    {
+      "path": "scripts/inspect-view-columns.cjs",
+      "revision": "working-tree",
+      "line": 11,
+      "kind": "database_url_with_password",
+      "fingerprint": "cf6453a9f9e4",
+      "classification": "local development default or documentation placeholder; not confirmed secret"
+    },
+    {
+      "path": "scripts/restore-local-supabase.js",
+      "revision": "working-tree",
+      "line": 6,
+      "kind": "database_url_with_password",
+      "fingerprint": "cf6453a9f9e4",
+      "classification": "local development default or documentation placeholder; not confirmed secret"
+    },
+    {
+      "path": "scripts/seed-random-vendors.js",
+      "revision": "working-tree",
+      "line": 6,
+      "kind": "database_url_with_password",
+      "fingerprint": "cf6453a9f9e4",
+      "classification": "local development default or documentation placeholder; not confirmed secret"
+    },
+    {
+      "path": "scripts/seed-test-accounts.js",
+      "revision": "working-tree",
+      "line": 8,
+      "kind": "database_url_with_password",
+      "fingerprint": "cf6453a9f9e4",
+      "classification": "local development default or documentation placeholder; not confirmed secret"
+    },
+    {
+      "path": ".env.local",
+      "revision": "5f6e3815cc1f",
+      "line": 2,
+      "kind": "jwt_role_anon",
+      "fingerprint": "b548a294096a"
+    },
+    {
+      "path": ".env.local",
+      "revision": "5f6e3815cc1f",
+      "line": 3,
+      "kind": "jwt_role_service_role",
+      "fingerprint": "0b2aef6c5734",
+      "classification": "historical hosted Supabase service-role credential; rotation not verified; different project ref from current hosting"
+    }
+  ],
+  "schema": [
+    {
+      "name": "blog_posts",
+      "kind": "r",
+      "columns": 10,
+      "indexes": [
+        {
+          "name": "blog_posts_pkey",
+          "definition": "CREATE UNIQUE INDEX blog_posts_pkey ON public.blog_posts USING btree (id)"
+        },
+        {
+          "name": "blog_posts_slug_idx",
+          "definition": "CREATE UNIQUE INDEX blog_posts_slug_idx ON public.blog_posts USING btree (slug)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "blog_posts_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "blog_posts_status_check",
+          "type": "c",
+          "definition": "CHECK ((status = ANY (ARRAY['draft'::text, 'published'::text])))"
+        }
+      ]
+    },
+    {
+      "name": "categories",
+      "kind": "r",
+      "columns": 4,
+      "indexes": [
+        {
+          "name": "categories_key_key",
+          "definition": "CREATE UNIQUE INDEX categories_key_key ON public.categories USING btree (key)"
+        },
+        {
+          "name": "categories_pkey",
+          "definition": "CREATE UNIQUE INDEX categories_pkey ON public.categories USING btree (id)"
+        },
+        {
+          "name": "categories_slug_key",
+          "definition": "CREATE UNIQUE INDEX categories_slug_key ON public.categories USING btree (slug)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "categories_key_key",
+          "type": "u",
+          "definition": "UNIQUE (key)"
+        },
+        {
+          "name": "categories_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "categories_slug_key",
+          "type": "u",
+          "definition": "UNIQUE (slug)"
+        }
+      ]
+    },
+    {
+      "name": "languages",
+      "kind": "r",
+      "columns": 4,
+      "indexes": [
+        {
+          "name": "languages_pkey",
+          "definition": "CREATE UNIQUE INDEX languages_pkey ON public.languages USING btree (code)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "languages_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (code)"
+        }
+      ]
+    },
+    {
+      "name": "profile_translated_fields",
+      "kind": "r",
+      "columns": 7,
+      "indexes": [
+        {
+          "name": "profile_translated_fields_pkey",
+          "definition": "CREATE UNIQUE INDEX profile_translated_fields_pkey ON public.profile_translated_fields USING btree (profile_id, field, language)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "profile_translated_fields_field_check",
+          "type": "c",
+          "definition": "CHECK ((field ~ '^[a-z0-9_]+$'::text))"
+        },
+        {
+          "name": "profile_translated_fields_language_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (language) REFERENCES languages(code) ON DELETE CASCADE"
+        },
+        {
+          "name": "profile_translated_fields_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (profile_id, field, language)"
+        },
+        {
+          "name": "profile_translated_fields_profile_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE"
+        }
+      ]
+    },
+    {
+      "name": "profiles",
+      "kind": "r",
+      "columns": 11,
+      "indexes": [
+        {
+          "name": "profiles_pkey",
+          "definition": "CREATE UNIQUE INDEX profiles_pkey ON public.profiles USING btree (id)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "profiles_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "profiles_language_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (language) REFERENCES languages(code) ON UPDATE CASCADE"
+        },
+        {
+          "name": "profiles_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "profiles_role_check",
+          "type": "c",
+          "definition": "CHECK ((role = ANY (ARRAY['user'::text, 'vendor'::text, 'admin'::text])))"
+        }
+      ]
+    },
+    {
+      "name": "profiles_resolved",
+      "kind": "v",
+      "columns": 2,
+      "indexes": [],
+      "constraints": []
+    },
+    {
+      "name": "quotes",
+      "kind": "r",
+      "columns": 9,
+      "indexes": [
+        {
+          "name": "quotes_pkey",
+          "definition": "CREATE UNIQUE INDEX quotes_pkey ON public.quotes USING btree (id)"
+        },
+        {
+          "name": "quotes_rfq_id_idx",
+          "definition": "CREATE INDEX quotes_rfq_id_idx ON public.quotes USING btree (rfq_id)"
+        },
+        {
+          "name": "quotes_rfq_vendor_idx",
+          "definition": "CREATE INDEX quotes_rfq_vendor_idx ON public.quotes USING btree (rfq_id, vendor_id, version)"
+        },
+        {
+          "name": "quotes_vendor_id_idx",
+          "definition": "CREATE INDEX quotes_vendor_id_idx ON public.quotes USING btree (vendor_id)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "quotes_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "quotes_rfq_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (rfq_id) REFERENCES rfqs(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "quotes_vendor_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+        }
+      ]
+    },
+    {
+      "name": "reviews",
+      "kind": "r",
+      "columns": 9,
+      "indexes": [
+        {
+          "name": "reviews_author_id_idx",
+          "definition": "CREATE INDEX reviews_author_id_idx ON public.reviews USING btree (author_id)"
+        },
+        {
+          "name": "reviews_author_vendor_rfq_idx",
+          "definition": "CREATE INDEX reviews_author_vendor_rfq_idx ON public.reviews USING btree (author_id, vendor_id, rfq_id)"
+        },
+        {
+          "name": "reviews_pkey",
+          "definition": "CREATE UNIQUE INDEX reviews_pkey ON public.reviews USING btree (id)"
+        },
+        {
+          "name": "reviews_rfq_id_idx",
+          "definition": "CREATE INDEX reviews_rfq_id_idx ON public.reviews USING btree (rfq_id)"
+        },
+        {
+          "name": "reviews_unique_author_vendor_rfq",
+          "definition": "CREATE UNIQUE INDEX reviews_unique_author_vendor_rfq ON public.reviews USING btree (author_id, vendor_id, rfq_id)"
+        },
+        {
+          "name": "reviews_vendor_id_idx",
+          "definition": "CREATE INDEX reviews_vendor_id_idx ON public.reviews USING btree (vendor_id)"
+        },
+        {
+          "name": "unique_author_per_rfq",
+          "definition": "CREATE UNIQUE INDEX unique_author_per_rfq ON public.reviews USING btree (rfq_id, author_id)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "reviews_author_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (author_id) REFERENCES auth.users(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "reviews_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "reviews_rfq_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (rfq_id) REFERENCES rfqs(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "reviews_stars_check",
+          "type": "c",
+          "definition": "CHECK (((stars >= 1) AND (stars <= 5)))"
+        },
+        {
+          "name": "reviews_unique_author_vendor_rfq",
+          "type": "u",
+          "definition": "UNIQUE (author_id, vendor_id, rfq_id)"
+        },
+        {
+          "name": "reviews_vendor_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "unique_author_per_rfq",
+          "type": "u",
+          "definition": "UNIQUE (rfq_id, author_id)"
+        }
+      ]
+    },
+    {
+      "name": "reviews_public",
+      "kind": "v",
+      "columns": 8,
+      "indexes": [],
+      "constraints": []
+    },
+    {
+      "name": "rfq_invites",
+      "kind": "r",
+      "columns": 8,
+      "indexes": [
+        {
+          "name": "rfq_invites_pkey",
+          "definition": "CREATE UNIQUE INDEX rfq_invites_pkey ON public.rfq_invites USING btree (rfq_id, vendor_id)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "rfq_invites_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (rfq_id, vendor_id)"
+        },
+        {
+          "name": "rfq_invites_rfq_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (rfq_id) REFERENCES rfqs(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "rfq_invites_vendor_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+        }
+      ]
+    },
+    {
+      "name": "rfqs",
+      "kind": "r",
+      "columns": 18,
+      "indexes": [
+        {
+          "name": "rfqs_accepted_quote_id_idx",
+          "definition": "CREATE INDEX rfqs_accepted_quote_id_idx ON public.rfqs USING btree (accepted_quote_id)"
+        },
+        {
+          "name": "rfqs_owner_id_idx",
+          "definition": "CREATE INDEX rfqs_owner_id_idx ON public.rfqs USING btree (owner_id)"
+        },
+        {
+          "name": "rfqs_pkey",
+          "definition": "CREATE UNIQUE INDEX rfqs_pkey ON public.rfqs USING btree (id)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "rfqs_accepted_quote_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (accepted_quote_id) REFERENCES quotes(id)"
+        },
+        {
+          "name": "rfqs_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        }
+      ]
+    },
+    {
+      "name": "site_settings",
+      "kind": "r",
+      "columns": 3,
+      "indexes": [
+        {
+          "name": "site_settings_key_idx",
+          "definition": "CREATE UNIQUE INDEX site_settings_key_idx ON public.site_settings USING btree (key)"
+        },
+        {
+          "name": "site_settings_pkey",
+          "definition": "CREATE UNIQUE INDEX site_settings_pkey ON public.site_settings USING btree (key)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "site_settings_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (key)"
+        }
+      ]
+    },
+    {
+      "name": "vendor_categories",
+      "kind": "r",
+      "columns": 2,
+      "indexes": [
+        {
+          "name": "vendor_categories_pkey",
+          "definition": "CREATE UNIQUE INDEX vendor_categories_pkey ON public.vendor_categories USING btree (vendor_id, category_id)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "vendor_categories_category_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "vendor_categories_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (vendor_id, category_id)"
+        },
+        {
+          "name": "vendor_categories_vendor_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+        }
+      ]
+    },
+    {
+      "name": "vendor_latest_quotes",
+      "kind": "v",
+      "columns": 9,
+      "indexes": [],
+      "constraints": []
+    },
+    {
+      "name": "vendor_locations",
+      "kind": "r",
+      "columns": 10,
+      "indexes": [
+        {
+          "name": "vendor_locations_pkey",
+          "definition": "CREATE UNIQUE INDEX vendor_locations_pkey ON public.vendor_locations USING btree (vendor_id)"
+        },
+        {
+          "name": "vendor_locations_vendor_id_key",
+          "definition": "CREATE UNIQUE INDEX vendor_locations_vendor_id_key ON public.vendor_locations USING btree (vendor_id)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "vendor_locations_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (vendor_id)"
+        },
+        {
+          "name": "vendor_locations_radius_chk",
+          "type": "c",
+          "definition": "CHECK (((service_radius_km >= 1) AND (service_radius_km <= 500)))"
+        },
+        {
+          "name": "vendor_locations_vendor_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "vendor_locations_vendor_id_key",
+          "type": "u",
+          "definition": "UNIQUE (vendor_id)"
+        }
+      ]
+    },
+    {
+      "name": "vendor_media",
+      "kind": "r",
+      "columns": 6,
+      "indexes": [
+        {
+          "name": "vendor_media_pkey",
+          "definition": "CREATE UNIQUE INDEX vendor_media_pkey ON public.vendor_media USING btree (id)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "vendor_media_kind_check",
+          "type": "c",
+          "definition": "CHECK ((kind = ANY (ARRAY['image'::text, 'video'::text])))"
+        },
+        {
+          "name": "vendor_media_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "vendor_media_vendor_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE"
+        }
+      ]
+    },
+    {
+      "name": "vendor_public_search",
+      "kind": "v",
+      "columns": 20,
+      "indexes": [],
+      "constraints": []
+    },
+    {
+      "name": "vendor_ratings",
+      "kind": "v",
+      "columns": 3,
+      "indexes": [],
+      "constraints": []
+    },
+    {
+      "name": "vendors",
+      "kind": "r",
+      "columns": 13,
+      "indexes": [
+        {
+          "name": "vendors_name_trgm",
+          "definition": "CREATE INDEX vendors_name_trgm ON public.vendors USING gin (business_name gin_trgm_ops)"
+        },
+        {
+          "name": "vendors_owner_id_idx",
+          "definition": "CREATE INDEX vendors_owner_id_idx ON public.vendors USING btree (owner_id)"
+        },
+        {
+          "name": "vendors_pkey",
+          "definition": "CREATE UNIQUE INDEX vendors_pkey ON public.vendors USING btree (id)"
+        },
+        {
+          "name": "vendors_published_idx",
+          "definition": "CREATE INDEX vendors_published_idx ON public.vendors USING btree (is_published)"
+        },
+        {
+          "name": "vendors_slug_key",
+          "definition": "CREATE UNIQUE INDEX vendors_slug_key ON public.vendors USING btree (slug)"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "vendors_owner_id_fkey",
+          "type": "f",
+          "definition": "FOREIGN KEY (owner_id) REFERENCES profiles(id) ON DELETE CASCADE"
+        },
+        {
+          "name": "vendors_pkey",
+          "type": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "vendors_slug_key",
+          "type": "u",
+          "definition": "UNIQUE (slug)"
+        }
+      ]
+    }
+  ],
+  "views": [
+    {
+      "name": "profiles_resolved",
+      "definition": "CREATE OR REPLACE VIEW \"public\".\"profiles_resolved\" AS\n SELECT \"id\" AS \"user_id\",\n    \"role\"\n   FROM \"public\".\"profiles\";",
+      "line": 523
+    },
+    {
+      "name": "reviews_public",
+      "definition": "CREATE OR REPLACE VIEW \"public\".\"reviews_public\" AS\n SELECT \"id\",\n    \"vendor_id\",\n    \"rfq_id\",\n        CASE\n            WHEN (\"author_id\" = \"auth\".\"uid\"()) THEN \"author_id\"\n            ELSE NULL::\"uuid\"\n        END AS \"rater_user_id\",\n    \"stars\" AS \"rating\",\n    \"title\",\n    \"body\",\n    \"created_at\"\n   FROM \"public\".\"reviews\" \"r\";",
+      "line": 580
+    },
+    {
+      "name": "vendor_latest_quotes",
+      "definition": "CREATE OR REPLACE VIEW \"public\".\"vendor_latest_quotes\" AS\n SELECT DISTINCT ON (\"rfq_id\", \"vendor_id\") \"id\",\n    \"rfq_id\",\n    \"vendor_id\",\n    \"version\",\n    \"amount_cents\",\n    \"currency\",\n    \"message\",\n    \"created_at\",\n    \"updated_at\"\n   FROM \"public\".\"quotes\" \"q\"\n  ORDER BY \"rfq_id\", \"vendor_id\", \"version\" DESC;",
+      "line": 693
+    },
+    {
+      "name": "vendor_profile_view",
+      "definition": "CREATE OR REPLACE VIEW \"public\".\"vendor_profile_view\" AS\n SELECT \"v\".\"id\",\n    \"v\".\"slug\",\n    \"v\".\"business_name\" AS \"name\",\n    \"v\".\"bio\",\n    \"v\".\"extra_info\",\n    \"v\".\"address_label\",\n    \"v\".\"map_url\",\n    \"v\".\"phone\",\n    \"v\".\"website_url\",\n    \"v\".\"logo_url\",\n    \"v\".\"starting_price_cents\",\n    \"v\".\"starting_price_currency\",\n    \"v\".\"capacity_max\",\n    \"v\".\"event_types\",\n    \"v\".\"years_in_business\",\n    \"v\".\"languages\",\n    \"v\".\"team_size_range\",\n    \"v\".\"pricing_typical_spend_cents\",\n    \"v\".\"pricing_typical_spend_currency\",\n    \"v\".\"pricing_peak_seasons\",\n    \"v\".\"rating_avg\",\n    \"v\".\"rating_count\",\n    \"v\".\"review_ai_summary\",\n    \"vl\".\"city\",\n    \"vl\".\"region\",\n    \"vl\".\"country\",\n    \"vl\".\"state\",\n    \"vl\".\"address\",\n    COALESCE(( SELECT \"json_agg\"(\"json_build_object\"('id', \"m\".\"id\", 'type', COALESCE(\"m\".\"media_type\", \"m\".\"kind\"), 'url', \"m\".\"url\", 'caption', \"m\".\"caption\", 'sort', \"m\".\"sort_order\") ORDER BY \"m\".\"sort_order\", \"m\".\"created_at\") AS \"json_agg\"\n           FROM \"public\".\"vendor_media\" \"m\"\n          WHERE (\"m\".\"vendor_id\" = \"v\".\"id\")), '[]'::json) AS \"media\",\n    COALESCE(( SELECT \"json_agg\"(\"json_build_object\"('id', \"s\".\"id\", 'name', \"s\".\"name\", 'description', \"s\".\"description\", 'capacity_min', \"s\".\"capacity_min\", 'capacity_max', \"s\".\"capacity_max\") ORDER BY \"s\".\"created_at\") AS \"json_agg\"\n           FROM \"public\".\"vendor_spaces\" \"s\"\n          WHERE (\"s\".\"vendor_id\" = \"v\".\"id\")), '[]'::json) AS \"spaces\",\n    COALESCE(( SELECT \"json_agg\"(\"json_build_object\"('item_key', \"p\".\"item_key\", 'price_cents', \"p\".\"price_cents\", 'currency', \"p\".\"currency\", 'contact_for_price', \"p\".\"contact_for_price\", 'notes', \"p\".\"notes\") ORDER BY \"p\".\"created_at\") AS \"json_agg\"\n           FROM \"public\".\"vendor_pricing\" \"p\"\n          WHERE (\"p\".\"vendor_id\" = \"v\".\"id\")), '[]'::json) AS \"pricing\",\n    COALESCE(( SELECT \"json_agg\"(\"json_build_object\"('key', \"al\".\"key\", 'group', \"al\".\"group_key\", 'label', \"al\".\"label\") ORDER BY \"al\".\"group_key\", \"al\".\"key\") AS \"json_agg\"\n           FROM (\"public\".\"vendor_amenities\" \"va\"\n             JOIN \"public\".\"amenity_lookup\" \"al\" ON ((\"al\".\"key\" = \"va\".\"amenity_key\")))\n          WHERE (\"va\".\"vendor_id\" = \"v\".\"id\")), '[]'::json) AS \"amenity_items\",\n    COALESCE(( SELECT \"json_agg\"(\"json_build_object\"('id', \"t\".\"id\", 'name', \"t\".\"name\", 'title', \"t\".\"title\", 'bio', \"t\".\"bio\", 'headshot_url', \"t\".\"headshot_url\", 'responds_within_hours', \"t\".\"responds_within_hours\", 'sort', \"t\".\"sort_order\") ORDER BY \"t\".\"sort_order\", \"t\".\"created_at\") AS \"json_agg\"\n           FROM \"public\".\"vendor_team\" \"t\"\n          WHERE (\"t\".\"vendor_id\" = \"v\".\"id\")), '[]'::json) AS \"team\",\n    COALESCE(( SELECT \"json_agg\"(\"json_build_object\"('id', \"c\".\"id\", 'slug', \"c\".\"slug\", 'label', \"c\".\"label\")) AS \"json_agg\"\n           FROM (\"public\".\"vendor_categories\" \"vc\"\n             JOIN \"public\".\"categories\" \"c\" ON ((\"c\".\"id\" = \"vc\".\"category_id\")))\n          WHERE (\"vc\".\"vendor_id\" = \"v\".\"id\")), '[]'::json) AS \"categories\",\n    COALESCE(( SELECT \"json_agg\"(\"json_build_object\"('id', \"a\".\"id\", 'available_on', \"a\".\"available_on\", 'availability_status', \"a\".\"availability_status\") ORDER BY \"a\".\"available_on\") AS \"json_agg\"\n           FROM \"public\".\"vendor_availability\" \"a\"\n          WHERE (\"a\".\"vendor_id\" = \"v\".\"id\")), '[]'::json) AS \"availability_dates\"\n   FROM (\"public\".\"vendors\" \"v\"\n     LEFT JOIN \"public\".\"vendor_locations\" \"vl\" ON ((\"vl\".\"vendor_id\" = \"v\".\"id\")))\n  WHERE (COALESCE(\"v\".\"is_published\", false) = true);",
+      "line": 837
+    },
+    {
+      "name": "vendor_public_search",
+      "definition": "CREATE OR REPLACE VIEW \"public\".\"vendor_public_search\" AS\nSELECT\n    NULL::\"uuid\" AS \"id\",\n    NULL::\"text\" AS \"slug\",\n    NULL::\"text\" AS \"business_name\",\n    NULL::\"jsonb\" AS \"hero_image\",\n    NULL::\"jsonb\" AS \"thumbnail_image\",\n    NULL::\"jsonb\" AS \"gallery_images\",\n    NULL::numeric(3,2) AS \"rating_avg\",\n    NULL::integer AS \"rating_count\",\n    NULL::boolean AS \"is_published\",\n    NULL::timestamp with time zone AS \"created_at\",\n    NULL::\"text\" AS \"bio_en\",\n    NULL::\"text\" AS \"bio_es\",\n    NULL::\"text\" AS \"extra_info_en\",\n    NULL::\"text\" AS \"extra_info_es\",\n    NULL::\"text\" AS \"city\",\n    NULL::\"text\" AS \"region\",\n    NULL::\"text\" AS \"country\",\n    NULL::double precision AS \"lat\",\n    NULL::double precision AS \"lng\",\n    NULL::\"text\"[] AS \"categories\";",
+      "line": 897
+    },
+    {
+      "name": "vendor_ratings",
+      "definition": "CREATE OR REPLACE VIEW \"public\".\"vendor_ratings\" AS\n SELECT \"vendor_id\",\n    (COALESCE(\"round\"(\"avg\"(\"stars\"), 2), (0)::numeric))::numeric(4,2) AS \"rating_avg\",\n    \"count\"(*) AS \"rating_count\"\n   FROM \"public\".\"reviews\"\n  GROUP BY \"vendor_id\";",
+      "line": 924
+    },
+    {
+      "name": "vendor_public_search",
+      "definition": "CREATE OR REPLACE VIEW \"public\".\"vendor_public_search\" AS\n SELECT \"v\".\"id\",\n    \"v\".\"slug\",\n    \"v\".\"business_name\",\n    \"v\".\"hero_image\",\n    \"v\".\"thumbnail_image\",\n    \"v\".\"gallery_images\",\n    \"v\".\"rating_avg\",\n    \"v\".\"rating_count\",\n    \"v\".\"is_published\",\n    \"v\".\"created_at\",\n    (\"v\".\"bio\" ->> 'en'::\"text\") AS \"bio_en\",\n    (\"v\".\"bio\" ->> 'es'::\"text\") AS \"bio_es\",\n    (\"v\".\"extra_info\" ->> 'en'::\"text\") AS \"extra_info_en\",\n    (\"v\".\"extra_info\" ->> 'es'::\"text\") AS \"extra_info_es\",\n    \"vl\".\"city\",\n    \"vl\".\"region\",\n    \"vl\".\"country\",\n    \"vl\".\"lat\",\n    \"vl\".\"lng\",\n    COALESCE(\"array_agg\"(\"c\".\"key\" ORDER BY \"c\".\"key\") FILTER (WHERE (\"c\".\"key\" IS NOT NULL)), '{}'::\"text\"[]) AS \"categories\"\n   FROM (((\"public\".\"vendors\" \"v\"\n     LEFT JOIN \"public\".\"vendor_locations\" \"vl\" ON ((\"vl\".\"vendor_id\" = \"v\".\"id\")))\n     LEFT JOIN \"public\".\"vendor_categories\" \"vc\" ON ((\"vc\".\"vendor_id\" = \"v\".\"id\")))\n     LEFT JOIN \"public\".\"categories\" \"c\" ON ((\"c\".\"id\" = \"vc\".\"category_id\")))\n  WHERE (COALESCE(\"v\".\"is_published\", false) = true)\n  GROUP BY \"v\".\"id\", \"vl\".\"city\", \"vl\".\"region\", \"vl\".\"country\", \"vl\".\"lat\", \"vl\".\"lng\";",
+      "line": 1180
+    }
+  ],
+  "policies": [
+    {
+      "table": "blog_posts",
+      "name": "Allow admins to manage blog posts",
+      "definition": "CREATE POLICY \"Allow admins to manage blog posts\" ON \"public\".\"blog_posts\" USING (((\"auth\".\"role\"() = 'service_role'::\"text\") OR (EXISTS ( SELECT 1\n   FROM \"public\".\"profiles\"\n  WHERE ((\"profiles\".\"id\" = \"auth\".\"uid\"()) AND (\"profiles\".\"role\" = 'admin'::\"text\")))))) WITH CHECK (((\"auth\".\"role\"() = 'service_role'::\"text\") OR (EXISTS ( SELECT 1\n   FROM \"public\".\"profiles\"\n  WHERE ((\"profiles\".\"id\" = \"auth\".\"uid\"()) AND (\"profiles\".\"role\" = 'admin'::\"text\"))))));",
+      "line": 1385
+    },
+    {
+      "table": "blog_posts",
+      "name": "Allow service role to manage blog posts",
+      "definition": "CREATE POLICY \"Allow service role to manage blog posts\" ON \"public\".\"blog_posts\" USING ((\"auth\".\"role\"() = 'service_role'::\"text\")) WITH CHECK ((\"auth\".\"role\"() = 'service_role'::\"text\"));",
+      "line": 1393
+    },
+    {
+      "table": "site_settings",
+      "name": "Allow service role to manage site settings",
+      "definition": "CREATE POLICY \"Allow service role to manage site settings\" ON \"public\".\"site_settings\" USING ((\"auth\".\"role\"() = 'service_role'::\"text\")) WITH CHECK ((\"auth\".\"role\"() = 'service_role'::\"text\"));",
+      "line": 1397
+    },
+    {
+      "table": "profile_translated_fields",
+      "name": "Users manage their own profile translations",
+      "definition": "CREATE POLICY \"Users manage their own profile translations\" ON \"public\".\"profile_translated_fields\" USING ((\"profile_id\" = \"auth\".\"uid\"())) WITH CHECK ((\"profile_id\" = \"auth\".\"uid\"()));",
+      "line": 1401
+    },
+    {
+      "table": "categories",
+      "name": "categories_public_read",
+      "definition": "CREATE POLICY \"categories_public_read\" ON \"public\".\"categories\" FOR SELECT USING (true);",
+      "line": 1411
+    },
+    {
+      "table": "notifications",
+      "name": "notifications_recipient_delete",
+      "definition": "CREATE POLICY \"notifications_recipient_delete\" ON \"public\".\"notifications\" FOR DELETE TO \"authenticated\" USING ((\"recipient_id\" = \"auth\".\"uid\"()));",
+      "line": 1418
+    },
+    {
+      "table": "notifications",
+      "name": "notifications_recipient_insert",
+      "definition": "CREATE POLICY \"notifications_recipient_insert\" ON \"public\".\"notifications\" FOR INSERT TO \"authenticated\" WITH CHECK (((\"actor_id\" = \"auth\".\"uid\"()) OR (\"auth\".\"role\"() = 'service_role'::\"text\")));",
+      "line": 1422
+    },
+    {
+      "table": "notifications",
+      "name": "notifications_recipient_select",
+      "definition": "CREATE POLICY \"notifications_recipient_select\" ON \"public\".\"notifications\" FOR SELECT TO \"authenticated\" USING ((\"recipient_id\" = \"auth\".\"uid\"()));",
+      "line": 1426
+    },
+    {
+      "table": "notifications",
+      "name": "notifications_recipient_update",
+      "definition": "CREATE POLICY \"notifications_recipient_update\" ON \"public\".\"notifications\" FOR UPDATE TO \"authenticated\" USING ((\"recipient_id\" = \"auth\".\"uid\"())) WITH CHECK ((\"recipient_id\" = \"auth\".\"uid\"()));",
+      "line": 1430
+    },
+    {
+      "table": "profiles",
+      "name": "profiles_admin_all",
+      "definition": "CREATE POLICY \"profiles_admin_all\" ON \"public\".\"profiles\" TO \"authenticated\" USING ((COALESCE((\"auth\".\"jwt\"() ->> 'role'::\"text\"), ''::\"text\") = 'admin'::\"text\")) WITH CHECK ((COALESCE((\"auth\".\"jwt\"() ->> 'role'::\"text\"), ''::\"text\") = 'admin'::\"text\"));",
+      "line": 1440
+    },
+    {
+      "table": "profiles",
+      "name": "profiles_self_insert",
+      "definition": "CREATE POLICY \"profiles_self_insert\" ON \"public\".\"profiles\" FOR INSERT TO \"authenticated\" WITH CHECK ((\"auth\".\"uid\"() = \"id\"));",
+      "line": 1444
+    },
+    {
+      "table": "profiles",
+      "name": "profiles_self_select",
+      "definition": "CREATE POLICY \"profiles_self_select\" ON \"public\".\"profiles\" FOR SELECT TO \"authenticated\" USING ((\"auth\".\"uid\"() = \"id\"));",
+      "line": 1448
+    },
+    {
+      "table": "profiles",
+      "name": "profiles_self_update",
+      "definition": "CREATE POLICY \"profiles_self_update\" ON \"public\".\"profiles\" FOR UPDATE TO \"authenticated\" USING ((\"auth\".\"uid\"() = \"id\")) WITH CHECK ((\"auth\".\"uid\"() = \"id\"));",
+      "line": 1452
+    },
+    {
+      "table": "quote_messages",
+      "name": "quote_messages_client_insert",
+      "definition": "CREATE POLICY \"quote_messages_client_insert\" ON \"public\".\"quote_messages\" FOR INSERT TO \"authenticated\" WITH CHECK (((\"sender_id\" = \"auth\".\"uid\"()) AND (\"sender_role\" = 'client'::\"text\") AND (EXISTS ( SELECT 1\n   FROM (\"public\".\"quotes\" \"q\"\n     JOIN \"public\".\"rfqs\" \"r\" ON ((\"r\".\"id\" = \"q\".\"rfq_id\")))\n  WHERE ((\"q\".\"id\" = \"quote_messages\".\"quote_id\") AND (\"r\".\"owner_id\" = \"auth\".\"uid\"()))))));",
+      "line": 1459
+    },
+    {
+      "table": "quote_messages",
+      "name": "quote_messages_client_select",
+      "definition": "CREATE POLICY \"quote_messages_client_select\" ON \"public\".\"quote_messages\" FOR SELECT TO \"authenticated\" USING ((EXISTS ( SELECT 1\n   FROM (\"public\".\"quotes\" \"q\"\n     JOIN \"public\".\"rfqs\" \"r\" ON ((\"r\".\"id\" = \"q\".\"rfq_id\")))\n  WHERE ((\"q\".\"id\" = \"quote_messages\".\"quote_id\") AND (\"r\".\"owner_id\" = \"auth\".\"uid\"())))));",
+      "line": 1466
+    },
+    {
+      "table": "quote_messages",
+      "name": "quote_messages_vendor_insert",
+      "definition": "CREATE POLICY \"quote_messages_vendor_insert\" ON \"public\".\"quote_messages\" FOR INSERT TO \"authenticated\" WITH CHECK (((\"sender_id\" = \"auth\".\"uid\"()) AND (\"sender_role\" = 'vendor'::\"text\") AND (EXISTS ( SELECT 1\n   FROM (\"public\".\"quotes\" \"q\"\n     JOIN \"public\".\"vendors\" \"v\" ON ((\"v\".\"id\" = \"q\".\"vendor_id\")))\n  WHERE ((\"q\".\"id\" = \"quote_messages\".\"quote_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"()))))));",
+      "line": 1473
+    },
+    {
+      "table": "quote_messages",
+      "name": "quote_messages_vendor_select",
+      "definition": "CREATE POLICY \"quote_messages_vendor_select\" ON \"public\".\"quote_messages\" FOR SELECT TO \"authenticated\" USING ((EXISTS ( SELECT 1\n   FROM (\"public\".\"quotes\" \"q\"\n     JOIN \"public\".\"vendors\" \"v\" ON ((\"v\".\"id\" = \"q\".\"vendor_id\")))\n  WHERE ((\"q\".\"id\" = \"quote_messages\".\"quote_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"())))));",
+      "line": 1480
+    },
+    {
+      "table": "quotes",
+      "name": "quotes_owner_read",
+      "definition": "CREATE POLICY \"quotes_owner_read\" ON \"public\".\"quotes\" FOR SELECT TO \"authenticated\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"rfqs\" \"r\"\n  WHERE ((\"r\".\"id\" = \"quotes\".\"rfq_id\") AND (\"r\".\"owner_id\" = \"auth\".\"uid\"())))));",
+      "line": 1490
+    },
+    {
+      "table": "quotes",
+      "name": "quotes_owner_select",
+      "definition": "CREATE POLICY \"quotes_owner_select\" ON \"public\".\"quotes\" FOR SELECT USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"rfqs\" \"r\"\n  WHERE ((\"r\".\"id\" = \"quotes\".\"rfq_id\") AND (\"r\".\"owner_id\" = \"auth\".\"uid\"())))));",
+      "line": 1496
+    },
+    {
+      "table": "quotes",
+      "name": "quotes_vendor_crud",
+      "definition": "CREATE POLICY \"quotes_vendor_crud\" ON \"public\".\"quotes\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"quotes\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"()))))) WITH CHECK ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"quotes\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"())))));",
+      "line": 1502
+    },
+    {
+      "table": "quotes",
+      "name": "quotes_vendor_insert",
+      "definition": "CREATE POLICY \"quotes_vendor_insert\" ON \"public\".\"quotes\" FOR INSERT WITH CHECK (((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"quotes\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"())))) AND (EXISTS ( SELECT 1\n   FROM \"public\".\"rfqs\" \"r\"\n  WHERE ((\"r\".\"id\" = \"quotes\".\"rfq_id\") AND (\"r\".\"accepted_quote_id\" IS NULL))))));",
+      "line": 1510
+    },
+    {
+      "table": "quotes",
+      "name": "quotes_vendor_read",
+      "definition": "CREATE POLICY \"quotes_vendor_read\" ON \"public\".\"quotes\" FOR SELECT TO \"authenticated\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"quotes\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"())))));",
+      "line": 1518
+    },
+    {
+      "table": "quotes",
+      "name": "quotes_vendor_select",
+      "definition": "CREATE POLICY \"quotes_vendor_select\" ON \"public\".\"quotes\" FOR SELECT USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"quotes\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"())))));",
+      "line": 1524
+    },
+    {
+      "table": "quotes",
+      "name": "quotes_vendor_update",
+      "definition": "CREATE POLICY \"quotes_vendor_update\" ON \"public\".\"quotes\" FOR UPDATE TO \"authenticated\" USING ((EXISTS ( SELECT 1\n   FROM (\"public\".\"vendors\" \"v\"\n     JOIN \"public\".\"rfq_invites\" \"i\" ON ((\"i\".\"vendor_id\" = \"v\".\"id\")))\n  WHERE ((\"v\".\"owner_id\" = \"auth\".\"uid\"()) AND (\"i\".\"rfq_id\" = \"quotes\".\"rfq_id\") AND (\"i\".\"vendor_id\" = \"quotes\".\"vendor_id\"))))) WITH CHECK ((EXISTS ( SELECT 1\n   FROM (\"public\".\"vendors\" \"v\"\n     JOIN \"public\".\"rfq_invites\" \"i\" ON ((\"i\".\"vendor_id\" = \"v\".\"id\")))\n  WHERE ((\"v\".\"owner_id\" = \"auth\".\"uid\"()) AND (\"i\".\"rfq_id\" = \"quotes\".\"rfq_id\") AND (\"i\".\"vendor_id\" = \"quotes\".\"vendor_id\")))));",
+      "line": 1530
+    },
+    {
+      "table": "reviews",
+      "name": "reviews_delete_author",
+      "definition": "CREATE POLICY \"reviews_delete_author\" ON \"public\".\"reviews\" FOR DELETE USING ((\"author_id\" = \"auth\".\"uid\"()));",
+      "line": 1543
+    },
+    {
+      "table": "reviews",
+      "name": "reviews_delete_owner_7d",
+      "definition": "CREATE POLICY \"reviews_delete_owner_7d\" ON \"public\".\"reviews\" FOR DELETE USING (((\"auth\".\"uid\"() = \"author_id\") AND \"public\".\"is_user\"(\"auth\".\"uid\"()) AND ((\"now\"() - \"created_at\") <= '7 days'::interval)));",
+      "line": 1547
+    },
+    {
+      "table": "reviews",
+      "name": "reviews_insert_if_hired",
+      "definition": "CREATE POLICY \"reviews_insert_if_hired\" ON \"public\".\"reviews\" FOR INSERT WITH CHECK (((\"auth\".\"uid\"() = \"author_id\") AND \"public\".\"is_user\"(\"auth\".\"uid\"()) AND \"public\".\"can_user_review\"(\"auth\".\"uid\"(), \"vendor_id\", \"rfq_id\") AND (NOT \"public\".\"has_user_reviewed\"(\"auth\".\"uid\"(), \"vendor_id\", \"rfq_id\"))));",
+      "line": 1551
+    },
+    {
+      "table": "reviews",
+      "name": "reviews_insert_owner_post_hire",
+      "definition": "CREATE POLICY \"reviews_insert_owner_post_hire\" ON \"public\".\"reviews\" FOR INSERT WITH CHECK (((\"auth\".\"uid\"() IS NOT NULL) AND (EXISTS ( SELECT 1\n   FROM (\"public\".\"rfqs\" \"r\"\n     JOIN \"public\".\"quotes\" \"q\" ON ((\"q\".\"id\" = \"r\".\"accepted_quote_id\")))\n  WHERE ((\"r\".\"id\" = \"q\".\"rfq_id\") AND (\"r\".\"owner_id\" = \"auth\".\"uid\"()) AND (\"q\".\"vendor_id\" = \"q\".\"vendor_id\"))))));",
+      "line": 1555
+    },
+    {
+      "table": "reviews",
+      "name": "reviews_read_all",
+      "definition": "CREATE POLICY \"reviews_read_all\" ON \"public\".\"reviews\" FOR SELECT USING (true);",
+      "line": 1562
+    },
+    {
+      "table": "reviews",
+      "name": "reviews_select_all",
+      "definition": "CREATE POLICY \"reviews_select_all\" ON \"public\".\"reviews\" FOR SELECT USING (true);",
+      "line": 1566
+    },
+    {
+      "table": "reviews",
+      "name": "reviews_update_author",
+      "definition": "CREATE POLICY \"reviews_update_author\" ON \"public\".\"reviews\" FOR UPDATE USING ((\"author_id\" = \"auth\".\"uid\"()));",
+      "line": 1570
+    },
+    {
+      "table": "reviews",
+      "name": "reviews_update_owner_7d",
+      "definition": "CREATE POLICY \"reviews_update_owner_7d\" ON \"public\".\"reviews\" FOR UPDATE USING (((\"auth\".\"uid\"() = \"author_id\") AND \"public\".\"is_user\"(\"auth\".\"uid\"()) AND ((\"now\"() - \"created_at\") <= '7 days'::interval))) WITH CHECK (((\"auth\".\"uid\"() = \"author_id\") AND \"public\".\"is_user\"(\"auth\".\"uid\"()) AND ((\"now\"() - \"created_at\") <= '7 days'::interval)));",
+      "line": 1574
+    },
+    {
+      "table": "rfq_invites",
+      "name": "rfq_invites_owner_insert",
+      "definition": "CREATE POLICY \"rfq_invites_owner_insert\" ON \"public\".\"rfq_invites\" FOR INSERT TO \"authenticated\" WITH CHECK ((EXISTS ( SELECT 1\n   FROM \"public\".\"rfqs\" \"r\"\n  WHERE ((\"r\".\"id\" = \"rfq_invites\".\"rfq_id\") AND (\"r\".\"owner_id\" = \"auth\".\"uid\"())))));",
+      "line": 1581
+    },
+    {
+      "table": "rfq_invites",
+      "name": "rfq_invites_owner_read",
+      "definition": "CREATE POLICY \"rfq_invites_owner_read\" ON \"public\".\"rfq_invites\" FOR SELECT TO \"authenticated\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"rfqs\" \"r\"\n  WHERE ((\"r\".\"id\" = \"rfq_invites\".\"rfq_id\") AND (\"r\".\"owner_id\" = \"auth\".\"uid\"())))));",
+      "line": 1587
+    },
+    {
+      "table": "rfq_invites",
+      "name": "rfq_invites_owner_update",
+      "definition": "CREATE POLICY \"rfq_invites_owner_update\" ON \"public\".\"rfq_invites\" FOR UPDATE USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"rfqs\" \"r\"\n  WHERE ((\"r\".\"id\" = \"rfq_invites\".\"rfq_id\") AND (\"r\".\"owner_id\" = \"auth\".\"uid\"()))))) WITH CHECK ((EXISTS ( SELECT 1\n   FROM \"public\".\"rfqs\" \"r\"\n  WHERE ((\"r\".\"id\" = \"rfq_invites\".\"rfq_id\") AND (\"r\".\"owner_id\" = \"auth\".\"uid\"())))));",
+      "line": 1593
+    },
+    {
+      "table": "rfq_invites",
+      "name": "rfq_invites_vendor_read",
+      "definition": "CREATE POLICY \"rfq_invites_vendor_read\" ON \"public\".\"rfq_invites\" FOR SELECT TO \"authenticated\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"rfq_invites\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"())))));",
+      "line": 1601
+    },
+    {
+      "table": "rfq_invites",
+      "name": "rfq_invites_vendor_update",
+      "definition": "CREATE POLICY \"rfq_invites_vendor_update\" ON \"public\".\"rfq_invites\" FOR UPDATE TO \"authenticated\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"rfq_invites\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"()))))) WITH CHECK ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"rfq_invites\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"())))));",
+      "line": 1607
+    },
+    {
+      "table": "rfqs",
+      "name": "rfqs_owner_delete",
+      "definition": "CREATE POLICY \"rfqs_owner_delete\" ON \"public\".\"rfqs\" FOR DELETE USING (((\"owner_id\" = \"auth\".\"uid\"()) AND \"public\".\"is_user\"(\"auth\".\"uid\"())));",
+      "line": 1618
+    },
+    {
+      "table": "rfqs",
+      "name": "rfqs_owner_insert",
+      "definition": "CREATE POLICY \"rfqs_owner_insert\" ON \"public\".\"rfqs\" FOR INSERT WITH CHECK (((\"owner_id\" = \"auth\".\"uid\"()) AND \"public\".\"is_user\"(\"auth\".\"uid\"())));",
+      "line": 1622
+    },
+    {
+      "table": "rfqs",
+      "name": "rfqs_owner_select",
+      "definition": "CREATE POLICY \"rfqs_owner_select\" ON \"public\".\"rfqs\" FOR SELECT USING ((\"owner_id\" = \"auth\".\"uid\"()));",
+      "line": 1626
+    },
+    {
+      "table": "rfqs",
+      "name": "rfqs_owner_update",
+      "definition": "CREATE POLICY \"rfqs_owner_update\" ON \"public\".\"rfqs\" FOR UPDATE USING (((\"owner_id\" = \"auth\".\"uid\"()) AND \"public\".\"is_user\"(\"auth\".\"uid\"()))) WITH CHECK (((\"owner_id\" = \"auth\".\"uid\"()) AND \"public\".\"is_user\"(\"auth\".\"uid\"())));",
+      "line": 1630
+    },
+    {
+      "table": "rfqs",
+      "name": "rfqs_vendor_select",
+      "definition": "CREATE POLICY \"rfqs_vendor_select\" ON \"public\".\"rfqs\" FOR SELECT USING (\"public\".\"can_vendor_view_rfq\"(\"auth\".\"uid\"(), \"id\"));",
+      "line": 1634
+    },
+    {
+      "table": "vendor_availability",
+      "name": "vendor_availability_owner_crud",
+      "definition": "CREATE POLICY \"vendor_availability_owner_crud\" ON \"public\".\"vendor_availability\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_availability\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"()))))) WITH CHECK ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_availability\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"())))));",
+      "line": 1644
+    },
+    {
+      "table": "vendor_availability",
+      "name": "vendor_availability_public_read",
+      "definition": "CREATE POLICY \"vendor_availability_public_read\" ON \"public\".\"vendor_availability\" FOR SELECT USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_availability\".\"vendor_id\") AND (\"v\".\"is_published\" = true)))));",
+      "line": 1652
+    },
+    {
+      "table": "vendor_categories",
+      "name": "vendor_categories_admin_all",
+      "definition": "CREATE POLICY \"vendor_categories_admin_all\" ON \"public\".\"vendor_categories\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"profiles\" \"p\"\n  WHERE ((\"p\".\"id\" = \"auth\".\"uid\"()) AND (\"p\".\"role\" = 'admin'::\"text\"))))) WITH CHECK ((EXISTS ( SELECT 1\n   FROM \"public\".\"profiles\" \"p\"\n  WHERE ((\"p\".\"id\" = \"auth\".\"uid\"()) AND (\"p\".\"role\" = 'admin'::\"text\")))));",
+      "line": 1661
+    },
+    {
+      "table": "vendor_categories",
+      "name": "vendor_categories_auth_read_published",
+      "definition": "CREATE POLICY \"vendor_categories_auth_read_published\" ON \"public\".\"vendor_categories\" FOR SELECT TO \"authenticated\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_categories\".\"vendor_id\") AND (\"v\".\"is_published\" = true)))));",
+      "line": 1669
+    },
+    {
+      "table": "vendor_categories",
+      "name": "vendor_categories_owner_all",
+      "definition": "CREATE POLICY \"vendor_categories_owner_all\" ON \"public\".\"vendor_categories\" TO \"authenticated\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_categories\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"()))))) WITH CHECK ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_categories\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"())))));",
+      "line": 1675
+    },
+    {
+      "table": "vendor_categories",
+      "name": "vendor_categories_owner_crud",
+      "definition": "CREATE POLICY \"vendor_categories_owner_crud\" ON \"public\".\"vendor_categories\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_categories\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"()))))) WITH CHECK ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_categories\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"())))));",
+      "line": 1683
+    },
+    {
+      "table": "vendor_categories",
+      "name": "vendor_categories_public_read",
+      "definition": "CREATE POLICY \"vendor_categories_public_read\" ON \"public\".\"vendor_categories\" FOR SELECT USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_categories\".\"vendor_id\") AND (\"v\".\"is_published\" = true)))));",
+      "line": 1691
+    },
+    {
+      "table": "vendor_categories",
+      "name": "vendor_categories_public_read_published",
+      "definition": "CREATE POLICY \"vendor_categories_public_read_published\" ON \"public\".\"vendor_categories\" FOR SELECT TO \"anon\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_categories\".\"vendor_id\") AND (\"v\".\"is_published\" = true)))));",
+      "line": 1697
+    },
+    {
+      "table": "vendor_locations",
+      "name": "vendor_locations_admin_all",
+      "definition": "CREATE POLICY \"vendor_locations_admin_all\" ON \"public\".\"vendor_locations\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"profiles\" \"p\"\n  WHERE ((\"p\".\"id\" = \"auth\".\"uid\"()) AND (\"p\".\"role\" = 'admin'::\"text\"))))) WITH CHECK ((EXISTS ( SELECT 1\n   FROM \"public\".\"profiles\" \"p\"\n  WHERE ((\"p\".\"id\" = \"auth\".\"uid\"()) AND (\"p\".\"role\" = 'admin'::\"text\")))));",
+      "line": 1706
+    },
+    {
+      "table": "vendor_locations",
+      "name": "vendor_locations_auth_read_published",
+      "definition": "CREATE POLICY \"vendor_locations_auth_read_published\" ON \"public\".\"vendor_locations\" FOR SELECT TO \"authenticated\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_locations\".\"vendor_id\") AND (\"v\".\"is_published\" = true)))));",
+      "line": 1714
+    },
+    {
+      "table": "vendor_locations",
+      "name": "vendor_locations_owner_all",
+      "definition": "CREATE POLICY \"vendor_locations_owner_all\" ON \"public\".\"vendor_locations\" TO \"authenticated\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_locations\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"()))))) WITH CHECK ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_locations\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"())))));",
+      "line": 1720
+    },
+    {
+      "table": "vendor_locations",
+      "name": "vendor_locations_owner_crud",
+      "definition": "CREATE POLICY \"vendor_locations_owner_crud\" ON \"public\".\"vendor_locations\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_locations\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"()))))) WITH CHECK ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_locations\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"())))));",
+      "line": 1728
+    },
+    {
+      "table": "vendor_locations",
+      "name": "vendor_locations_public_read",
+      "definition": "CREATE POLICY \"vendor_locations_public_read\" ON \"public\".\"vendor_locations\" FOR SELECT USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_locations\".\"vendor_id\") AND (\"v\".\"is_published\" = true)))));",
+      "line": 1736
+    },
+    {
+      "table": "vendor_locations",
+      "name": "vendor_locations_public_read_published",
+      "definition": "CREATE POLICY \"vendor_locations_public_read_published\" ON \"public\".\"vendor_locations\" FOR SELECT TO \"anon\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_locations\".\"vendor_id\") AND (\"v\".\"is_published\" = true)))));",
+      "line": 1742
+    },
+    {
+      "table": "vendor_media",
+      "name": "vendor_media_admin_all",
+      "definition": "CREATE POLICY \"vendor_media_admin_all\" ON \"public\".\"vendor_media\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"profiles\" \"p\"\n  WHERE ((\"p\".\"id\" = \"auth\".\"uid\"()) AND (\"p\".\"role\" = 'admin'::\"text\"))))) WITH CHECK ((EXISTS ( SELECT 1\n   FROM \"public\".\"profiles\" \"p\"\n  WHERE ((\"p\".\"id\" = \"auth\".\"uid\"()) AND (\"p\".\"role\" = 'admin'::\"text\")))));",
+      "line": 1751
+    },
+    {
+      "table": "vendor_media",
+      "name": "vendor_media_owner_crud",
+      "definition": "CREATE POLICY \"vendor_media_owner_crud\" ON \"public\".\"vendor_media\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_media\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"()))))) WITH CHECK ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_media\".\"vendor_id\") AND (\"v\".\"owner_id\" = \"auth\".\"uid\"())))));",
+      "line": 1759
+    },
+    {
+      "table": "vendor_media",
+      "name": "vendor_media_public_read",
+      "definition": "CREATE POLICY \"vendor_media_public_read\" ON \"public\".\"vendor_media\" FOR SELECT USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"vendors\" \"v\"\n  WHERE ((\"v\".\"id\" = \"vendor_media\".\"vendor_id\") AND (\"v\".\"is_published\" = true)))));",
+      "line": 1767
+    },
+    {
+      "table": "vendors",
+      "name": "vendors_admin_all",
+      "definition": "CREATE POLICY \"vendors_admin_all\" ON \"public\".\"vendors\" USING ((EXISTS ( SELECT 1\n   FROM \"public\".\"profiles\" \"p\"\n  WHERE ((\"p\".\"id\" = \"auth\".\"uid\"()) AND (\"p\".\"role\" = 'admin'::\"text\"))))) WITH CHECK ((EXISTS ( SELECT 1\n   FROM \"public\".\"profiles\" \"p\"\n  WHERE ((\"p\".\"id\" = \"auth\".\"uid\"()) AND (\"p\".\"role\" = 'admin'::\"text\")))));",
+      "line": 1776
+    },
+    {
+      "table": "vendors",
+      "name": "vendors_auth_read_published",
+      "definition": "CREATE POLICY \"vendors_auth_read_published\" ON \"public\".\"vendors\" FOR SELECT TO \"authenticated\" USING ((\"is_published\" = true));",
+      "line": 1784
+    },
+    {
+      "table": "vendors",
+      "name": "vendors_owner_all",
+      "definition": "CREATE POLICY \"vendors_owner_all\" ON \"public\".\"vendors\" TO \"authenticated\" USING ((\"auth\".\"uid\"() = \"owner_id\")) WITH CHECK ((\"auth\".\"uid\"() = \"owner_id\"));",
+      "line": 1788
+    },
+    {
+      "table": "vendors",
+      "name": "vendors_owner_crud",
+      "definition": "CREATE POLICY \"vendors_owner_crud\" ON \"public\".\"vendors\" USING ((\"auth\".\"uid\"() = \"owner_id\")) WITH CHECK ((\"auth\".\"uid\"() = \"owner_id\"));",
+      "line": 1792
+    },
+    {
+      "table": "vendors",
+      "name": "vendors_owner_cud",
+      "definition": "CREATE POLICY \"vendors_owner_cud\" ON \"public\".\"vendors\" USING ((\"owner_id\" = \"auth\".\"uid\"())) WITH CHECK ((\"owner_id\" = \"auth\".\"uid\"()));",
+      "line": 1796
+    },
+    {
+      "table": "vendors",
+      "name": "vendors_public_read",
+      "definition": "CREATE POLICY \"vendors_public_read\" ON \"public\".\"vendors\" FOR SELECT USING ((\"is_published\" = true));",
+      "line": 1800
+    },
+    {
+      "table": "vendors",
+      "name": "vendors_public_read_published",
+      "definition": "CREATE POLICY \"vendors_public_read_published\" ON \"public\".\"vendors\" FOR SELECT TO \"anon\" USING ((\"is_published\" = true));",
+      "line": 1804
+    },
+    {
+      "table": "vendors",
+      "name": "vendors_read_all",
+      "definition": "CREATE POLICY \"vendors_read_all\" ON \"public\".\"vendors\" FOR SELECT USING (true);",
+      "line": 1808
+    }
+  ]
+}

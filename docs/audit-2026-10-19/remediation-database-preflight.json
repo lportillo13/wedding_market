@@ -1,0 +1,19 @@
+{
+  "duplicate_quote_version_groups": 0,
+  "quotes_without_invitation": 0,
+  "profile_role_counts": [
+    {
+      "role": "admin",
+      "count": 1
+    },
+    {
+      "role": "vendor",
+      "count": 155
+    },
+    {
+      "role": "user",
+      "count": 7
+    }
+  ],
+  "auth_triggers": null
+}

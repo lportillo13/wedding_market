@@ -1,0 +1,62 @@
+[
+  {
+    "relname": "amenity_lookup",
+    "relkind": "r",
+    "relrowsecurity": false,
+    "anon_select": true,
+    "anon_insert": true,
+    "anon_update": true,
+    "anon_delete": true,
+    "auth_update": true
+  },
+  {
+    "relname": "languages",
+    "relkind": "r",
+    "relrowsecurity": false,
+    "anon_select": true,
+    "anon_insert": true,
+    "anon_update": true,
+    "anon_delete": true,
+    "auth_update": true
+  },
+  {
+    "relname": "vendor_amenities",
+    "relkind": "r",
+    "relrowsecurity": false,
+    "anon_select": true,
+    "anon_insert": true,
+    "anon_update": true,
+    "anon_delete": true,
+    "auth_update": true
+  },
+  {
+    "relname": "vendor_pricing",
+    "relkind": "r",
+    "relrowsecurity": false,
+    "anon_select": true,
+    "anon_insert": true,
+    "anon_update": true,
+    "anon_delete": true,
+    "auth_update": true
+  },
+  {
+    "relname": "vendor_spaces",
+    "relkind": "r",
+    "relrowsecurity": false,
+    "anon_select": true,
+    "anon_insert": true,
+    "anon_update": true,
+    "anon_delete": true,
+    "auth_update": true
+  },
+  {
+    "relname": "vendor_team",
+    "relkind": "r",
+    "relrowsecurity": false,
+    "anon_select": true,
+    "anon_insert": true,
+    "anon_update": true,
+    "anon_delete": true,
+    "auth_update": true
+  }
+]

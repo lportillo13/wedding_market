@@ -1,0 +1,3 @@
+Browser tab: 4, Title: "OpenClaw · Hetzner Console", URL: "https://console.hetzner.com/projects/13668669/servers/122654139/snapshots".
+There has been no change in the accessibility tree.
+The focused UI element is 134 link Description: Snapshots, URL: console.hetzner.com/projects/13668669/servers/122654139/snapshots, ID: secondary-nav__snapshots

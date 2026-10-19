@@ -253,7 +253,35 @@ async function loadMessages(quoteIds: string[]) {
   return byQuote;
 }
 
-export async function loadMobileInbox(role: Role, language: "en" | "es" = "en"): Promise<MobileInboxThread[]> {
+type MobileSummary = {
+  invite: Record<string,unknown>; rfq: Record<string,unknown>; vendor: Record<string,unknown>;
+  latest_quote: Parameters<typeof toMobileQuote>[0] | null; accepted_here: boolean; total_count: number;
+};
+export async function loadMobileInbox(role: Role, language: "en" | "es" = "en", page = 1) {
+  const client = requiredClient();
+  const viewer=role === "vendor" || role === "admin" ? "vendor" : "client";
+  const { data,error }=await client.rpc("list_inbox_threads",{p_viewer:viewer,p_page:page,p_archived:false});
+  if (error) throw new Error(error.message);
+  const rows=(data ?? []) as MobileSummary[];
+  const threads=rows.map(({invite,rfq,vendor,latest_quote,accepted_here}): MobileInboxThread=>{
+    const latest=latest_quote ? toMobileQuote(latest_quote) : null;
+    return {
+      id:`${invite.rfq_id}:${invite.vendor_id}`,rfqId:String(invite.rfq_id),vendorId:String(invite.vendor_id),
+      title:viewer === "vendor" ? `${language === "es" ? "Solicitud de boda" : "Wedding request"} ${String(invite.rfq_id).slice(0,8)}` : String(vendor.business_name ?? "Vendor"),
+      subtitle:[rfq.city,rfq.state,rfq.country].filter(Boolean).join(", ") || String(rfq.notes ?? ""),
+      meta:formatThreadDate(nullableString(rfq.event_date) ?? nullableString(invite.created_at),language),
+      status:accepted_here ? "accepted" : String(invite.status ?? "invited"),expiresAt:nullableString(invite.expires_at),
+      acceptedQuoteId:nullableString(rfq.accepted_quote_id),contactEmail:nullableString(rfq.contact_email),contactPhone:nullableString(rfq.contact_phone),
+      request:toMobileRequestDetails(rfq),quotes:latest ? [latest] : [],latestQuote:latest,messages:[],
+    };
+  });
+  return {threads,total:Number(rows[0]?.total_count ?? 0)};
+}
+export async function loadMobileInboxThread(role: Role, language: "en" | "es", thread: MobileInboxThread) {
+  return (await loadMobileThreadData(role,language,thread)).find(item=>item.id===thread.id) ?? null;
+}
+
+async function loadMobileThreadData(role: Role, language: "en" | "es", selected: MobileInboxThread): Promise<MobileInboxThread[]> {
   const client = requiredClient();
   const {
     data: { user },
@@ -278,6 +306,7 @@ export async function loadMobileInbox(role: Role, language: "en" | "es" = "en"):
       .from("rfq_invites")
       .select("rfq_id, vendor_id, status, expires_at, created_at, updated_at, reveal_email, reveal_phone")
       .eq("vendor_id", vendor.id)
+      .eq("rfq_id",selected.rfqId)
       .order("updated_at", { ascending: false })
       .limit(30);
 
@@ -287,14 +316,14 @@ export async function loadMobileInbox(role: Role, language: "en" | "es" = "en"):
 
     const [{ data: rfqs, error: rfqError }, { data: quotes, error: quoteError }] = await Promise.all([
       client
-        .from("rfqs")
+        .from("rfqs_visible")
         .select("id, event_date, flexible_date, guest_count, guest_count_range, budget_min, budget_max, city, state, country, language, theme, notes, contact_email, contact_phone, accepted_quote_id, created_at, updated_at")
         .in("id", rfqIds),
       client
         .from("quotes")
         .select("id, rfq_id, vendor_id, version, amount_cents, currency, message, created_at")
         .eq("vendor_id", vendor.id)
-        .in("rfq_id", rfqIds)
+        .in("rfq_id", rfqIds).eq("vendor_id",selected.vendorId)
         .order("created_at", { ascending: false }),
     ]);
 
@@ -350,9 +379,10 @@ export async function loadMobileInbox(role: Role, language: "en" | "es" = "en"):
   }
 
   const { data: rfqs, error: rfqError } = await client
-    .from("rfqs")
+    .from("rfqs_visible")
     .select("id, event_date, flexible_date, guest_count, guest_count_range, budget_min, budget_max, city, state, country, language, theme, notes, accepted_quote_id, created_at, updated_at")
     .eq("owner_id", user.id)
+    .eq("id",selected.rfqId)
     .order("created_at", { ascending: false })
     .limit(30);
 
@@ -362,11 +392,11 @@ export async function loadMobileInbox(role: Role, language: "en" | "es" = "en"):
 
   const rfqIds = rfqRows.map((rfq) => String(rfq.id));
   const [{ data: invites, error: invitesError }, { data: quotes, error: quoteError }] = await Promise.all([
-    client.from("rfq_invites").select("rfq_id, vendor_id, status, expires_at, created_at, updated_at").in("rfq_id", rfqIds),
+    client.from("rfq_invites").select("rfq_id, vendor_id, status, expires_at, created_at, updated_at").in("rfq_id", rfqIds).eq("vendor_id",selected.vendorId),
     client
       .from("quotes")
       .select("id, rfq_id, vendor_id, version, amount_cents, currency, message, created_at")
-      .in("rfq_id", rfqIds)
+      .in("rfq_id", rfqIds).eq("vendor_id",selected.vendorId)
       .order("created_at", { ascending: false }),
   ]);
 
@@ -377,7 +407,7 @@ export async function loadMobileInbox(role: Role, language: "en" | "es" = "en"):
   // rfq_invites rather than the legacy rfqs.vendor_id shortcut.
   const vendorIds = [...new Set((invites ?? []).map((invite) => String(invite.vendor_id)).filter(Boolean))];
   const { data: vendors, error: vendorsError } = vendorIds.length
-    ? await client.from("vendors").select("id, business_name").in("id", vendorIds)
+    ? await client.from("thread_vendors").select("id, business_name").in("id", vendorIds)
     : { data: [], error: null };
   if (vendorsError) throw new Error(vendorsError.message);
 

@@ -40,7 +40,7 @@ export default async function NewReviewPage({
 
   const selectRfq = (client: SupabaseClient, column: OwnerColumn) =>
     client
-      .from("rfqs")
+      .from("rfqs_visible")
       .select(selectColumns[column])
       .eq("id", rfq_id)
       .maybeSingle<{ id: string; accepted_quote_id: string | null; owner_id: string }>();

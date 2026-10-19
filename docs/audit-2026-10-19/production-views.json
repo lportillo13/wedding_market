@@ -1,0 +1,44 @@
+[
+  {
+    "name": "profiles_resolved",
+    "owner": "postgres",
+    "reloptions": null,
+    "anon_select": true,
+    "definition": " SELECT id AS user_id,\n    role\n   FROM profiles;"
+  },
+  {
+    "name": "reviews_public",
+    "owner": "postgres",
+    "reloptions": null,
+    "anon_select": true,
+    "definition": " SELECT id,\n    vendor_id,\n    rfq_id,\n        CASE\n            WHEN author_id = auth.uid() THEN author_id\n            ELSE NULL::uuid\n        END AS rater_user_id,\n    stars AS rating,\n    title,\n    body,\n    created_at\n   FROM reviews r;"
+  },
+  {
+    "name": "vendor_latest_quotes",
+    "owner": "postgres",
+    "reloptions": null,
+    "anon_select": true,
+    "definition": " SELECT DISTINCT ON (rfq_id, vendor_id) id,\n    rfq_id,\n    vendor_id,\n    version,\n    amount_cents,\n    currency,\n    message,\n    created_at,\n    updated_at\n   FROM quotes q\n  ORDER BY rfq_id, vendor_id, version DESC;"
+  },
+  {
+    "name": "vendor_profile_view",
+    "owner": "postgres",
+    "reloptions": null,
+    "anon_select": true,
+    "definition": " SELECT v.id,\n    v.slug,\n    v.business_name AS name,\n    v.bio,\n    v.extra_info,\n    v.address_label,\n    v.map_url,\n    v.phone,\n    v.website_url,\n    v.logo_url,\n    v.starting_price_cents,\n    v.starting_price_currency,\n    v.capacity_max,\n    v.event_types,\n    v.years_in_business,\n    v.languages,\n    v.team_size_range,\n    v.pricing_typical_spend_cents,\n    v.pricing_typical_spend_currency,\n    v.pricing_peak_seasons,\n    v.rating_avg,\n    v.rating_count,\n    v.review_ai_summary,\n    vl.city,\n    vl.region,\n    vl.country,\n    vl.state,\n    vl.address,\n    COALESCE(( SELECT json_agg(json_build_object('id', m.id, 'type', COALESCE(m.media_type, m.kind), 'url', m.url, 'caption', m.caption, 'sort', m.sort_order) ORDER BY m.sort_order, m.created_at) AS json_agg\n           FROM vendor_media m\n          WHERE m.vendor_id = v.id), '[]'::json) AS media,\n    COALESCE(( SELECT json_agg(json_build_object('id', s.id, 'name', s.name, 'description', s.description, 'capacity_min', s.capacity_min, 'capacity_max', s.capacity_max) ORDER BY s.created_at) AS json_agg\n           FROM vendor_spaces s\n          WHERE s.vendor_id = v.id), '[]'::json) AS spaces,\n    COALESCE(( SELECT json_agg(json_build_object('item_key', p.item_key, 'price_cents', p.price_cents, 'currency', p.currency, 'contact_for_price', p.contact_for_price, 'notes', p.notes) ORDER BY p.created_at) AS json_agg\n           FROM vendor_pricing p\n          WHERE p.vendor_id = v.id), '[]'::json) AS pricing,\n    COALESCE(( SELECT json_agg(json_build_object('key', al.key, 'group', al.group_key, 'label', al.label) ORDER BY al.group_key, al.key) AS json_agg\n           FROM vendor_amenities va\n             JOIN amenity_lookup al ON al.key = va.amenity_key\n          WHERE va.vendor_id = v.id), '[]'::json) AS amenity_items,\n    COALESCE(( SELECT json_agg(json_build_object('id', t.id, 'name', t.name, 'title', t.title, 'bio', t.bio, 'headshot_url', t.headshot_url, 'responds_within_hours', t.responds_within_hours, 'sort', t.sort_order) ORDER BY t.sort_order, t.created_at) AS json_agg\n           FROM vendor_team t\n          WHERE t.vendor_id = v.id), '[]'::json) AS team,\n    COALESCE(( SELECT json_agg(json_build_object('id', c.id, 'slug', c.slug, 'label', c.label)) AS json_agg\n           FROM vendor_categories vc\n             JOIN categories c ON c.id = vc.category_id\n          WHERE vc.vendor_id = v.id), '[]'::json) AS categories,\n    COALESCE(( SELECT json_agg(json_build_object('id', a.id, 'available_on', a.available_on, 'availability_status', a.availability_status) ORDER BY a.available_on) AS json_agg\n           FROM vendor_availability a\n          WHERE a.vendor_id = v.id), '[]'::json) AS availability_dates\n   FROM vendors v\n     LEFT JOIN vendor_locations vl ON vl.vendor_id = v.id\n  WHERE COALESCE(v.is_published, false) = true;"
+  },
+  {
+    "name": "vendor_public_search",
+    "owner": "postgres",
+    "reloptions": null,
+    "anon_select": true,
+    "definition": " SELECT v.id,\n    v.slug,\n    v.business_name,\n    v.hero_image,\n    v.thumbnail_image,\n    v.gallery_images,\n    v.rating_avg,\n    v.rating_count,\n    v.is_published,\n    v.created_at,\n    v.bio ->> 'en'::text AS bio_en,\n    v.bio ->> 'es'::text AS bio_es,\n    v.extra_info ->> 'en'::text AS extra_info_en,\n    v.extra_info ->> 'es'::text AS extra_info_es,\n    vl.city,\n    vl.region,\n    vl.country,\n    vl.lat,\n    vl.lng,\n    COALESCE(array_agg(c.key ORDER BY c.key) FILTER (WHERE c.key IS NOT NULL), '{}'::text[]) AS categories\n   FROM vendors v\n     LEFT JOIN vendor_locations vl ON vl.vendor_id = v.id\n     LEFT JOIN vendor_categories vc ON vc.vendor_id = v.id\n     LEFT JOIN categories c ON c.id = vc.category_id\n  WHERE COALESCE(v.is_published, false) = true\n  GROUP BY v.id, vl.city, vl.region, vl.country, vl.lat, vl.lng;"
+  },
+  {
+    "name": "vendor_ratings",
+    "owner": "postgres",
+    "reloptions": null,
+    "anon_select": true,
+    "definition": " SELECT vendor_id,\n    COALESCE(round(avg(stars), 2), 0::numeric)::numeric(4,2) AS rating_avg,\n    count(*) AS rating_count\n   FROM reviews\n  GROUP BY vendor_id;"
+  }
+]

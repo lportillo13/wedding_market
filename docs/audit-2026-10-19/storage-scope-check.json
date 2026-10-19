@@ -1,0 +1,15 @@
+{
+  "scope": "Isolated execution of URL parsing only. No real configuration, network calls, uploads, or deletes.",
+  "checks": [
+    {
+      "description": "URL on configured host pointing outside the current user namespace",
+      "resolvedKey": "vendors/other-vendor/logo/example.webp",
+      "matchesExpectedClientNamespace": false
+    },
+    {
+      "description": "URL on a different R2 host",
+      "resolvedKey": "vendors/other-vendor/logo/example.webp",
+      "matchesExpectedClientNamespace": false
+    }
+  ]
+}

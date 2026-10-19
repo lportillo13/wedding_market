@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import NotificationOpenLink from "@/components/NotificationOpenLink";
 import { getLanguageLocale } from "@/lib/i18n";
 import {
@@ -92,41 +92,48 @@ export default function NotificationLink({ userId, href, types }: NotificationLi
   const [isLoading, setIsLoading] = useState(true);
   const { dictionary, language } = useLanguage();
   const locale = getLanguageLocale(language);
-  const typeKey = useMemo(() => types.join("|"), [types]);
+  const typeKey = [...types].sort().join("|");
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const labels = dictionary.nav;
 
   useEffect(() => {
     let active = true;
-
+    let inFlight = false;
+    let connected = false;
+    let lastLoad = 0;
+    let pendingTimer: ReturnType<typeof setTimeout> | undefined;
+    const selectedTypes = typeKey.split("|") as NotificationType[];
     const loadNotifications = async () => {
-      setIsLoading(true);
+      if (!active || document.visibilityState !== "visible" || inFlight) return;
+      if (Date.now() - lastLoad < 5000) {
+        if (!pendingTimer) pendingTimer = setTimeout(() => { pendingTimer = undefined; void loadNotifications(); }, 5000);
+        return;
+      }
+      inFlight = true;
+      lastLoad = Date.now();
 
       const [{ count: unreadCount, error: countError }, { data, error: listError }] = await Promise.all([
         supabaseBrowser
           .from("notifications")
           .select("id", { count: "exact", head: true })
           .eq("recipient_id", userId)
-          .in("type", [...types])
+          .in("type", selectedTypes)
           .is("deleted_at", null)
           .is("read_at", null),
         supabaseBrowser
           .from("notifications")
           .select("id, type, title, body, data, read_at, created_at")
           .eq("recipient_id", userId)
-          .in("type", [...types])
+          .in("type", selectedTypes)
           .is("deleted_at", null)
           .order("created_at", { ascending: false })
           .limit(3),
       ]);
 
-      if (!active) {
-        return;
-      }
+      inFlight = false;
+      if (!active) return;
 
       if (countError || listError) {
-        setCount(0);
-        setItems([]);
         setIsLoading(false);
         return;
       }
@@ -147,11 +154,14 @@ export default function NotificationLink({ userId, href, types }: NotificationLi
           void loadNotifications();
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        connected = status === "SUBSCRIBED";
+        if (connected) void loadNotifications();
+      });
 
     const intervalId = window.setInterval(() => {
-      void loadNotifications();
-    }, 15000);
+      if (!connected || Date.now() - lastLoad >= 300000) void loadNotifications();
+    }, 60000);
 
     const handleFocus = () => {
       void loadNotifications();
@@ -170,10 +180,11 @@ export default function NotificationLink({ userId, href, types }: NotificationLi
       active = false;
       void supabaseBrowser.removeChannel(channel);
       window.clearInterval(intervalId);
+      if (pendingTimer) clearTimeout(pendingTimer);
       window.removeEventListener("focus", handleFocus);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [typeKey, types, userId]);
+  }, [typeKey, userId]);
 
   useEffect(() => {
     if (!isOpen) {

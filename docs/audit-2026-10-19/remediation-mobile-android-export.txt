@@ -1,0 +1,30 @@
+
+> the-wedding-market-mobile@0.1.0 export:android
+> expo export --platform android --output-dir dist/android
+
+env: load .env
+env: export EXPO_PUBLIC_SUPABASE_ANON_KEY EXPO_PUBLIC_WEB_API_URL EXPO_PUBLIC_SUPABASE_URL
+Starting Metro Bundler
+
+| (node:22772) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:22772) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:22772) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+Android Bundled 6727ms node_modules\expo\AppEntry.js (745 modules)
+
+› Assets (5):
+node_modules\@expo-google-fonts\playfair-display\400Regular\PlayfairDisplay_400Regular.ttf (193KB)
+node_modules\@expo-google-fonts\playfair-display\500Medium\PlayfairDisplay_500Medium.ttf (194KB)
+node_modules\@expo-google-fonts\playfair-display\700Bold\PlayfairDisplay_700Bold.ttf (194KB)
+node_modules\@expo-google-fonts\playfair-display\900Black\PlayfairDisplay_900Black.ttf (194KB)
+node_modules\@expo\vector-icons\build\vendor\react-native-vector-icons\Fonts\Ionicons.ttf (390KB)
+
+› android bundles (1):
+_expo/static/js/android/AppEntry-b59f12bc11195efeeb4355fbe2ab6d46.hbc (2.8MB)
+
+› Files (1):
+metadata.json (472B)
+
+Exported: dist/android
