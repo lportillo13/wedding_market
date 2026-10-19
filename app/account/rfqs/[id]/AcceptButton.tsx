@@ -22,6 +22,7 @@ export default function AcceptButton({ rfq_id, quote_id }: { rfq_id: string; quo
           type="checkbox"
           id={`reveal_email_${quote_id}`}
           name="reveal_email"
+          disabled={pending}
           checked={revealEmail}
           onChange={(event) => setRevealEmail(event.target.checked)}
         />
@@ -36,6 +37,7 @@ export default function AcceptButton({ rfq_id, quote_id }: { rfq_id: string; quo
           type="checkbox"
           id={`reveal_phone_${quote_id}`}
           name="reveal_phone"
+          disabled={pending}
           checked={revealPhone}
           onChange={(event) => setRevealPhone(event.target.checked)}
         />

@@ -1,3 +1,4 @@
+import ThreadRefresh from "./ThreadRefresh";
 import Link from "next/link";
 import AutocompleteInput from "@/components/search/AutocompleteInput";
 import ThreadOpenLink from "./ThreadOpenLink";
@@ -95,6 +96,7 @@ export default function InboxPageView({
     <main
       className={`wm-conversations${scope === "client" ? " container" : ""}`}
     >
+      <ThreadRefresh />
       <header className="wm-conversations__heading">
         <div>
           <h1>{labels.title}</h1>
@@ -179,7 +181,7 @@ export default function InboxPageView({
             ];
             return (
               <article
-                className="wm-conversation-card"
+                className={`wm-conversation-card${item.unread ? " wm-conversation-card--unread" : ""}`}
                 aria-labelledby={`conversation-${item.threadKey}`}
                 key={item.threadKey}
               >
@@ -195,8 +197,10 @@ export default function InboxPageView({
                       <ThreadOpenLink
                         href={threadHref}
                         threadKey={item.threadKey}
+                        unread={item.unread}
                         markThreadRead={markThreadRead}
                       >
+                        {item.unread ? <span className="wm-conversation-card__unread" role="img" aria-label={labels.unread} /> : null}
                         {item.title}
                       </ThreadOpenLink>
                     </h2>
@@ -246,6 +250,7 @@ export default function InboxPageView({
                       className="wm-conversation-card__open"
                       href={threadHref}
                       threadKey={item.threadKey}
+                        unread={item.unread}
                       markThreadRead={markThreadRead}
                     >
                       {labels.open}

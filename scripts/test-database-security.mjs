@@ -39,6 +39,7 @@ test('live-schema authorization and transaction regressions', async t => {
   await db.exec(await readFile(new URL('../supabase/migrations/202610190003_scoped_query_summaries.sql', import.meta.url), 'utf8'));
   await db.exec(await readFile(new URL('../supabase/migrations/202610190004_contact_privacy.sql', import.meta.url), 'utf8'));
   await db.exec(await readFile(new URL('../supabase/migrations/202610190005_admin_mfa.sql', import.meta.url), 'utf8'));
+  await db.exec(await readFile(new URL('../supabase/migrations/202610190006_inquiry_conversations.sql', import.meta.url), 'utf8'));
   const deny = async (role, user, sql, params) => assert.rejects(as(role, user, sql, params), { code: '42501' });
   await t.test('anonymous cannot mutate any formerly unprotected table', async () => {
     for (const table of ['amenity_lookup','languages','vendor_amenities','vendor_pricing','vendor_spaces','vendor_team']) {
@@ -187,5 +188,74 @@ test('live-schema authorization and transaction regressions', async t => {
     await assert.rejects(as('authenticated',3,'SELECT append_vendor_media($1,$2)',[id(11),JSON.stringify([{type:'image'}])]),{code:'22023'});
     assert.equal((await db.query('SELECT jsonb_array_length(gallery_images) AS n FROM vendors WHERE id=$1',[id(11)])).rows[0].n,20);
     await deny('authenticated',4,'SELECT append_vendor_media($1,$2)',[id(11),'[]']);
+  });
+  await t.test('group inquiry creation is atomic, bounded, scoped and idempotent',async()=>{
+    await db.query("INSERT INTO vendors(id,owner_id,slug,business_name,is_published) VALUES ($1,$2,'second-service','Second service',true)",[id(13),id(4)]);
+    const payload={notes:'Synthetic garden event',guest_count:60,budget:0,email:'fixture@example.invalid',event_date:'2027-05-12'};
+    const create=(vendors,key,body=payload,user=1,existing=null)=>as('authenticated',user,'SELECT create_inquiry($1,$2,$3,$4) AS result',[vendors,JSON.stringify(body),key,existing]);
+    await deny('anon',null,'SELECT create_inquiry($1,$2,$3)',[[id(11)],JSON.stringify(payload),id(1100)]);
+    const first=(await create([id(11),id(13),id(11)],id(1100))).rows[0].result;
+    assert.equal(first.vendor_count,2);
+    assert.equal((await db.query('SELECT count(*)::integer n FROM rfq_invites WHERE rfq_id=$1',[id(1100)])).rows[0].n,2);
+    const row=(await db.query('SELECT * FROM rfqs WHERE id=$1',[id(1100)])).rows[0];
+    assert.equal(row.vendor_id,null); assert.equal(row.country,'Costa Rica'); assert.equal(row.budget_min,0); assert.equal(row.budget_max,0);
+    assert.equal((await create([id(13),id(11)],id(1100))).rows[0].result.replayed,true);
+    await assert.rejects(create([id(11)],id(1100),{...payload,notes:'Changed retry'}),{code:'23505'});
+    await assert.rejects(create([id(11),id(1999)],id(1101)),{code:'22023'});
+    assert.equal((await db.query('SELECT count(*)::integer n FROM rfqs WHERE id=$1',[id(1101)])).rows[0].n,0);
+    await db.exec(`CREATE FUNCTION public.wm_test_fail_invite() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.vendor_id='${id(13)}' THEN RAISE EXCEPTION 'synthetic invite failure' USING ERRCODE='22023'; END IF; RETURN NEW; END $$;
+      CREATE TRIGGER wm_test_fail BEFORE INSERT ON rfq_invites FOR EACH ROW EXECUTE FUNCTION wm_test_fail_invite();`);
+    await assert.rejects(create([id(11),id(13)],id(1102)),{code:'22023'});
+    assert.equal((await db.query('SELECT count(*)::integer n FROM rfqs WHERE id=$1',[id(1102)])).rows[0].n,0);
+    await db.exec('DROP TRIGGER wm_test_fail ON rfq_invites; DROP FUNCTION public.wm_test_fail_invite();');
+    await create([id(11)],id(1103));
+    await create([id(11)],id(1104),{...payload,notes:'Edited event'},1,id(1103));
+    assert.equal((await create([id(11)],id(1104),{...payload,notes:'Edited event'},1,id(1103))).rows[0].result.replayed,true);
+    assert.equal((await db.query('SELECT notes FROM rfqs WHERE id=$1',[id(1103)])).rows[0].notes,'Edited event');
+  });
+  await t.test('messages work before a proposal and stay private to each group vendor',async()=>{
+    const send=(user,role,vendor,body,key)=>as('authenticated',user,'INSERT INTO quote_messages(id,rfq_id,vendor_id,sender_id,sender_role,body) VALUES ($1,$2,$3,$4,$5,$6)',[id(key),id(1100),id(vendor),id(user),role,body]);
+    await send(1,'client',11,'Synthetic first question',1110);
+    await send(3,'vendor',11,'Synthetic vendor answer',1111);
+    assert.equal((await db.query('SELECT quote_id FROM quote_messages WHERE id=$1',[id(1110)])).rows[0].quote_id,null);
+    await deny('authenticated',4,'INSERT INTO quote_messages(rfq_id,vendor_id,sender_id,sender_role,body) VALUES ($1,$2,$3,$4,$5)',[id(1100),id(11),id(4),'vendor','Not my thread']);
+    await assert.rejects(send(1,'vendor',11,'Wrong sender role',1112),{code:'42501'});
+    assert.equal((await as('authenticated',4,'SELECT * FROM quote_messages WHERE rfq_id=$1 AND vendor_id=$2',[id(1100),id(11)])).rows.length,0);
+    assert.equal((await as('authenticated',2,'SELECT * FROM quote_messages WHERE rfq_id=$1',[id(1100)])).rows.length,0);
+    const summaries=(await as('authenticated',1,"SELECT * FROM list_inbox_threads('client',1,false,'Synthetic vendor answer',$1)",[id(1100)])).rows;
+    assert.equal(summaries.length,1); assert.ok(summaries[0].unread_at);
+    await as('authenticated',3,"INSERT INTO notifications(recipient_id,actor_id,type,title,body,data) VALUES ($1,$2,'thread_reply','Reply','Reply',$3)",[id(1),id(3),JSON.stringify({rfqId:id(1100),vendorId:id(11),quoteId:null,senderRole:'vendor'})]);
+    await deny('authenticated',4,"INSERT INTO notifications(recipient_id,actor_id,type,title,body,data) VALUES ($1,$2,'thread_reply','Reply','Reply',$3)",[id(1),id(4),JSON.stringify({rfqId:id(1100),vendorId:id(11),quoteId:null,senderRole:'vendor'})]);
+    await as('authenticated',1,"UPDATE rfq_invites SET closed_at=now(),closed_reason='archived_by_client' WHERE rfq_id=$1 AND vendor_id=$2",[id(1100),id(11)]);
+    await assert.rejects(send(3,'vendor',11,'Closed send',1113),{code:'42501'});
+    await as('authenticated',1,"UPDATE rfq_invites SET closed_at=null,closed_reason=null WHERE rfq_id=$1 AND vendor_id=$2",[id(1100),id(11)]);
+    await send(3,'vendor',11,'Restored send',1114);
+  });
+  await t.test('empty folders retain accurate counts and invalid inquiry edits cannot overwrite a conversation',async()=>{
+    const rows=(await as('authenticated',1,"SELECT * FROM list_inbox_threads_v2('client',1,true,'',$1)",[id(1100)])).rows;
+    assert.equal(rows.length,1);assert.equal(rows[0].invite,null);assert.equal(rows[0].total_count,0);assert.equal(rows[0].active_count,2);
+    const request={notes:'Do not overwrite',guest_count:60,email:'fixture@example.invalid'};
+    await assert.rejects(as('authenticated',1,'SELECT create_inquiry($1,$2,$3,$4)',[[id(11)],JSON.stringify(request),id(1200),id(1100)]),{code:'23505'});
+    assert.equal((await db.query('SELECT notes FROM rfqs WHERE id=$1',[id(1100)])).rows[0].notes,'Synthetic garden event');
+  });
+  await t.test('proposal revisions retain earlier messages and stale offers cannot be accepted',async()=>{
+    await as('authenticated',3,'INSERT INTO quotes(id,rfq_id,vendor_id,amount_cents) VALUES ($1,$2,$3,10000)',[id(1120),id(1103),id(11)]);
+    await as('authenticated',1,"INSERT INTO quote_messages(quote_id,sender_id,sender_role,body) VALUES ($1,$2,'client','Legacy reply')",[id(1120),id(1)]);
+    await as('authenticated',3,'INSERT INTO quotes(id,rfq_id,vendor_id,amount_cents) VALUES ($1,$2,$3,12500)',[id(1121),id(1103),id(11)]);
+    await assert.rejects(as('authenticated',1,'SELECT accept_vendor_quote($1,$2,false,false)',[id(1103),id(1120)]),{code:'22023'});
+    await deny('authenticated',1,'UPDATE rfqs SET accepted_quote_id=$1 WHERE id=$2',[id(1120),id(1103)]);
+    await as('authenticated',1,'SELECT accept_vendor_quote($1,$2,false,false)',[id(1103),id(1121)]);
+    await db.query("UPDATE rfq_invites SET expires_at=now()-interval '1 day' WHERE rfq_id=$1",[id(1103)]);
+    await as('authenticated',3,"INSERT INTO quote_messages(rfq_id,vendor_id,sender_id,sender_role,body) VALUES ($1,$2,$3,'vendor','Booked follow-up')",[id(1103),id(11),id(3)]);
+    const history=(await as('authenticated',1,'SELECT * FROM quote_messages WHERE rfq_id=$1 AND vendor_id=$2 ORDER BY created_at,id',[id(1103),id(11)])).rows;
+    assert.equal(history.length,2); assert.equal(history[0].quote_id,id(1120));
+    await deny('authenticated',3,'INSERT INTO quotes(rfq_id,vendor_id,amount_cents) VALUES ($1,$2,999)',[id(1103),id(11)]);
+    await db.query("UPDATE rfq_invites SET expires_at=now()-interval '1 day' WHERE rfq_id=$1",[id(1100)]);
+    await deny('authenticated',1,"INSERT INTO quote_messages(rfq_id,vendor_id,sender_id,sender_role,body) VALUES ($1,$2,$3,'client','Expired')",[id(1100),id(11),id(1)]);
+  });
+  await t.test('the live verification script always rolls its fixtures back',async()=>{
+    const result=await db.exec(await readFile(new URL('../docs/quote-flow-2026-10-19/live-transaction-check.sql',import.meta.url),'utf8'));
+    const proof=result.at(-1).rows[0].workflow_verification;
+    assert.equal(proof.fixturesRolledBack,true);assert.equal(proof.staleAcceptanceDenied,true);assert.equal(proof.preProposalMessages,true);
   });
 });

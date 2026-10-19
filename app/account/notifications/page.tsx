@@ -192,10 +192,9 @@ export default async function AccountNotificationsPage({
                       { vendor: vendorLabel, amountSuffix }
                     );
                 const summary = isThreadReply && replyData
-                  ? fillTemplate(labels.messages.requestSummary, {
-                      rfq: replyData.rfqId.slice(0, 8),
-                      quote: replyData.quoteId.slice(0, 8),
-                    })
+                  ? replyData.quoteId ? fillTemplate(labels.messages.requestSummary, {
+                      rfq: replyData.rfqId.slice(0, 8), quote: replyData.quoteId.slice(0, 8),
+                    }) : `${language === "es" ? "Solicitud" : "Request"} ${replyData.rfqId.slice(0, 8)}`
                   : data
                     ? fillTemplate(labels.messages.requestSummary, {
                         rfq: data.rfqId.slice(0, 8),

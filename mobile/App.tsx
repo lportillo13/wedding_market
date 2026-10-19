@@ -5,6 +5,7 @@ import { getProfileEssentials } from "../shared/vendorProfileProgress";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  AppState,
   Alert,
   Animated,
   BackHandler,
@@ -60,7 +61,7 @@ import {
   type MobileInboxThread,
   type QuoteRequestInput,
 } from "./src/lib/rfqs";
-import { isQuoteThreadClosed } from "./src/lib/quoteUtils";
+import { createSubmissionId, isQuoteThreadClosed } from "./src/lib/quoteUtils";
 import { getShortlist, toggleShortlist } from "./src/lib/shortlist";
 import {
   getDeviceLanguage,
@@ -2117,7 +2118,8 @@ function formatMoney(cents?: number | null, currency = "USD", language: "en" | "
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: cents % 100 ? 2 : 0,
+    maximumFractionDigits: 2,
   }).format(cents / 100);
 }
 
@@ -2881,6 +2883,7 @@ function RequestQuoteModal({
   onClose: () => void;
   onSent: () => void;
 }) {
+  const submission = useRef<{id:string;fingerprint:string} | null>(null);
   const labels = copy[language];
   const primaryVendor = vendors[0] ?? null;
   const isBatch = vendors.length > 1;
@@ -2965,7 +2968,10 @@ function RequestQuoteModal({
 
     setIsSubmitting(true);
     try {
-      await createQuoteRequests(form, vendors.map((vendor) => vendor.id));
+      const vendorIds = vendors.map(vendor=>vendor.id);
+      const fingerprint=JSON.stringify([form,vendorIds]);
+      if (submission.current?.fingerprint !== fingerprint) submission.current={id:createSubmissionId(),fingerprint};
+      await createQuoteRequests(form, vendorIds,submission.current.id);
       setStatus(isBatch
         ? language === "en"
           ? `One request was sent to ${vendors.length} vendors. Each private conversation is available in your inbox.`
@@ -4376,6 +4382,7 @@ function EditableAvailabilityCalendar({
 }
 
 function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" }) {
+  const replySubmission = useRef<{id:string;body:string;thread:string} | null>(null);
   const labels = copy[language];
   const [threads, setThreads] = useState<MobileInboxThread[]>([]);
   const [selectedThread, setSelectedThread] = useState<MobileInboxThread | null>(null);
@@ -4395,21 +4402,21 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
   const [message, setMessage] = useState("");
   const isVendorViewer = role === "vendor" || role === "admin";
 
-  const refreshInbox = useCallback(async (shouldApply: () => boolean = () => true) => {
-    setIsLoading(true);
-    setMessage("");
+  const refreshInbox = useCallback(async (shouldApply: () => boolean = () => true, foreground = true) => {
+    if (foreground) {setIsLoading(true);setMessage("");}
     try {
       const {threads:nextThreads,total} = await loadMobileInbox(role, language,inboxPage);
       if (!shouldApply()) return;
       setThreads(nextThreads); setTotalThreads(total);
       if (selectedThreadRef.current) {
-        const detail=await loadMobileInboxThread(role,language,selectedThreadRef.current);
-        if (shouldApply()) setSelectedThread(detail);
+        const current=selectedThreadRef.current;
+        const detail=await loadMobileInboxThread(role,language,current);
+        if (shouldApply() && selectedThreadRef.current?.id === current.id) setSelectedThread(detail);
       }
     } catch (error) {
-      if (shouldApply()) setMessage(error instanceof Error ? error.message : "Unable to load inbox.");
+      if (shouldApply() && foreground) setMessage(error instanceof Error ? error.message : "Unable to load inbox.");
     } finally {
-      if (shouldApply()) setIsLoading(false);
+      if (shouldApply() && foreground) setIsLoading(false);
     }
   }, [language, role,inboxPage]);
 
@@ -4422,16 +4429,25 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
   }, [refreshInbox]);
 
   useEffect(() => {
-    if (!selectedThread) return;
-    const amount = selectedThread.latestQuote?.amountCents;
-    setQuoteAmount(typeof amount === "number" ? (amount / 100).toFixed(2) : "");
-    setQuoteMessage(selectedThread.latestQuote?.message ?? "");
-    setReplyBody("");
-  }, [selectedThread]);
+    let mounted = true;
+    let refreshing = false;
+    const refresh = async () => {
+      if (AppState.currentState !== "active" || refreshing || isSending || isSendingQuote || isAcceptingQuote) return;
+      refreshing = true;
+      try {await refreshInbox(() => mounted,false);} finally {refreshing = false;}
+    };
+    const timer = setInterval(() => {void refresh();},15000);
+    const subscription = AppState.addEventListener("change",state => {if (state === "active") void refresh();});
+    return () => {mounted = false;clearInterval(timer);subscription.remove();};
+  },[refreshInbox,isSending,isSendingQuote,isAcceptingQuote]);
 
   async function openThread(thread: MobileInboxThread) {
     setIsLoading(true); setMessage("");
-    try { setSelectedThread(await loadMobileInboxThread(role,language,thread)); }
+    try {
+      const detail = await loadMobileInboxThread(role,language,thread);
+      setSelectedThread(detail);
+      if (detail) {setQuoteAmount(typeof detail.latestQuote?.amountCents === "number" ? (detail.latestQuote.amountCents/100).toFixed(2) : ""); setQuoteMessage(detail.latestQuote?.message ?? "");setReplyBody("");}
+    }
     catch(error) { setMessage(error instanceof Error ? error.message : "Unable to open conversation."); }
     finally { setIsLoading(false); }
   }
@@ -4441,9 +4457,13 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
     setIsSending(true);
     setMessage("");
     try {
-      await sendQuoteThreadReply(selectedThread, replyBody, role);
+      const body=replyBody.trim();
+      if (replySubmission.current?.body !== body || replySubmission.current.thread !== selectedThread.id)
+        replySubmission.current={id:createSubmissionId(),body,thread:selectedThread.id};
+      await sendQuoteThreadReply(selectedThread, body, role,replySubmission.current.id);
+      replySubmission.current=null;
       setReplyBody("");
-      await refreshInbox();
+      await refreshInbox(() => true,false);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Unable to send reply.");
     } finally {
@@ -4457,7 +4477,7 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
     setMessage("");
     try {
       await sendVendorQuote(selectedThread, quoteAmount, quoteMessage);
-      await refreshInbox();
+      await refreshInbox(() => true,false);
       setMessage(labels.quoteSent);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Unable to send quote.");
@@ -4472,7 +4492,7 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
     setMessage("");
     try {
       await acceptMobileQuote(selectedThread, { revealEmail, revealPhone });
-      await refreshInbox();
+      await refreshInbox(() => true,false);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Unable to accept quote.");
     } finally {
@@ -4499,6 +4519,7 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
       selectedThread.expiresAt,
       selectedThread.acceptedQuoteId,
       selectedThread.quotes.map((quote) => quote.id),
+      Date.now(), selectedThread.closedAt,
     );
     const activity = [
       ...selectedThread.quotes.map((quote) => ({ kind: "quote" as const, createdAt: quote.createdAt, quote })),
@@ -4743,7 +4764,7 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
           </View>
         ) : null}
 
-        {selectedThread.latestQuote && !conversationClosed ? (
+        {!conversationClosed ? (
           <View style={styles.replyComposer}>
             <FieldLabel text={labels.reply} />
             <TextInput
@@ -4753,6 +4774,7 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
               style={[styles.input, styles.textArea]}
               value={replyBody}
               onChangeText={setReplyBody}
+              editable={!isSending}
             />
             <Text style={styles.characterCount}>{replyBody.length}/2000</Text>
             <TouchableOpacity disabled={isSending} onPress={submitReply} style={[styles.primaryButton, isSending && styles.primaryButtonDisabled]}>

@@ -8,7 +8,7 @@ import {
   parseVendorQuoteAcceptedNotificationData,
   VENDOR_NOTIFICATION_TYPES,
 } from "@/lib/notification-types";
-import { type QuoteMessageRow, fetchQuoteMessagesByQuoteIds } from "@/lib/quote-messages";
+import { type QuoteMessageRow, fetchThreadMessages } from "@/lib/quote-messages";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 
@@ -168,7 +168,7 @@ export function parseThreadKey(threadKey: string) {
   const rfqId = threadKey.slice(0, index).trim();
   const vendorId = threadKey.slice(index + separator.length).trim();
 
-  if (!rfqId || !vendorId) {
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rfqId) || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(vendorId)) {
     return null;
   }
 
@@ -345,13 +345,13 @@ type InboxSummary = {
 };
 async function loadInboxSummaries(viewer: "client" | "vendor", options: InboxPageOptions, rfqId?: string | null) {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.rpc("list_inbox_threads", {
+  const { data, error } = await supabase.rpc("list_inbox_threads_v2", {
     p_viewer: viewer, p_page: options.page ?? 1, p_search: options.query ?? "",
     p_archived: options.archived ?? false, p_rfq: rfqId ?? null,
   });
   if (error) throw new Error(error.message);
   const rows = (data ?? []) as InboxSummary[];
-  const items = rows.map((row) => {
+  const items = rows.filter(row => row.invite?.rfq_id).map((row) => {
     let invite = row.invite;
     if (row.rfq.accepted_quote_id) {
       invite = { ...invite, status: row.accepted_here ? "accepted" : "declined" };
@@ -444,10 +444,7 @@ export async function loadClientThreadDetail(userId: string, threadKey: string):
     throw new Error(vendorResult.error.message);
   }
 
-  const messagesByQuoteId = await fetchQuoteMessagesByQuoteIds(quotesResult.data.map((quote) => quote.id));
-  const messages = Array.from(messagesByQuoteId.values())
-    .flat()
-    .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+  const messages = await fetchThreadMessages(supabase, rfqId, vendorId);
 
   return {
     threadKey,
@@ -510,10 +507,7 @@ export async function loadVendorThreadDetail(userId: string, threadKey: string):
     throw new Error(quotesResult.error.message);
   }
 
-  const messagesByQuoteId = await fetchQuoteMessagesByQuoteIds(quotesResult.data.map((quote) => quote.id));
-  const messages = Array.from(messagesByQuoteId.values())
-    .flat()
-    .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+  const messages = await fetchThreadMessages(supabase, rfqId, vendorId);
 
   return {
     threadKey,

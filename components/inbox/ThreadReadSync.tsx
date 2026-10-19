@@ -5,26 +5,28 @@ import { useRouter } from "next/navigation";
 
 type ThreadReadSyncProps = {
   threadKey: string;
+  activityKey?: string;
   markThreadRead: (threadKey: string) => Promise<void>;
 };
 
-export default function ThreadReadSync({ threadKey, markThreadRead }: ThreadReadSyncProps) {
+export default function ThreadReadSync({ threadKey, activityKey = "", markThreadRead }: ThreadReadSyncProps) {
   const router = useRouter();
   const didRunRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!threadKey || didRunRef.current === threadKey) {
+    const key = `${threadKey}:${activityKey}`;
+    if (!threadKey || didRunRef.current === key) {
       return;
     }
 
-    didRunRef.current = threadKey;
+    didRunRef.current = key;
 
     startTransition(() => {
-      void markThreadRead(threadKey).finally(() => {
+      void markThreadRead(threadKey).catch(() => {}).finally(() => {
         router.refresh();
       });
     });
-  }, [markThreadRead, router, threadKey]);
+  }, [markThreadRead, router, threadKey, activityKey]);
 
   return null;
 }

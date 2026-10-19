@@ -37,7 +37,7 @@ export type VendorQuoteAcceptedNotificationData = {
 
 export type ThreadReplyNotificationData = {
   rfqId: string;
-  quoteId: string;
+  quoteId: string | null;
   vendorId: string;
   senderRole: "client" | "vendor";
   senderName: string | null;
@@ -127,7 +127,7 @@ export function parseThreadReplyNotificationData(value: unknown): ThreadReplyNot
   const vendorId = typeof value.vendorId === "string" ? value.vendorId : null;
   const senderRole = value.senderRole === "client" || value.senderRole === "vendor" ? value.senderRole : null;
 
-  if (!rfqId || !quoteId || !vendorId || !senderRole) {
+  if (!rfqId || !vendorId || !senderRole) {
     return null;
   }
 

@@ -7,6 +7,7 @@ import { getSupabaseServer } from "@/lib/supabase/server";
 
 import { parseQuoteAmountCents } from "@/lib/quotes/input";
 import { submitVendorQuote } from "@/lib/quotes/submit";
+import { getRequestI18n } from "@/lib/i18n/server";
 
 export type SendQuoteState = { ok: boolean; message?: string };
 
@@ -140,9 +141,10 @@ export async function restoreVendorInboxThreads(formData: FormData) {
 }
 
 export async function sendQuote(_: SendQuoteState, form: FormData): Promise<SendQuoteState> {
+  const {language} = await getRequestI18n();
   const supabase = await getSupabaseServer();
   const { data: { user }, error } = await supabase.auth.getUser();
-  if (error || !user) return { ok: false, message: "Not authenticated." };
+  if (error || !user) return { ok: false, message: language === "es" ? "Inicia sesión para enviar una propuesta." : "Please log in to send a proposal." };
 
   const rfqId = String(form.get("rfq_id") ?? "");
   const vendorId = String(form.get("vendor_id") ?? "");
@@ -152,7 +154,10 @@ export async function sendQuote(_: SendQuoteState, form: FormData): Promise<Send
     amountCents: parseQuoteAmountCents(String(form.get("amount_usd") ?? "")),
     message: String(form.get("message") ?? "").trim() || null,
   });
-  if (!result.ok) return { ok: false, message: result.message };
+  if (!result.ok) return {ok:false,message:language === "es"
+    ? result.status === 400 ? "Indica un precio válido en USD (por ejemplo, 1250.50) y un mensaje de hasta 2000 caracteres."
+      : "No se pudo enviar la propuesta. Revisa que la conversación siga abierta e inténtalo de nuevo. Tu borrador se conserva."
+    : result.message};
 
   const threadKey = buildThreadKey(rfqId, vendorId);
   for (const path of [

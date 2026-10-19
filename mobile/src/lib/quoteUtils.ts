@@ -43,7 +43,9 @@ export function isQuoteThreadClosed(
   acceptedQuoteId: string | null,
   threadQuoteIds: string[],
   now = Date.now(),
+  closedAt?: string | null,
 ) {
+  if (closedAt) return true;
   const normalizedStatus = status.trim().toLowerCase();
   if (normalizedStatus === "declined" || normalizedStatus === "expired") return true;
 
@@ -53,4 +55,12 @@ export function isQuoteThreadClosed(
 
   const expiresAtTimestamp = expiresAt ? Date.parse(expiresAt) : Number.NaN;
   return Number.isFinite(expiresAtTimestamp) && expiresAtTimestamp <= now;
+}
+
+/** A deduplication token, never an authentication secret. Works without a native crypto polyfill. */
+export function createSubmissionId() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+    const n = Math.floor(Math.random()*16);
+    return (c === "x" ? n : (n&3)|8).toString(16);
+  });
 }

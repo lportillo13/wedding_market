@@ -111,6 +111,7 @@ const common = {
     "switchToDark": "Cambiar a tema oscuro"
   },
   "inbox": {
+    "unread": "Mensaje sin leer",
     "title": "Bandeja de entrada",
     "clientIntro": "Tus conversaciones y propuestas de proveedores, en un solo lugar.",
     "vendorIntro": "Tus conversaciones y propuestas con clientes, en un solo lugar.",

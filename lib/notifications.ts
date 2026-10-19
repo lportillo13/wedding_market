@@ -69,7 +69,7 @@ type CreateThreadReplyNotificationInput = {
   recipientId: string;
   actorId: string | null;
   rfqId: string;
-  quoteId: string;
+  quoteId: string | null;
   vendorId: string;
   senderRole: "client" | "vendor";
   senderName: string | null;

@@ -504,7 +504,12 @@ export async function fetchVendorContactPrefill(vendorId: string): Promise<Vendo
       throw new Error(quotesError.message);
     }
 
-    hasVendorResponse = (count ?? 0) > 0;
+    const [{count:messageCount,error:messageError},{data:open,error:openError}] = await Promise.all([
+      supabase.from("quote_messages").select("id",{count:"exact",head:true}).eq("rfq_id",existingRfq.id).eq("vendor_id",vendorId),
+      supabase.rpc("wm_conversation_open",{p_rfq:existingRfq.id,p_vendor:vendorId}),
+    ]);
+    if (messageError || openError) throw new Error("Unable to check the existing conversation.");
+    hasVendorResponse = (count ?? 0) > 0 || (messageCount ?? 0) > 0 || !open;
   }
 
   const fullName = profile?.full_name?.trim() ?? "";

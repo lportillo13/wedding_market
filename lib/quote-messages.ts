@@ -5,7 +5,7 @@ import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/owne
 
 export type QuoteMessageRow = {
   id: string;
-  quote_id: string;
+  quote_id: string | null;
   sender_id: string;
   sender_role: "client" | "vendor";
   body: string;
@@ -54,6 +54,7 @@ export async function fetchQuoteMessagesByQuoteIds(
   }
 
   for (const message of (data ?? []) as QuoteMessageRow[]) {
+    if (!message.quote_id) continue;
     if (!byQuoteId.has(message.quote_id)) {
       byQuoteId.set(message.quote_id, []);
     }
@@ -153,4 +154,18 @@ export async function verifyVendorQuoteReplyAccess(
   }
 
   return verifyQuoteThreadOpen(supabase, quoteId);
+}
+
+/** Read complete, ordered history in bounded pages, scoped to one RLS thread. */
+export async function fetchThreadMessages(client: SupabaseClient, rfqId: string, vendorId: string): Promise<QuoteMessageRow[]> {
+  const messages: QuoteMessageRow[] = [];
+  for (let offset = 0; ; offset += 200) {
+    const {data, error} = await client.from("quote_messages")
+      .select("id,quote_id,sender_id,sender_role,body,created_at")
+      .eq("rfq_id",rfqId).eq("vendor_id",vendorId)
+      .order("created_at",{ascending:true}).order("id",{ascending:true}).range(offset,offset+199);
+    if (error) throw new Error("Unable to load conversation history.");
+    messages.push(...(data ?? []) as QuoteMessageRow[]);
+    if (!data || data.length < 200) return messages;
+  }
 }

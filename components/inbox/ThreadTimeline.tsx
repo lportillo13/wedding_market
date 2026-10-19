@@ -1,3 +1,4 @@
+import { formatQuoteAmount } from "@/lib/quotes/format";
 import type { QuoteMessageRow } from "@/lib/quote-messages";
 import type { InboxQuoteRow } from "@/lib/inbox";
 
@@ -51,13 +52,7 @@ export default function ThreadTimeline({
                 <span>{new Date(item.created_at).toLocaleString(locale)}</span>
               </div>
               <div className="fw-semibold mb-1">
-                {typeof item.quote.amount_cents === "number"
-                  ? new Intl.NumberFormat(locale, {
-                      style: "currency",
-                      currency: item.quote.currency ?? "USD",
-                      maximumFractionDigits: 0,
-                    }).format(item.quote.amount_cents / 100)
-                  : item.quote.currency ?? "—"}
+                {formatQuoteAmount(item.quote.amount_cents,item.quote.currency,locale)}
               </div>
               {item.quote.message ? <div style={{ whiteSpace: "pre-wrap" }}>{item.quote.message}</div> : null}
             </div>

@@ -111,6 +111,7 @@ const common = {
     "switchToDark": "Switch to dark theme"
   },
   "inbox": {
+    "unread": "Unread message",
     "title": "Inbox",
     "clientIntro": "Your vendor conversations and proposals, all in one place.",
     "vendorIntro": "Your client conversations and proposals, all in one place.",

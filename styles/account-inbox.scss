@@ -625,3 +625,10 @@
     }
   }
 }
+
+.wm-conversation-card--unread { border-left: 3px solid #89543c !important; }
+.wm-conversation-card__unread { background: #89543c; border-radius: 50%; display:inline-block; flex:0 0 7px; height:7px; margin-right:0.5rem; }
+.wm-thread {overflow-wrap:anywhere;}
+.wm-thread textarea {font-size:1rem;}
+.wm-thread .card {border-color:#e7d7c3;}
+.wm-thread form button {min-height:44px;}

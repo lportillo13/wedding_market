@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
@@ -63,6 +63,8 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
   const labels = dictionary.vendorPublic.contact;
   const headerLabels = dictionary.vendorPublic.header;
   const accountFormLabels = dictionary.account.profile.form;
+  const requestId = useRef<string | null>(null);
+  const [sentRfqId, setSentRfqId] = useState<string | null>(null);
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { register, handleSubmit, reset, formState } = useForm<FormValues>({
@@ -138,10 +140,12 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
     setSubmitState("loading");
     setErrorMessage(null);
     try {
+      requestId.current ??= crypto.randomUUID();
       const response = await fetch("/api/rfqs/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          request_id: requestId.current,
           rfq_id: prefill?.rfqId ?? null,
           vendor_id: vendor.id,
           first_name: values.first_name,
@@ -163,8 +167,11 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
 
       const result = await response.json().catch(() => ({ ok: false, message: labels.unexpected }));
       if (!response.ok || !result?.ok) {
-        throw new Error(result?.message || labels.failed);
+        const fields: Record<string,string> = {guest_count:extraLabels.guestCount,budget:extraLabels.budget,event_date:labels.eventDate,email:labels.email,first_name:labels.firstName,last_name:labels.lastName,message:labels.message};
+        const invalid = Array.isArray(result?.fields) ? result.fields.filter((key:unknown)=>typeof key === "string" && fields[key]).map((key:string)=>fields[key]).join(", ") : "";
+        throw new Error(invalid ? `${language === "es" ? "Revisa" : "Check"}: ${invalid}.` : language === "es" ? "No se pudo enviar. Revisa que el proveedor esté disponible y continúa la conversación en tu bandeja si ya recibiste una respuesta." : result?.message || labels.failed);
       }
+      setSentRfqId(String(result.rfq_id));
       setSubmitState("success");
       reset(buildDefaultValues(prefill));
     } catch (error) {
@@ -227,7 +234,8 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
         <h2 className="h3 mb-3">{labels.heading}</h2>
         <p className="text-muted">{fill(labels.intro, { vendor: vendor.name })}</p>
 
-        {submitState === "success" ? <div className="alert alert-success" role="status">{labels.success}</div> : null}
+        {submitState === "success" ? <div className="alert alert-success" role="status">{labels.success}
+          {sentRfqId ? <div className="mt-3"><Link className="btn btn-primary" href={`/account/inbox/${encodeURIComponent(`${sentRfqId}__${vendor.id}`)}`}>{language === "es" ? "Ver conversación" : "View conversation"} →</Link></div> : null}</div> : null}
         {submitState === "error" && errorMessage ? <div className="alert alert-danger" role="alert">{errorMessage}</div> : null}
 
         {submitState !== "success" ? (

@@ -1,202 +1,58 @@
 "use server";
-
 import { revalidatePath } from "next/cache";
-
-import { buildThreadKey } from "@/lib/inbox";
-import { createThreadReplyNotification } from "@/lib/notifications";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { verifyClientQuoteReplyAccess, verifyVendorQuoteReplyAccess } from "@/lib/quote-messages";
+import { getRequestI18n } from "@/lib/i18n/server";
+import { sendThreadMessage } from "@/lib/thread-messages";
 
-export type QuoteReplyState = {
-  ok: boolean;
-  message?: string;
-};
-
-const MAX_REPLY_LENGTH = 2000;
-
-function getTrimmedValue(form: FormData, key: string) {
-  return form.get(key)?.toString().trim() ?? "";
-}
-
-export async function sendClientQuoteReply(_: QuoteReplyState, form: FormData): Promise<QuoteReplyState> {
-  const supabase = await createSupabaseServerClient();
-
+export type QuoteReplyState = { ok: boolean; message?: string };
+async function send(
+  form: FormData,
+  senderRole: "client" | "vendor",
+): Promise<QuoteReplyState> {
+  const client = await createSupabaseServerClient();
   const {
     data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { ok: false, message: "Please log in first." };
+  } = await client.auth.getUser();
+  const { language } = await getRequestI18n();
+  if (!user)
+    return {
+      ok: false,
+      message:
+        language === "es"
+          ? "Inicia sesión para enviar un mensaje."
+          : "Please log in first.",
+    };
+  const text = (key: string) => form.get(key)?.toString().trim() || "";
+  const rfqId = text("rfq_id"),
+    vendorId = text("vendor_id");
+  const result = await sendThreadMessage(client, user.id, {
+    quoteId: text("quote_id") || null,
+    rfqId,
+    vendorId,
+    senderRole,
+    clientMessageId: text("client_message_id") || undefined,
+    body: text("body"),
+  });
+  if (!result.ok)
+    return {
+      ok: false,
+      message:
+        language === "es"
+          ? "No se pudo enviar el mensaje. Revisa que la conversación siga abierta e inténtalo de nuevo. Tu texto se conserva."
+          : result.message,
+    };
+  for (const scope of ["account", "vendor"]) {
+    revalidatePath(`/${scope}/inbox`);
+    revalidatePath(
+      `/${scope}/inbox/${encodeURIComponent(`${rfqId}__${vendorId}`)}`,
+    );
+    revalidatePath(`/${scope}/notifications`);
   }
-
-  const quoteId = getTrimmedValue(form, "quote_id");
-  const rfqId = getTrimmedValue(form, "rfq_id");
-  const vendorId = getTrimmedValue(form, "vendor_id");
-  const body = getTrimmedValue(form, "body");
-
-  if (!quoteId || !rfqId || !vendorId || !body) {
-    return { ok: false, message: "Please enter a reply." };
-  }
-  if (body.length > MAX_REPLY_LENGTH) {
-    return { ok: false, message: "Replies must be 2,000 characters or fewer." };
-  }
-
-  const access = await verifyClientQuoteReplyAccess(quoteId, rfqId, vendorId, user.id);
-  if (!access.allowed) {
-    return { ok: false, message: access.message ?? "You do not have access to this quote." };
-  }
-
-  const { error } = await supabase.from("quote_messages").insert([
-    {
-      quote_id: quoteId,
-      sender_id: user.id,
-      sender_role: "client",
-      body,
-    },
-  ]);
-
-  if (error) {
-    return { ok: false, message: error.message };
-  }
-
-  const { error: inviteUpdateError } = await supabase
-    .from("rfq_invites")
-    .update({ last_activity_at: new Date().toISOString(), client_last_read_at: new Date().toISOString() })
-    .eq("rfq_id", rfqId)
-    .eq("vendor_id", vendorId);
-
-  if (inviteUpdateError && process.env.NODE_ENV !== "production") console.warn("Message saved; activity could not be updated.");
-  const notificationClient = supabase;
-  const { data: vendor } = await notificationClient
-    .from("vendors")
-    .select("owner_id")
-    .eq("id", vendorId)
-    .maybeSingle<{ owner_id: string | null }>();
-
-  if (vendor?.owner_id) {
-    const { error: notificationError } = await createThreadReplyNotification(notificationClient, {
-      recipientId: vendor.owner_id,
-      actorId: user.id,
-      rfqId,
-      quoteId,
-      vendorId,
-      senderRole: "client",
-      senderName: null,
-      messagePreview: body,
-    });
-
-    if (notificationError && process.env.NODE_ENV !== "production") {
-      console.warn("Failed to create thread reply notification", notificationError.message);
-    }
-  }
-
-  const threadKey = buildThreadKey(rfqId, vendorId);
-
-  revalidatePath("/account/inbox");
-  revalidatePath(`/account/inbox/${encodeURIComponent(threadKey)}`);
-  revalidatePath("/account/notifications");
-  revalidatePath("/vendor/inbox");
-  revalidatePath(`/vendor/inbox/${encodeURIComponent(threadKey)}`);
-  revalidatePath("/vendor/notifications");
-  revalidatePath("/account/quotes");
-  revalidatePath(`/account/rfqs/${rfqId}`);
-  revalidatePath("/vendor/quotes");
-  revalidatePath("/vendor/rfqs");
-
   return { ok: true };
 }
-
-export async function sendVendorQuoteReply(_: QuoteReplyState, form: FormData): Promise<QuoteReplyState> {
-  const supabase = await createSupabaseServerClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { ok: false, message: "Not authenticated." };
-  }
-
-  const quoteId = getTrimmedValue(form, "quote_id");
-  const rfqId = getTrimmedValue(form, "rfq_id");
-  const vendorId = getTrimmedValue(form, "vendor_id");
-  const body = getTrimmedValue(form, "body");
-
-  if (!quoteId || !rfqId || !vendorId || !body) {
-    return { ok: false, message: "Please enter a reply." };
-  }
-  if (body.length > MAX_REPLY_LENGTH) {
-    return { ok: false, message: "Replies must be 2,000 characters or fewer." };
-  }
-
-  const access = await verifyVendorQuoteReplyAccess(quoteId, rfqId, vendorId, user.id);
-  if (!access.allowed) {
-    return { ok: false, message: access.message ?? "Vendor access required." };
-  }
-
-  const { error } = await supabase.from("quote_messages").insert([
-    {
-      quote_id: quoteId,
-      sender_id: user.id,
-      sender_role: "vendor",
-      body,
-    },
-  ]);
-
-  if (error) {
-    return { ok: false, message: error.message };
-  }
-
-  const { error: inviteUpdateError } = await supabase
-    .from("rfq_invites")
-    .update({ last_activity_at: new Date().toISOString(), vendor_last_read_at: new Date().toISOString() })
-    .eq("rfq_id", rfqId)
-    .eq("vendor_id", vendorId);
-
-  if (inviteUpdateError && process.env.NODE_ENV !== "production") console.warn("Message saved; activity could not be updated.");
-  const notificationClient = supabase;
-  const [{ data: vendor }, { data: rfq }] = await Promise.all([
-    notificationClient
-      .from("vendors")
-      .select("business_name")
-      .eq("id", vendorId)
-      .maybeSingle<{ business_name: string | null }>(),
-    notificationClient
-      .from("rfqs_visible")
-      .select("owner_id")
-      .eq("id", rfqId)
-      .maybeSingle<{ owner_id: string | null }>(),
-  ]);
-
-  if (rfq?.owner_id) {
-    const { error: notificationError } = await createThreadReplyNotification(notificationClient, {
-      recipientId: rfq.owner_id,
-      actorId: user.id,
-      rfqId,
-      quoteId,
-      vendorId,
-      senderRole: "vendor",
-      senderName: vendor?.business_name ?? null,
-      messagePreview: body,
-    });
-
-    if (notificationError && process.env.NODE_ENV !== "production") {
-      console.warn("Failed to create thread reply notification", notificationError.message);
-    }
-  }
-
-  const threadKey = buildThreadKey(rfqId, vendorId);
-
-  revalidatePath("/account/inbox");
-  revalidatePath(`/account/inbox/${encodeURIComponent(threadKey)}`);
-  revalidatePath("/account/notifications");
-  revalidatePath("/vendor/inbox");
-  revalidatePath(`/vendor/inbox/${encodeURIComponent(threadKey)}`);
-  revalidatePath("/vendor/notifications");
-  revalidatePath("/account/quotes");
-  revalidatePath(`/account/rfqs/${rfqId}`);
-  revalidatePath("/vendor/quotes");
-  revalidatePath("/vendor/rfqs");
-
-  return { ok: true };
+export async function sendClientQuoteReply(_: QuoteReplyState, form: FormData) {
+  return send(form, "client");
+}
+export async function sendVendorQuoteReply(_: QuoteReplyState, form: FormData) {
+  return send(form, "vendor");
 }

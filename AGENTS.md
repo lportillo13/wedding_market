@@ -12,6 +12,7 @@ Read [docs/project-context.md](docs/project-context.md) when resuming this proje
 - Keep vendor fields and pricing appropriate to the service category.
 - Public advertisements and sponsored placements are intentionally disabled through `VENDOR_ADS_PUBLICLY_VISIBLE` in `lib/content/vendorAds.ts`. Keep that setting unless the user requests otherwise.
 - Preserve the unified client and vendor inboxes. The inquiry/proposal design document includes work that is already implemented.
+- Inquiry creation must commit the brief and all vendor invitations together. Keep group-vendor conversations private, allow questions before a proposal, preserve messages across revisions and keep retries idempotent. Never overwrite a request once its conversation has started.
 - The owner approved the header/menu layout but requested warmer wedding styling. Keep its navigation structure and favor ivory, champagne, warm brown, serif details and restrained botanical accents over a cold white/green appearance.
 - Public vendor profiles should feel rich and wedding-focused: emphasize real photos, a distinct vendor identity, readable service details and easy quote actions. Preserve category-specific content and existing account/contact restrictions.
 - Keep account inboxes compact and easy to scan on phones: one page heading, labeled conversation details, short status chips, visible delete/restore controls and no marketing newsletter inside the account workspace.

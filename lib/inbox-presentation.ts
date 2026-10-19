@@ -1,3 +1,4 @@
+import { formatQuoteAmount } from "./quotes/format";
 import { formatCalendarDate } from "./calendar-date";
 import {
   dictionaries,
@@ -19,6 +20,7 @@ export type InboxFilters = {
 };
 export type InboxConversation = {
   threadKey: string;
+  unread: boolean;
   title: string;
   initials: string;
   preview: string;
@@ -100,16 +102,9 @@ export function presentInboxConversation(
     typeof item.latestQuote.amount_cents === "number" &&
     Number.isFinite(item.latestQuote.amount_cents)
   ) {
-    try {
-      proposal = new Intl.NumberFormat(locale, {
-        style: "currency",
-        currency: item.latestQuote.currency || "USD",
-        maximumFractionDigits: 0,
-      }).format(item.latestQuote.amount_cents / 100);
-    } catch {
-      proposal = `${item.latestQuote.currency || "USD"} ${(item.latestQuote.amount_cents / 100).toFixed(0)}`;
-    }
+    proposal = formatQuoteAmount(item.latestQuote.amount_cents,item.latestQuote.currency,locale);
   }
+
   const activityDate = new Date(item.lastActivityAt);
   const validActivity = Number.isFinite(activityDate.getTime());
   const sameDay =
@@ -127,6 +122,7 @@ export function presentInboxConversation(
     : "—";
   return {
     threadKey: item.threadKey,
+    unread: item.isUnread,
     title,
     initials: title
       .trim()

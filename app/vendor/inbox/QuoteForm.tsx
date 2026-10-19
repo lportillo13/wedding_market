@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useState } from "react";
 import { useTranslation } from "@/contexts/LanguageContext";
 import { sendQuote, type SendQuoteState } from "./actions";
 
@@ -18,23 +18,12 @@ export default function QuoteForm({
   initialMessage = "",
 }: QuoteFormProps) {
   const [state, action, pending] = useActionState<SendQuoteState, FormData>(sendQuote, { ok: false });
-  const prevOk = useRef(state.ok);
-  const formRef = useRef<HTMLFormElement>(null);
+  const [amount, setAmount] = useState(initialAmountUsd);
+  const [message, setMessage] = useState(initialMessage ?? "");
   const t = useTranslation();
 
-  useEffect(() => {
-    if (!formRef.current) return;
-    if (prevOk.current !== state.ok) {
-      const amountInput = formRef.current.elements.namedItem("amount_usd") as HTMLInputElement | null;
-      const messageInput = formRef.current.elements.namedItem("message") as HTMLTextAreaElement | null;
-      if (amountInput && !pending) amountInput.defaultValue = amountInput.value;
-      if (messageInput && !pending) messageInput.defaultValue = messageInput.value;
-    }
-    prevOk.current = state.ok;
-  }, [pending, state.ok]);
-
   return (
-    <form ref={formRef} action={action} className="row g-2 align-items-end">
+    <form action={action} className="row g-2 align-items-end">
       <input type="hidden" name="rfq_id" value={rfq_id} />
       <input type="hidden" name="vendor_id" value={vendor_id} />
 
@@ -48,7 +37,9 @@ export default function QuoteForm({
           name="amount_usd"
           inputMode="decimal"
           placeholder={t("vendorInbox.quoteForm.amountPlaceholder")}
-          defaultValue={initialAmountUsd}
+          value={amount}
+          onChange={event => setAmount(event.target.value)}
+          readOnly={pending}
           required
         />
       </div>
@@ -64,7 +55,9 @@ export default function QuoteForm({
           rows={3}
           maxLength={2000}
           placeholder={t("vendorInbox.quoteForm.messagePlaceholder")}
-          defaultValue={initialMessage ?? ""}
+          value={message}
+          onChange={event => setMessage(event.target.value)}
+          readOnly={pending}
         />
       </div>
 
@@ -76,12 +69,12 @@ export default function QuoteForm({
 
       {!state.ok && state.message && (
         <div className="col-12">
-          <div className="alert alert-danger my-2">{state.message}</div>
+          <div className="alert alert-danger my-2" role="alert">{state.message}</div>
         </div>
       )}
       {state.ok && (
         <div className="col-12">
-          <div className="alert alert-success my-2">{t("vendorInbox.quoteForm.success")}</div>
+          <div className="alert alert-success my-2" role="status">{t("vendorInbox.quoteForm.success")}</div>
         </div>
       )}
     </form>

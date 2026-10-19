@@ -1,3 +1,6 @@
+import { formatQuoteAmount } from "@/lib/quotes/format";
+import { getConversationState } from "@/lib/conversation-state";
+import ThreadRefresh from "@/components/inbox/ThreadRefresh";
 import { formatCalendarDate } from "@/lib/calendar-date";
 import Link from "next/link";
 import AcceptButton from "@/app/account/rfqs/[id]/AcceptButton";
@@ -11,18 +14,6 @@ import { getLanguageLocale } from "@/lib/i18n";
 import { getRequestI18n } from "@/lib/i18n/server";
 import { loadClientThreadDetail } from "@/lib/inbox";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-
-function formatAmount(amountCents: number | null, currency: string | null, locale: string) {
-  if (typeof amountCents !== "number") {
-    return currency ?? "—";
-  }
-
-  return new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency: currency ?? "USD",
-    maximumFractionDigits: 0,
-  }).format(amountCents / 100);
-}
 
 export default async function AccountInboxThreadPage({
   params,
@@ -57,7 +48,7 @@ export default async function AccountInboxThreadPage({
 
   if (!user) {
     return (
-      <main className="container py-4">
+      <main className="wm-thread container py-4">
         <h1 className="mb-3">{labels.title}</h1>
         <div className="alert alert-warning">{labels.loginRequired}</div>
         <Link className="btn btn-primary" href={`/login?next=${encodeURIComponent(`/account/inbox/${threadKey}`)}`}>
@@ -67,12 +58,12 @@ export default async function AccountInboxThreadPage({
     );
   }
 
-  const decodedThreadKey = decodeURIComponent(threadKey);
+  const decodedThreadKey = threadKey;
   const detail = await loadClientThreadDetail(user.id, decodedThreadKey);
 
   if (!detail) {
     return (
-      <main className="container py-4">
+      <main className="wm-thread container py-4">
         <Link className="btn btn-outline-secondary btn-sm mb-3" href="/account/inbox">
           {labels.back}
         </Link>
@@ -81,24 +72,16 @@ export default async function AccountInboxThreadPage({
     );
   }
 
-  const accepted = Boolean(
-    detail.rfq.accepted_quote_id && detail.quotes.some((quote) => quote.id === detail.rfq.accepted_quote_id)
-  );
-  const acceptedQuote = detail.rfq.accepted_quote_id
-    ? detail.quotes.find((quote) => quote.id === detail.rfq.accepted_quote_id) ?? null
-    : null;
-  const normalizedStatus = detail.invite.status?.trim().toLowerCase();
-  const conversationClosed =
-    normalizedStatus === "declined" ||
-    normalizedStatus === "expired" ||
-    Boolean(detail.rfq.accepted_quote_id && !acceptedQuote);
+  const {accepted, closed: conversationClosed, canAccept} = getConversationState(detail.invite, detail.rfq.accepted_quote_id, detail.quotes.map(q => q.id));
+  const acceptedQuote = detail.quotes.find(q => q.id === detail.rfq.accepted_quote_id) ?? null;
   const location =
     [detail.rfq.city, detail.rfq.state, detail.rfq.country].filter(Boolean).join(", ") ||
     dictionary.account.rfqsPage.formatting.locationTbd;
 
   return (
-    <main className="container py-4">
-      <ThreadReadSync threadKey={decodedThreadKey} markThreadRead={markAccountInboxThreadRead} />
+    <main className="wm-thread container py-4">
+      <ThreadRefresh />
+      <ThreadReadSync activityKey={`${detail.messages.at(-1)?.id ?? ""}:${detail.latestQuote?.id ?? ""}:${detail.invite.status ?? ""}`} threadKey={decodedThreadKey} markThreadRead={markAccountInboxThreadRead} />
       <Link className="btn btn-outline-secondary btn-sm mb-3" href="/account/inbox">
         {labels.back}
       </Link>
@@ -117,6 +100,8 @@ export default async function AccountInboxThreadPage({
         </div>
         {accepted ? <span className="badge text-bg-success">{labels.accepted}</span> : null}
       </div>
+
+      <p><Link href={`/account/inbox?rfq=${encodeURIComponent(detail.rfq.id)}`}>{language === "es" ? "Comparar propuestas de esta solicitud" : "Compare proposals for this request"} →</Link></p>
 
       <div className="row g-4">
         <div className="col-12 col-xl-4">
@@ -140,15 +125,16 @@ export default async function AccountInboxThreadPage({
               {detail.latestQuote ? (
                 <>
                   <div className="fs-4 mb-1">
-                    {formatAmount(detail.latestQuote.amount_cents, detail.latestQuote.currency, locale)}
+                    {formatQuoteAmount(detail.latestQuote.amount_cents, detail.latestQuote.currency, locale)}
                   </div>
                   <div className="small text-secondary mb-2">
                     {detail.latestQuote.version > 1 ? labels.proposalUpdatedLabel : labels.proposalLabel} ·{" "}
                     {new Date(detail.latestQuote.created_at).toLocaleString(locale)}
                   </div>
                   {detail.latestQuote.message ? <div>{detail.latestQuote.message}</div> : null}
-                  {!detail.rfq.accepted_quote_id && !conversationClosed ? (
+                  {canAccept ? (
                     <div className="mt-3">
+                      <p className="small text-secondary">{language === "es" ? "Al aceptar, se cierran las otras ofertas de esta solicitud." : "Accepting closes the other offers in this request."}</p>
                       <AcceptButton rfq_id={detail.rfq.id} quote_id={detail.latestQuote.id} />
                     </div>
                   ) : acceptedQuote ? (
@@ -182,15 +168,15 @@ export default async function AccountInboxThreadPage({
             </div>
           </div>
 
-          {detail.latestQuote && !conversationClosed ? (
+          {!conversationClosed ? (
             <div className="card mb-4">
               <div className="card-body">
                 <div className="fw-semibold mb-3">{dictionary.account.quotesPage.conversation.heading}</div>
                 <QuoteReplyForm
                   action={sendClientQuoteReply}
-                  quoteId={detail.latestQuote.id}
-                  rfqId={detail.latestQuote.rfq_id}
-                  vendorId={detail.latestQuote.vendor_id}
+                  quoteId={detail.latestQuote?.id}
+                  rfqId={detail.rfq.id}
+                  vendorId={detail.invite.vendor_id}
                   submitLabel={dictionary.account.quotesPage.conversation.replyAction}
                   submittingLabel={dictionary.account.quotesPage.conversation.replyPending}
                   placeholder={dictionary.account.quotesPage.conversation.replyPlaceholder}
@@ -202,7 +188,9 @@ export default async function AccountInboxThreadPage({
             <div className="alert alert-secondary">
               {language === "es"
                 ? "Esta conversación se cerró cuando se eligió otra propuesta o venció la solicitud."
-                : "This conversation closed when another proposal was selected or the request expired."}
+                : "This conversation is closed or archived. Its history is still available."}
+              {detail.invite.closed_reason === "archived_by_client" ? <div className="mt-2"><Link href={`/account/inbox?view=deleted&rfq=${encodeURIComponent(detail.rfq.id)}`}>{language === "es" ? "Restaurar desde conversaciones eliminadas" : "Restore from deleted conversations"}</Link></div>
+                : detail.vendor?.slug ? <div className="mt-2"><Link href={`/vendors/${encodeURIComponent(detail.vendor.slug)}#contact`}>{language === "es" ? "Enviar una nueva solicitud" : "Send a new inquiry"}</Link></div> : null}
             </div>
           ) : null}
         </div>

@@ -1,3 +1,4 @@
+import { getRequestI18n } from "@/lib/i18n/server";
 import { formatCalendarDate } from "@/lib/calendar-date";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -46,6 +47,7 @@ export default async function VendorNotificationsPage({
 }: {
   searchParams?: Promise<{ q?: string }>;
 }) {
+  const {language} = await getRequestI18n();
   const supabase = await createSupabaseServerClient();
   const search = searchParams ? await searchParams : undefined;
   const query = search?.q?.trim().toLowerCase() ?? "";
@@ -167,7 +169,7 @@ export default async function VendorNotificationsPage({
                       .filter(Boolean)
                       .join(" · ")
                   : replyData
-                    ? `Request ${replyData.rfqId.slice(0, 8)} · Quote ${replyData.quoteId.slice(0, 8)}`
+                    ? `${language === "es" ? "Solicitud" : "Request"} ${replyData.rfqId.slice(0, 8)}${replyData.quoteId ? ` · ${language === "es" ? "Propuesta" : "Proposal"} ${replyData.quoteId.slice(0,8)}` : ""}`
                     : acceptedData
                       ? `Request ${acceptedData.rfqId.slice(0, 8)} · Quote ${acceptedData.quoteId.slice(0, 8)}`
                       : null;

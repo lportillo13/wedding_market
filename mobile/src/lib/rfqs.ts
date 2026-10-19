@@ -22,7 +22,7 @@ export type QuoteRequestInput = {
 
 export type MobileInboxMessage = {
   id: string;
-  quoteId: string;
+  quoteId: string | null;
   senderRole: "client" | "vendor";
   body: string;
   createdAt: string;
@@ -63,6 +63,7 @@ export type MobileInboxThread = {
   meta: string;
   status: string;
   expiresAt: string | null;
+  closedAt?: string | null;
   acceptedQuoteId: string | null;
   contactEmail: string | null;
   contactPhone: string | null;
@@ -84,16 +85,14 @@ function requiredClient() {
 function parseIntOrNull(value: string) {
   const normalized = value.trim();
   if (!normalized) return null;
-  const parsed = Number.parseInt(normalized.replace(/[^\d]/g, ""), 10);
-  return Number.isFinite(parsed) ? parsed : null;
+  if (!/^\d+$/.test(normalized)) throw new Error("Enter a whole number without signs or decimals.");
+  const parsed = Number(normalized);
+  if (!Number.isSafeInteger(parsed) || parsed > 2147483647) throw new Error("This number is too large.");
+  return parsed;
 }
 
 function clean(value: string) {
   return value.trim() || null;
-}
-
-function isMissingQuoteMessagesTable(message: string | undefined) {
-  return /quote_messages/i.test(message ?? "") && /does not exist|could not find/i.test(message ?? "");
 }
 
 function formatThreadDate(value: string | null | undefined, language: "en" | "es" = "en") {
@@ -157,7 +156,7 @@ function toMobileRequestDetails(row: Record<string, unknown> | null | undefined)
   };
 }
 
-export async function createQuoteRequests(input: QuoteRequestInput, vendorIds: string[] = [input.vendorId]) {
+export async function createQuoteRequests(input: QuoteRequestInput, vendorIds: string[] = [input.vendorId], requestId?: string) {
   const client = requiredClient();
   const {
     data: { session },
@@ -190,6 +189,7 @@ export async function createQuoteRequests(input: QuoteRequestInput, vendorIds: s
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
+      request_id: requestId,
       vendor_id: vendorSelection.vendorId,
       vendor_ids: vendorSelection.vendorIds,
       first_name: input.firstName.trim(),
@@ -225,37 +225,18 @@ export async function createQuoteRequest(input: QuoteRequestInput) {
   return createQuoteRequests(input, [input.vendorId]);
 }
 
-async function loadMessages(quoteIds: string[]) {
+async function loadMessages(rfqId: string, vendorId: string): Promise<MobileInboxMessage[]> {
   const client = requiredClient();
-  if (!quoteIds.length) return new Map<string, MobileInboxMessage[]>();
-
-  const { data, error } = await client
-    .from("quote_messages")
-    .select("id, quote_id, sender_role, body, created_at")
-    .in("quote_id", quoteIds)
-    .order("created_at", { ascending: true });
-
-  if (error) {
-    if (isMissingQuoteMessagesTable(error.message)) {
-      return new Map<string, MobileInboxMessage[]>();
-    }
-    throw new Error(error.message);
+  const messages: MobileInboxMessage[] = [];
+  for (let offset=0;;offset+=200) {
+    const {data,error} = await client.from("quote_messages")
+      .select("id,quote_id,sender_role,body,created_at")
+      .eq("rfq_id",rfqId).eq("vendor_id",vendorId)
+      .order("created_at",{ascending:true}).order("id",{ascending:true}).range(offset,offset+199);
+    if (error) throw new Error(error.message);
+    messages.push(...(data ?? []).map(row=>({id:String(row.id),quoteId:nullableString(row.quote_id),senderRole:row.sender_role === "vendor" ? "vendor" as const : "client" as const,body:String(row.body),createdAt:String(row.created_at)})));
+    if (!data || data.length<200) return messages;
   }
-
-  const byQuote = new Map<string, MobileInboxMessage[]>();
-  for (const row of data ?? []) {
-    const quoteId = String(row.quote_id);
-    const current = byQuote.get(quoteId) ?? [];
-    current.push({
-      id: String(row.id),
-      quoteId,
-      senderRole: row.sender_role === "vendor" ? "vendor" : "client",
-      body: String(row.body ?? ""),
-      createdAt: String(row.created_at),
-    });
-    byQuote.set(quoteId, current);
-  }
-  return byQuote;
 }
 
 type MobileSummary = {
@@ -265,10 +246,10 @@ type MobileSummary = {
 export async function loadMobileInbox(role: Role, language: "en" | "es" = "en", page = 1) {
   const client = requiredClient();
   const viewer=role === "vendor" || role === "admin" ? "vendor" : "client";
-  const { data,error }=await client.rpc("list_inbox_threads",{p_viewer:viewer,p_page:page,p_archived:false});
+  const { data,error }=await client.rpc("list_inbox_threads_v2",{p_viewer:viewer,p_page:page,p_archived:false});
   if (error) throw new Error(error.message);
   const rows=(data ?? []) as MobileSummary[];
-  const threads=rows.map(({invite,rfq,vendor,latest_quote,accepted_here}): MobileInboxThread=>{
+  const threads=rows.filter(row=>row.invite?.rfq_id).map(({invite,rfq,vendor,latest_quote,accepted_here}): MobileInboxThread=>{
     const latest=latest_quote ? toMobileQuote(latest_quote) : null;
     return {
       id:`${invite.rfq_id}:${invite.vendor_id}`,rfqId:String(invite.rfq_id),vendorId:String(invite.vendor_id),
@@ -276,14 +257,20 @@ export async function loadMobileInbox(role: Role, language: "en" | "es" = "en", 
       subtitle:[rfq.city,rfq.state,rfq.country].filter(Boolean).join(", ") || String(rfq.notes ?? ""),
       meta:formatThreadDate(nullableString(rfq.event_date) ?? nullableString(invite.created_at),language),
       status:accepted_here ? "accepted" : String(invite.status ?? "invited"),expiresAt:nullableString(invite.expires_at),
-      acceptedQuoteId:nullableString(rfq.accepted_quote_id),contactEmail:nullableString(rfq.contact_email),contactPhone:nullableString(rfq.contact_phone),
+      closedAt:nullableString(invite.closed_at),acceptedQuoteId:nullableString(rfq.accepted_quote_id),contactEmail:nullableString(rfq.contact_email),contactPhone:nullableString(rfq.contact_phone),
       request:toMobileRequestDetails(rfq),quotes:latest ? [latest] : [],latestQuote:latest,messages:[],
     };
   });
   return {threads,total:Number(rows[0]?.total_count ?? 0)};
 }
 export async function loadMobileInboxThread(role: Role, language: "en" | "es", thread: MobileInboxThread) {
-  return (await loadMobileThreadData(role,language,thread)).find(item=>item.id===thread.id) ?? null;
+  const detail = (await loadMobileThreadData(role,language,thread)).find(item=>item.id===thread.id) ?? null;
+  if (detail) {
+    // Reading a thread on the phone also clears the website's unread marker.
+    await requiredClient().from("rfq_invites").update({[role === "vendor" || role === "admin" ? "vendor_last_read_at" : "client_last_read_at"]:new Date().toISOString()})
+      .eq("rfq_id",detail.rfqId).eq("vendor_id",detail.vendorId);
+  }
+  return detail;
 }
 
 async function loadMobileThreadData(role: Role, language: "en" | "es", selected: MobileInboxThread): Promise<MobileInboxThread[]> {
@@ -309,7 +296,7 @@ async function loadMobileThreadData(role: Role, language: "en" | "es", selected:
 
     const { data: invites, error: invitesError } = await client
       .from("rfq_invites")
-      .select("rfq_id, vendor_id, status, expires_at, created_at, updated_at, reveal_email, reveal_phone")
+      .select("rfq_id, vendor_id, status, expires_at, created_at, updated_at, closed_at, reveal_email, reveal_phone")
       .eq("vendor_id", vendor.id)
       .eq("rfq_id",selected.rfqId)
       .order("updated_at", { ascending: false })
@@ -335,7 +322,7 @@ async function loadMobileThreadData(role: Role, language: "en" | "es", selected:
     if (rfqError) throw new Error(rfqError.message);
     if (quoteError) throw new Error(quoteError.message);
 
-    const messagesByQuote = await loadMessages((quotes ?? []).map((quote) => String(quote.id)));
+    const threadMessages = await loadMessages(selected.rfqId,selected.vendorId);
     const rfqById = new Map((rfqs ?? []).map((rfq) => [String(rfq.id), rfq]));
 
     return (invites ?? []).map((invite) => {
@@ -345,7 +332,7 @@ async function loadMobileThreadData(role: Role, language: "en" | "es", selected:
         .map(toMobileQuote)
         .sort((a, b) => b.version - a.version || timestamp(b.createdAt) - timestamp(a.createdAt));
       const latest = threadQuotes[0] ?? null;
-      const quoteMessages = threadQuotes.flatMap((quote) => messagesByQuote.get(String(quote.id)) ?? []);
+      const quoteMessages = threadMessages;
       const acceptedQuoteId = typeof rfq?.accepted_quote_id === "string" ? rfq.accepted_quote_id : null;
       const lastActivity = Math.max(
         timestamp(String(invite.updated_at ?? invite.created_at)),
@@ -369,7 +356,8 @@ async function loadMobileThreadData(role: Role, language: "en" | "es", selected:
             ? "accepted"
             : String(invite.status ?? "invited"),
           expiresAt: typeof invite.expires_at === "string" ? invite.expires_at : null,
-          acceptedQuoteId,
+          closedAt: nullableString(invite.closed_at),
+        acceptedQuoteId,
           contactEmail: acceptedQuoteId && threadQuotes.some((quote) => quote.id === acceptedQuoteId)
             && invite.reveal_email !== false ? String(rfq?.contact_email ?? "") || null : null,
           contactPhone: acceptedQuoteId && threadQuotes.some((quote) => quote.id === acceptedQuoteId)
@@ -397,7 +385,7 @@ async function loadMobileThreadData(role: Role, language: "en" | "es", selected:
 
   const rfqIds = rfqRows.map((rfq) => String(rfq.id));
   const [{ data: invites, error: invitesError }, { data: quotes, error: quoteError }] = await Promise.all([
-    client.from("rfq_invites").select("rfq_id, vendor_id, status, expires_at, created_at, updated_at").in("rfq_id", rfqIds).eq("vendor_id",selected.vendorId),
+    client.from("rfq_invites").select("rfq_id, vendor_id, status, expires_at, created_at, updated_at, closed_at").in("rfq_id", rfqIds).eq("vendor_id",selected.vendorId),
     client
       .from("quotes")
       .select("id, rfq_id, vendor_id, version, amount_cents, currency, message, created_at")
@@ -416,7 +404,7 @@ async function loadMobileThreadData(role: Role, language: "en" | "es", selected:
     : { data: [], error: null };
   if (vendorsError) throw new Error(vendorsError.message);
 
-  const messagesByQuote = await loadMessages((quotes ?? []).map((quote) => String(quote.id)));
+  const threadMessages = await loadMessages(selected.rfqId,selected.vendorId);
   const vendorById = new Map((vendors ?? []).map((vendor) => [String(vendor.id), vendor]));
   return matchInboxInvitesToRfqs(rfqRows, invites ?? []).map(({ invite, rfq }) => {
     const vendor = vendorById.get(String(invite.vendor_id));
@@ -425,7 +413,7 @@ async function loadMobileThreadData(role: Role, language: "en" | "es", selected:
       .map(toMobileQuote)
       .sort((a, b) => b.version - a.version || timestamp(b.createdAt) - timestamp(a.createdAt));
     const latest = threadQuotes[0] ?? null;
-    const quoteMessages = threadQuotes.flatMap((quote) => messagesByQuote.get(String(quote.id)) ?? []);
+    const quoteMessages = threadMessages;
     const acceptedQuoteId = typeof rfq.accepted_quote_id === "string" ? rfq.accepted_quote_id : null;
     const lastActivity = Math.max(
       timestamp(String(invite.updated_at ?? invite.created_at)),
@@ -448,6 +436,7 @@ async function loadMobileThreadData(role: Role, language: "en" | "es", selected:
           ? "accepted"
           : String(invite.status ?? "requested"),
         expiresAt: typeof invite.expires_at === "string" ? invite.expires_at : null,
+        closedAt: nullableString(invite.closed_at),
         acceptedQuoteId,
         contactEmail: null,
         contactPhone: null,
@@ -507,7 +496,7 @@ export async function acceptMobileQuote(
   if (!payload.ok) throw new Error(payload.message ?? "Unable to accept quote.");
 }
 
-export async function sendQuoteThreadReply(thread: MobileInboxThread, body: string, role: Role) {
+export async function sendQuoteThreadReply(thread: MobileInboxThread, body: string, role: Role, clientMessageId?: string) {
   const client = requiredClient();
   const {
     data: { session },
@@ -515,10 +504,6 @@ export async function sendQuoteThreadReply(thread: MobileInboxThread, body: stri
 
   if (!session?.access_token) {
     throw new Error("Sign in required.");
-  }
-
-  if (!thread.latestQuote?.id) {
-    throw new Error("The vendor has not sent a quote yet.");
   }
 
   const trimmed = body.trim();
@@ -542,7 +527,8 @@ export async function sendQuoteThreadReply(thread: MobileInboxThread, body: stri
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      quoteId: thread.latestQuote.id,
+      clientMessageId,
+      quoteId: thread.latestQuote?.id ?? null,
       rfqId: thread.rfqId,
       vendorId: thread.vendorId,
       senderRole,

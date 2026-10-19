@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useRef } from "react";
 import { useMemo, useState } from "react";
 import ContextualSponsoredUnits from "@/components/ads/ContextualSponsoredUnits";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -18,8 +18,13 @@ export type RfqPrefill = {
 };
 
 export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
+  const requestId = useRef<string | null>(null);
   const [ids, setIds] = useState<string[]>(() => (typeof window !== "undefined" ? getShortlist() : []));
-  const [state, action, pending] = useActionState<CreateRfqState, FormData>(createRfqAndInvites, { ok: false });
+  const [state, action, pending] = useActionState<CreateRfqState, FormData>(async (previous, form) => {
+    requestId.current ??= crypto.randomUUID();
+    form.set("request_id",requestId.current);
+    return createRfqAndInvites(previous, form);
+  }, { ok: false });
   const { vendorsById, loading: vendorsLoading, error: vendorsError } = useVendorSummaries(ids);
   const vendorIdsJson = useMemo(() => JSON.stringify(ids), [ids]);
   const { dictionary, language } = useLanguage();
@@ -97,7 +102,7 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
                 );
               })}
             </div>
-            <div className="form-text">{labels.maxVendorsHelp}</div>
+            <div className="form-text" role="status">{ids.length}/10 · {labels.maxVendorsHelp}</div>
           </div>
 
           <ContextualSponsoredUnits
@@ -110,7 +115,7 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
             guestCount={adGuestCount}
           />
 
-          <form action={action} className="border rounded p-3 bg-body">
+          <form action={action} onReset={event => event.preventDefault()} className="border rounded p-3 bg-body">
             <input type="hidden" name="vendor_ids_json" value={vendorIdsJson} />
             <p className="small text-muted">{language === "es" ? "* Campos requeridos" : "* Required fields"}</p>
 
@@ -120,6 +125,7 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
                   {labels.eventDateLabel} ({language === "es" ? "opcional" : "optional"})
                 </label>
                 <input id="rfq-event-date" className="form-control" type="date" name="event_date" defaultValue={eventDate} />
+                <label className="form-check mt-2"><input className="form-check-input" type="checkbox" name="flexible"/> <span className="form-check-label">{language === "es" ? "La fecha es flexible" : "The date is flexible"}</span></label>
               </div>
               <div className="col-md-6 mb-3">
                 <label className="form-label" htmlFor="rfq-guest-count">
@@ -215,10 +221,11 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
             {!state.ok && state.message && <div className="alert alert-danger">{state.message}</div>}
 
             <div className="d-flex gap-2">
-              <button className="btn btn-primary" disabled={pending}>
+              <button className="btn btn-primary" disabled={pending || ids.length > 10 || vendorsLoading || Boolean(vendorsError)}>
                 {pending ? labels.submitting : labels.submit}
               </button>
               <button
+                disabled={pending}
                 type="button"
                 className="btn btn-outline-secondary"
                 onClick={() => {
