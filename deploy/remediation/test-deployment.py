@@ -2,7 +2,9 @@
 """Synthetic Linux regression checks; no real PM2, network or production files."""
 import importlib.util
 import json
+import os
 from pathlib import Path
+import subprocess
 import tempfile
 from unittest.mock import patch
 
@@ -60,3 +62,45 @@ with patch.object(deployment, 'http', return_value=(200, {}, b'')):
     rejected(lambda: deployment.probes(3012))
 
 print('PASS: original/managed checkouts, escaped/symlinked/missing release rejection, new markup, security headers and native API authorization checks.')
+
+
+with tempfile.TemporaryDirectory(prefix='wm-release-git-tests-') as folder:
+    root = Path(folder)
+    source, production, stage = (root / name for name in ['source', 'production', 'stage'])
+    source.mkdir()
+    git_env = dict(os.environ, GIT_CONFIG_NOSYSTEM='1', GIT_CONFIG_GLOBAL='/dev/null',
+                   GIT_AUTHOR_NAME='Synthetic test', GIT_AUTHOR_EMAIL='synthetic@example.invalid',
+                   GIT_COMMITTER_NAME='Synthetic test', GIT_COMMITTER_EMAIL='synthetic@example.invalid')
+
+    def git(*args, cwd=source):
+        return subprocess.check_output(['git', *args], cwd=cwd, env=git_env, stderr=subprocess.DEVNULL).decode().strip()
+
+    git('init', '-b', 'codex/audit-remediation')
+    (source / 'synthetic.txt').write_text('baseline')
+    git('add', 'synthetic.txt')
+    git('commit', '-m', 'Synthetic baseline')
+    base = git('rev-parse', 'HEAD')
+    git('clone', '--no-hardlinks', str(source), str(production))
+    (source / 'synthetic.txt').write_text('release')
+    git('commit', '-am', 'Synthetic release')
+    commit = git('rev-parse', 'HEAD')
+    bundle = root / 'release.bundle'
+    git('bundle', 'create', str(bundle), 'codex/audit-remediation', '^' + base)
+    git('clone', '--no-hardlinks', '--no-checkout', str(production), str(stage))
+    git('fetch', str(bundle), 'refs/heads/codex/audit-remediation', cwd=stage)
+    broken = subprocess.run(['git', 'checkout', '-b', 'codex/audit-remediation', 'FETCH_HEAD'],
+                            cwd=stage, env=git_env, capture_output=True)
+    assert broken.returncode != 0 and b'already exists' in broken.stderr
+
+    def run_as_test_owner(args, *, cwd=None, env=None, as_deploy=False, log=None):
+        return subprocess.check_output(args, cwd=cwd, env=git_env, stderr=subprocess.DEVNULL).decode().rstrip('\n')
+
+    with patch.object(deployment, 'run', side_effect=run_as_test_owner):
+        deployment.checkout_release(stage, bundle, commit, git_env, root / 'build.log')
+    assert git('rev-parse', 'HEAD', cwd=stage) == commit
+    assert git('branch', '--show-current', cwd=stage) == 'codex/audit-remediation'
+    assert (stage / 'synthetic.txt').read_text() == 'release'
+    assert git('rev-parse', 'HEAD', cwd=production) == base
+    assert (production / 'synthetic.txt').read_text() == 'baseline'
+
+print('PASS: an incremental release replaces the existing branch only in the new clone and leaves production source unchanged.')

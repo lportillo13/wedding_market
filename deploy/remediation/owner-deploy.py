@@ -113,6 +113,14 @@ def checked_app_directory(app, release_parent):
     return resolved
 
 
+def checkout_release(stage, bundle, commit, env, build_log):
+    run(['git', 'fetch', str(bundle), 'refs/heads/codex/audit-remediation'], cwd=stage, env=env, as_deploy=True, log=build_log)
+    # Only the new, isolated clone is reset; production keeps running unchanged.
+    run(['git', 'checkout', '-B', 'codex/audit-remediation', 'FETCH_HEAD'], cwd=stage, env=env, as_deploy=True, log=build_log)
+    if run(['git', 'rev-parse', 'HEAD'], cwd=stage, as_deploy=True) != commit:
+        raise RuntimeError('Fetched release identity mismatch.')
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--manifest-sha', required=True)
@@ -227,10 +235,7 @@ with open('.git/config','w') as output:c.write(output)
 os.chmod('.git/config',0o600)
 """
         run(['python3', '-c', configure_origin], cwd=stage, env=env, as_deploy=True, input_data=original_origin.encode())
-        run(['git', 'fetch', str(deploy_bundle), 'refs/heads/codex/audit-remediation'], cwd=stage, env=env, as_deploy=True, log=build_log)
-        run(['git', 'checkout', '-b', 'codex/audit-remediation', 'FETCH_HEAD'], cwd=stage, env=env, as_deploy=True, log=build_log)
-        if run(['git', 'rev-parse', 'HEAD'], cwd=stage, as_deploy=True) != manifest['commit']:
-            raise RuntimeError('Fetched release identity mismatch.')
+        checkout_release(stage, deploy_bundle, manifest['commit'], env, build_log)
         # Read deploy-controlled source files with deploy's existing permissions.
         original_env = run(['cat', str(APP / '.env.production.local')], as_deploy=True)
         if PROJECT not in original_env and PROJECT not in env.get('NEXT_PUBLIC_SUPABASE_URL', ''):
