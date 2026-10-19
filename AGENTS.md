@@ -14,6 +14,7 @@ Read [docs/project-context.md](docs/project-context.md) when resuming this proje
 - Preserve the unified client and vendor inboxes. The inquiry/proposal design document includes work that is already implemented.
 - The owner approved the header/menu layout but requested warmer wedding styling. Keep its navigation structure and favor ivory, champagne, warm brown, serif details and restrained botanical accents over a cold white/green appearance.
 - Public vendor profiles should feel rich and wedding-focused: emphasize real photos, a distinct vendor identity, readable service details and easy quote actions. Preserve category-specific content and existing account/contact restrictions.
+- Keep account inboxes compact and easy to scan on phones: one page heading, labeled conversation details, short status chips, visible delete/restore controls and no marketing newsletter inside the account workspace.
 
 ## Working in this repository
 

@@ -11,9 +11,9 @@ export default async function AccountLayout({ children }: { children: ReactNode 
   }
 
   return (
-    <>
+    <div className="wm-account-workspace">
       <AccountLayoutHeader />
       {children}
-    </>
+    </div>
   );
 }

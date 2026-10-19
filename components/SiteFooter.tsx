@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
 import type { HeaderVendorCategory } from "@/components/VendorsMegaMenu";
+import { isHeaderLinkCurrent } from "@/lib/header-navigation";
+import WorkspaceFooter from "./WorkspaceFooter";
 
 type SiteFooterProps = {
   vendorCategories: HeaderVendorCategory[];
@@ -72,6 +74,9 @@ export default function SiteFooter({ vendorCategories }: SiteFooterProps) {
 
   if (pathname.startsWith("/private-control-room-hub")) {
     return null;
+  }
+  if (isHeaderLinkCurrent(pathname, "/account") || isHeaderLinkCurrent(pathname, "/vendor/inbox")) {
+    return <WorkspaceFooter />;
   }
 
   const featuredCategories = vendorCategories.slice(0, 5);
