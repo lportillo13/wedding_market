@@ -33,11 +33,11 @@ export default function VendorTeam({ team }: VendorTeamProps) {
   return (
     <div>
       <h2 className="h3 mb-4">{labels.heading}</h2>
-      <div className="row g-4">
+      <div className="row g-4 wm-profile-team">
         {team.map((member) => {
           const responseText = formatResponseTime(member.respondsWithinHours);
           return (
-            <div className="col-12 col-md-6 col-lg-4" key={member.id}>
+            <div className="col-12 col-md-6" key={member.id}>
               <div className="card h-100 shadow-sm">
                 {member.headshotUrl ? (
                   <div className="position-relative" style={{ height: "220px" }}>

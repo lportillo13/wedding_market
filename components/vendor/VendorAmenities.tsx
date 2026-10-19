@@ -48,7 +48,7 @@ export default function VendorAmenities({ amenities, capacityMax, categoryKeys }
         <p className="text-muted">{fill(labels.capacity, { count: capacityMax })}</p>
       ) : null}
       {hasData ? (
-        <div className="row g-4">
+        <div className="row g-4 wm-profile-amenities">
           {groups.map((group) => {
             const items = amenities[group.key] ?? [];
             if (!items.length) return null;

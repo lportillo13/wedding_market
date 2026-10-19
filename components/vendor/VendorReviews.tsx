@@ -75,7 +75,7 @@ export default function VendorReviews({ reviews }: VendorReviewsProps) {
 
   return (
     <div>
-      <div className="d-flex flex-column flex-lg-row gap-4">
+      <div className="wm-profile-reviews-layout">
         <div className="flex-grow-1">
           <h2 className="h3 mb-3">{labels.heading}</h2>
           <div className="d-flex align-items-baseline gap-3 mb-3">
@@ -112,7 +112,7 @@ export default function VendorReviews({ reviews }: VendorReviewsProps) {
           </div>
 
           <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
-            <div className="btn-group" role="group" aria-label={labels.filterAria}>
+            <div className="btn-group wm-profile-review-filters" role="group" aria-label={labels.filterAria}>
               <button type="button" className={clsx("btn btn-outline-secondary", { active: ratingFilter === "all" })} onClick={() => { setRatingFilter("all"); setPage(1); }}>
                 {labels.all}
               </button>

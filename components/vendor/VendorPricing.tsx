@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
 import {
   humanizeVendorFieldKey,
@@ -8,6 +7,7 @@ import {
   sortPricingItemKeys,
 } from "@/lib/vendorServiceProfile";
 import type { VendorPricingItem, VendorProfileDTO } from "@/types/vendor-profile";
+import VendorAccessPrompt from "./VendorAccessPrompt";
 
 type VendorPricingProps = {
   vendor: VendorProfileDTO["vendor"];
@@ -58,12 +58,7 @@ export default function VendorPricing({ vendor, pricing, isLoggedIn, loginHref, 
     return (
       <div>
         <h2 className="h3 mb-3">{labels.heading}</h2>
-        <div className="alert alert-light border mb-0" role="status">
-          <p className="mb-3">{labels.loginRequired}</p>
-          <Link href={loginHref} className="btn btn-outline-primary">
-            {labels.logInAction}
-          </Link>
-        </div>
+        <VendorAccessPrompt title={dictionary.vendorPublic.editorial.pricingTitle} description={labels.loginRequired} href={loginHref} action={labels.logInAction} />
       </div>
     );
   }

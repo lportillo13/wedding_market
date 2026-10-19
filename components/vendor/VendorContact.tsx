@@ -177,14 +177,14 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
   if (isVendor) {
     return (
       <div className="row g-4">
-        <div className="col-12 col-lg-7">
+        <div className="col-12">
           <h2 className="h3 mb-3">{labels.vendorHeading}</h2>
           <p className="text-muted">{fill(labels.vendorIntro, { vendor: vendor.name })}</p>
           <Link href="/vendor/inbox" className="btn btn-primary btn-lg">
             {headerLabels.viewReceivedRequests}
           </Link>
         </div>
-        <div className="col-12 col-lg-5">
+        <div className="col-12">
           <aside className="bg-light border rounded p-4 h-100">
             <h3 className="h5">{labels.detailsHeading}</h3>
             <ul className="list-unstyled small mb-0">
@@ -210,7 +210,7 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
   if (!isLoggedIn) {
     return (
       <div className="row g-4">
-        <div className="col-12 col-lg-7">
+        <div className="col-12">
           <h2 className="h3 mb-3">{labels.heading}</h2>
           <p className="text-muted">{labels.loginRequired}</p>
           <Link href={loginHref} className="btn btn-primary btn-lg">
@@ -223,7 +223,7 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
 
   return (
     <div className="row g-4">
-      <div className="col-12 col-lg-7">
+      <div className="col-12">
         <h2 className="h3 mb-3">{labels.heading}</h2>
         <p className="text-muted">{fill(labels.intro, { vendor: vendor.name })}</p>
 
@@ -311,7 +311,7 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
           </form>
         ) : null}
       </div>
-      <div className="col-12 col-lg-5">
+      <div className="col-12">
         <aside className="bg-light border rounded p-4 h-100">
           <h3 className="h5">{labels.detailsHeading}</h3>
           <ul className="list-unstyled small mb-0">

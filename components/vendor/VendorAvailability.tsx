@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import VendorAccessPrompt from "./VendorAccessPrompt";
 import { useMemo, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
@@ -77,12 +77,7 @@ export default function VendorAvailability({
     return (
       <div>
         <h2 className="h3 mb-3">{labels.heading}</h2>
-        <div className="alert alert-light border mb-0" role="status">
-          <p className="mb-3">{labels.loginRequired}</p>
-          <Link href={loginHref} className="btn btn-outline-primary">
-            {labels.logInAction}
-          </Link>
-        </div>
+        <VendorAccessPrompt title={dictionary.vendorPublic.editorial.availabilityTitle} description={labels.loginRequired} href={loginHref} action={labels.logInAction} />
       </div>
     );
   }

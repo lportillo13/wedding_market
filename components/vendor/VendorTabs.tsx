@@ -1,6 +1,7 @@
 "use client";
 
 import clsx from "clsx";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useEffect, useMemo, useState, type MouseEvent } from "react";
 
 export type VendorTab = {
@@ -13,16 +14,25 @@ type VendorTabsProps = {
   className?: string;
 };
 
-const SCROLL_OFFSET = 120;
+function getScrollOffset() {
+  const siteHeader =
+    document.querySelector(".wm-site-header")?.getBoundingClientRect().height ??
+    76;
+  const tabs =
+    document.querySelector(".wm-vendor-tabs-shell")?.getBoundingClientRect()
+      .height ?? 60;
+  return siteHeader + tabs + 20;
+}
 
 export default function VendorTabs({ sections, className }: VendorTabsProps) {
+  const { dictionary } = useLanguage();
   const [activeId, setActiveId] = useState<string>(sections[0]?.id ?? "");
 
   useEffect(() => {
     let animationFrame = 0;
 
     const updateActiveSection = () => {
-      const activationLine = SCROLL_OFFSET + 24;
+      const activationLine = getScrollOffset() + 24;
       let nextActiveId = sections[0]?.id ?? "";
 
       sections.forEach((section) => {
@@ -52,20 +62,30 @@ export default function VendorTabs({ sections, className }: VendorTabsProps) {
     };
   }, [sections]);
 
-  const handleClick = (id: string) => (event: MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
-    const el = document.getElementById(id);
-    if (!el) return;
-    setActiveId(id);
-    const y = el.getBoundingClientRect().top + window.scrollY - (SCROLL_OFFSET - 20);
-    window.scrollTo({ top: y, behavior: "smooth" });
-  };
+  const handleClick =
+    (id: string) => (event: MouseEvent<HTMLAnchorElement>) => {
+      event.preventDefault();
+      const el = document.getElementById(id);
+      if (!el) return;
+      setActiveId(id);
+      const y =
+        el.getBoundingClientRect().top + window.scrollY - getScrollOffset();
+      window.scrollTo({
+        top: y,
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "instant"
+          : "smooth",
+      });
+    };
 
   const tabs = useMemo(() => sections, [sections]);
 
   return (
     <div className={className}>
-      <nav className="nav nav-underline justify-content-start gap-3 py-3" aria-label="Secciones del proveedor">
+      <nav
+        className="nav nav-underline justify-content-start gap-3 py-3"
+        aria-label={dictionary.vendorPublic.editorial.navigation}
+      >
         {tabs.map((section) => (
           <a
             key={section.id}
@@ -74,7 +94,7 @@ export default function VendorTabs({ sections, className }: VendorTabsProps) {
             className={clsx("nav-link text-nowrap", {
               active: activeId === section.id,
             })}
-            aria-current={activeId === section.id ? "page" : undefined}
+            aria-current={activeId === section.id ? "location" : undefined}
           >
             {section.label}
           </a>

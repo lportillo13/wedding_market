@@ -12,6 +12,7 @@ import type { VendorProfileDTO } from "@/types/vendor-profile";
 type VendorHeaderProps = {
   vendor: VendorProfileDTO["vendor"];
   media: VendorProfileDTO["media"];
+  categories: VendorProfileDTO["breadcrumbs"]["categories"];
   isVendor: boolean;
   isLoggedIn: boolean;
   loginHref: string;
@@ -24,137 +25,169 @@ function fill(template: string, values: Record<string, string | number>) {
   );
 }
 
-function isPhoto(url: string) {
-  return !url.endsWith(".mp4") && !url.includes("/video/");
-}
-
-export default function VendorHeader({ vendor, media, isVendor, isLoggedIn, loginHref }: VendorHeaderProps) {
-  const { dictionary, language } = useLanguage();
+export default function VendorHeader({
+  vendor,
+  media,
+  categories,
+  isVendor,
+  isLoggedIn,
+  loginHref,
+}: VendorHeaderProps) {
+  const { dictionary } = useLanguage();
   const labels = dictionary.vendorPublic.header;
-
-  const formatCurrency = (value: number | null | undefined, currency: string): string | null => {
-    if (!value || Number.isNaN(value)) return null;
-    try {
-      return new Intl.NumberFormat(language === "es" ? "es-ES" : "en-US", {
-        style: "currency",
-        currency,
-        maximumFractionDigits: 0,
-      }).format(value / 100);
-    } catch {
-      return `$${(value / 100).toFixed(0)}`;
-    }
-  };
-
-  const startingPrice = formatCurrency(vendor.startingPriceCents, vendor.startingPriceCurrency);
-  const typicalSpend = formatCurrency(vendor.typicalSpendCents, vendor.typicalSpendCurrency);
-  const locationParts = [vendor.location.city, vendor.location.region, vendor.location.country]
+  const editorial = dictionary.vendorPublic.editorial;
+  const photos = media.filter(
+    (item) =>
+      item.type === "photo" &&
+      !item.url.toLowerCase().endsWith(".mp4") &&
+      !item.url.includes("/video/"),
+  );
+  const hero = photos[0];
+  const supporting = photos.slice(1, 3);
+  const location = [
+    vendor.location.city,
+    vendor.location.region,
+    vendor.location.country,
+  ]
     .filter(Boolean)
     .join(", ");
-  const heroPhoto = media.find((item) => item.type === "photo" && isPhoto(item.url)) ?? null;
 
   return (
-    <header className="wm-vendor-hero">
-      <div className="wm-vendor-hero__frame">
-        {heroPhoto ? (
-          <div className="wm-vendor-hero__spotlight">
+    <header className="container wm-profile-hero">
+      <div className="wm-profile-hero__copy">
+        <p className="wm-profile-eyebrow">{editorial.eyebrow}</p>
+        {categories.length > 0 && (
+          <p className="wm-profile-hero__category">
+            {categories.map((category) => category.label).join(" · ")}
+          </p>
+        )}
+        <h1>{vendor.name}</h1>
+        {location && (
+          <p className="wm-profile-hero__location">
+            <span aria-hidden="true">⌖</span> {location}
+          </p>
+        )}
+        <div className="wm-profile-hero__rating">
+          {vendor.ratingAvg && vendor.ratingCount > 0 ? (
+            <>
+              <Stars value={vendor.ratingAvg} />
+              <strong>{vendor.ratingAvg.toFixed(1)}</strong>
+              <a href="#reviews">
+                {fill(labels.reviewsCount, { count: vendor.ratingCount })}
+              </a>
+            </>
+          ) : (
+            <span>{labels.noReviews}</span>
+          )}
+        </div>
+        {vendor.summary && (
+          <p className="wm-profile-hero__summary">{vendor.summary}</p>
+        )}
+        <div className="wm-profile-hero__actions">
+          <Link
+            className="btn btn-primary"
+            href={
+              isVendor ? "/vendor/inbox" : isLoggedIn ? "#contact" : loginHref
+            }
+          >
+            {isVendor ? labels.viewReceivedRequests : labels.requestQuote}
+            <span aria-hidden="true">↗︎</span>
+          </Link>
+          <ShortlistButton vendorId={vendor.id} />
+          <ShareVendorMenu vendorName={vendor.name} />
+        </div>
+        {!isVendor && !isLoggedIn && (
+          <p className="wm-profile-hero__hint">{editorial.signInHint}</p>
+        )}
+        {(vendor.yearsInBusiness ||
+          vendor.languages.length > 0 ||
+          vendor.eventTypes.length > 0) && (
+          <div
+            className="wm-profile-hero__facts"
+            role="group"
+            aria-label={editorial.atAGlance}
+          >
+            {vendor.yearsInBusiness ? (
+              <span>
+                {fill(labels.yearsInBusiness, {
+                  years: vendor.yearsInBusiness,
+                })}
+              </span>
+            ) : null}
+            {vendor.languages.length > 0 && (
+              <span>
+                {fill(labels.languages, {
+                  languages: vendor.languages.join(", "),
+                })}
+              </span>
+            )}
+            {vendor.eventTypes.length > 0 && (
+              <span>{vendor.eventTypes.join(" · ")}</span>
+            )}
+          </div>
+        )}
+      </div>
+      <div
+        className={`wm-profile-hero__visual${hero ? "" : " wm-profile-hero__visual--empty"}`}
+      >
+        {hero ? (
+          <>
+            <a
+              className="wm-profile-hero__cover"
+              href="#photos"
+              aria-label={editorial.viewGallery}
+            >
+              <Image
+                src={resolveMediaUrl(hero.url)}
+                alt={hero.caption || vendor.name}
+                fill
+                priority
+                sizes="(max-width: 991px) 100vw, 55vw"
+                unoptimized={shouldRenderUnoptimizedMedia(hero.url)}
+              />
+              <span className="wm-profile-hero__gallery-link">
+                {editorial.viewGallery}
+                <span aria-hidden="true">↗︎</span>
+              </span>
+            </a>
+            {supporting.length > 0 && (
+              <div className="wm-profile-hero__details" aria-hidden="true">
+                {supporting.map((photo) => (
+                  <div key={photo.id}>
+                    <Image
+                      src={resolveMediaUrl(photo.url)}
+                      alt=""
+                      fill
+                      sizes="(max-width: 991px) 45vw, 25vw"
+                      unoptimized={shouldRenderUnoptimizedMedia(photo.url)}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="wm-profile-hero__monogram" aria-hidden="true">
+            {vendor.name.slice(0, 1)}
+          </div>
+        )}
+        {!hero && <p>{editorial.noPhotos}</p>}
+        {vendor.logoUrl && (
+          <div className="wm-profile-hero__seal">
             <Image
-              src={resolveMediaUrl(heroPhoto.url)}
-              alt={heroPhoto.caption || vendor.name}
-              fill
-              unoptimized={shouldRenderUnoptimizedMedia(heroPhoto.url)}
-              className="object-fit-cover"
-              sizes="100vw"
-              priority
+              src={resolveMediaUrl(vendor.logoUrl)}
+              alt={fill(labels.logoAlt, { vendor: vendor.name })}
+              width={80}
+              height={80}
+              unoptimized={shouldRenderUnoptimizedMedia(vendor.logoUrl)}
             />
           </div>
-        ) : (
-          <div className="wm-vendor-hero__spotlight wm-vendor-hero__spotlight--empty" />
         )}
-
-        <div className="wm-vendor-hero__card">
-          <div className="wm-vendor-hero__identity">
-            {vendor.logoUrl ? (
-              <div className="wm-vendor-hero__logo">
-                <Image
-                  src={resolveMediaUrl(vendor.logoUrl)}
-                  alt={fill(labels.logoAlt, { vendor: vendor.name })}
-                  width={152}
-                  height={152}
-                  unoptimized={shouldRenderUnoptimizedMedia(vendor.logoUrl)}
-                />
-              </div>
-            ) : (
-              <div className="wm-vendor-hero__logo wm-vendor-hero__logo--placeholder">
-                <span>{vendor.name.slice(0, 1)}</span>
-              </div>
-            )}
-
-            <div className="wm-vendor-hero__copy">
-              <p className="wm-admin-kicker mb-2">{language === "es" ? "CONOCE AL PROVEEDOR" : "MEET THE VENDOR"}</p>
-              <h1 className="wm-vendor-hero__name mb-2">{vendor.name}</h1>
-              {vendor.summary ? <p className="wm-vendor-hero__summary mb-0">{vendor.summary}</p> : null}
-            </div>
-          </div>
-
-          <div className="wm-vendor-hero__meta">
-            {locationParts ? <span className="wm-vendor-chip">{locationParts}</span> : null}
-            {vendor.eventTypes.length ? <span className="wm-vendor-chip">{vendor.eventTypes.join(" • ")}</span> : null}
-            {vendor.yearsInBusiness ? (
-              <span className="wm-vendor-chip">{fill(labels.yearsInBusiness, { years: vendor.yearsInBusiness })}</span>
-            ) : null}
-            {vendor.languages.length ? (
-              <span className="wm-vendor-chip">{fill(labels.languages, { languages: vendor.languages.join(", ") })}</span>
-            ) : null}
-          </div>
-
-          <div className="wm-vendor-hero__details">
-            <div className="wm-vendor-hero__rating">
-              {vendor.ratingAvg ? (
-                <>
-                  <Stars value={vendor.ratingAvg} />
-                  <strong>{vendor.ratingAvg.toFixed(1)}</strong>
-                  <span className="text-muted">{fill(labels.reviewsCount, { count: vendor.ratingCount })}</span>
-                </>
-              ) : (
-                <span className="text-muted">{labels.noReviews}</span>
-              )}
-            </div>
-
-            <div className="wm-vendor-hero__pricing">
-              {isLoggedIn ? (
-                <>
-                  {startingPrice ? <div>{fill(labels.startingPrice, { price: startingPrice })}</div> : null}
-                  {typicalSpend ? <div>{fill(labels.typicalSpend, { price: typicalSpend })}</div> : null}
-                </>
-              ) : (
-                <div>{labels.loginToViewPricing}</div>
-              )}
-            </div>
-          </div>
-
-          <div className="wm-vendor-hero__actions">
-            {isVendor ? (
-              <Link href="/vendor/inbox" className="btn btn-primary btn-lg">
-                {labels.viewReceivedRequests}
-              </Link>
-            ) : isLoggedIn ? (
-              <>
-                <a href="#contact" className="btn btn-primary btn-lg">
-                  {labels.requestQuote}
-                </a>
-                <ShortlistButton vendorId={vendor.id} sizeClassName="btn-lg" />
-              </>
-            ) : (
-              <>
-                <Link href={loginHref} className="btn btn-primary btn-lg">
-                  {labels.logInToRequestQuote}
-                </Link>
-                <ShortlistButton vendorId={vendor.id} sizeClassName="btn-lg" />
-              </>
-            )}
-            <ShareVendorMenu vendorName={vendor.name} />
-          </div>
-        </div>
+        {hero && (
+          <p className="wm-profile-hero__caption">
+            <span aria-hidden="true">✧</span> {editorial.portfolio}
+          </p>
+        )}
       </div>
     </header>
   );

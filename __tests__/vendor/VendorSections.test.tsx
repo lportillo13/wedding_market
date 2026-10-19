@@ -5,6 +5,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import VendorAbout from "@/components/vendor/VendorAbout";
 import VendorAmenities from "@/components/vendor/VendorAmenities";
 import VendorPricing from "@/components/vendor/VendorPricing";
+import VendorQuoteCard from "@/components/vendor/VendorQuoteCard";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
 
@@ -41,9 +42,29 @@ const vendor: VendorProfileDTO["vendor"] = {
     },
 };
 
-function renderWithLanguage(element: ReactElement) {
-  return renderToStaticMarkup(<LanguageProvider initialLanguage="en">{element}</LanguageProvider>);
+function renderWithLanguage(element: ReactElement, language: "en" | "es" = "en") {
+  return renderToStaticMarkup(<LanguageProvider initialLanguage={language}>{element}</LanguageProvider>);
 }
+
+test("guest quote cards keep prices hidden and preserve the return destination in both languages", () => {
+  const loginHref = "/login?next=%2Fvendors%2Fvendor-1";
+  for (const language of ["en", "es"] as const) {
+    const html = renderWithLanguage(<VendorQuoteCard vendor={vendor} isLoggedIn={false} loginHref={loginHref} />, language);
+    assert.ok(html.includes(loginHref));
+    assert.ok(!html.includes('href="#contact"'));
+    assert.doesNotMatch(html, /Starting at|Desde|3,500|3500/);
+    assert.ok(!html.includes(vendor.phone!));
+    assert.ok(!html.includes(vendor.location.address!));
+    assert.ok(html.includes(language === "en" ? "Sign in" : "Inicia sesión"));
+  }
+});
+
+test("signed-in quote cards show the configured price and lead to the existing contact form", () => {
+  const html = renderWithLanguage(<VendorQuoteCard vendor={vendor} isLoggedIn loginHref="/login" />);
+  assert.ok(html.includes('href="#contact"'));
+  assert.ok(html.includes("Starting at $3,500"));
+  assert.ok(!html.includes('href="/login"'));
+});
 
 test("renders vendor summary and spaces", () => {
   const html = renderWithLanguage(

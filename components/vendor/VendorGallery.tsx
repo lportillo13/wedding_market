@@ -27,10 +27,17 @@ type LightboxState = {
 };
 
 function isVideo(item: VendorMediaItem) {
-  return item.type === "video" || item.url.endsWith(".mp4") || item.url.includes("/video/");
+  return (
+    item.type === "video" ||
+    item.url.endsWith(".mp4") ||
+    item.url.includes("/video/")
+  );
 }
 
-export default function VendorGallery({ media, vendorName }: VendorGalleryProps) {
+export default function VendorGallery({
+  media,
+  vendorName,
+}: VendorGalleryProps) {
   const { dictionary, language } = useLanguage();
   const labels = dictionary.vendorPublic.gallery;
   const photos = useMemo(() => media.filter((item) => !isVideo(item)), [media]);
@@ -43,41 +50,67 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
     return `data:text/vtt;charset=utf-8,${encodeURIComponent(vtt)}`;
   };
 
-  const [lightbox, setLightbox] = useState<LightboxState>({ open: false, index: 0 });
+  const [lightbox, setLightbox] = useState<LightboxState>({
+    open: false,
+    index: 0,
+  });
   const [mainSwiper, setMainSwiper] = useState<SwiperType | null>(null);
   const [activePhoto, setActivePhoto] = useState(0);
   const thumbnailRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const dialogRef = useRef<HTMLDialogElement | null>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
   const hasGalleryMounted = useRef(false);
 
   const showGalleryPrev = useCallback(() => {
     if (!mainSwiper || photos.length < 2) return;
-    const previousIndex = mainSwiper.activeIndex <= 0 ? photos.length - 1 : mainSwiper.activeIndex - 1;
+    const previousIndex =
+      mainSwiper.activeIndex <= 0
+        ? photos.length - 1
+        : mainSwiper.activeIndex - 1;
     mainSwiper.slideTo(previousIndex);
   }, [mainSwiper, photos.length]);
 
   const showGalleryNext = useCallback(() => {
     if (!mainSwiper || photos.length < 2) return;
-    const nextIndex = mainSwiper.activeIndex >= photos.length - 1 ? 0 : mainSwiper.activeIndex + 1;
+    const nextIndex =
+      mainSwiper.activeIndex >= photos.length - 1
+        ? 0
+        : mainSwiper.activeIndex + 1;
     mainSwiper.slideTo(nextIndex);
   }, [mainSwiper, photos.length]);
 
-  const selectGalleryPhoto = useCallback((index: number) => {
-    mainSwiper?.slideTo(index);
-  }, [mainSwiper]);
+  const selectGalleryPhoto = useCallback(
+    (index: number) => {
+      mainSwiper?.slideTo(index);
+    },
+    [mainSwiper],
+  );
 
   useEffect(() => {
     if (!hasGalleryMounted.current) {
       hasGalleryMounted.current = true;
       return;
     }
-    thumbnailRefs.current[activePhoto]?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "nearest",
+    const thumbnail = thumbnailRefs.current[activePhoto];
+    const rail = thumbnail?.parentElement;
+    if (!thumbnail || !rail) return;
+    // Scroll only the thumbnail rail; changing a photo must not move the page.
+    const thumbnailBounds = thumbnail.getBoundingClientRect();
+    const railBounds = rail.getBoundingClientRect();
+    rail.scrollTo({
+      top: rail.scrollTop + thumbnailBounds.top - railBounds.top,
+      left: rail.scrollLeft + thumbnailBounds.left - railBounds.left,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "instant"
+        : "smooth",
     });
   }, [activePhoto]);
 
   const openLightbox = useCallback((index: number) => {
+    returnFocusRef.current =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
     setLightbox({ open: true, index });
   }, []);
 
@@ -103,16 +136,41 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
 
   useEffect(() => {
     if (!lightbox.open) return;
+    const dialog = dialogRef.current;
+    if (!dialog) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    dialog.showModal();
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") closeLightbox();
-      if (event.key === "ArrowRight") showNext();
-      if (event.key === "ArrowLeft") showPrev();
+      if (event.key === "Tab") {
+        const buttons = dialog.querySelectorAll<HTMLButtonElement>(
+          "button:not([disabled])",
+        );
+        const first = buttons[0];
+        const last = buttons[buttons.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        showNext();
+      }
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        showPrev();
+      }
     };
     document.addEventListener("keydown", onKeyDown);
     return () => {
+      dialog.close();
       document.body.style.overflow = previousOverflow;
+      if (returnFocusRef.current?.isConnected)
+        returnFocusRef.current.focus({ preventScroll: true });
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [closeLightbox, lightbox.open, showNext, showPrev]);
@@ -123,7 +181,10 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
     <div className="wm-vendor-gallery-block">
       <div className="wm-vendor-gallery-heading">
         <div className="wm-vendor-gallery-heading__title">
-          <span className="wm-vendor-gallery-heading__mark" aria-hidden="true" />
+          <span
+            className="wm-vendor-gallery-heading__mark"
+            aria-hidden="true"
+          />
           <h2 className="mb-0">{labels.photosHeading}</h2>
         </div>
         {photos.length > 0 ? (
@@ -163,7 +224,10 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
                     <div className="wm-vendor-gallery-slider__media">
                       <Image
                         src={resolveMediaUrl(photo.url)}
-                        alt={photo.caption || `${vendorName} ${labels.photosHeading.toLowerCase()} ${index + 1}`}
+                        alt={
+                          photo.caption ||
+                          `${vendorName} ${labels.photosHeading.toLowerCase()} ${index + 1}`
+                        }
                         fill
                         unoptimized={shouldRenderUnoptimizedMedia(photo.url)}
                         sizes="(max-width: 767px) 100vw, 84vw"
@@ -202,7 +266,11 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
           </div>
 
           {photos.length > 1 ? (
-            <div className="wm-vendor-gallery-slider__thumbs" role="tablist" aria-label={labels.photosHeading}>
+            <div
+              className="wm-vendor-gallery-slider__thumbs"
+              role="group"
+              aria-label={labels.photosHeading}
+            >
               {photos.map((photo, index) => (
                 <button
                   key={`${photo.id}-thumb`}
@@ -210,11 +278,10 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
                     thumbnailRefs.current[index] = node;
                   }}
                   type="button"
-                  role="tab"
                   className={`wm-vendor-gallery-slider__thumb${activePhoto === index ? " is-active" : ""}`}
                   onClick={() => selectGalleryPhoto(index)}
                   aria-label={`${labels.photosHeading} ${index + 1}`}
-                  aria-selected={activePhoto === index}
+                  aria-pressed={activePhoto === index}
                 >
                   <span className="wm-vendor-gallery-slider__thumb-media">
                     <Image
@@ -237,10 +304,14 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
         <>
           <div className="d-flex flex-wrap justify-content-between align-items-end mt-5 mb-3">
             <div>
-              <p className="wm-admin-kicker mb-1">Motion</p>
               <h3 className="h3 mb-0">{labels.videosHeading}</h3>
             </div>
-            <span className="text-muted">{fill(labels.videoCount, { count: videos.length, suffix: videoSuffix })}</span>
+            <span className="text-muted">
+              {fill(labels.videoCount, {
+                count: videos.length,
+                suffix: videoSuffix,
+              })}
+            </span>
           </div>
           <div className="row g-4">
             {videos.map((video) => (
@@ -253,13 +324,19 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
                         kind="captions"
                         srcLang={language}
                         label={labels.captionsLabel}
-                        src={buildCaptionTrackSrc(video.caption ?? `${vendorName} video`)}
+                        src={buildCaptionTrackSrc(
+                          video.caption ?? `${vendorName} video`,
+                        )}
                         default
                       />
                       {labels.unsupportedVideo}
                     </video>
                   </div>
-                  {video.caption ? <p className="text-muted small mt-3 mb-0">{video.caption}</p> : null}
+                  {video.caption ? (
+                    <p className="text-muted small mt-3 mb-0">
+                      {video.caption}
+                    </p>
+                  ) : null}
                 </div>
               </div>
             ))}
@@ -268,40 +345,69 @@ export default function VendorGallery({ media, vendorName }: VendorGalleryProps)
       )}
 
       {lightbox.open && photos.length > 0 ? (
-        <div className="wm-vendor-lightbox" role="dialog" aria-modal="true" aria-label={labels.photosHeading}>
+        <dialog
+          ref={dialogRef}
+          className="wm-vendor-lightbox"
+          aria-label={labels.photosHeading}
+          onCancel={closeLightbox}
+          onClose={closeLightbox}
+        >
           <div className="wm-vendor-lightbox__topbar">
             <span>
-              {String(lightbox.index + 1).padStart(2, "0")} / {String(photos.length).padStart(2, "0")}
+              {String(lightbox.index + 1).padStart(2, "0")} /{" "}
+              {String(photos.length).padStart(2, "0")}
             </span>
-            <button type="button" className="wm-vendor-lightbox__close" onClick={closeLightbox} aria-label={labels.close}>
+            <button
+              type="button"
+              className="wm-vendor-lightbox__close"
+              onClick={closeLightbox}
+              aria-label={labels.close}
+            >
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="m5 5 14 14M19 5 5 19" />
               </svg>
             </button>
           </div>
           <div className="wm-vendor-lightbox__body">
-            <button type="button" className="wm-vendor-lightbox__arrow" onClick={showPrev} aria-label={labels.previousPhoto}>
+            <button
+              type="button"
+              className="wm-vendor-lightbox__arrow"
+              onClick={showPrev}
+              aria-label={labels.previousPhoto}
+            >
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="m15 5-7 7 7 7" />
               </svg>
             </button>
             <div className="wm-vendor-lightbox__frame">
               <Image
-                src={resolveMediaUrl((photos[lightbox.index] ?? photos[0]!).url)}
-                alt={(photos[lightbox.index] ?? photos[0]!).caption || `${vendorName} ${labels.photosHeading.toLowerCase()} ${lightbox.index + 1}`}
+                src={resolveMediaUrl(
+                  (photos[lightbox.index] ?? photos[0]!).url,
+                )}
+                alt={
+                  (photos[lightbox.index] ?? photos[0]!).caption ||
+                  `${vendorName} ${labels.photosHeading.toLowerCase()} ${lightbox.index + 1}`
+                }
                 width={1400}
                 height={1000}
-                unoptimized={shouldRenderUnoptimizedMedia((photos[lightbox.index] ?? photos[0]!).url)}
+                unoptimized={shouldRenderUnoptimizedMedia(
+                  (photos[lightbox.index] ?? photos[0]!).url,
+                )}
                 className="img-fluid"
               />
             </div>
-            <button type="button" className="wm-vendor-lightbox__arrow" onClick={showNext} aria-label={labels.nextPhoto}>
+            <button
+              type="button"
+              className="wm-vendor-lightbox__arrow"
+              onClick={showNext}
+              aria-label={labels.nextPhoto}
+            >
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="m9 5 7 7-7 7" />
               </svg>
             </button>
           </div>
-        </div>
+        </dialog>
       ) : null}
     </div>
   );

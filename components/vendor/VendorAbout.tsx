@@ -34,8 +34,8 @@ export default function VendorAbout({ vendor, spaces, categoryKeys }: VendorAbou
   const detailsHeading = serviceDetailHeadings[serviceProfile.key] ?? labels.spacesHeading;
 
   return (
-    <div>
-      <div className="d-flex justify-content-between align-items-start mb-4">
+    <div className="wm-profile-about">
+      <div className="wm-profile-section-heading d-flex justify-content-between align-items-start mb-4">
         <div>
           <h2 className="h3">{fill(labels.heading, { vendor: vendor.name })}</h2>
           {vendor.teamSizeRange ? (
@@ -54,11 +54,12 @@ export default function VendorAbout({ vendor, spaces, categoryKeys }: VendorAbou
       {spaces.length ? (
         <div className="mt-5">
           <h3 className="h4 mb-3">{detailsHeading}</h3>
-          <div className="row g-4">
-            {spaces.map((space) => (
+          <div className="row g-4 wm-profile-services">
+            {spaces.map((space, index) => (
               <div className="col-12 col-md-6" key={space.id}>
                 <div className="card h-100 shadow-sm">
                   <div className="card-body">
+                    <span className="wm-profile-service-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
                     <h4 className="card-title h5">{space.name}</h4>
                     {serviceProfile.supportsGuestCapacity && space.capacityMax ? (
                       <p className="text-muted small mb-2">{fill(labels.capacity, { count: space.capacityMax })}</p>

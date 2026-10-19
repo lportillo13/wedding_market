@@ -1,0 +1,26 @@
+# Public vendor profile redesign
+
+The owner found the public vendor pages too simple and supplied the Golden Union 6 destination-planning profile as a reference. The shared public profile now extends the warmer wedding direction established in the header.
+
+## What changed
+
+- A split introduction pairs a large serif vendor name and useful facts with an arched cover photo, supporting images and the vendor's own logo. Profiles without photos use a monogram and a neutral invitation to start a conversation.
+- The vendor story appears before the full gallery. Numbered section introductions, warm paper surfaces, service cards, amenity groups, package cards and team portraits give the content a clearer hierarchy.
+- A desktop quote card stays beside the content. The phone action remains fixed at the bottom, with room reserved for it. The profile opts out of the site-wide main-element transform, which otherwise incorrectly contains fixed-position children.
+- Section navigation measures the actual site header and tabs when scrolling, localizes its accessible name and respects reduced motion.
+- The gallery uses a native modal dialog with focus trapping, Escape, previous/next keys, focus restoration and body-scroll cleanup. Thumbnail changes scroll only their rail, preserving the page's position.
+- New interface copy is available in English and Spanish. Category-specific fields, vendor-authored content, review data, quote validation and role restrictions are preserved. Guest quote actions retain the login return URL; the new card does not display prices or contact data for guests. Vendor accounts retain their inbox action and do not receive client quote controls.
+
+## Verification
+
+TypeScript, ESLint, all 51 web tests and the final production build passed. Two added regressions cover guest price/contact privacy, bilingual sign-in copy, return destinations and authenticated quote-card pricing. The build contains no temporary preview route.
+
+Browser review used the actual components with a copy of the supplied public demo page's anonymous data. Its guest status and null contact prefill were checked before copying. Temporary controls simulated client/vendor states and a sparse long-name profile; they did not use real sessions or submit forms. The preview route is removed before release.
+
+Checked 1440×1000 desktop, 390×844 and 320×568 phones, and 844×390 landscape. Observed no page-width overflow, narrow review filters scroll within their own region, filter controls were at least 46 pixels high, and the phone quote bar aligned with the bottom of the viewport. Story navigation cleared both sticky bars. The gallery advanced its image counter, trapped Tab inside the dialog, restored focus to its trigger on Escape and released body scrolling. A synthetic client retained one optional budget and the calendar date input; vendor mode removed the contact section, quote card and phone quote bar. Sparse mode hid absent sections and showed its no-photo fallback.
+
+Local Supabase is offline. Real signed-in saves, quote submission and native-device acceptance are not claimed. No database, dependency, uploaded-content or native-binary changes are included. Public sponsored placements remain disabled.
+
+## Release status
+
+Validation is complete; gateway deployment is pending from verified live base `0b952c4acf1fe2f5027cab106c642aef1cdca7a3`. This document does not yet establish a live deployment.

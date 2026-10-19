@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import type { Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "../styles/vendor-public-profile.scss";
 import NavBarContainer from "@/components/NavBarContainer";
 import AuthStateSync from "@/components/AuthStateSync";
 import PwaServiceWorkerRegistration from "@/components/PwaServiceWorkerRegistration";
