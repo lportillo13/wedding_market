@@ -88,7 +88,7 @@ Database compatibility matters: code supports both `owner_id` and older `owner_u
 
 ## Technology and important files
 
-The web package specifies Next.js 16, React 19, TypeScript, Bootstrap with Sass customization, and Supabase. `.nvmrc` specifies Node 20. The mobile package uses Expo SDK 56 and React Native 0.85 with separate dependencies and a separate lockfile under `mobile`.
+The web package specifies Next.js 16, React 19, TypeScript, Bootstrap with Sass customization, and Supabase. `.nvmrc` now specifies Node 22; Node 24 also passes validation. The mobile package uses Expo SDK 56 and React Native 0.85 with separate dependencies and a separate lockfile under `mobile`.
 
 | Location | Purpose |
 | --- | --- |
@@ -170,7 +170,7 @@ At recovery start, the local working tree already showed a deleted `.claude/work
 The [security, database and resource audit](audit-2026-10-19/audit-report.md) supersedes the historical deployment assumptions above where they differ. Production inspection confirmed:
 
 - Supabase project **WedMarket**, ref `aousexbvujjnvbudpsmz`, organization **CR Wedding Destination**, is separate from Digital Wedding.
-- The host is `89.167.111.168`, with Wedding Market in `/var/www/wedding-market`, PM2 name `wedding-market`, and loopback port 3001. Node is `22.23.3`; the local `.nvmrc`/Docker configuration still uses Node 20.
+- The host is `89.167.111.168`, with Wedding Market in `/var/www/wedding-market`, PM2 name `wedding-market`, and loopback port 3001. Node is `22.23.3`; the audited local `.nvmrc`/Docker configuration used Node 20; both now specify Node 22.
 - The server HEAD is still `07f4f489`, but it has uncommitted dependency and R2 ownership fixes, including an untracked `lib/r2-ownership.ts`. Installed/locked Next is `16.3.8` and sharp `0.35.5`. Preserve this patch before any reset, clean, or redeployment. The commit alone does not identify the deployed release.
 - The configured server-only Supabase credential returned HTTP 401 in an owner-run zero-row check. Do not restore that credential before addressing the signup auto-confirmation and database role-assignment findings in the audit.
 - Live catalogs confirm critical anonymous writes on six tables and unprotected self-assignment of `profiles.role`. Public proposal view and permissive policy issues also remain. No production data was changed to demonstrate them.
@@ -220,4 +220,9 @@ These IDs allow a future chat to retrieve more detail through the chat-reading t
 
 ## October 19 audit remediation
 
-The user subsequently authorized a complete recheck and fixes on codex/audit-remediation. The mobile app is development/testing only. Paid Hetzner backups were explicitly declined. See audit-2026-10-19/remediation-progress.md for current live versus staged status. Database migrations 000 through 003 are recorded; 001 through 003 were applied and verified. Cloudflare Full (strict), minimum TLS 1.2 and HTTPS redirect, Supabase password minimum eight, an active R2 media domain, and server deletion protection are live. Application deployment, post-deployment contact/MFA policies, owner-only credential repair and recovery setup remain outstanding. Audit SSH remains unprivileged; do not grant it broad sudo. Preserve the separate DW application.
+The user subsequently authorized a complete recheck and fixes on codex/audit-remediation. The mobile app is development/testing only. Paid Hetzner backups were explicitly declined. See audit-2026-10-19/remediation-progress.md for current live versus staged status. Database migrations 000 through 005 are recorded; 001 through 005 were applied and verified. Cloudflare Full (strict), minimum TLS 1.2 and HTTPS redirect, Supabase password minimum eight, an active R2 media domain, and server deletion protection are live. The application and post-deployment contact/MFA policies are deployed. See the verified rollout below for completed credential repair and the remaining recovery work. Audit SSH remains unprivileged; do not grant it broad sudo. Preserve the separate DW application.
+
+
+### Verified rollout and remaining owner handoffs
+
+Application release 60cbcb5085d71b60100fa5c91e52b99079001740 is live. Database migrations 000–005 are recorded and 001–005 applied, with independent verification. Origin allowlisting/API limits are installed; direct-origin HTTPS is 403 and the public directory loads. The full prior checkout is /var/www/wedding-market.before-20261019-185347. The daily encrypted R2 backup timer is active, all 31 objects were verified, and an explicitly approved encrypted archive copy is in ignored .cache/private-backups with a matching SHA256. The original recovery key remains root-only on the server. The owner chose a hidden passphrase and approved a separately encrypted identity copy to ignored .cache/private-backups; its checksum matches and neither plaintext nor passphrase was read. The owner repaired the service credential through a hidden prompt: its zero-record probe passed, only Wedding Market restarted, and an independent health check returned 200. Supabase database backup/password discovery, SSL enforcement (requires reboot), SQL network allowlisting and bucket-scoped R2 credential rotation remain. Current owner tools are in /root/wm-security-finish-20261019. No paid backup subscription was enabled.

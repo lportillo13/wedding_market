@@ -1,0 +1,20 @@
+{
+  "execution": "ROLLBACK-only; not committed",
+  "verification": {
+    "result": "authorization repair applied",
+    "version": "PostgreSQL 17.6 on aarch64-unknown-linux-gnu, compiled by gcc (GCC) 15.2.0, 64-bit",
+    "protected_tables": 23,
+    "anon_quote_view": false,
+    "anon_truncate_vendors": false,
+    "auth_truncate_rfqs": false,
+    "auth_schema_create": false,
+    "migrations": [
+      "202610190000",
+      "202610190001",
+      "202610190002",
+      "202610190003",
+      "202610190004",
+      "202610190005"
+    ]
+  }
+}

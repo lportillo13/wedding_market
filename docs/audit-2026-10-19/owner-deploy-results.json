@@ -1,6 +1,22 @@
 {
-  "releaseCommit": "270f119ec4f2a184f366b28f5b421305508c7fe3",
-  "applicationDeployed": false,
-  "rollbackCopy": "/var/www/wedding-market.before-20261019-184816",
-  "error": "Deployment did not complete. Owner-only logs are in /var/backups/wedding-market-deploy/20261019-184816"
+  "releaseCommit": "60cbcb5085d71b60100fa5c91e52b99079001740",
+  "applicationDeployed": true,
+  "rollbackCopy": "/var/www/wedding-market.before-20261019-185347",
+  "step": "complete",
+  "shadowChecks": {
+    "/api/health": 200,
+    "/": 200,
+    "/api/vendors?pageSize=1": 200,
+    "/api/uploads": 401,
+    "/api/ready": 401,
+    "/api/admin/blog-posts": 401
+  },
+  "liveChecks": {
+    "/api/health": 200,
+    "/": 200,
+    "/api/vendors?pageSize=1": 200,
+    "/api/uploads": 401,
+    "/api/ready": 401,
+    "/api/admin/blog-posts": 401
+  }
 }

@@ -32,6 +32,11 @@ export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
 
+  {
+    files: ["deploy/remediation/**/*.mjs"],
+    languageOptions: { globals: globals.node }
+  },
+
   // Node configuration files use CommonJS globals even though the app itself is ESM.
   {
     files: ["**/*.cjs"],

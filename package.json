@@ -6,7 +6,6 @@
     "db:start": "supabase start",
     "dev": "next dev --webpack",
     "build": "next build --webpack",
-    "prestart": "npm run db:start",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",

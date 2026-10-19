@@ -1,5 +1,7 @@
 # Wedding Market security database and resource audit
 
+> Historical assessment before remediation. For deployed fixes, verification and remaining work, read [remediation-progress.md](remediation-progress.md). Findings below describe the original audited state.
+
 Audit date: October 19, 2026. Source baseline: branch `dev`, commit `07f4f489c108fc850d6f7c22292d3a328c3fe747`.
 
 The live audit confirmed two critical database authorization failures: six tables allow anonymous writes without row-level security, and ordinary accounts can change their own profile role to `admin`. A publicly granted owner-executed view also exposes private proposal fields. These need attention before additional production use.

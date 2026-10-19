@@ -1,0 +1,15 @@
+{
+  "verifiedAt": "2026-10-19T19:03:18.767872+00:00",
+  "migrations": [
+    "202610190000",
+    "202610190001",
+    "202610190002",
+    "202610190003",
+    "202610190004",
+    "202610190005"
+  ],
+  "rawVendorContactPolicyPresent": false,
+  "adminMfaPolicyTables": 23,
+  "anonMaskedContactAccess": false,
+  "protectedTables": 23
+}

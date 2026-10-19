@@ -1,0 +1,8 @@
+{
+  "requests": 26,
+  "statusCounts": { "200": 22, "429": 4 },
+  "target": "loopback Nginx /api/health",
+  "isolatedVisitorKey": "198.51.100.77",
+  "certificateValidation": true,
+  "customerTrafficUsed": false
+}

@@ -1,0 +1,10 @@
+{
+  "name": "wedding-market-private-backup-runtime",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.1053.0",
+    "@next/env": "16.3.8"
+  },
+  "engines": { "node": ">=22 <25" }
+}

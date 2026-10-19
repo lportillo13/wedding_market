@@ -1,0 +1,4 @@
+Unprivileged Linux tests; temporary synthetic fixtures only.
+PASS: synthetic service-key success, rejected key format, denied probe; failed validation preserves environment and process.
+PASS: failed database backup restores previous configuration/runtime; matching runtime skips npm reinstall.
+No real credentials, customer records, live PM2 changes or network requests were used by these tests.

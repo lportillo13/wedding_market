@@ -1,0 +1,9 @@
+{
+  "buildReachedNext": false,
+  "missingBuildModule": false,
+  "tailwindMentioned": false,
+  "typescriptMentioned": false,
+  "gitOwnershipError": false,
+  "installPermissionError": false,
+  "installNetworkError": false
+}

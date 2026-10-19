@@ -1,0 +1,4 @@
+/.nvmrc text eol=lf
+/deploy/remediation/*.py text eol=lf
+/deploy/remediation/*.mjs text eol=lf
+/docs/audit-2026-10-19/*.sh text eol=lf

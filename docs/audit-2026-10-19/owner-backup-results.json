@@ -1,0 +1,13 @@
+{
+  "completedAt": "2026-10-19T19:06:04.754Z",
+  "backupDirectory": "/var/backups/wedding-market-data/20261019T190548Z",
+  "encryptedObjectCount": 31,
+  "sourceObjectBytes": 7346704,
+  "encryptedReadbackPassed": true,
+  "databaseBackup": false,
+  "databaseArchiveListPassed": false,
+  "fullRestoreTested": false,
+  "offHostCopy": false,
+  "encryptedExportArchive": "/home/wm-audit-20261019/wedding-market-backup-20261019T190548Z.tar",
+  "encryptedExportSha256": "b78ee8af19527437fb8f243ea386bda24881cbc08484456582b455d8975a0df6"
+}

@@ -3,36 +3,38 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ## Getting Started
 
 ### Prerequisites
-- Node.js 20.x (use \`.nvmrc\`)
+- Node.js 22.x (use `.nvmrc`; supported Node 24 also passes validation)
 - npm (or pnpm/yarn)
 
 ### 1) Environment variables
 Copy the template and fill values:
-\`\`\`bash
+```bash
 cp .env.local.example .env.local
-\`\`\`
+```
 Required vars:
-- \`NEXT_PUBLIC_SUPABASE_URL\`: Supabase project URL
-- \`NEXT_PUBLIC_SUPABASE_ANON_KEY\`: Supabase anon key (public)
-- \`SUPABASE_SERVICE_ROLE_KEY\` or \`SUPABASE_SERVICE_KEY\`: Supabase service key (server-only)
-- \`NEXT_PUBLIC_GOOGLE_MAPS_API_KEY\`: Google Maps JavaScript API key
-- \`GOOGLE_PLACES_API_KEY\` (optional): Server-side Google Places API key used to sync Google Business reviews. Falls back to
+- `NEXT_PUBLIC_SUPABASE_URL`: Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase anon key (public)
+- `SUPABASE_SERVICE_ROLE_KEY` or `SUPABASE_SERVICE_KEY`: Supabase service key (server-only)
+- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Google Maps JavaScript API key
+- `GOOGLE_PLACES_API_KEY` (optional): Server-side Google Places API key used to sync Google Business reviews. Falls back to
   the public Maps key when omitted.
 
-> **Never commit** \`.env.local\`. Rotate keys if a secret is ever exposed.
+> **Never commit** `.env.local`. Rotate keys if a secret is ever exposed.
 
 ### 2) Install & run (dev)
-\`\`\`bash
+```bash
 npm install
 npm run dev
-\`\`\`
-App runs at http://localhost:3000
+```
+App runs at http://localhost:3000. Start the optional local Supabase stack explicitly with `npm run db:start`; production startup does not start Docker or a local database.
 
 ### 3) Build & start (prod)
-\`\`\`bash
+
+For the shared production host, follow [the reviewed deployment procedure](deploy/remediation/README.md). It builds a separate standalone release and copies its public/static assets and private environment. The following commands are for an ordinary local production-mode check:
+```bash
 npm run build
 npm start
-\`\`\`
+```
 
 ### 4) Useful scripts
 - `npm run typecheck` — TypeScript check (no emit)

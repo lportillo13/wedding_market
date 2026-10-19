@@ -1,0 +1,12 @@
+{
+  "source": "/home/wm-audit-20261019/wm-recovery-identity-20261019T192938Z.gpg",
+  "destination": "C:\\wedding-market\\.cache\\private-backups\\wm-recovery-identity-20261019T192938Z.gpg",
+  "ciphertextBytes": 260,
+  "sha256": "f8d4ae5743243e1fa47a7a2f44649fe18bb2dec183ea50756493360a9062cb4d",
+  "checksumMatches": true,
+  "encryptedIdentityReadbackPassedOnServer": true,
+  "explicitTransferApproval": true,
+  "originalIdentityRead": false,
+  "passphraseRead": false,
+  "fullRestoreTested": false
+}

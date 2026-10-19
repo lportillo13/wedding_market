@@ -8,6 +8,7 @@ import pwd
 import re
 import shutil
 import subprocess
+import tempfile
 import time
 import urllib.request
 
@@ -51,11 +52,14 @@ def main():
         raise ValueError('Existing real-IP rewriting requires a different allowlist placement.')
     source = SITE.read_text()
     updated = patch_site(source)
-    responses = []
-    for family in ['v4', 'v6']:
-        with urllib.request.urlopen('https://www.cloudflare.com/ips-' + family, timeout=20) as response:
-            responses.append(response.read(20000).decode('ascii'))
-    access = rules(*responses)
+    # The website endpoints can reject datacenter egress. This documented public
+    # API returns the same authoritative ranges without requiring credentials.
+    with urllib.request.urlopen('https://api.cloudflare.com/client/v4/ips', timeout=20) as response:
+        details = json.loads(response.read(20000))
+    if details.get('success') is not True:
+        raise ValueError('Cloudflare did not confirm the public IP response.')
+    result = details.get('result', {})
+    access = rules('\n'.join(result.get('ipv4_cidrs', [])), '\n'.join(result.get('ipv6_cidrs', [])))
     # The header is trusted only after the proxy's source address passes the allowlist.
     rate = '''# Used only in Wedding Market's location; other virtual hosts have no limit_req.
 map $uri $wm_api_client {
@@ -91,15 +95,18 @@ limit_req_zone $wm_api_client zone=wm_api_per_visitor:10m rate=5r/s;
         raise
     finally:
         target = Path('/home/wm-audit-20261019/owner-origin-results.json')
-        target.write_text(json.dumps(result, indent=2) + '\n')
         audit = pwd.getpwnam('wm-audit-20261019')
-        os.chown(target, audit.pw_uid, audit.pw_gid)
-        target.chmod(0o600)
+        descriptor, temporary = tempfile.mkstemp(prefix='.wm-origin-', dir=target.parent)
+        with os.fdopen(descriptor, 'w') as output:
+            output.write(json.dumps(result, indent=2) + '\n')
+            os.fchown(output.fileno(), audit.pw_uid, audit.pw_gid)
+        os.replace(temporary, target)
 
 
 if __name__ == '__main__':
     try:
         main()
-    except Exception:
+    except Exception as error:
         print('Origin change stopped. Review the current Nginx configuration and sanitized result.')
+        if isinstance(error, ValueError): print(str(error))
         raise SystemExit(1) from None

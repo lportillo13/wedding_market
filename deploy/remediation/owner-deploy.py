@@ -5,7 +5,6 @@ Builds and probes a separate release, preserves the complete current checkout,
 then replaces only Wedding Market's PM2 process. Other applications are untouched.
 """
 import argparse
-import configparser
 import hashlib
 import json
 import os
@@ -16,6 +15,7 @@ import shutil
 import signal
 import socket
 import subprocess
+import tempfile
 import time
 import urllib.error
 import urllib.request
@@ -34,20 +34,26 @@ def digest(path):
 
 
 def private_write(path, data, uid=0, gid=0):
-    path.write_text(data, encoding='utf-8')
-    path.chmod(0o600)
-    os.chown(path, uid, gid)
+    descriptor, temporary = tempfile.mkstemp(prefix='.wm-private-', dir=path.parent)
+    try:
+        with os.fdopen(descriptor, 'w', encoding='utf-8') as output:
+            output.write(data)
+            os.fchmod(output.fileno(), 0o600)
+            os.fchown(output.fileno(), uid, gid)
+        os.replace(temporary, path)
+    finally:
+        Path(temporary).unlink(missing_ok=True)
 
 
-def run(args, *, cwd=None, env=None, as_deploy=False, log=None):
+def run(args, *, cwd=None, env=None, as_deploy=False, log=None, input_data=None):
     options = {'cwd': cwd, 'env': env}
     if as_deploy:
         options.update(user=DEPLOY.pw_uid, group=DEPLOY.pw_gid, extra_groups=[])
     if log:
         with log.open('ab') as output:
-            subprocess.run(args, stdout=output, stderr=subprocess.STDOUT, check=True, **options)
+            subprocess.run(args, input=input_data, stdout=output, stderr=subprocess.STDOUT, check=True, **options)
         return ''
-    return subprocess.check_output(args, stderr=subprocess.DEVNULL, **options).decode().rstrip('\n')
+    return subprocess.check_output(args, input=input_data, stderr=subprocess.DEVNULL, **options).decode().rstrip('\n')
 
 
 def http(path, port=3001, method='GET'):
@@ -139,7 +145,10 @@ def main():
     private.mkdir(parents=True, mode=0o700)
     private.chmod(0o700)
     release_parent = Path('/var/www/wedding-market-releases')
-    release_parent.mkdir(exist_ok=True)
+    if release_parent.is_symlink():
+        raise RuntimeError('Unexpected symlink for the release parent.')
+    release_parent.mkdir(exist_ok=True, mode=0o755)
+    release_parent.chmod(0o755)
     stage = release_parent / (stamp + '-' + manifest['commit'][:12])
     stage.mkdir(mode=0o700)
     os.chown(stage, DEPLOY.pw_uid, DEPLOY.pw_gid)
@@ -156,8 +165,14 @@ def main():
                            'interpreter': current.get('exec_interpreter', node), 'env': old_env}]}
     private_write(private / 'rollback.json', json.dumps(old_config))
     # PM2 runs as deploy, so its temporary config is private to that existing owner.
-    config_dir = Path('/home/deploy/.config/wedding-market') / stamp
-    config_dir.mkdir(parents=True, mode=0o700)
+    runtime_parent = Path('/home/deploy/.wm-remediation-runtime')
+    if runtime_parent.is_symlink():
+        raise RuntimeError('Unexpected symlink for the runtime configuration parent.')
+    runtime_parent.mkdir(exist_ok=True, mode=0o700)
+    runtime_parent.chmod(0o700)
+    os.chown(runtime_parent, DEPLOY.pw_uid, DEPLOY.pw_gid)
+    config_dir = runtime_parent / stamp
+    config_dir.mkdir(mode=0o700)
     config_dir.chmod(0o700)
     os.chown(config_dir, DEPLOY.pw_uid, DEPLOY.pw_gid)
     deploy_bundle = config_dir / 'release.bundle'
@@ -174,18 +189,19 @@ def main():
         summary['step'] = 'clone reviewed source'
         print('Building a separate Wedding Market release; the current application remains running.', flush=True)
         run(['git', 'clone', '--no-hardlinks', '--no-checkout', str(APP), str(stage)], env=env, as_deploy=True, log=build_log)
-        git_config = configparser.RawConfigParser()
-        git_config.read(stage / '.git/config')
-        git_config.set('remote "origin"', 'url', original_origin)
-        with (stage / '.git/config').open('w') as output:
-            git_config.write(output)
-        os.chown(stage / '.git/config', DEPLOY.pw_uid, DEPLOY.pw_gid)
-        (stage / '.git/config').chmod(0o600)
+        configure_origin = """import configparser,os,sys
+c=configparser.RawConfigParser();c.read('.git/config')
+c.set('remote "origin"','url',sys.stdin.read())
+with open('.git/config','w') as output:c.write(output)
+os.chmod('.git/config',0o600)
+"""
+        run(['python3', '-c', configure_origin], cwd=stage, env=env, as_deploy=True, input_data=original_origin.encode())
         run(['git', 'fetch', str(deploy_bundle), 'refs/heads/codex/audit-remediation'], cwd=stage, env=env, as_deploy=True, log=build_log)
         run(['git', 'checkout', '-b', 'codex/audit-remediation', 'FETCH_HEAD'], cwd=stage, env=env, as_deploy=True, log=build_log)
         if run(['git', 'rev-parse', 'HEAD'], cwd=stage, as_deploy=True) != manifest['commit']:
             raise RuntimeError('Fetched release identity mismatch.')
-        original_env = (APP / '.env.production.local').read_text()
+        # Read deploy-controlled source files with deploy's existing permissions.
+        original_env = run(['cat', str(APP / '.env.production.local')], as_deploy=True)
         if PROJECT not in original_env and PROJECT not in env.get('NEXT_PUBLIC_SUPABASE_URL', ''):
             raise RuntimeError('Production environment does not identify the audited Supabase project.')
         overrides = {}
@@ -203,13 +219,10 @@ def main():
         standalone = stage / '.next/standalone'
         if not (standalone / 'server.js').is_file():
             raise RuntimeError('Standalone server output is missing.')
-        shutil.copytree(stage / 'public', standalone / 'public', dirs_exist_ok=True)
-        shutil.copytree(stage / '.next/static', standalone / '.next/static', dirs_exist_ok=True)
+        run(['mkdir', '-p', str(standalone / 'public'), str(standalone / '.next/static')], as_deploy=True)
+        run(['cp', '-a', str(stage / 'public') + '/.', str(standalone / 'public')], as_deploy=True)
+        run(['cp', '-a', str(stage / '.next/static') + '/.', str(standalone / '.next/static')], as_deploy=True)
         private_write(standalone / '.env.production.local', new_env, DEPLOY.pw_uid, DEPLOY.pw_gid)
-        # Files copied by root must remain readable by the existing deploy identity.
-        for root, directories, files in os.walk(standalone):
-            for name in directories + files:
-                os.chown(Path(root) / name, DEPLOY.pw_uid, DEPLOY.pw_gid, follow_symlinks=False)
         with socket.socket() as check:
             check.bind(('127.0.0.1', 3012))
         with (private / 'shadow.log').open('wb') as output:

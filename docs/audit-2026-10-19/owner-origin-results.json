@@ -1,0 +1,5 @@
+{
+  "originHardened": true,
+  "backup": "/var/backups/wedding-market-nginx/20261019-190539",
+  "cloudflareRanges": 22
+}
