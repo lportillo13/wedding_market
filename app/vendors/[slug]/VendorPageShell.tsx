@@ -180,6 +180,7 @@ export default function VendorPageShell({
           </section>
         )}
       </div>
+      {!isVendor ? <div className="wm-vendor-mobile-action"><div><strong>{profile.vendor.name}</strong><span>{language === "es" ? "Planea tu boda con nosotros" : "Let’s plan your wedding"}</span></div><a className="btn btn-primary" href={isLoggedIn ? "#contact" : loginHref}>{dictionary.vendorPublic.header.requestQuote} <span aria-hidden="true">↗︎</span></a></div> : null}
     </div>
   );
 }

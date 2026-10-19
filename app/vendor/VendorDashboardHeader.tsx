@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useTranslation } from "@/contexts/LanguageContext";
 
@@ -14,14 +15,15 @@ const tabs = [
 
 export default function VendorDashboardHeader() {
   const t = useTranslation();
+  const pathname = usePathname();
 
   return (
     <>
       <p className="wm-shell-title mb-3">{t("vendorDashboard.heading")}</p>
-      <ul className="nav nav-tabs mb-4">
+      <ul className="nav nav-tabs mb-4 wm-vendor-workspace-nav">
         {tabs.map((tab) => (
           <li className="nav-item" key={tab.key}>
-            <Link className="nav-link" href={tab.href}>
+            <Link className={`nav-link ${pathname === tab.href ? "active" : ""}`} aria-current={pathname === tab.href ? "page" : undefined} href={tab.href}>
               {t(`vendorDashboard.tabs.${tab.key}`)}
             </Link>
           </li>

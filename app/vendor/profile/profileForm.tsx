@@ -1,6 +1,9 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useProfileAction } from "./useProfileAction";
+import ProfileSaveBar from "./ProfileSaveBar";
+
+import { useEffect, useState } from "react";
 import type { SaveState } from "./actions";
 import { saveProfile, translateProfileText } from "./actions";
 import { useTranslation } from "@/contexts/LanguageContext";
@@ -17,18 +20,13 @@ type FormShape = {
 const actionInitial: SaveState = { ok: false, message: "" };
 
 export default function ProfileForm({ initial }: { initial: FormShape }) {
-  const [state, formAction, isPending] = useActionState(saveProfile, actionInitial);
+  const [state, formAction, isPending] = useProfileAction(saveProfile, actionInitial);
   const [form, setForm] = useState<FormShape>(initial);
   const [isBioTranslating, setIsBioTranslating] = useState(false);
   const [isExtraTranslating, setIsExtraTranslating] = useState(false);
   const [bioTranslationError, setBioTranslationError] = useState<string | null>(null);
   const [extraTranslationError, setExtraTranslationError] = useState<string | null>(null);
   const t = useTranslation();
-
-  // If the server sends new props (after save/revalidate), sync them
-  useEffect(() => {
-    setForm(initial);
-  }, [initial]);
 
   // If the server action changed the slug, reflect it
   useEffect(() => {
@@ -116,7 +114,7 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
   }
 
   return (
-    <form action={formAction} suppressHydrationWarning>
+    <form action={formAction} data-profile-save suppressHydrationWarning>
       <div className="mb-3">
         <label className="form-label" htmlFor="profile-business-name">
           {t("vendorDashboard.profileForm.businessNameLabel")}
@@ -172,7 +170,7 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
           <button
             type="button"
             className="btn btn-outline-secondary btn-sm"
-            onClick={handleTranslateBio}
+            data-profile-change onClick={handleTranslateBio}
             disabled={isBioTranslating || !form.bio_en.trim()}
           >
             {isBioTranslating
@@ -215,7 +213,7 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
           <button
             type="button"
             className="btn btn-outline-secondary btn-sm"
-            onClick={handleTranslateExtraInfo}
+            data-profile-change onClick={handleTranslateExtraInfo}
             disabled={isExtraTranslating || !form.extra_info_en.trim()}
           >
             {isExtraTranslating
@@ -236,15 +234,7 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
         ) : null}
       </div>
 
-      {state.message && (
-        <div className={`alert ${state.ok ? "alert-success" : "alert-danger"}`} role="alert">
-          {state.message}
-        </div>
-      )}
-
-      <button className="btn btn-primary" disabled={isPending}>
-        {isPending ? t("vendorDashboard.profileForm.saving") : t("vendorDashboard.profileForm.save")}
-      </button>
+      <ProfileSaveBar state={state} pending={isPending} label={t("vendorDashboard.profileForm.save")} />
     </form>
   );
 }

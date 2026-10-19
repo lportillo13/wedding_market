@@ -1,6 +1,9 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useProfileAction } from "./useProfileAction";
+import ProfileSaveBar from "./ProfileSaveBar";
+
+import { useState } from "react";
 import { useTranslation } from "@/contexts/LanguageContext";
 import { saveReviews, type FormMessageState } from "./actions";
 
@@ -16,13 +19,13 @@ type ReviewsFormProps = {
 const initialState: FormMessageState = { ok: false, message: "" };
 
 export default function ReviewsForm({ initial }: ReviewsFormProps) {
-  const [state, formAction, isPending] = useActionState(saveReviews, initialState);
+  const [state, formAction, isPending] = useProfileAction(saveReviews, initialState);
   const [summary, setSummary] = useState(initial.summary);
   const [googleUrl, setGoogleUrl] = useState(initial.googleBusinessProfileUrl);
   const t = useTranslation();
 
   return (
-    <form action={formAction}>
+    <form action={formAction} data-profile-save>
       <div className="mb-3">
         <label className="form-label" htmlFor="review-summary">
           {t("vendorDashboard.profileReviews.summaryLabel")}
@@ -52,17 +55,7 @@ export default function ReviewsForm({ initial }: ReviewsFormProps) {
         <div className="form-text">{t("vendorDashboard.profileReviews.googleLinkHelp")}</div>
       </div>
 
-      {state.message ? (
-        <div className={`alert ${state.ok ? "alert-success" : "alert-danger"}`} role="status">
-          {state.message}
-        </div>
-      ) : null}
-
-      <button className="btn btn-primary" disabled={isPending}>
-        {isPending
-          ? t("vendorDashboard.profileReviews.saving")
-          : t("vendorDashboard.profileReviews.save")}
-      </button>
+      <ProfileSaveBar state={state} pending={isPending} label={t("vendorDashboard.profileReviews.save")} />
     </form>
   );
 }

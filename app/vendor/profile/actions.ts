@@ -1,5 +1,10 @@
 "use server";
 
+import {
+  prepareProfilePricing,
+  profilePriceToCents,
+} from "@/shared/vendorPricing";
+import { parseCalendarDate } from "@/lib/calendar-date";
 import { revalidatePath } from "next/cache";
 import type { VendorImage } from "@/types/vendor";
 import { deleteFromR2, getOwnedR2ObjectKey } from "@/lib/r2";
@@ -14,16 +19,6 @@ function slugify(input: string) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 80);
-}
-
-function parseCurrencyToCents(value: string): number | null {
-  if (!value) return null;
-  const normalized = value.replace(/[^0-9,.-]/g, "").replace(/,/g, ".");
-  const amount = Number.parseFloat(normalized);
-  if (!Number.isFinite(amount)) {
-    return null;
-  }
-  return Math.round(amount * 100);
 }
 
 function parseInteger(value: string): number | null {
@@ -43,13 +38,10 @@ function parseCsv(input: string): string[] {
     .filter((item) => item.length > 0);
 }
 
-function buildLocalizedField(value: string): Record<string, string> | null {
-  const trimmed = value.trim();
-  if (!trimmed) return null;
-  return { en: trimmed, es: trimmed };
-}
-
-function buildLocalizedPairValue(enValue: string, esValue: string): Record<string, string> | null {
+function buildLocalizedPairValue(
+  enValue: string,
+  esValue: string,
+): Record<string, string> | null {
   const result: Record<string, string> = {};
   const enTrimmed = enValue.trim();
   const esTrimmed = esValue.trim();
@@ -61,8 +53,6 @@ function buildLocalizedPairValue(enValue: string, esValue: string): Record<strin
   }
   return Object.keys(result).length ? result : null;
 }
-
-const PRICING_KEYS = ["reception", "ceremony", "bar", "catering"] as const;
 
 export type SaveState = {
   ok: boolean;
@@ -94,12 +84,7 @@ type VendorRow = {
   starting_price_currency: string | null;
   pricing_typical_spend_currency: string | null;
   pricing_peak_seasons: string[] | null;
-};
-
-type AvailabilityDatePayload = {
-  vendor_id: string;
-  available_on: string;
-  availability_status: "available" | "busy";
+  event_types: string[] | null;
 };
 
 export type TranslateProfileTextInput = {
@@ -115,10 +100,11 @@ export type TranslateProfileTextResult = {
 };
 
 export async function translateProfileText(
-  input: TranslateProfileTextInput
+  input: TranslateProfileTextInput,
 ): Promise<TranslateProfileTextResult> {
   try {
-    const sourceText = typeof input?.sourceText === "string" ? input.sourceText : "";
+    const sourceText =
+      typeof input?.sourceText === "string" ? input.sourceText : "";
     const trimmed = sourceText.trim();
 
     if (!trimmed) {
@@ -150,28 +136,51 @@ async function requireAuthVendor() {
     error: userErr,
   } = await supabase.auth.getUser();
   if (userErr || !user) {
-    return { supabase, error: "Not authenticated.", user: null, vendor: null } as const;
+    return {
+      supabase,
+      error: "Not authenticated.",
+      user: null,
+      vendor: null,
+    } as const;
   }
 
   const uidArg = { _uid: user.id } satisfies { _uid: string };
-  const { data: isVendor, error: roleErr } = await supabase.rpc("is_vendor", uidArg);
+  const { data: isVendor, error: roleErr } = await supabase.rpc(
+    "is_vendor",
+    uidArg,
+  );
   if (roleErr) {
-    return { supabase, error: roleErr.message, user: null, vendor: null } as const;
+    return {
+      supabase,
+      error: roleErr.message,
+      user: null,
+      vendor: null,
+    } as const;
   }
   if (!isVendor) {
-    return { supabase, error: "Vendor access required.", user: null, vendor: null } as const;
+    return {
+      supabase,
+      error: "Vendor access required.",
+      user: null,
+      vendor: null,
+    } as const;
   }
 
   const { data: vendor } = await supabase
     .from("vendors")
     .select(
-      "id, slug, business_name, logo_url, carousel_logo_url, hero_image, thumbnail_image, gallery_images, extra_info, starting_price_currency, pricing_typical_spend_currency, pricing_peak_seasons"
+      "id, slug, business_name, logo_url, carousel_logo_url, hero_image, thumbnail_image, gallery_images, extra_info, starting_price_currency, pricing_typical_spend_currency, pricing_peak_seasons, event_types",
     )
     .eq("owner_id", user.id)
     .maybeSingle<VendorRow>();
 
   if (!vendor) {
-    return { supabase, error: "Vendor profile not found.", user: null, vendor: null } as const;
+    return {
+      supabase,
+      error: "Vendor profile not found.",
+      user: null,
+      vendor: null,
+    } as const;
   }
 
   return { supabase, error: null, user, vendor } as const;
@@ -179,7 +188,7 @@ async function requireAuthVendor() {
 
 export async function saveProfile(
   _prevState: SaveState,
-  formData: FormData
+  formData: FormData,
 ): Promise<SaveState> {
   try {
     const supabase = await getSupabaseServer();
@@ -192,7 +201,10 @@ export async function saveProfile(
     }
 
     const uidArg = { _uid: user.id } satisfies { _uid: string };
-    const { data: isVendor, error: roleErr } = await supabase.rpc("is_vendor", uidArg);
+    const { data: isVendor, error: roleErr } = await supabase.rpc(
+      "is_vendor",
+      uidArg,
+    );
     if (roleErr) {
       return { ok: false, message: roleErr.message };
     }
@@ -221,10 +233,21 @@ export async function saveProfile(
       .from("vendors")
       .select("id, slug, extra_info")
       .eq("owner_id", user.id)
-      .maybeSingle<{ id: string; slug: string | null; extra_info: Record<string, unknown> | null }>();
+      .maybeSingle<{
+        id: string;
+        slug: string | null;
+        extra_info: Record<string, unknown> | null;
+      }>();
 
-    const existingExtra = (existing?.extra_info ?? {}) as Record<string, unknown>;
-    const nextExtra = { ...existingExtra, en: extra_info_en, es: extra_info_es } as Record<string, unknown>;
+    const existingExtra = (existing?.extra_info ?? {}) as Record<
+      string,
+      unknown
+    >;
+    const nextExtra = {
+      ...existingExtra,
+      en: extra_info_en,
+      es: extra_info_es,
+    } as Record<string, unknown>;
 
     // Ensure slug is unique (simple check)
     if (slug) {
@@ -281,7 +304,7 @@ export async function saveProfile(
 
 export async function saveContact(
   _prevState: FormMessageState,
-  formData: FormData
+  formData: FormData,
 ): Promise<FormMessageState> {
   const { supabase, vendor, error } = await requireAuthVendor();
   if (error || !vendor) {
@@ -292,8 +315,12 @@ export async function saveContact(
   const website = String(formData.get("website_url") ?? "").trim();
   const mapUrl = String(formData.get("map_url") ?? "").trim();
   const addressLabel = String(formData.get("address_label") ?? "").trim();
-  const startingPriceInput = String(formData.get("starting_price") ?? "").trim();
-  const startingCurrencyInput = String(formData.get("starting_price_currency") ?? "")
+  const startingPriceInput = String(
+    formData.get("starting_price") ?? "",
+  ).trim();
+  const startingCurrencyInput = String(
+    formData.get("starting_price_currency") ?? "",
+  )
     .trim()
     .toUpperCase();
   const eventTypesInput = String(formData.get("event_types") ?? "");
@@ -301,7 +328,21 @@ export async function saveContact(
   const languagesInput = String(formData.get("languages") ?? "");
   const teamSizeRange = String(formData.get("team_size_range") ?? "").trim();
 
-  const startingPriceCents = parseCurrencyToCents(startingPriceInput);
+  let startingPriceCents: number | null;
+  try {
+    startingPriceCents = profilePriceToCents(startingPriceInput);
+  } catch (error) {
+    return {
+      ok: false,
+      message:
+        error instanceof Error ? error.message : "Invalid starting price.",
+    };
+  }
+  if (startingCurrencyInput && !/^[A-Z]{3}$/.test(startingCurrencyInput))
+    return {
+      ok: false,
+      message: "Use a three-letter currency code, such as USD or CRC.",
+    };
   const yearsInBusiness = parseInteger(yearsInBusinessInput);
   const eventTypes = parseCsv(eventTypesInput);
   const languages = parseCsv(languagesInput);
@@ -342,7 +383,7 @@ export async function saveContact(
 }
 
 export async function removeLogoImage(
-  _state: ImageActionState
+  _state: ImageActionState,
 ): Promise<ImageActionState> {
   void _state;
   const { supabase, user, vendor, error } = await requireAuthVendor();
@@ -350,8 +391,12 @@ export async function removeLogoImage(
     return { ok: false, message: error ?? "Vendor profile not found." };
   }
 
-  const previousKey = vendor.logo_url ? getOwnedR2ObjectKey(vendor.logo_url, `vendors/${user.id}/`) : null;
-  const previousCarouselKey = vendor.carousel_logo_url ? getOwnedR2ObjectKey(vendor.carousel_logo_url, `vendors/${user.id}/`) : null;
+  const previousKey = vendor.logo_url
+    ? getOwnedR2ObjectKey(vendor.logo_url, `vendors/${user.id}/`)
+    : null;
+  const previousCarouselKey = vendor.carousel_logo_url
+    ? getOwnedR2ObjectKey(vendor.carousel_logo_url, `vendors/${user.id}/`)
+    : null;
 
   const { error: updateError } = await supabase
     .from("vendors")
@@ -362,7 +407,9 @@ export async function removeLogoImage(
     return { ok: false, message: `Remove failed: ${updateError.message}` };
   }
 
-  for (const key of [previousKey, previousCarouselKey].filter((value): value is string => Boolean(value))) {
+  for (const key of [previousKey, previousCarouselKey].filter(
+    (value): value is string => Boolean(value),
+  )) {
     try {
       await deleteFromR2(key, `vendors/${user.id}/`);
     } catch (deleteError) {
@@ -379,141 +426,61 @@ export async function removeLogoImage(
   return { ok: true, message: "Logo removed." };
 }
 
-type PricingItemPayload = {
-  itemKey: string;
-  price?: string;
-  contactForPrice?: boolean;
-  notesEn?: string;
-  notesEs?: string;
-};
-
 export async function savePricing(
   _prevState: FormMessageState,
-  formData: FormData
+  formData: FormData,
 ): Promise<FormMessageState> {
   const { supabase, vendor, error } = await requireAuthVendor();
-  if (error || !vendor) {
+  if (error || !vendor)
     return { ok: false, message: error ?? "Vendor profile not found." };
-  }
-
-  const rawItems = String(formData.get("pricing_items") ?? "").trim();
-  let parsedItems: PricingItemPayload[] = [];
-  if (rawItems) {
-    try {
-      const value = JSON.parse(rawItems);
-      if (Array.isArray(value)) {
-        parsedItems = value as PricingItemPayload[];
-      }
-    } catch {
-      return { ok: false, message: "Invalid pricing data." };
-    }
-  }
-
-  const normalized = new Map<string, PricingItemPayload>();
-  for (const item of parsedItems) {
-    if (!item || typeof item !== "object") continue;
-    const key = String(item.itemKey ?? "").toLowerCase();
-    if (!(PRICING_KEYS as readonly string[]).includes(key)) continue;
-    normalized.set(key, {
-      itemKey: key,
-      price: typeof item.price === "string" ? item.price : String(item.price ?? ""),
-      contactForPrice: Boolean(item.contactForPrice),
-      notesEn: typeof item.notesEn === "string" ? item.notesEn : "",
-      notesEs: typeof item.notesEs === "string" ? item.notesEs : "",
+  try {
+    const currency = String(formData.get("typical_currency") ?? "USD")
+      .trim()
+      .toUpperCase();
+    const rows = prepareProfilePricing(
+      JSON.parse(String(formData.get("pricing_items") ?? "")),
+      currency,
+    );
+    const { error: saveError } = await supabase.rpc("replace_vendor_section", {
+      p_vendor: vendor.id,
+      p_section: "pricing",
+      p_rows: rows,
+      p_settings: {
+        pricing_typical_spend_cents: profilePriceToCents(
+          String(formData.get("typical_spend") ?? ""),
+        ),
+        pricing_typical_spend_currency: currency,
+        pricing_peak_seasons: parseCsv(
+          String(formData.get("peak_seasons") ?? ""),
+        ),
+      },
     });
+    if (saveError)
+      return {
+        ok: false,
+        message:
+          "Pricing could not be saved. Your edits are still here; please try again.",
+      };
+  } catch (error) {
+    return {
+      ok: false,
+      message:
+        error instanceof SyntaxError
+          ? "Invalid pricing data. Please reload and try again."
+          : error instanceof Error
+            ? error.message
+            : "Invalid pricing data.",
+    };
   }
-
-  const typicalSpendInput = String(formData.get("typical_spend") ?? "").trim();
-  const typicalCurrencyInput = String(formData.get("typical_currency") ?? "")
-    .trim()
-    .toUpperCase();
-  const peakSeasonsInput = String(formData.get("peak_seasons") ?? "");
-
-  const typicalSpendCents = parseCurrencyToCents(typicalSpendInput);
-  const peakSeasons = parseCsv(peakSeasonsInput);
-  const currencyFallback =
-    typicalCurrencyInput || vendor.pricing_typical_spend_currency || vendor.starting_price_currency || "USD";
-  const pricingCurrency = currencyFallback;
-
-  const upserts: {
-    vendor_id: string;
-    item_key: string;
-    price_cents: number | null;
-    currency: string;
-    contact_for_price: boolean;
-    notes: Record<string, string> | null;
-  }[] = [];
-  const deleteKeys: string[] = [];
-
-  for (const key of PRICING_KEYS) {
-    const entry = normalized.get(key) ?? null;
-    const priceCents = entry && !entry.contactForPrice ? parseCurrencyToCents(entry.price ?? "") : null;
-    const notes = entry ? buildLocalizedPairValue(entry.notesEn ?? "", entry.notesEs ?? "") : null;
-    const hasContent = Boolean(entry?.contactForPrice) || priceCents !== null || Boolean(notes);
-    if (hasContent && entry) {
-      upserts.push({
-        vendor_id: vendor.id,
-        item_key: key,
-        price_cents: priceCents,
-        currency: pricingCurrency,
-        contact_for_price: Boolean(entry.contactForPrice),
-        notes,
-      });
-    } else {
-      deleteKeys.push(key);
-    }
-  }
-
-  if (deleteKeys.length) {
-    const { error: deleteError } = await supabase
-      .from("vendor_pricing")
-      .delete()
-      .eq("vendor_id", vendor.id)
-      .in("item_key", deleteKeys);
-    if (deleteError) {
-      return { ok: false, message: `Save failed: ${deleteError.message}` };
-    }
-  }
-
-  if (upserts.length) {
-    const { error: upsertError } = await supabase
-      .from("vendor_pricing")
-      .upsert(upserts, { onConflict: "vendor_id,item_key" });
-    if (upsertError) {
-      return { ok: false, message: `Save failed: ${upsertError.message}` };
-    }
-  }
-
-  const vendorUpdate: Record<string, unknown> = {
-    pricing_typical_spend_cents: typicalSpendCents,
-    pricing_peak_seasons: peakSeasons,
-  };
-
-  if (typicalCurrencyInput || typicalSpendCents !== null || upserts.length > 0) {
-    vendorUpdate.pricing_typical_spend_currency = pricingCurrency;
-  } else {
-    vendorUpdate.pricing_typical_spend_currency = null;
-  }
-
-  const { error: vendorError } = await supabase
-    .from("vendors")
-    .update(vendorUpdate)
-    .eq("id", vendor.id);
-
-  if (vendorError) {
-    return { ok: false, message: `Save failed: ${vendorError.message}` };
-  }
-
   revalidatePath("/vendor/profile");
   revalidatePath(`/vendors/${vendor.slug}`);
   revalidatePath("/vendors");
-
   return { ok: true, message: "Pricing saved." };
 }
 
 export async function saveAmenities(
   _prevState: FormMessageState,
-  formData: FormData
+  formData: FormData,
 ): Promise<FormMessageState> {
   const { supabase, vendor, error } = await requireAuthVendor();
   if (error || !vendor) {
@@ -525,39 +492,23 @@ export async function saveAmenities(
     .map((value) => String(value ?? "").trim())
     .filter((value) => value.length > 0);
   const capacityMaxInput = String(formData.get("capacity_max") ?? "");
-  const eventTypesInput = String(formData.get("event_types") ?? "");
 
   const capacityMax = parseInteger(capacityMaxInput);
-  const eventTypes = parseCsv(eventTypesInput);
+  // Event types are edited under Contact; preserve the current saved value.
+  const eventTypes = vendor.event_types ?? [];
 
-  const { error: deleteError } = await supabase
-    .from("vendor_amenities")
-    .delete()
-    .eq("vendor_id", vendor.id);
-  if (deleteError) {
-    return { ok: false, message: `Save failed: ${deleteError.message}` };
-  }
-
-  if (selectedKeys.length) {
-    const { error: insertError } = await supabase
-      .from("vendor_amenities")
-      .insert(selectedKeys.map((key) => ({ vendor_id: vendor.id, amenity_key: key })));
-    if (insertError) {
-      return { ok: false, message: `Save failed: ${insertError.message}` };
-    }
-  }
-
-  const { error: updateError } = await supabase
-    .from("vendors")
-    .update({
-      capacity_max: capacityMax,
-      event_types: eventTypes,
-    })
-    .eq("id", vendor.id);
-
-  if (updateError) {
-    return { ok: false, message: `Save failed: ${updateError.message}` };
-  }
+  const { error: saveError } = await supabase.rpc("replace_vendor_section", {
+    p_vendor: vendor.id,
+    p_section: "amenities",
+    p_rows: [...new Set(selectedKeys)].map((amenity_key) => ({ amenity_key })),
+    p_settings: { capacity_max: capacityMax, event_types: eventTypes },
+  });
+  if (saveError)
+    return {
+      ok: false,
+      message:
+        "Services could not be saved. Your edits are still here; please try again.",
+    };
 
   revalidatePath("/vendor/profile");
   revalidatePath(`/vendors/${vendor.slug}`);
@@ -566,140 +517,121 @@ export async function saveAmenities(
   return { ok: true, message: "Amenities saved." };
 }
 
-type TeamPayload = {
-  name?: string;
-  title?: string;
-  bio?: string;
-  headshotUrl?: string;
-  respondsWithinHours?: string;
-};
-
 export async function saveTeam(
   _prevState: FormMessageState,
-  formData: FormData
+  formData: FormData,
 ): Promise<FormMessageState> {
   const { supabase, vendor, error } = await requireAuthVendor();
-  if (error || !vendor) {
+  if (error || !vendor)
     return { ok: false, message: error ?? "Vendor profile not found." };
+  try {
+    const items: unknown = JSON.parse(String(formData.get("team") ?? ""));
+    if (!Array.isArray(items) || items.length > 50)
+      return { ok: false, message: "Add up to 50 people." };
+    const rows = items.map((value, index) => {
+      if (!value || typeof value !== "object")
+        throw new Error("Invalid team member.");
+      const member = value as Record<string, unknown>;
+      if (typeof member.name !== "string" || !member.name.trim())
+        throw new Error(
+          "Add a name for each person, or remove the empty card.",
+        );
+      const text = (key: string) =>
+        typeof member[key] === "string" ? (member[key] as string) : "";
+      const hours = text("respondsWithinHours").trim();
+      if (hours && (!/^\d+$/.test(hours) || Number(hours) > 2147483647))
+        throw new Error(
+          "Response time must be a whole, non-negative number of hours.",
+        );
+      return {
+        name: member.name.trim(),
+        title: buildLocalizedPairValue(text("title"), text("titleEs")),
+        bio: buildLocalizedPairValue(text("bio"), text("bioEs")),
+        headshot_url: text("headshotUrl").trim() || null,
+        responds_within_hours: hours ? Number(hours) : null,
+        sort_order: index,
+      };
+    });
+    const { error: saveError } = await supabase.rpc("replace_vendor_section", {
+      p_vendor: vendor.id,
+      p_section: "team",
+      p_rows: rows,
+      p_settings: {},
+    });
+    if (saveError)
+      return {
+        ok: false,
+        message:
+          "Team could not be saved. Your edits are still here; please try again.",
+      };
+  } catch (error) {
+    return {
+      ok: false,
+      message:
+        error instanceof SyntaxError
+          ? "Invalid team data."
+          : error instanceof Error
+            ? error.message
+            : "Invalid team data.",
+    };
   }
-
-  const rawTeam = String(formData.get("team") ?? "");
-  let parsedTeam: TeamPayload[] = [];
-  if (rawTeam) {
-    try {
-      const value = JSON.parse(rawTeam);
-      if (Array.isArray(value)) {
-        parsedTeam = value as TeamPayload[];
-      }
-    } catch {
-      return { ok: false, message: "Invalid team data." };
-    }
-  }
-
-  const members = parsedTeam
-    .map((member) => ({
-      name: typeof member.name === "string" ? member.name.trim() : "",
-      title: typeof member.title === "string" ? member.title : "",
-      bio: typeof member.bio === "string" ? member.bio : "",
-      headshotUrl: typeof member.headshotUrl === "string" ? member.headshotUrl.trim() : "",
-      respondsWithinHours:
-        typeof member.respondsWithinHours === "string"
-          ? member.respondsWithinHours
-          : member.respondsWithinHours !== undefined && member.respondsWithinHours !== null
-          ? String(member.respondsWithinHours)
-          : "",
-    }))
-    .filter((member) => member.name.length > 0);
-
-  const { error: deleteError } = await supabase
-    .from("vendor_team")
-    .delete()
-    .eq("vendor_id", vendor.id);
-  if (deleteError) {
-    return { ok: false, message: `Save failed: ${deleteError.message}` };
-  }
-
-  if (members.length) {
-    const insertPayload = members.map((member, index) => ({
-      vendor_id: vendor.id,
-      name: member.name,
-      title: buildLocalizedField(member.title),
-      bio: buildLocalizedField(member.bio),
-      headshot_url: member.headshotUrl || null,
-      responds_within_hours: parseInteger(member.respondsWithinHours),
-      sort_order: index,
-    }));
-
-    const { error: insertError } = await supabase.from("vendor_team").insert(insertPayload);
-    if (insertError) {
-      return { ok: false, message: `Save failed: ${insertError.message}` };
-    }
-  }
-
   revalidatePath("/vendor/profile");
   revalidatePath(`/vendors/${vendor.slug}`);
-
   return { ok: true, message: "Team saved." };
 }
 
 export async function saveAvailability(
   _prevState: FormMessageState,
-  formData: FormData
+  formData: FormData,
 ): Promise<FormMessageState> {
   const { supabase, vendor, error } = await requireAuthVendor();
   if (error || !vendor) {
     return { ok: false, message: error ?? "Vendor profile not found." };
   }
 
-  const rawDates = String(formData.get("availability_dates") ?? "").trim();
-
-  let dates: AvailabilityDatePayload[] = [];
-  if (rawDates) {
-    try {
-      const value = JSON.parse(rawDates);
-      if (Array.isArray(value)) {
-        dates = value
-          .map((entry) => {
-            if (!entry || typeof entry !== "object") return null;
-            const record = entry as Record<string, unknown>;
-            const availableOn = String(record.date ?? "").trim();
-            const availabilityStatus = String(record.status ?? "").trim();
-            if (!/^\d{4}-\d{2}-\d{2}$/.test(availableOn)) return null;
-            if (availabilityStatus !== "available" && availabilityStatus !== "busy") return null;
-            return {
-              vendor_id: vendor.id,
-              available_on: availableOn,
-              availability_status: availabilityStatus,
-            } satisfies AvailabilityDatePayload;
-          })
-          .filter((entry): entry is AvailabilityDatePayload => Boolean(entry));
-      }
-    } catch {
-      return { ok: false, message: "Invalid availability dates." };
-    }
-  }
-
-  const uniqueDates = Array.from(
-    new Map(dates.map((entry) => [entry.available_on, entry])).values()
-  ).sort((left, right) => left.available_on.localeCompare(right.available_on));
-
-  const { error: deleteDatesError } = await supabase
-    .from("vendor_availability")
-    .delete()
-    .eq("vendor_id", vendor.id);
-
-  if (deleteDatesError) {
-    return { ok: false, message: `Save failed: ${deleteDatesError.message}` };
-  }
-
-  if (uniqueDates.length) {
-    const { error: insertDatesError } = await supabase
-      .from("vendor_availability")
-      .insert(uniqueDates);
-
-    if (insertDatesError) {
-      return { ok: false, message: `Save failed: ${insertDatesError.message}` };
-    }
+  try {
+    const parsed: unknown = JSON.parse(
+      String(formData.get("availability_dates") ?? ""),
+    );
+    if (!Array.isArray(parsed) || parsed.length > 366)
+      throw new Error("Choose up to 366 dates.");
+    const dates = parsed.map((entry: unknown) => {
+      if (!entry || typeof entry !== "object")
+        throw new Error("Invalid availability date.");
+      const record = entry as Record<string, unknown>;
+      const date = typeof record.date === "string" ? record.date : "";
+      if (
+        !parseCalendarDate(date) ||
+        (record.status !== "available" && record.status !== "busy")
+      )
+        throw new Error("Invalid availability date.");
+      return { available_on: date, availability_status: record.status };
+    });
+    const rows = [
+      ...new Map(dates.map((date) => [date.available_on, date])).values(),
+    ];
+    const { error: saveError } = await supabase.rpc("replace_vendor_section", {
+      p_vendor: vendor.id,
+      p_section: "availability",
+      p_rows: rows,
+      p_settings: {},
+    });
+    if (saveError)
+      return {
+        ok: false,
+        message:
+          "Dates could not be saved. Your edits are still here; please try again.",
+      };
+  } catch (error) {
+    return {
+      ok: false,
+      message:
+        error instanceof SyntaxError
+          ? "Invalid availability data."
+          : error instanceof Error
+            ? error.message
+            : "Invalid availability data.",
+    };
   }
 
   revalidatePath("/vendor/profile");
@@ -710,7 +642,7 @@ export async function saveAvailability(
 
 export async function saveReviews(
   _prevState: FormMessageState,
-  formData: FormData
+  formData: FormData,
 ): Promise<FormMessageState> {
   const { supabase, vendor, error } = await requireAuthVendor();
   if (error || !vendor) {
@@ -718,7 +650,9 @@ export async function saveReviews(
   }
 
   const summary = String(formData.get("review_summary") ?? "").trim();
-  const googleBusinessUrl = String(formData.get("google_business_profile_url") ?? "").trim();
+  const googleBusinessUrl = String(
+    formData.get("google_business_profile_url") ?? "",
+  ).trim();
 
   const currentExtra = (vendor.extra_info ?? {}) as Record<string, unknown>;
   const nextExtra: Record<string, unknown> = { ...currentExtra };
@@ -751,12 +685,20 @@ function handleError(message: string): ImageActionState {
 async function ensureVendorForImages() {
   const { supabase, user, error, vendor } = await requireAuthVendor();
   if (error || !vendor) {
-    return { supabase, user: null, vendor: null, error: error ?? "Vendor profile not found." } as const;
+    return {
+      supabase,
+      user: null,
+      vendor: null,
+      error: error ?? "Vendor profile not found.",
+    } as const;
   }
   return { supabase, user, vendor, error: null } as const;
 }
 
-async function destroyPreviousAsset(publicId: string | undefined, ownerId: string) {
+async function destroyPreviousAsset(
+  publicId: string | undefined,
+  ownerId: string,
+) {
   if (!publicId) {
     return;
   }
@@ -773,7 +715,7 @@ async function destroyPreviousAsset(publicId: string | undefined, ownerId: strin
 
 export async function uploadHeroImage(
   _prev: ImageActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<ImageActionState> {
   void formData;
   return handleError("Use the new upload endpoint from the profile page.");
@@ -781,7 +723,7 @@ export async function uploadHeroImage(
 
 export async function uploadThumbnailImage(
   _prev: ImageActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<ImageActionState> {
   void formData;
   return handleError("Use the new upload endpoint from the profile page.");
@@ -789,7 +731,7 @@ export async function uploadThumbnailImage(
 
 export async function uploadGalleryImage(
   _prev: ImageActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<ImageActionState> {
   void formData;
   return handleError("Use the new upload endpoint from the profile page.");
@@ -797,7 +739,7 @@ export async function uploadGalleryImage(
 
 export async function removeHeroImage(
   prev: ImageActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<ImageActionState> {
   void prev;
   void formData;
@@ -828,7 +770,7 @@ export async function removeHeroImage(
 
 export async function removeThumbnailImage(
   prev: ImageActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<ImageActionState> {
   void prev;
   void formData;
@@ -859,7 +801,7 @@ export async function removeThumbnailImage(
 
 export async function removeGalleryImage(
   _prev: ImageActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<ImageActionState> {
   const publicId = String(formData.get("public_id") || "").trim();
   if (!publicId) {
@@ -871,7 +813,9 @@ export async function removeGalleryImage(
     return handleError(error ?? "Unable to load vendor profile.");
   }
 
-  const existing = Array.isArray(vendor.gallery_images) ? vendor.gallery_images : [];
+  const existing = Array.isArray(vendor.gallery_images)
+    ? vendor.gallery_images
+    : [];
   const updated = existing.filter((image) => image.public_id !== publicId);
 
   if (updated.length === existing.length) {

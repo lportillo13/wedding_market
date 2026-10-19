@@ -1,6 +1,9 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useProfileAction } from "./useProfileAction";
+import ProfileSaveBar from "./ProfileSaveBar";
+
+import { useMemo, useState } from "react";
 import { useTranslation } from "@/contexts/LanguageContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { saveAvailability, type FormMessageState } from "./actions";
@@ -65,7 +68,7 @@ function buildMonthDays(monthStart: Date) {
 }
 
 export default function AvailabilityForm({ initial }: AvailabilityFormProps) {
-  const [state, formAction, isPending] = useActionState(saveAvailability, initialState);
+  const [state, formAction, isPending] = useProfileAction(saveAvailability, initialState);
   const [mode, setMode] = useState<EditMode>("available");
   const [monthOffset, setMonthOffset] = useState(0);
   const [changeMessage, setChangeMessage] = useState("");
@@ -104,7 +107,7 @@ export default function AvailabilityForm({ initial }: AvailabilityFormProps) {
   }
 
   return (
-    <form action={formAction}>
+    <form action={formAction} data-profile-save>
       <div className="mb-4">
         <div className="form-label mb-2">{t("vendorDashboard.profileAvailability.calendarLabel")}</div>
         <div className="wm-availability-toolbar mb-3">
@@ -124,7 +127,7 @@ export default function AvailabilityForm({ initial }: AvailabilityFormProps) {
           </button>
         </div>
         <div className="form-text mb-3">{t("vendorDashboard.profileAvailability.calendarHelp")}</div>
-        <div className="wm-availability-slider mb-4">
+        <div className="wm-availability-slider mb-4" data-profile-ignore>
           <div className="d-flex justify-content-between align-items-center gap-3 flex-wrap">
             <label className="form-label mb-0" htmlFor="availability-month-slider">
               {t("vendorDashboard.profileAvailability.monthSliderLabel")}
@@ -184,7 +187,7 @@ export default function AvailabilityForm({ initial }: AvailabilityFormProps) {
                         key={iso}
                         type="button"
                         className={`wm-availability-day ${tone}`}
-                        onClick={() => toggleDate(iso)}
+                        data-profile-change onClick={() => toggleDate(iso)}
                         disabled={isPast}
                         title={iso}
                       >
@@ -205,17 +208,7 @@ export default function AvailabilityForm({ initial }: AvailabilityFormProps) {
         </div>
       ) : null}
 
-      {state.message ? (
-        <div className={`alert ${state.ok ? "alert-success" : "alert-danger"}`} role="status">
-          {state.message}
-        </div>
-      ) : null}
-
-      <button className="btn btn-primary" disabled={isPending}>
-        {isPending
-          ? t("vendorDashboard.profileAvailability.saving")
-          : t("vendorDashboard.profileAvailability.save")}
-      </button>
+      <ProfileSaveBar state={state} pending={isPending} label={t("vendorDashboard.profileAvailability.save")} />
     </form>
   );
 }

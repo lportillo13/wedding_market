@@ -64,6 +64,9 @@
     "testPathIgnorePatterns": [
       "/node_modules/",
       "/dist/"
+    ],
+    "modulePaths": [
+      "<rootDir>/node_modules"
     ]
   }
 }

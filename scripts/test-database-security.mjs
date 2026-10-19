@@ -116,6 +116,23 @@ test('live-schema authorization and transaction regressions', async t => {
     await assert.rejects(save('authenticated',3,'availability',[{available_on:'2027-01-01'},{available_on:'2027-01-01'}]));
     assert.equal((await db.query('SELECT availability_status FROM vendor_availability WHERE vendor_id=$1',[id(11)])).rows[0].availability_status,'busy');
   });
+  await t.test('team replacement preserves both languages when a row fails validation',async()=>{
+    const save=rows=>as('authenticated',3,'SELECT replace_vendor_section($1,$2,$3,$4)',[id(11),'team',JSON.stringify(rows),'{}']);
+    await save([{name:'Camila',title:{en:'Photographer',es:'Fotógrafa'},bio:{en:'Eight years',es:'Ocho años'},responds_within_hours:24,sort_order:0}]);
+    await assert.rejects(save([{name:'Invalid',responds_within_hours:'invalid'}]));
+    const row=(await db.query('SELECT name,title,bio FROM vendor_team WHERE vendor_id=$1',[id(11)])).rows[0];
+    assert.equal(row.name,'Camila');
+    assert.equal(row.title.es,'Fotógrafa');
+    assert.equal(row.bio.en,'Eight years');
+  });
+  await t.test('failed service selection preserves existing options and capacity',async()=>{
+    await db.exec("INSERT INTO amenity_lookup(key,group_key) VALUES ('profile-regression','services')");
+    const save=(rows,capacity)=>as('authenticated',3,'SELECT replace_vendor_section($1,$2,$3,$4)',[id(11),'amenities',JSON.stringify(rows),JSON.stringify({capacity_max:capacity,event_types:[]})]);
+    await save([{amenity_key:'profile-regression'}],120);
+    await assert.rejects(save([{amenity_key:'missing-profile-option'}],999));
+    assert.equal((await db.query('SELECT amenity_key FROM vendor_amenities WHERE vendor_id=$1',[id(11)])).rows[0].amenity_key,'profile-regression');
+    assert.equal((await db.query('SELECT capacity_max FROM vendors WHERE id=$1',[id(11)])).rows[0].capacity_max,120);
+  });
   await t.test('acceptance verifies ownership, closes competing invitations, and is idempotent',async()=>{
     await db.exec(`INSERT INTO rfq_invites(rfq_id,vendor_id,expires_at) VALUES ('${id(23)}','${id(11)}',now()+interval '1 day'),('${id(23)}','${id(12)}',now()+interval '1 day');
       INSERT INTO quotes(id,rfq_id,vendor_id) VALUES ('${id(33)}','${id(23)}','${id(11)}');`);

@@ -90,7 +90,7 @@ export default function VendorHeader({ vendor, media, isVendor, isLoggedIn, logi
             )}
 
             <div className="wm-vendor-hero__copy">
-              <p className="wm-admin-kicker mb-2">Featured vendor</p>
+              <p className="wm-admin-kicker mb-2">{language === "es" ? "CONOCE AL PROVEEDOR" : "MEET THE VENDOR"}</p>
               <h1 className="wm-vendor-hero__name mb-2">{vendor.name}</h1>
               {vendor.summary ? <p className="wm-vendor-hero__summary mb-0">{vendor.summary}</p> : null}
             </div>

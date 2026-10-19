@@ -1,12 +1,20 @@
 "use client";
 
+import { useProfileAction } from "./useProfileAction";
+import ProfileSaveBar from "./ProfileSaveBar";
+
 import Image from "next/image";
-import { useActionState, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslation } from "@/contexts/LanguageContext";
+import { useTranslation, useLanguage } from "@/contexts/LanguageContext";
 import { uploadWithProgress } from "@/lib/client/uploads";
 import { resolveMediaUrl, shouldRenderUnoptimizedMedia } from "@/lib/media-url";
-import { removeLogoImage, saveContact, type FormMessageState, type ImageActionState } from "./actions";
+import {
+  removeLogoImage,
+  saveContact,
+  type FormMessageState,
+  type ImageActionState,
+} from "./actions";
 
 type ContactFormShape = {
   logo_url: string;
@@ -29,12 +37,27 @@ type ContactFormProps = {
 const initialState: FormMessageState = { ok: false, message: "" };
 const initialImageState: ImageActionState = { ok: false, message: "" };
 
-function ProgressBar({ pending, progress }: { pending: boolean; progress: number }) {
+function ProgressBar({
+  pending,
+  progress,
+}: {
+  pending: boolean;
+  progress: number;
+}) {
   if (!pending && progress <= 0) return null;
   return (
     <div className="mt-2">
-      <div className="progress" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
-        <div className="progress-bar progress-bar-striped progress-bar-animated" style={{ width: `${progress}%` }}>
+      <div
+        className="progress"
+        role="progressbar"
+        aria-valuenow={progress}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
+        <div
+          className="progress-bar progress-bar-striped progress-bar-animated"
+          style={{ width: `${progress}%` }}
+        >
           {progress}%
         </div>
       </div>
@@ -57,9 +80,15 @@ function UploadMeta({
       <div className="d-flex align-items-center justify-content-between gap-3">
         <div className="min-w-0">
           <div className="fw-semibold text-dark">
-            {pending ? "Uploading logo" : `Selected ${selection.length} file${selection.length === 1 ? "" : "s"}`}
+            {pending
+              ? "Uploading logo"
+              : `Selected ${selection.length} file${selection.length === 1 ? "" : "s"}`}
           </div>
-          {selection.length > 0 ? <div className="small text-secondary text-truncate">{selection.join(", ")}</div> : null}
+          {selection.length > 0 ? (
+            <div className="small text-secondary text-truncate">
+              {selection.join(", ")}
+            </div>
+          ) : null}
         </div>
         <div className="wm-vendor-media-status__badge">{progress}%</div>
       </div>
@@ -69,17 +98,31 @@ function UploadMeta({
 }
 
 export default function ContactForm({ initial }: ContactFormProps) {
-  const [state, formAction, isPending] = useActionState(saveContact, initialState);
+  const [state, formAction, isPending] = useProfileAction(
+    saveContact,
+    initialState,
+  );
   const [logoState, setLogoState] = useState(initialImageState);
-  const [removeState, removeAction, removePending] = useActionState(removeLogoImage, initialImageState);
   const [logoPending, setLogoPending] = useState(false);
   const [logoProgress, setLogoProgress] = useState(0);
   const [logoSelection, setLogoSelection] = useState<string[]>([]);
   const [form, setForm] = useState<ContactFormShape>(initial);
+  const [removeState, removeAction, removePending] = useProfileAction(
+    async (previous: ImageActionState) => {
+      const result = await removeLogoImage(previous);
+      if (result.ok) setForm((current) => ({ ...current, logo_url: "" }));
+      return result;
+    },
+    initialImageState,
+  );
+  const { language } = useLanguage();
+  const es = language === "es";
   const router = useRouter();
   const t = useTranslation();
 
-  function onChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  function onChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   }
@@ -97,16 +140,32 @@ export default function ContactForm({ initial }: ContactFormProps) {
       const payload = new FormData();
       payload.set("target", "vendor-logo");
       payload.set("file", file);
-      const response = await uploadWithProgress<{ asset?: { url?: string } }>("/api/uploads", payload, setLogoProgress);
+      const response = await uploadWithProgress<{ asset?: { url?: string } }>(
+        "/api/uploads",
+        payload,
+        setLogoProgress,
+      );
       const url = response.asset?.url ?? "";
+      if (!url)
+        throw new Error(
+          es
+            ? "No se recibió la imagen. Inténtalo de nuevo."
+            : "No image was returned. Please try again.",
+        );
 
       setForm((prev) => ({ ...prev, logo_url: url }));
-      setLogoState({ ok: true, message: "Logo updated." });
+      setLogoState({
+        ok: true,
+        message: es ? "Logo guardado." : "Logo saved.",
+      });
       setLogoSelection([]);
       setLogoProgress(0);
       router.refresh();
     } catch (error) {
-      setLogoState({ ok: false, message: error instanceof Error ? error.message : "Upload failed." });
+      setLogoState({
+        ok: false,
+        message: error instanceof Error ? error.message : "Upload failed.",
+      });
     } finally {
       setLogoPending(false);
     }
@@ -114,16 +173,32 @@ export default function ContactForm({ initial }: ContactFormProps) {
 
   return (
     <div className="d-grid gap-4">
-      <section className="wm-vendor-media-card">
+      <section className="wm-vendor-media-card" data-profile-ignore>
         <div className="d-flex align-items-center justify-content-between gap-3 mb-3">
           <div>
-            <h3 className="h6 mb-1">Brand logo</h3>
-            <p className="small text-muted mb-0">This logo appears in the public vendor header next to your name.</p>
+            <h3 className="h6 mb-1">
+              {es ? "Logo de tu negocio" : "Business logo"}
+            </h3>
+            <p className="small text-muted mb-0">
+              {es
+                ? "Aparece junto a tu nombre y se guarda al subirlo."
+                : "Appears next to your name and saves when uploaded."}
+            </p>
           </div>
           {form.logo_url ? (
             <form action={removeAction}>
-              <button className="btn btn-outline-danger btn-sm" disabled={removePending} type="submit">
-                {removePending ? "Removing..." : "Remove"}
+              <button
+                className="btn btn-outline-danger btn-sm"
+                disabled={removePending}
+                type="submit"
+              >
+                {removePending
+                  ? es
+                    ? "Quitando…"
+                    : "Removing…"
+                  : es
+                    ? "Quitar"
+                    : "Remove"}
               </button>
             </form>
           ) : null}
@@ -142,7 +217,11 @@ export default function ContactForm({ initial }: ContactFormProps) {
             />
           </div>
         ) : (
-          <p className="text-muted small mb-3">No logo uploaded yet.</p>
+          <p className="text-muted small mb-3">
+            {es
+              ? "Aún no hay logo. Añadirlo es opcional."
+              : "No logo yet. Adding one is optional."}
+          </p>
         )}
 
         <form action={uploadLogo} encType="multipart/form-data">
@@ -151,29 +230,54 @@ export default function ContactForm({ initial }: ContactFormProps) {
               className="form-control"
               type="file"
               name="logo"
+              aria-label={es ? "Logo del negocio" : "Business logo"}
               accept="image/*"
               required
-              onChange={(event) => setLogoSelection(event.target.files?.[0] ? [event.target.files[0].name] : [])}
+              onChange={(event) =>
+                setLogoSelection(
+                  event.target.files?.[0] ? [event.target.files[0].name] : [],
+                )
+              }
             />
           </div>
-          <button className="btn btn-primary btn-sm" disabled={logoPending} type="submit">
-            {logoPending ? "Uploading..." : "Upload logo"}
+          <button
+            className="btn btn-primary btn-sm"
+            disabled={logoPending}
+            type="submit"
+          >
+            {logoPending
+              ? es
+                ? "Subiendo…"
+                : "Uploading…"
+              : es
+                ? "Subir logo"
+                : "Upload logo"}
           </button>
         </form>
-        <UploadMeta pending={logoPending} progress={logoProgress} selection={logoSelection} />
+        <UploadMeta
+          pending={logoPending}
+          progress={logoProgress}
+          selection={logoSelection}
+        />
         {logoState.message ? (
-          <div className={`alert ${logoState.ok ? "alert-success" : "alert-danger"} mt-3`} role="status">
+          <div
+            className={`alert ${logoState.ok ? "alert-success" : "alert-danger"} mt-3`}
+            role="status"
+          >
             {logoState.message}
           </div>
         ) : null}
         {removeState.message ? (
-          <div className={`alert ${removeState.ok ? "alert-success" : "alert-danger"} mt-3`} role="status">
+          <div
+            className={`alert ${removeState.ok ? "alert-success" : "alert-danger"} mt-3`}
+            role="status"
+          >
             {removeState.message}
           </div>
         ) : null}
       </section>
 
-      <form action={formAction}>
+      <form action={formAction} data-profile-save>
         <div className="row g-3">
           <div className="col-12 col-md-6">
             <label className="form-label" htmlFor="contact-phone">
@@ -181,6 +285,7 @@ export default function ContactForm({ initial }: ContactFormProps) {
             </label>
             <input
               id="contact-phone"
+              type="tel"
               name="phone"
               className="form-control"
               value={form.phone}
@@ -210,7 +315,9 @@ export default function ContactForm({ initial }: ContactFormProps) {
               value={form.map_url}
               onChange={onChange}
             />
-            <div className="form-text">{t("vendorDashboard.profileContact.mapHelp")}</div>
+            <div className="form-text">
+              {t("vendorDashboard.profileContact.mapHelp")}
+            </div>
           </div>
           <div className="col-12">
             <label className="form-label" htmlFor="contact-address-label">
@@ -230,13 +337,18 @@ export default function ContactForm({ initial }: ContactFormProps) {
             </label>
             <input
               id="contact-starting-price"
+              inputMode="decimal"
               name="starting_price"
               className="form-control"
               value={form.starting_price}
               onChange={onChange}
-              placeholder={t("vendorDashboard.profileContact.currencyPlaceholder")}
+              placeholder={t(
+                "vendorDashboard.profileContact.currencyPlaceholder",
+              )}
             />
-            <div className="form-text">{t("vendorDashboard.profileContact.startingPriceHelp")}</div>
+            <div className="form-text">
+              {t("vendorDashboard.profileContact.startingPriceHelp")}
+            </div>
           </div>
           <div className="col-12 col-md-4">
             <label className="form-label" htmlFor="contact-starting-currency">
@@ -257,6 +369,7 @@ export default function ContactForm({ initial }: ContactFormProps) {
             </label>
             <input
               id="contact-years"
+              inputMode="numeric"
               name="years_in_business"
               className="form-control"
               value={form.years_in_business}
@@ -275,7 +388,9 @@ export default function ContactForm({ initial }: ContactFormProps) {
               value={form.event_types}
               onChange={onChange}
             />
-            <div className="form-text">{t("vendorDashboard.profileContact.csvHelp")}</div>
+            <div className="form-text">
+              {t("vendorDashboard.profileContact.csvHelp")}
+            </div>
           </div>
           <div className="col-12">
             <label className="form-label" htmlFor="contact-languages">
@@ -289,7 +404,9 @@ export default function ContactForm({ initial }: ContactFormProps) {
               value={form.languages}
               onChange={onChange}
             />
-            <div className="form-text">{t("vendorDashboard.profileContact.csvHelp")}</div>
+            <div className="form-text">
+              {t("vendorDashboard.profileContact.csvHelp")}
+            </div>
           </div>
           <div className="col-12">
             <label className="form-label" htmlFor="contact-team-size">
@@ -305,17 +422,11 @@ export default function ContactForm({ initial }: ContactFormProps) {
           </div>
         </div>
 
-        {state.message ? (
-          <div className={`alert ${state.ok ? "alert-success" : "alert-danger"} mt-3`} role="status">
-            {state.message}
-          </div>
-        ) : null}
-
-        <button className="btn btn-primary mt-3" disabled={isPending}>
-          {isPending
-            ? t("vendorDashboard.profileContact.saving")
-            : t("vendorDashboard.profileContact.save")}
-        </button>
+        <ProfileSaveBar
+          state={state}
+          pending={isPending}
+          label={t("vendorDashboard.profileContact.save")}
+        />
       </form>
     </div>
   );

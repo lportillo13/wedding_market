@@ -99,29 +99,8 @@ export default function VendorPricing({ vendor, pricing, isLoggedIn, loginHref, 
       </div>
 
       {pricingRows.length ? (
-        <div className="table-responsive">
-          <table className="table align-middle">
-            <thead>
-              <tr>
-                <th scope="col">{labels.package}</th>
-                <th scope="col">{labels.price}</th>
-                <th scope="col">{labels.details}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pricingRows.map((item) => {
-                const normalizedKey = item.itemKey.toLowerCase();
-                const label = itemLabels[normalizedKey] ?? humanizeVendorFieldKey(item.itemKey);
-                return (
-                  <tr key={item.itemKey}>
-                    <th scope="row">{label}</th>
-                    <td>{formatPrice(item)}</td>
-                    <td className="text-muted small">{item.notes ?? labels.customQuote}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div className="wm-public-package-grid">
+          {pricingRows.map((item) => <article key={item.itemKey} className="wm-public-package"><h3>{itemLabels[item.itemKey.toLowerCase()] ?? humanizeVendorFieldKey(item.itemKey)}</h3><strong>{formatPrice(item)}</strong><p>{item.notes || labels.customQuote}</p></article>)}
         </div>
       ) : (
         <div className="alert alert-light border mb-0">{labels.customQuote}</div>

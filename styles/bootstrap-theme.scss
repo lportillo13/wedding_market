@@ -62,3 +62,5 @@ $enable-dark-mode: true;  // keep dark tokens available (optional)
 
 /* 9) Your custom styles last */
 @import "./custom-styles";
+
+@import "./vendor-profile-workspace";

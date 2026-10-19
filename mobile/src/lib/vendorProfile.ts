@@ -1,3 +1,4 @@
+import { prepareProfilePricing, profilePriceToCents } from "../../../shared/vendorPricing";
 import { mobileConfig } from "./config";
 import { requestJson } from "./http";
 import { supabase } from "./supabase";
@@ -82,6 +83,7 @@ export type VendorEditorAvailabilityRow = {
 
 export type VendorEditorData = {
   vendor: VendorEditorVendor;
+  categoryKeys: string[];
   pricing: VendorEditorPricingRow[];
   amenityOptions: VendorAmenityOption[];
   selectedAmenities: string[];
@@ -108,18 +110,6 @@ function toInteger(value: string) {
   if (!trimmed) return null;
   const parsed = Number.parseInt(trimmed, 10);
   return Number.isFinite(parsed) ? parsed : null;
-}
-
-function moneyToCents(value: string) {
-  const trimmed = value.trim();
-  if (!trimmed) return null;
-  const parsed = Number.parseFloat(trimmed.replace(/[^0-9,.-]/g, "").replace(/,/g, "."));
-  return Number.isFinite(parsed) ? Math.round(parsed * 100) : null;
-}
-
-function localized(value: string) {
-  const trimmed = value.trim();
-  return trimmed ? { en: trimmed, es: trimmed } : null;
 }
 
 export function localizedText(value: unknown, locale: "en" | "es" = "en") {
@@ -153,7 +143,7 @@ export async function loadVendorEditorData(): Promise<VendorEditorData | null> {
   if (!vendor) return null;
 
   const vendorId = String(vendor.id);
-  const [pricing, amenities, selectedAmenities, team, availability] = await Promise.all([
+  const [pricing, amenities, selectedAmenities, team, availability, categories] = await Promise.all([
     db.from("vendor_pricing").select("item_key, price_cents, currency, contact_for_price, notes").eq("vendor_id", vendorId),
     db.from("amenity_lookup").select("key, group_key, label").order("group_key").order("key"),
     db.from("vendor_amenities").select("amenity_key").eq("vendor_id", vendorId),
@@ -167,13 +157,15 @@ export async function loadVendorEditorData(): Promise<VendorEditorData | null> {
       .select("id, available_on, availability_status")
       .eq("vendor_id", vendorId)
       .order("available_on", { ascending: true }),
+    db.from("vendor_categories").select("category:categories(key)").eq("vendor_id", vendorId).returns<{ category: { key: string } | null }[]>(),
   ]);
 
-  const firstError = pricing.error ?? amenities.error ?? selectedAmenities.error ?? team.error ?? availability.error;
+  const firstError = pricing.error ?? amenities.error ?? selectedAmenities.error ?? team.error ?? availability.error ?? categories.error;
   if (firstError) throw new Error(firstError.message);
 
   return {
     vendor,
+    categoryKeys: (categories.data ?? []).flatMap((row) => row.category ? [row.category.key] : []),
     pricing: pricing.data ?? [],
     amenityOptions: amenities.data ?? [],
     selectedAmenities: (selectedAmenities.data ?? []).map((row) => String(row.amenity_key)),
@@ -184,7 +176,9 @@ export async function loadVendorEditorData(): Promise<VendorEditorData | null> {
 
 export async function saveVendorDetails(vendorId: string, values: Record<string, string>) {
   const db = client();
-  const extraInfo = { en: values.extra_info_en ?? "", es: values.extra_info_es ?? "" };
+  const { data: current, error: readError } = await db.from("vendors").select("extra_info").eq("id", vendorId).single<{ extra_info: Record<string, unknown> | null }>();
+  if (readError) throw new Error(readError.message);
+  const extraInfo = { ...(current.extra_info ?? {}), en: values.extra_info_en ?? "", es: values.extra_info_es ?? "" };
   const { error } = await db
     .from("vendors")
     .update({
@@ -206,7 +200,7 @@ export async function saveVendorContact(vendorId: string, values: Record<string,
       website_url: values.website_url.trim() || null,
       map_url: values.map_url.trim() || null,
       address_label: values.address_label.trim() || null,
-      starting_price_cents: moneyToCents(values.starting_price),
+      starting_price_cents: profilePriceToCents(values.starting_price),
       starting_price_currency: values.starting_price_currency.trim().toUpperCase() || "USD",
       event_types: csvToArray(values.event_types),
       years_in_business: toInteger(values.years_in_business),
@@ -220,21 +214,14 @@ export async function saveVendorContact(vendorId: string, values: Record<string,
 export async function saveVendorPricing(vendorId: string, values: Record<string, string>, pricingRows: Record<string, string>[]) {
   const db = client();
   const currency = values.typical_currency.trim().toUpperCase() || "USD";
-  const rows = pricingRows
-    .map((row) => ({
-      vendor_id: vendorId,
-      item_key: row.item_key,
-      price_cents: row.contact_for_price === "true" ? null : moneyToCents(row.price),
-      currency,
-      contact_for_price: row.contact_for_price === "true",
-      notes: localized(row.notes),
-    }))
-    .filter((row) => row.contact_for_price || row.price_cents !== null || row.notes);
-
+  const rows = prepareProfilePricing(pricingRows.map((row) => ({
+    itemKey: row.item_key, price: row.price, currency: row.currency,
+    contactForPrice: row.contact_for_price === "true", notesEn: row.notes_en ?? row.notes ?? "", notesEs: row.notes_es ?? "",
+  })), currency);
   const { error } = await db.rpc("replace_vendor_section", {
     p_vendor: vendorId, p_section: "pricing", p_rows: rows,
     p_settings: {
-      pricing_typical_spend_cents: moneyToCents(values.typical_spend),
+      pricing_typical_spend_cents: profilePriceToCents(values.typical_spend),
       pricing_typical_spend_currency: currency,
       pricing_peak_seasons: csvToArray(values.peak_seasons),
     },
@@ -244,18 +231,20 @@ export async function saveVendorPricing(vendorId: string, values: Record<string,
 
 export async function saveVendorAmenities(vendorId: string, selectedKeys: string[], values: Record<string, string>) {
   const db = client();
+  const { data: current, error: readError } = await db.from("vendors").select("event_types").eq("id", vendorId).single<{ event_types: string[] | null }>();
+  if (readError) throw new Error(readError.message);
   const { error } = await db.rpc("replace_vendor_section", {
     p_vendor: vendorId, p_section: "amenities",
     p_rows: selectedKeys.map((amenity_key) => ({ amenity_key })),
-    p_settings: { capacity_max: toInteger(values.capacity_max), event_types: csvToArray(values.event_types) },
+    p_settings: { capacity_max: toInteger(values.capacity_max), event_types: current.event_types ?? [] },
   });
   if (error) throw new Error(error.message);
 }
 
 export async function saveVendorTeam(vendorId: string, members: Record<string, string>[]) {
   const db = client();
+  if (members.some((member) => !member.name.trim())) throw new Error("Add a name for each person, or remove the empty card.");
   const rows = members
-    .filter((member) => member.name.trim())
     .map((member, index) => ({
       vendor_id: vendorId,
       name: member.name.trim(),

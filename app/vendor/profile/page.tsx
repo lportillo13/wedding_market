@@ -1,15 +1,15 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+import { profilePricingDrafts } from "@/shared/vendorPricing";
 import { redirect } from "next/navigation";
 import { getRoles } from "@/lib/auth/roles";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import VendorProfileTabs from "./VendorProfileTabs";
 import type { VendorImage } from "@/types/vendor";
 
-const PRICING_KEYS = ["reception", "ceremony", "bar", "catering"] as const;
-
 type VendorRow = {
+  is_published: boolean;
   id: string;
   slug: string | null;
   business_name: string | null;
@@ -107,6 +107,7 @@ export default async function ProfilePage() {
         "id",
         "slug",
         "business_name",
+        "is_published",
         "bio",
         "extra_info",
         "logo_url",
@@ -128,7 +129,7 @@ export default async function ProfilePage() {
         "pricing_typical_spend_currency",
         "pricing_peak_seasons",
         "review_ai_summary",
-      ].join(",")
+      ].join(","),
     )
     .eq("owner_id", user.id)
     .maybeSingle();
@@ -144,10 +145,7 @@ export default async function ProfilePage() {
   let vendor: VendorRow | null = vendorData;
 
   if (!vendor) {
-    const {
-      data: insertedData,
-      error: insertedError,
-    } = await supabase
+    const { data: insertedData, error: insertedError } = await supabase
       .from("vendors")
       .insert({
         owner_id: user.id,
@@ -162,6 +160,7 @@ export default async function ProfilePage() {
           "id",
           "slug",
           "business_name",
+          "is_published",
           "bio",
           "extra_info",
           "logo_url",
@@ -183,7 +182,7 @@ export default async function ProfilePage() {
           "pricing_typical_spend_currency",
           "pricing_peak_seasons",
           "review_ai_summary",
-        ].join(",")
+        ].join(","),
       )
       .single();
 
@@ -222,7 +221,10 @@ export default async function ProfilePage() {
     website_url: v.website_url ?? "",
     map_url: v.map_url ?? "",
     address_label: v.address_label ?? "",
-    starting_price: v.starting_price_cents ? (v.starting_price_cents / 100).toString() : "",
+    starting_price:
+      v.starting_price_cents !== null
+        ? (v.starting_price_cents / 100).toString()
+        : "",
     starting_price_currency: v.starting_price_currency ?? "USD",
     event_types: toCsv(v.event_types),
     years_in_business: v.years_in_business ? String(v.years_in_business) : "",
@@ -230,57 +232,75 @@ export default async function ProfilePage() {
     team_size_range: v.team_size_range ?? "",
   };
 
-  const { data: pricingData } = await supabase
+  const { data: pricingData, error: pricingError } = await supabase
     .from("vendor_pricing")
     .select("item_key, price_cents, currency, contact_for_price, notes")
     .eq("vendor_id", v.id);
 
+  if (pricingError)
+    throw new Error("Unable to load saved pricing. Please try again.");
+  const { data: categories, error: categoriesError } = await supabase
+    .from("vendor_categories")
+    .select("category:categories(key)")
+    .eq("vendor_id", v.id)
+    .returns<{ category: { key: string } | null }[]>();
+  if (categoriesError)
+    throw new Error("Unable to load your services. Please try again.");
+  const categoryKeys = (categories ?? []).flatMap((row) =>
+    row.category ? [row.category.key] : [],
+  );
   const pricingRows = (pricingData ?? []) as PricingRow[];
-
   const pricingInitial = {
-    items: PRICING_KEYS.map((key) => {
-      const row = pricingRows.find((item) => item.item_key === key) ?? null;
-      const notes = parseLocalizedPair(row?.notes ?? null);
-      return {
-        itemKey: key,
-        price: row?.price_cents ? (row.price_cents / 100).toString() : "",
-        contactForPrice: Boolean(row?.contact_for_price),
-        notesEn: notes.en,
-        notesEs: notes.es,
-      };
-    }),
-    typicalSpend: v.pricing_typical_spend_cents
-      ? (v.pricing_typical_spend_cents / 100).toString()
-      : "",
-    typicalSpendCurrency: v.pricing_typical_spend_currency ?? v.starting_price_currency ?? "USD",
+    items: profilePricingDrafts(
+      pricingRows,
+      v.pricing_typical_spend_currency ?? "USD",
+    ),
+    typicalSpend:
+      v.pricing_typical_spend_cents !== null
+        ? (v.pricing_typical_spend_cents / 100).toString()
+        : "",
+    typicalSpendCurrency:
+      v.pricing_typical_spend_currency ?? v.starting_price_currency ?? "USD",
     peakSeasons: toCsv(v.pricing_peak_seasons),
   };
 
-  const { data: amenityData } = await supabase
+  const { data: amenityData, error: amenityError } = await supabase
     .from("amenity_lookup")
     .select("key, group_key, label")
     .order("group_key", { ascending: true })
     .order("key", { ascending: true });
 
+  if (amenityError)
+    throw new Error("Unable to load profile section. Please try again.");
+
   const amenityOptions = (amenityData ?? []) as AmenityOption[];
 
-  const { data: vendorAmenityData } = await supabase
+  const { data: vendorAmenityData, error: vendorAmenityError } = await supabase
     .from("vendor_amenities")
     .select("amenity_key")
     .eq("vendor_id", v.id);
 
+  if (vendorAmenityError)
+    throw new Error("Unable to load profile section. Please try again.");
+
   const amenitiesInitial = {
-    selectedKeys: (vendorAmenityData ?? []).map((row) => row.amenity_key as string),
+    selectedKeys: (vendorAmenityData ?? []).map(
+      (row) => row.amenity_key as string,
+    ),
     capacityMax: v.capacity_max ? String(v.capacity_max) : "",
-    eventTypes: toCsv(v.event_types),
   };
 
-  const { data: teamData } = await supabase
+  const { data: teamData, error: teamError } = await supabase
     .from("vendor_team")
-    .select("id, name, title, bio, headshot_url, responds_within_hours, sort_order, created_at")
+    .select(
+      "id, name, title, bio, headshot_url, responds_within_hours, sort_order, created_at",
+    )
     .eq("vendor_id", v.id)
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: true });
+
+  if (teamError)
+    throw new Error("Unable to load profile section. Please try again.");
 
   const teamRows = (teamData ?? []) as TeamRow[];
 
@@ -288,18 +308,23 @@ export default async function ProfilePage() {
     id: member.id,
     name: member.name ?? "",
     title: resolveLocalizedInput(member.title, "en"),
+    titleEs: resolveLocalizedInput(member.title, "es"),
     bio: resolveLocalizedInput(member.bio, "en"),
+    bioEs: resolveLocalizedInput(member.bio, "es"),
     headshotUrl: member.headshot_url ?? "",
     respondsWithinHours: member.responds_within_hours
       ? String(member.responds_within_hours)
       : "",
   }));
 
-  const { data: availabilityData } = await supabase
+  const { data: availabilityData, error: availabilityError } = await supabase
     .from("vendor_availability")
     .select("id, available_on, availability_status")
     .eq("vendor_id", v.id)
     .order("available_on", { ascending: true });
+
+  if (availabilityError)
+    throw new Error("Unable to load profile section. Please try again.");
 
   const availabilityRows = (availabilityData ?? []) as AvailabilityRow[];
 
@@ -317,7 +342,7 @@ export default async function ProfilePage() {
   const thumbnailImage = v.thumbnail_image?.url ? v.thumbnail_image : null;
   const galleryImages = Array.isArray(v.gallery_images)
     ? (v.gallery_images as VendorImage[]).filter((asset) =>
-        Boolean(asset && typeof asset.url === "string" && asset.url.length > 0)
+        Boolean(asset && typeof asset.url === "string" && asset.url.length > 0),
       )
     : [];
 
@@ -325,6 +350,8 @@ export default async function ProfilePage() {
 
   return (
     <VendorProfileTabs
+      isPublished={v.is_published}
+      categoryKeys={categoryKeys}
       profileInitial={initial}
       vendorName={initial.business_name}
       heroImage={heroImage}

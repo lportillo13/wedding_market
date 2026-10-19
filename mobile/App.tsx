@@ -1,9 +1,14 @@
-﻿import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { profilePricingDrafts } from "../shared/vendorPricing";
+import { getVendorServiceProfile, getVendorPricingOrder } from "../shared/vendorServiceProfile";
+import { vendorPricingLabels } from "../shared/vendorPricingLabels";
+import { getProfileEssentials } from "../shared/vendorProfileProgress";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
   Animated,
   BackHandler,
+  Keyboard,
   Image,
   type LayoutChangeEvent,
   Modal,
@@ -3604,7 +3609,6 @@ const vendorEditorTabs: { key: VendorEditorTab; label: string; icon: IconName }[
   { key: "images", label: "Images", icon: "images-outline" },
 ];
 
-const pricingKeys = ["reception", "ceremony", "bar", "catering"];
 
 function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
   const labels = copy[language];
@@ -3622,6 +3626,7 @@ function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
   const [contact, setContact] = useState<Record<string, string>>({});
   const [pricingMeta, setPricingMeta] = useState<Record<string, string>>({});
   const [pricingRows, setPricingRows] = useState<Record<string, string>[]>([]);
+  const [customPackage, setCustomPackage] = useState("");
   const [amenityKeys, setAmenityKeys] = useState<string[]>([]);
   const [amenityMeta, setAmenityMeta] = useState<Record<string, string>>({});
   const [teamRows, setTeamRows] = useState<Record<string, string>[]>([]);
@@ -3632,13 +3637,13 @@ function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
     setEditorLanguage(language);
   }, [language]);
 
-  async function refreshVendor() {
-    setIsLoading(true);
-    setMessage("");
+  async function refreshVendor(initial = false) {
+    if (initial) { setIsLoading(true); setMessage(""); }
     try {
       const next = await loadVendorEditorData();
       setData(next);
-      if (next) hydrateVendorEditor(next);
+      // Refresh saved metadata/media without overwriting any in-progress section.
+      if (next && initial) hydrateVendorEditor(next);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Unable to load vendor profile.");
     } finally {
@@ -3674,21 +3679,16 @@ function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
       typical_currency: String(vendor.pricing_typical_spend_currency ?? vendor.starting_price_currency ?? "USD"),
       peak_seasons: Array.isArray(vendor.pricing_peak_seasons) ? vendor.pricing_peak_seasons.join(", ") : "",
     });
-    setPricingRows(pricingKeys.map((key) => {
-      const row = next.pricing.find((item) => item.item_key === key);
-      return {
-        item_key: key,
-        price: typeof row?.price_cents === "number" ? String(row.price_cents / 100) : "",
-        contact_for_price: row?.contact_for_price ? "true" : "false",
-        notes: localizedText(row?.notes, "en"),
-      };
-    }));
+    setPricingRows(profilePricingDrafts(next.pricing, vendor.pricing_typical_spend_currency ?? "USD").map((row) => ({
+      item_key: row.itemKey, price: row.price, currency: row.currency,
+      contact_for_price: row.contactForPrice ? "true" : "false", notes_en: row.notesEn, notes_es: row.notesEs,
+    })));
     setAmenityKeys(next.selectedAmenities);
     setAmenityMeta({
       capacity_max: vendor.capacity_max ? String(vendor.capacity_max) : "",
-      event_types: Array.isArray(vendor.event_types) ? vendor.event_types.join(", ") : "",
     });
-    setTeamRows(next.team.length ? next.team.map((member) => ({
+    setTeamRows(next.team.map((member, index) => ({
+      client_id: member.id ?? `member-${index}`,
       name: String(member.name ?? ""),
       title_en: localizedText(member.title, "en"),
       title_es: localizedText(member.title, "es"),
@@ -3696,7 +3696,7 @@ function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
       bio_es: localizedText(member.bio, "es"),
       headshot_url: String(member.headshot_url ?? ""),
       responds_within_hours: member.responds_within_hours ? String(member.responds_within_hours) : "",
-    })) : [{ name: "", title_en: "", title_es: "", bio_en: "", bio_es: "", headshot_url: "", responds_within_hours: "" }]);
+    })));
     setAvailabilityRows(next.availability.length ? next.availability.map((date) => ({
       date: String(date.available_on ?? ""),
       status: date.availability_status === "busy" ? "busy" : "available",
@@ -3708,12 +3708,13 @@ function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
   }
 
   useEffect(() => {
-    void refreshVendor();
+    void refreshVendor(true);
   }, []);
 
   async function saveCurrentTab() {
     if (!data?.vendor?.id) return;
     const vendorId = String(data.vendor.id);
+    Keyboard.dismiss();
     setIsSaving(true);
     setMessage("");
     try {
@@ -3724,8 +3725,8 @@ function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
       if (activeTab === "team") await saveVendorTeam(vendorId, teamRows);
       if (activeTab === "availability") await saveVendorAvailability(vendorId, availabilityRows);
       if (activeTab === "reviews") await saveVendorReviews(vendorId, reviews, data.vendor.extra_info ?? null);
-      setMessage(labels.saved);
       await refreshVendor();
+      setMessage(labels.saved);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : labels.saveFailed);
     } finally {
@@ -3788,7 +3789,7 @@ function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
     }
   }
 
-  async function pickTeamHeadshot(index: number) {
+  async function pickTeamHeadshot(clientId: string) {
     setIsSaving(true);
     setIsUploading(true);
     setUploadProgress(5);
@@ -3820,8 +3821,8 @@ function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
       });
       const url = uploadedAssetUrl(upload);
       if (!url) throw new Error(language === "en" ? "Upload completed but no image URL was returned." : "La carga termino pero no devolvio URL de imagen.");
-      setTeamRows((current) => current.map((member, memberIndex) => (
-        memberIndex === index ? { ...member, headshot_url: url } : member
+      setTeamRows((current) => current.map((member) => (
+        member.client_id === clientId ? { ...member, headshot_url: url } : member
       )));
       setUploadProgress(100);
       setUploadStatus(language === "en" ? "Team photo uploaded. Save the Team tab to publish it." : "Foto del equipo subida. Guarda la pestana Equipo para publicarla.");
@@ -3861,6 +3862,21 @@ function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
   const logoUrl = typeof vendor.logo_url === "string" ? vendor.logo_url : null;
   const heroUrl = imageUrlFromAsset(vendor.hero_image) ?? imageUrlFromAsset(vendor.thumbnail_image) ?? firstGalleryUrl ?? logoUrl;
   const businessName = String(vendor.business_name ?? "Vendor");
+  const essentials = getProfileEssentials({ name: businessName, description: localizedText(vendor.bio, language),
+    hasPhoto: Boolean(heroUrl), hasContact: Boolean(vendor.phone || vendor.website_url),
+    hasPricing: vendor.starting_price_cents != null || data.pricing.length > 0 || vendor.pricing_typical_spend_cents != null });
+  const packageLabels = vendorPricingLabels[language] as Record<string, string>;
+  const packageName = (key: string) => packageLabels[key] ?? formatCategory(key);
+  const suggestedPackages = getVendorPricingOrder(data.categoryKeys).filter((key) => !pricingRows.some((row) => row.item_key.toLowerCase() === key.toLowerCase()));
+  function addPricingPackage(key: string) {
+    const name = key.trim();
+    if (!name || pricingRows.length >= 100) return;
+    if (pricingRows.some((row) => row.item_key.toLowerCase() === name.toLowerCase())) { setMessage(language === "es" ? "Usa un nombre diferente para este paquete." : "Give this package a unique name."); return; }
+    setMessage("");
+    setPricingRows((current) => [...current, { item_key: name, price: "", currency: pricingMeta.typical_currency || "USD", contact_for_price: "false", notes_en: "", notes_es: "" }]);
+    setCustomPackage("");
+  }
+
 
   return (
     <View>
@@ -3874,10 +3890,18 @@ function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
         </View>
       </View>
 
+      <View style={styles.editorSubCard}>
+        <Text style={styles.sectionTitle}>{language === "es" ? "Empieza por lo esencial" : "Start with the essentials"} · {essentials.filter((step) => step.complete).length}/4</Text>
+        <Text style={styles.body}>{language === "es" ? "Puedes cambiar de sección sin perder tu borrador. Guarda antes de salir de este espacio." : "Switch sections without losing your draft. Save before leaving this workspace."}</Text>
+        <View style={styles.detailChips}>{essentials.map((step) => <TouchableOpacity disabled={isSaving} key={step.id} style={styles.detailChip} onPress={() => setActiveTab(step.id)}><Text style={styles.detailChipText}>{step.complete ? "✓ " : "+ "}{copy[language][step.id]}</Text></TouchableOpacity>)}</View>
+      </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.editorTabs}>
         {vendorEditorTabs.map((tab) => (
           <TouchableOpacity
             key={tab.key}
+            disabled={isSaving}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: activeTab === tab.key, disabled: isSaving }}
             onPress={() => setActiveTab(tab.key)}
             style={[styles.editorTab, activeTab === tab.key && styles.editorTabActive]}
           >
@@ -3893,7 +3917,7 @@ function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
         </View>
       ) : null}
 
-      <View style={styles.editorPanel}>
+      <View style={styles.editorPanel} pointerEvents={isSaving ? "none" : "auto"}>
         {activeTab === "details" ? (
           <View style={styles.form}>
             <LanguageSegment value={editorLanguage} language={language} onChange={setEditorLanguage} />
@@ -3928,11 +3952,14 @@ function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
               ["typical_currency", labels.currency],
               ["peak_seasons", labels.peakSeasons],
             ]} />
+            <LanguageSegment value={editorLanguage} language={language} onChange={setEditorLanguage} />
+            {pricingRows.length === 0 ? <Text style={styles.body}>{language === "es" ? "Añade un servicio recomendado o crea tu propio paquete." : "Add a suggested service or create your own package."}</Text> : null}
             {pricingRows.map((row, index) => (
               <View key={row.item_key} style={styles.editorSubCard}>
-                <Text style={styles.sectionTitle}>{formatCategory(row.item_key)}</Text>
-                <FieldLabel text={labels.price} />
-                <TextInput style={styles.input} value={row.price} onChangeText={(value) => setPricingRows((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, price: value } : item))} />
+                <Text style={styles.sectionTitle}>{packageName(row.item_key)}</Text>
+                <TouchableOpacity accessibilityLabel={`${language === "es" ? "Quitar" : "Remove"} ${packageName(row.item_key)}`} onPress={() => Alert.alert(language === "es" ? "¿Quitar paquete?" : "Remove package?", language === "es" ? "Se quitará cuando guardes esta sección." : "It will be removed when you save this section.", [{ text: language === "es" ? "Cancelar" : "Cancel", style: "cancel" }, { text: language === "es" ? "Quitar" : "Remove", style: "destructive", onPress: () => setPricingRows((current) => current.filter((item) => item.item_key !== row.item_key)) }])}><Text style={styles.errorText}>{language === "es" ? "Quitar paquete" : "Remove package"}</Text></TouchableOpacity>
+                <FieldLabel text={`${labels.price} (${row.currency || pricingMeta.typical_currency || "USD"})`} />
+                <TextInput accessibilityLabel={labels.price} editable={row.contact_for_price !== "true"} keyboardType="decimal-pad" style={styles.input} value={row.price} onChangeText={(value) => setPricingRows((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, price: value } : item))} />
                 <TouchableOpacity
                   onPress={() => setPricingRows((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, contact_for_price: item.contact_for_price === "true" ? "false" : "true" } : item))}
                   style={styles.checkboxRow}
@@ -3941,17 +3968,20 @@ function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
                   <Text style={styles.checkboxText}>{labels.contactForPrice}</Text>
                 </TouchableOpacity>
                 <FieldLabel text={labels.notes} />
-                <TextInput multiline style={[styles.input, styles.textArea]} value={row.notes} onChangeText={(value) => setPricingRows((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, notes: value } : item))} />
+                <TextInput multiline style={[styles.input, styles.textArea]} accessibilityLabel={labels.notes} value={row[`notes_${editorLanguage}`]} onChangeText={(value) => setPricingRows((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, [`notes_${editorLanguage}`]: value } : item))} />
               </View>
             ))}
+            <View style={styles.detailChips}>{suggestedPackages.map((key) => <TouchableOpacity key={key} onPress={() => addPricingPackage(key)} style={styles.detailChip}><Text style={styles.detailChipText}>+ {packageName(key)}</Text></TouchableOpacity>)}</View>
+            <FieldLabel text={language === "es" ? "O crea tu propio paquete" : "Or create your own package"} />
+            <TextInput accessibilityLabel={language === "es" ? "Nombre del paquete" : "Package name"} maxLength={120} style={styles.input} placeholder={language === "es" ? "Por ejemplo: Boda íntima" : "For example: Intimate wedding"} value={customPackage} onChangeText={setCustomPackage} />
+            <TouchableOpacity disabled={!customPackage.trim() || pricingRows.length >= 100} onPress={() => addPricingPackage(customPackage)} style={styles.secondaryButton}><Text style={styles.secondaryButtonText}>+ {language === "es" ? "Añadir paquete" : "Add package"}</Text></TouchableOpacity>
           </View>
         ) : null}
 
         {activeTab === "amenities" ? (
           <View style={styles.form}>
             <VendorFieldGroup values={amenityMeta} setValues={setAmenityMeta} fields={[
-              ["capacity_max", labels.maxCapacity],
-              ["event_types", labels.eventTypes],
+              ...(getVendorServiceProfile(data.categoryKeys).supportsGuestCapacity ? [["capacity_max", labels.maxCapacity] as [string, string]] : []),
             ]} />
             <View style={styles.detailChips}>
               {data.amenityOptions.map((option) => {
@@ -3975,7 +4005,8 @@ function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
           <View style={styles.form}>
             <LanguageSegment value={editorLanguage} language={language} onChange={setEditorLanguage} />
             {teamRows.map((member, index) => (
-              <View key={index} style={styles.editorSubCard}>
+              <View key={member.client_id} style={styles.editorSubCard}>
+                <TouchableOpacity disabled={isSaving} onPress={() => Alert.alert(language === "es" ? "¿Quitar persona?" : "Remove person?", language === "es" ? "Se quitará cuando guardes esta sección." : "They will be removed when you save this section.", [{ text: language === "es" ? "Cancelar" : "Cancel", style: "cancel" }, { text: language === "es" ? "Quitar" : "Remove", style: "destructive", onPress: () => setTeamRows((current) => current.filter((item) => item.client_id !== member.client_id)) }])}><Text style={styles.errorText}>{language === "es" ? "Quitar persona" : "Remove person"}</Text></TouchableOpacity>
                 <CurrentMediaPreview
                   compact
                   fallback={member.name ? member.name.slice(0, 1).toUpperCase() : "T"}
@@ -3984,7 +4015,7 @@ function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
                 />
                 <TouchableOpacity
                   disabled={isSaving}
-                  onPress={() => void pickTeamHeadshot(index)}
+                  onPress={() => void pickTeamHeadshot(member.client_id)}
                   style={styles.secondaryButton}
                 >
                   <Ionicons name="cloud-upload-outline" size={16} color={colors.tealDark} />
@@ -3998,7 +4029,7 @@ function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
                 ]} />
               </View>
             ))}
-            <TouchableOpacity onPress={() => setTeamRows((current) => [...current, { name: "", title_en: "", title_es: "", bio_en: "", bio_es: "", headshot_url: "", responds_within_hours: "" }])} style={styles.secondaryButton}>
+            <TouchableOpacity disabled={teamRows.length >= 50 || isSaving} onPress={() => setTeamRows((current) => [...current, { client_id: `new-${Date.now()}-${Math.random()}`, name: "", title_en: "", title_es: "", bio_en: "", bio_es: "", headshot_url: "", responds_within_hours: "" }])} style={styles.secondaryButton}>
               <Text style={styles.secondaryButtonText}>{labels.addTeamMember}</Text>
             </TouchableOpacity>
           </View>
@@ -4192,6 +4223,10 @@ function VendorFieldGroup({
         <View key={key} style={styles.formField}>
           <FieldLabel text={label} />
           <TextInput
+            accessibilityLabel={label}
+            autoCapitalize={key.includes("url") || key === "slug" ? "none" : "sentences"}
+            autoCorrect={!(key.includes("url") || key === "slug")}
+            keyboardType={key === "phone" ? "phone-pad" : key.includes("url") ? "url" : key.includes("price") || key.includes("spend") ? "decimal-pad" : key === "years_in_business" || key === "responds_within_hours" || key === "capacity_max" ? "number-pad" : "default"}
             multiline={mode === "multiline"}
             onChangeText={(value) => setValues((current) => ({ ...current, [key]: value }))}
             style={[styles.input, mode === "multiline" && styles.textArea]}
