@@ -14,8 +14,12 @@ Long category names wrap naturally. At widths below 360 pixels, secondary card a
 - Calculated contrast: primary text on ivory 10.55:1; secondary text on the deeper blush surface 5.03:1; antique gold on blush 5.07:1; white text on the main action 6.18:1. The botanical motif and fine borders are decorative.
 - No dependency, database, application workflow or native app changes were needed. Real sessions were not used for synthetic account checks; local Supabase remains offline.
 
-Previews: [English](warm-menu-preview-en.png), [Spanish](warm-menu-preview-es.png). These are synthetic local previews. Live screenshots and the deployment receipt will be recorded after the gateway rollout completes.
+Previews: [English](warm-menu-preview-en.png), [Spanish](warm-menu-preview-es.png). These are synthetic local previews. Verified production screenshots: [English phone menu](warm-menu-live-en.png), [Spanish phone menu](warm-menu-live-es.png), [Spanish desktop panel](warm-desktop-live-es.png).
 
 ## Release status
 
-Prepared against verified live base `76a109e77368d11cc1554dd42bd806de9e288906`. Validation is complete; gateway deployment is pending. Do not treat the local preview as live.
+Deployed through the installed gateway as `0b952c4acf1fe2f5027cab106c642aef1cdca7a3`, from verified live base `76a109e77368d11cc1554dd42bd806de9e288906`. The detached service exited successfully; [the exact-commit receipt](warm-deployment-success.json) records successful shadow/live checks and rollback at `/var/www/wedding-market.before-20261019-214941`. The manifest SHA256 was `5aa98ee992b401ce52a8617f127e4831ebb0a109c78dac4d941e8c05aebca460`.
+
+[Independent public verification](warm-public-release-checks.json) passed for health, homepage, vendor directory, bounded public results and anonymous protected API requests. Security headers remain installed and direct-origin HTTPS returns 403.
+
+Live browser checks confirmed the new warm palette and decorative botanical, English/Spanish phone menus, all 19 categories, a 320-pixel menu without horizontal overflow, category targets at least 52 pixels high, Escape returning focus to the menu trigger and released body scrolling. The 1440-pixel Spanish desktop vendor panel was checked visually; English was restored after testing. Screenshots contain only public guest UI. The styling release does not publish a native binary or change database settings.

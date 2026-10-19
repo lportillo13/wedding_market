@@ -1,8 +1,12 @@
 # Application release handoff — October 19, 2026
 
-Status: the owner-assisted application rollout succeeded as `2f0a556d`, followed by the first successful assistant-operated rollout as `76a109e7`. Shadow/live and independent public checks passed. The direct deployment gateway is installed and verified; routine releases no longer require owner terminal commands.
+Status: live is `0b952c4acf1fe2f5027cab106c642aef1cdca7a3`, including the warmer wedding header/menu styling. Shadow/live and independent public checks passed. The direct deployment gateway is installed and verified; routine releases no longer require owner terminal commands. Earlier releases below are historical.
 
-The owner explicitly requested deployment by default. The release includes code correctness (`c8a07804`), profile/editing UX (`fdc1306f`), the responsive website header (`098a5508`) and the tested deployment helper/default (`830791d4`). No new database migration or native binary publication is included.
+## Latest warm styling release
+
+The owner approved the menu structure and requested a warmer wedding appearance. The assistant deployed the ivory/champagne palette, warm actions, serif cards and restrained botanical detail through the installed gateway. [Exact-commit receipt](warm-deployment-success.json), [public verification](warm-public-release-checks.json), and [styling review with live screenshots](warm-styling.md) record the successful result. The prior application is preserved at `/var/www/wedding-market.before-20261019-214941`. This batch adds no database migration or native binary publication.
+
+The owner explicitly requested deployment by default. The earlier application release includes code correctness (`c8a07804`), profile/editing UX (`fdc1306f`), the responsive website header (`098a5508`) and the tested deployment helper/default (`830791d4`). No new database migration or native binary publication is included.
 
 ## Verified preparation
 
@@ -36,7 +40,7 @@ The sanitized result was collected and required the exact target commit with `ap
 
 ## Assistant-operated deployment setup
 
-The owner explicitly requested that the assistant perform future deployments directly and installed the checksum-pinned gateway. Its fixed sudo command, argument rejection and first assistant-operated deployment were independently verified. Synthetic Linux security/checkout/privilege tests and the exact sudoers rule check passed. See [the completed setup and release proof](direct-deployment-setup.md) and [operational instructions](../../deploy/remediation/README.md#direct-deployment-gateway). Live is `76a109e77368d11cc1554dd42bd806de9e288906`; the rollback path is `/var/www/wedding-market.before-20261019-213949`.
+The owner explicitly requested that the assistant perform future deployments directly and installed the checksum-pinned gateway. Its fixed sudo command, argument rejection and first assistant-operated deployment were independently verified. Synthetic Linux security/checkout/privilege tests and the exact sudoers rule check passed. See [the completed setup and release proof](direct-deployment-setup.md) and [operational instructions](../../deploy/remediation/README.md#direct-deployment-gateway). That first gateway release was `76a109e77368d11cc1554dd42bd806de9e288906`, with rollback at `/var/www/wedding-market.before-20261019-213949`; the latest release is recorded above.
 
 ## First attempt and correction
 
