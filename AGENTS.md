@@ -12,6 +12,7 @@ Read [docs/project-context.md](docs/project-context.md) when resuming this proje
 - Keep vendor fields and pricing appropriate to the service category.
 - Public advertisements and sponsored placements are intentionally disabled through `VENDOR_ADS_PUBLICLY_VISIBLE` in `lib/content/vendorAds.ts`. Keep that setting unless the user requests otherwise.
 - Preserve the unified client and vendor inboxes. The inquiry/proposal design document includes work that is already implemented.
+- The owner approved the header/menu layout but requested warmer wedding styling. Keep its navigation structure and favor ivory, champagne, warm brown, serif details and restrained botanical accents over a cold white/green appearance.
 
 ## Working in this repository
 

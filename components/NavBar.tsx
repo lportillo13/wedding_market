@@ -14,6 +14,7 @@ import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
 import HeaderSignOutButton from "./HeaderSignOutButton";
 import HeaderIcon from "./HeaderIcon";
 import HeaderLanguageSwitch from "./HeaderLanguageSwitch";
+import HeaderBotanicalAccent from "./HeaderBotanicalAccent";
 import VendorsMegaMenu, { type HeaderVendorCategory } from "./VendorsMegaMenu";
 
 type NavBarProps = {
@@ -242,6 +243,7 @@ export default function NavBar({
       >
         <div className="wm-mobile-navigation__shell">
           <div className="wm-mobile-navigation__top">
+            <HeaderBotanicalAccent />
             <Link href="/" className="wm-site-header__brand" onClick={close}>
               {brand}
             </Link>
@@ -358,7 +360,9 @@ export default function NavBar({
                 </Link>
               </div>
             </nav>
-            <div className="wm-mobile-navigation__account">
+            <div
+              className={`wm-mobile-navigation__account${authReady && !isAuthenticated ? " wm-mobile-navigation__account--guest" : ""}`}
+            >
               {!authReady ? (
                 <p role="status">{labels.loadingAccount}</p>
               ) : isAuthenticated ? (
