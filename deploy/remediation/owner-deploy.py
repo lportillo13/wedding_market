@@ -160,6 +160,12 @@ def main():
     config_dir.mkdir(parents=True, mode=0o700)
     config_dir.chmod(0o700)
     os.chown(config_dir, DEPLOY.pw_uid, DEPLOY.pw_gid)
+    deploy_bundle = config_dir / 'release.bundle'
+    shutil.copyfile(bundle, deploy_bundle)
+    os.chown(deploy_bundle, DEPLOY.pw_uid, DEPLOY.pw_gid)
+    deploy_bundle.chmod(0o600)
+    if digest(deploy_bundle) != manifest['bundleSha256']:
+        raise RuntimeError('Copied release bundle checksum mismatch.')
     runtime_config = config_dir / 'runtime.json'
     switched = False
     shadow = None
@@ -174,7 +180,7 @@ def main():
             git_config.write(output)
         os.chown(stage / '.git/config', DEPLOY.pw_uid, DEPLOY.pw_gid)
         (stage / '.git/config').chmod(0o600)
-        run(['git', 'fetch', str(bundle), 'refs/heads/codex/audit-remediation'], cwd=stage, env=env, as_deploy=True, log=build_log)
+        run(['git', 'fetch', str(deploy_bundle), 'refs/heads/codex/audit-remediation'], cwd=stage, env=env, as_deploy=True, log=build_log)
         run(['git', 'checkout', '-b', 'codex/audit-remediation', 'FETCH_HEAD'], cwd=stage, env=env, as_deploy=True, log=build_log)
         if run(['git', 'rev-parse', 'HEAD'], cwd=stage, as_deploy=True) != manifest['commit']:
             raise RuntimeError('Fetched release identity mismatch.')
