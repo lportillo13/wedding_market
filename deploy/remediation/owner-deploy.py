@@ -45,7 +45,7 @@ def private_write(path, data, uid=0, gid=0):
         Path(temporary).unlink(missing_ok=True)
 
 
-def run(args, *, cwd=None, env=None, as_deploy=False, log=None, input_data=None):
+def run(args, *, cwd=None, env=None, as_deploy=True, log=None, input_data=None):
     options = {'cwd': cwd, 'env': env}
     if as_deploy:
         options.update(user=DEPLOY.pw_uid, group=DEPLOY.pw_gid, extra_groups=[])
@@ -54,6 +54,24 @@ def run(args, *, cwd=None, env=None, as_deploy=False, log=None, input_data=None)
             subprocess.run(args, input=input_data, stdout=output, stderr=subprocess.STDOUT, check=True, **options)
         return ''
     return subprocess.check_output(args, input=input_data, stderr=subprocess.DEVNULL, **options).decode().rstrip('\n')
+
+
+def deploy_write(path, data):
+    """Never perform privileged writes through deploy-controlled directories."""
+    source = '''import os,sys,tempfile
+from pathlib import Path
+path=Path(sys.argv[1])
+descriptor,temporary=tempfile.mkstemp(prefix='.wm-private-',dir=path.parent)
+try:
+    with os.fdopen(descriptor,'wb') as output:
+        os.fchmod(output.fileno(),0o600)
+        output.write(sys.stdin.buffer.read())
+    os.replace(temporary,path)
+finally:
+    Path(temporary).unlink(missing_ok=True)
+'''
+    run(['/usr/bin/python3', '-I', '-c', source, str(path)], as_deploy=True,
+        input_data=data.encode() if isinstance(data, str) else data)
 
 
 def http(path, port=3001, method='GET'):
@@ -177,7 +195,7 @@ def main():
     if recorded_release and recorded_release != expected_base:
         raise RuntimeError('The running process and expected source revision disagree.')
     node = str(Path('/proc/%s/exe' % targets[0]['pid']).resolve())
-    major = int(run([node, '-p', 'process.versions.node.split(".")[0]']))
+    major = int(run([node, '-p', 'process.versions.node.split(".")[0]'], as_deploy=True))
     if major not in (22, 24):
         raise RuntimeError('Use the supported production Node runtime.')
     stamp = time.strftime('%Y%m%d-%H%M%S', time.gmtime())
@@ -207,17 +225,11 @@ def main():
     runtime_parent = Path('/home/deploy/.wm-remediation-runtime')
     if runtime_parent.is_symlink():
         raise RuntimeError('Unexpected symlink for the runtime configuration parent.')
-    runtime_parent.mkdir(exist_ok=True, mode=0o700)
-    runtime_parent.chmod(0o700)
-    os.chown(runtime_parent, DEPLOY.pw_uid, DEPLOY.pw_gid)
+    run(['/usr/bin/install', '-d', '-m', '700', str(runtime_parent)], as_deploy=True)
     config_dir = runtime_parent / stamp
-    config_dir.mkdir(mode=0o700)
-    config_dir.chmod(0o700)
-    os.chown(config_dir, DEPLOY.pw_uid, DEPLOY.pw_gid)
+    run(['/usr/bin/install', '-d', '-m', '700', str(config_dir)], as_deploy=True)
     deploy_bundle = config_dir / 'release.bundle'
-    shutil.copyfile(bundle, deploy_bundle)
-    os.chown(deploy_bundle, DEPLOY.pw_uid, DEPLOY.pw_gid)
-    deploy_bundle.chmod(0o600)
+    deploy_write(deploy_bundle, bundle.read_bytes())
     if digest(deploy_bundle) != manifest['bundleSha256']:
         raise RuntimeError('Copied release bundle checksum mismatch.')
     runtime_config = config_dir / 'runtime.json'
@@ -247,7 +259,7 @@ os.chmod('.git/config',0o600)
                              R2_LEGACY_PUBLIC_BASE_URL=legacy, NEXT_PUBLIC_R2_LEGACY_PUBLIC_BASE_URL=legacy)
         env.update(overrides)
         new_env = original_env + ('\n# Reviewed remediation overrides\n' + ''.join('%s=%s\n' % item for item in overrides.items()) if overrides else '')
-        private_write(stage / '.env.production.local', new_env, DEPLOY.pw_uid, DEPLOY.pw_gid)
+        deploy_write(stage / '.env.production.local', new_env)
         summary['step'] = 'install build dependencies'
         run(['nice', '-n', '10', 'npm', 'ci', '--include=dev', '--no-fund', '--no-audit'], cwd=stage, env=env, as_deploy=True, log=build_log)
         summary['step'] = 'build production application'
@@ -258,7 +270,7 @@ os.chmod('.git/config',0o600)
         run(['mkdir', '-p', str(standalone / 'public'), str(standalone / '.next/static')], as_deploy=True)
         run(['cp', '-a', str(stage / 'public') + '/.', str(standalone / 'public')], as_deploy=True)
         run(['cp', '-a', str(stage / '.next/static') + '/.', str(standalone / '.next/static')], as_deploy=True)
-        private_write(standalone / '.env.production.local', new_env, DEPLOY.pw_uid, DEPLOY.pw_gid)
+        deploy_write(standalone / '.env.production.local', new_env)
         with socket.socket() as check:
             check.bind(('127.0.0.1', 3012))
         with (private / 'shadow.log').open('wb') as output:
@@ -277,7 +289,7 @@ os.chmod('.git/config',0o600)
                                'cwd': str(APP / '.next/standalone'), 'interpreter': node,
                                'env': dict(env, PORT='3001', HOSTNAME='127.0.0.1', WM_RELEASE_COMMIT=manifest['commit']),
                                'max_memory_restart': '1500M', 'restart_delay': 3000, 'kill_timeout': 5000}]}
-        private_write(runtime_config, json.dumps(new_config), DEPLOY.pw_uid, DEPLOY.pw_gid)
+        deploy_write(runtime_config, json.dumps(new_config))
         summary['step'] = 'switch Wedding Market process'
         APP.rename(old_backup)
         APP.symlink_to(stage, target_is_directory=True)
@@ -287,7 +299,7 @@ os.chmod('.git/config',0o600)
         summary['liveChecks'] = probes(3001, required_markup)
         run(['pm2', 'save', '--force'], env=deploy_env, as_deploy=True, log=build_log)
         dump = Path('/home/deploy/.pm2/dump.pm2')
-        if dump.exists(): dump.chmod(0o600)
+        if dump.exists(): run(['/usr/bin/chmod', '600', str(dump)], as_deploy=True)
         summary['applicationDeployed'] = True
         summary['step'] = 'complete'
         print('Wedding Market deployed and probed. The full prior checkout is preserved for rollback.', flush=True)
@@ -305,7 +317,7 @@ os.chmod('.git/config',0o600)
             APP.unlink()
             old_backup.rename(APP)
             rollback = config_dir / 'rollback.json'
-            private_write(rollback, json.dumps(old_config), DEPLOY.pw_uid, DEPLOY.pw_gid)
+            deploy_write(rollback, json.dumps(old_config))
             run(['pm2', 'start', str(rollback), '--only', 'wedding-market'], env=deploy_env, as_deploy=True, log=build_log)
             run(['pm2', 'save', '--force'], env=deploy_env, as_deploy=True, log=build_log)
             summary['rolledBack'] = True

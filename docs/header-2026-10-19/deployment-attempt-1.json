@@ -1,0 +1,8 @@
+{
+  "releaseCommit": "830791d453946d33db722338c3dbcb0999625cbb",
+  "applicationDeployed": false,
+  "rollbackCopy": "/var/www/wedding-market.before-20261019-212501",
+  "step": "clone reviewed source",
+  "error": "CalledProcessError",
+  "privateLogDirectory": "/var/backups/wedding-market-deploy/20261019-212501"
+}

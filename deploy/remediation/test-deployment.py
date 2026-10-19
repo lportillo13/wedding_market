@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import subprocess
 import tempfile
+from types import SimpleNamespace
 from unittest.mock import patch
 
 spec = importlib.util.spec_from_file_location('wm_deploy', Path(__file__).with_name('owner-deploy.py'))
@@ -104,3 +105,33 @@ with tempfile.TemporaryDirectory(prefix='wm-release-git-tests-') as folder:
     assert (production / 'synthetic.txt').read_text() == 'baseline'
 
 print('PASS: an incremental release replaces the existing branch only in the new clone and leaves production source unchanged.')
+
+with tempfile.TemporaryDirectory(prefix='wm-release-private-write-') as folder:
+    root = Path(folder)
+    victim = root / 'preserved'
+    victim.write_text('preserved')
+    destination = root / 'runtime.json'
+    destination.symlink_to(victim)
+    calls = []
+
+    def own_process(args, **kwargs):
+        assert kwargs['as_deploy'] is True
+        calls.append(args)
+        return subprocess.check_output(args, input=kwargs['input_data'], stderr=subprocess.DEVNULL).decode()
+
+    with patch.object(deployment, 'run', side_effect=own_process):
+        deployment.deploy_write(destination, 'synthetic-private-config')
+    assert victim.read_text() == 'preserved'
+    assert not destination.is_symlink()
+    assert destination.read_text() == 'synthetic-private-config'
+    assert destination.stat().st_mode & 0o777 == 0o600
+    assert 'synthetic-private-config' not in ' '.join(calls[0])
+
+with patch.object(deployment, 'DEPLOY', SimpleNamespace(pw_uid=12345, pw_gid=12345)), \
+     patch.object(subprocess, 'check_output', return_value=b'') as child:
+    deployment.run(['/usr/bin/true'])
+    assert child.call_args.kwargs['user'] == 12345
+    assert child.call_args.kwargs['group'] == 12345
+    assert child.call_args.kwargs['extra_groups'] == []
+
+print('PASS: subprocesses drop privileges by default; private config writes use stdin as deploy, replace symlinks and preserve unrelated targets.')

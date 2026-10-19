@@ -1,6 +1,6 @@
 # Website header and mobile navigation — October 19, 2026
 
-The owner requested a better mobile menu and header. This batch updates the responsive website; it does not change the native Expo navigation. It remains local on `codex/audit-remediation`. Live remains release `60cbcb50`, alongside the two earlier undeployed code and profile UX batches.
+The owner requested a better mobile menu and header. This batch updates the responsive website; it does not change the native Expo navigation. The website and earlier code/profile UX batches were subsequently deployed successfully as `2f0a556d`. See [the verified deployment receipt](deployment.md); native app binaries have not been republished.
 
 ## Behavior
 
@@ -29,4 +29,4 @@ The local Supabase endpoint is offline. Real signed-in sessions, notification de
 - [Desktop header, English](desktop-header-en.png)
 - [Desktop vendor navigation, English](desktop-vendors-en.png)
 
-No deployment, production content change or native app release was performed.
+The initial UX implementation made no production content writes. The later website rollout is recorded in the deployment receipt. No native app release was performed.
