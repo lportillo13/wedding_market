@@ -2,32 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-export type VendorSummary = {
-  id: string;
-  slug: string | null;
-  business_name: string;
-  categories?: string[] | null;
-};
-
-type VendorsResponse = {
-  items?: VendorSummary[];
-  error?: string;
-};
-
-async function fetchVendorSummaries(ids: string[], signal: AbortSignal): Promise<VendorSummary[]> {
-  const searchParams = new URLSearchParams({ ids: ids.join(",") });
-  const response = await fetch(`/api/vendors/by-ids?${searchParams.toString()}`, { signal });
-  if (!response.ok) {
-    throw new Error(`Failed to load vendors (${response.status})`);
-  }
-
-  const json = (await response.json()) as VendorsResponse;
-  if (json.error) {
-    throw new Error(json.error);
-  }
-
-  return json.items ?? [];
-}
+import { fetchVendorSummaries, type VendorSummary } from "@/lib/vendor-summaries";
+export type { VendorSummary } from "@/lib/vendor-summaries";
 
 export function useVendorSummaries(ids: string[]) {
   const [vendorsById, setVendorsById] = useState<Record<string, VendorSummary>>({});

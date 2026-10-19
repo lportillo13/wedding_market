@@ -34,7 +34,8 @@ export async function sendMobilePushNotification(
     .eq("is_active", true)
     .order("last_seen_at", { ascending: false })
     .limit(10)
-    .returns<PushTokenRow[]>();
+    .returns<PushTokenRow[]>()
+    .abortSignal(AbortSignal.timeout(5000));
 
   if (error) {
     if (!isMissingPushTokenTableError(error.message)) {
@@ -73,7 +74,7 @@ export async function sendMobilePushNotification(
     });
 
     if (!response.ok) {
-      console.warn("Expo push request failed", response.status, await response.text());
+      console.warn("Expo push request failed", response.status);
     }
   } catch (error) {
     console.warn("Expo push request failed", error instanceof Error ? error.message : String(error));

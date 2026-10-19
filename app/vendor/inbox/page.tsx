@@ -1,3 +1,4 @@
+import { formatCalendarDate } from "@/lib/calendar-date";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import AutocompleteInput from "@/components/search/AutocompleteInput";
@@ -216,7 +217,7 @@ export default async function VendorInboxPage({
               const location =
                 [item.rfq?.city, item.rfq?.state, item.rfq?.country].filter(Boolean).join(", ") || labels.untitledLocation;
               const eventDate = item.rfq?.event_date
-                ? new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(item.rfq.event_date))
+                ? formatCalendarDate(item.rfq.event_date, locale) ?? labels.dateTbd
                 : labels.dateTbd;
               const guestCount =
                 typeof item.rfq?.guest_count === "number"

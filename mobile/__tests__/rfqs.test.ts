@@ -46,6 +46,10 @@ describe("mobile quote helpers", () => {
     ["0", null],
     ["12.345", null],
     ["not a number", null],
+    ["-99", null],
+    ["1,25", null],
+    ["21474836.47", 2147483647],
+    ["21474836.48", null],
   ])("parses quote amount %s", (value, expected) => {
     expect(parseQuoteAmountCents(value)).toBe(expected);
   });

@@ -5,14 +5,10 @@ import { revalidatePath } from "next/cache";
 import { buildThreadKey, markVendorThreadViewed, parseThreadKey } from "@/lib/inbox";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
-import { createQuoteAnsweredNotification } from "@/lib/notifications";
-import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
+import { parseQuoteAmountCents } from "@/lib/quotes/input";
+import { submitVendorQuote } from "@/lib/quotes/submit";
 
 export type SendQuoteState = { ok: boolean; message?: string };
-
-function isMissingThreadColumnsError(message: string | undefined) {
-  return /last_activity_at|viewed_at|client_last_read_at|vendor_last_read_at|closed_at|closed_reason/i.test(message ?? "");
-}
 
 function getThreadKeys(formData: FormData) {
   const onlyThreadKey = formData.get("onlyThreadKey")?.toString();
@@ -145,147 +141,24 @@ export async function restoreVendorInboxThreads(formData: FormData) {
 
 export async function sendQuote(_: SendQuoteState, form: FormData): Promise<SendQuoteState> {
   const supabase = await getSupabaseServer();
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error || !user) return { ok: false, message: "Not authenticated." };
 
-  const {
-    data: { user },
-    error: userErr,
-  } = await supabase.auth.getUser();
-  if (userErr || !user) return { ok: false, message: "Not authenticated." };
+  const rfqId = String(form.get("rfq_id") ?? "");
+  const vendorId = String(form.get("vendor_id") ?? "");
+  const result = await submitVendorQuote(supabase, user.id, {
+    rfqId,
+    vendorId,
+    amountCents: parseQuoteAmountCents(String(form.get("amount_usd") ?? "")),
+    message: String(form.get("message") ?? "").trim() || null,
+  });
+  if (!result.ok) return { ok: false, message: result.message };
 
-  const uidArg = { _uid: user.id } satisfies { _uid: string };
-  const { data: isVendor, error: roleErr } = await supabase.rpc("is_vendor", uidArg);
-  if (roleErr) return { ok: false, message: roleErr.message };
-  if (!isVendor) return { ok: false, message: "Vendor access required." };
-
-  const rfq_id = form.get("rfq_id")?.toString();
-  const vendor_id = form.get("vendor_id")?.toString();
-  const amount_usd = form.get("amount_usd")?.toString();
-  const message = form.get("message")?.toString().trim() || null;
-
-  if (!rfq_id || !vendor_id) return { ok: false, message: "Missing request or vendor." };
-  if (message && message.length > 2000) {
-    return { ok: false, message: "Proposal details must be 2,000 characters or fewer." };
-  }
-
-  const { data: vendor, error: vendorErr } = await supabase
-    .from("vendors")
-    .select("id, business_name")
-    .eq("id", vendor_id)
-    .eq("owner_id", user.id)
-    .maybeSingle();
-
-  if (vendorErr) return { ok: false, message: vendorErr.message };
-  if (!vendor) return { ok: false, message: "You don't own this vendor." };
-
-  const readInvite = (client: typeof supabase) =>
-    client
-      .from("rfq_invites")
-      .select("rfq_id, vendor_id, status, expires_at")
-      .eq("rfq_id", rfq_id)
-      .eq("vendor_id", vendor_id)
-      .maybeSingle();
-
-  const { data: invite, error: inviteErr } = await readInvite(supabase);
-
-  if (inviteErr) return { ok: false, message: inviteErr.message };
-  if (!invite) return { ok: false, message: "Request not found." };
-  const inviteStatus = invite.status?.trim().toLowerCase();
-  if (
-    inviteStatus === "declined" ||
-    inviteStatus === "expired" ||
-    (invite.expires_at && new Date(invite.expires_at).getTime() < Date.now())
-  ) {
-    return { ok: false, message: "This quote request is closed or expired." };
-  }
-
-  const selectRfq = (client: typeof supabase, column: OwnerColumn) =>
-    client
-      .from("rfqs_visible")
-      .select(column === "owner_id" ? "accepted_quote_id, owner_id" : "accepted_quote_id, owner_id:owner_uuid")
-      .eq("id", rfq_id)
-      .maybeSingle();
-
-  let ownerColumn: OwnerColumn = "owner_id";
-  let { data: rfq, error: rfqErr } = await selectRfq(supabase, ownerColumn);
-
-  if (isMissingOwnerColumnError(rfqErr, ownerColumn)) {
-    ownerColumn = "owner_uuid";
-    const retry = await selectRfq(supabase, ownerColumn);
-    rfq = retry.data;
-    rfqErr = retry.error;
-  }
-
-  if (rfqErr) return { ok: false, message: rfqErr.message };
-  if (!rfq) return { ok: false, message: "Request not found." };
-  if (rfq.accepted_quote_id) return { ok: false, message: "This request is already accepted." };
-
-  const dollars = Number((amount_usd ?? "").replace(/[^0-9.]/g, ""));
-  if (!isFinite(dollars) || dollars <= 0) return { ok: false, message: "Invalid amount." };
-  const amount_cents = Math.round(dollars * 100);
-
-  const { data: insertedQuote, error: qErr } = await supabase.from("quotes")
-    .insert([{rfq_id,vendor_id,amount_cents,currency:"USD",message}]).select("id,version").single<{id:string;version:number}>();
-  if (qErr || !insertedQuote) return {ok:false,message:qErr?.message ?? "Unable to send quote."};
-  const quoteId=insertedQuote.id;
-  const isUpdate=insertedQuote.version>1;
-
-  const inviteUpdatePayload = {
-    status: "responded",
-    last_activity_at: new Date().toISOString(),
-    vendor_last_read_at: new Date().toISOString(),
-  };
-
-  let { error: inviteUpdateErr } = await supabase
-    .from("rfq_invites")
-    .update(inviteUpdatePayload)
-    .eq("rfq_id", rfq_id)
-    .eq("vendor_id", vendor_id);
-
-  if (inviteUpdateErr && isMissingThreadColumnsError(inviteUpdateErr.message)) {
-    const fallback = await supabase
-      .from("rfq_invites")
-      .update({ status: "responded" })
-      .eq("rfq_id", rfq_id)
-      .eq("vendor_id", vendor_id);
-    inviteUpdateErr = fallback.error;
-
-  }
-
-  // The quote is already persisted at this point. Reporting a failure would
-  // encourage the vendor to retry and create an accidental extra version.
-  if (inviteUpdateErr && process.env.NODE_ENV !== "production") {
-    console.warn("Quote sent but invite activity was not updated", inviteUpdateErr.message);
-  }
-
-  if (rfq.owner_id && quoteId) {
-    const notificationClient = supabase;
-    const { error: notificationErr } = await createQuoteAnsweredNotification(notificationClient, {
-      recipientId: rfq.owner_id,
-      actorId: user.id,
-      rfqId: rfq_id,
-      quoteId,
-      vendorId: vendor_id,
-      vendorName: vendor.business_name ?? null,
-      amountCents: amount_cents,
-      isUpdate,
-    });
-
-    if (notificationErr && process.env.NODE_ENV !== "production") {
-      console.warn("Failed to create notification", notificationErr.message);
-    }
-  }
-
-  const threadKey = buildThreadKey(rfq_id, vendor_id);
-
-  revalidatePath("/account/notifications");
-  revalidatePath("/account/inbox");
-  revalidatePath(`/account/inbox/${encodeURIComponent(threadKey)}`);
-  revalidatePath(`/account/rfqs/${rfq_id}`);
-  revalidatePath("/account/quotes");
-  revalidatePath("/vendor/inbox");
-  revalidatePath(`/vendor/inbox/${encodeURIComponent(threadKey)}`);
-  revalidatePath("/vendor/quotes");
-  revalidatePath("/vendor/rfqs");
-
+  const threadKey = buildThreadKey(rfqId, vendorId);
+  for (const path of [
+    "/account/notifications", "/account/inbox", `/account/inbox/${encodeURIComponent(threadKey)}`,
+    `/account/rfqs/${rfqId}`, "/account/quotes", "/vendor/inbox",
+    `/vendor/inbox/${encodeURIComponent(threadKey)}`, "/vendor/quotes", "/vendor/rfqs",
+  ]) revalidatePath(path);
   return { ok: true };
 }

@@ -13,12 +13,13 @@ export async function createAuthenticatedRequestClient(request: Request): Promis
 
   // Native requests do not have the web session cookie. Prefer their bearer
   // token immediately and always attach the Supabase API key alongside it.
-  if (authorization?.startsWith("Bearer ") && url && publicKey) {
+  const bearer = authorization?.match(/^Bearer\s+(\S+)$/i);
+  if (bearer && url && publicKey) {
     return createClient(url, publicKey, {
       global: {
         headers: {
           apikey: publicKey,
-          Authorization: authorization,
+          Authorization: `Bearer ${bearer[1]}`,
         },
       },
       auth: {
@@ -28,14 +29,6 @@ export async function createAuthenticatedRequestClient(request: Request): Promis
     });
   }
 
-  const cookieClient = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await cookieClient.auth.getUser();
-
-  if (user) {
-    return cookieClient;
-  }
-
-  return cookieClient;
+  // The caller validates getUser once. Creating a client does not authenticate it.
+  return createSupabaseServerClient();
 }

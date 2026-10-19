@@ -4,7 +4,10 @@ const KEY = "wm_shortlist_v1";
 
 function read(): string[] {
   try {
-    return JSON.parse(localStorage.getItem(KEY) || "[]");
+    const parsed: unknown = JSON.parse(localStorage.getItem(KEY) || "[]");
+    return Array.isArray(parsed)
+      ? [...new Set(parsed.filter((id): id is string => typeof id === "string" && Boolean(id.trim())).map((id) => id.trim()))]
+      : [];
   } catch {
     return [];
   }
@@ -19,5 +22,4 @@ export function addToShortlist(id: string) { write([...read(), id]); window.disp
 export function removeFromShortlist(id: string) { write(read().filter(x => x !== id)); window.dispatchEvent(new Event("wm-shortlist-changed")); }
 export function clearShortlist() { write([]); window.dispatchEvent(new Event("wm-shortlist-changed")); }
 
-// ✅ add this export
 export function getShortlistCount(): number { return read().length; }

@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { formatCalendarDate } from "@/lib/calendar-date";
 import QuoteConversation from "@/components/quotes/QuoteConversation";
 import QuoteReplyForm from "@/components/quotes/QuoteReplyForm";
 import QuoteForm from "../inbox/QuoteForm";
 import { sendVendorQuoteReply } from "@/app/quote-replies/actions";
-import { useTranslation } from "@/contexts/LanguageContext";
+import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
 import type { VendorRfqsItem } from "./types";
 
 type Props = {
@@ -45,6 +46,7 @@ function resolveStatus(inviteStatus: string | null | undefined, hasAcceptedQuote
 
 export default function VendorRfqsView({ hasVendorProfile, items, vendorId, vendorName }: Props) {
   const t = useTranslation();
+  const { language } = useLanguage();
 
   if (!hasVendorProfile) {
     return (
@@ -93,7 +95,7 @@ export default function VendorRfqsView({ hasVendorProfile, items, vendorId, vend
                       <div className="text-secondary small mb-3">
                         {rfq?.city || "-"}, {rfq?.state || "-"}, {rfq?.country || "-"} ·{" "}
                         {rfq?.event_date
-                          ? new Date(rfq.event_date).toLocaleDateString()
+                          ? formatCalendarDate(rfq.event_date, language === "es" ? "es-CR" : "en-US") ?? t("vendorRfqs.eventDateTbd")
                           : t("vendorRfqs.eventDateTbd")}
                         {" "}·{" "}
                         {guestLabel}

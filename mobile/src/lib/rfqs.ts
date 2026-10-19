@@ -1,6 +1,7 @@
 import { supabase } from "./supabase";
 import { mobileConfig } from "./config";
 import { requestJson } from "./http";
+import { formatCalendarDate } from "./calendarDate";
 import { buildQuoteVendorSelection, matchInboxInvitesToRfqs, parseQuoteAmountCents } from "./quoteUtils";
 
 export type QuoteRequestInput = {
@@ -96,8 +97,12 @@ function isMissingQuoteMessagesTable(message: string | undefined) {
 }
 
 function formatThreadDate(value: string | null | undefined, language: "en" | "es" = "en") {
-  if (!value) return "No date yet";
-  return new Date(value).toLocaleDateString(language === "es" ? "es" : "en-US");
+  const fallback = language === "es" ? "Sin fecha aún" : "No date yet";
+  if (!value) return fallback;
+  const locale = language === "es" ? "es" : "en-US";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return formatCalendarDate(value, locale) ?? fallback;
+  const date = new Date(value);
+  return Number.isFinite(date.getTime()) ? date.toLocaleDateString(locale) : fallback;
 }
 
 function timestamp(value: string | null | undefined) {

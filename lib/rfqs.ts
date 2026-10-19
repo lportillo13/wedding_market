@@ -1,4 +1,5 @@
 import { fillTemplate, getLanguageLocale, type CommonDictionary, type SupportedLanguage } from "@/lib/i18n";
+import { formatCalendarDate } from "@/lib/calendar-date";
 
 type RfqDisplayInput = {
   city?: string | null;
@@ -17,9 +18,7 @@ function joinLocation(parts: Array<string | null | undefined>) {
 }
 
 function formatRfqDate(eventDate: string, language: SupportedLanguage) {
-  return new Intl.DateTimeFormat(getLanguageLocale(language), {
-    dateStyle: "medium",
-  }).format(new Date(eventDate));
+  return formatCalendarDate(eventDate, getLanguageLocale(language));
 }
 
 export function formatRfqTitle(
@@ -38,8 +37,9 @@ export function formatRfqTitle(
     return fillTemplate(labels.formatting.titleInLocation, { location: primaryLocation });
   }
 
-  if (eventDate) {
-    return fillTemplate(labels.formatting.titleForDate, { date: formatRfqDate(eventDate, language) });
+  const formattedDate = eventDate ? formatRfqDate(eventDate, language) : null;
+  if (formattedDate) {
+    return fillTemplate(labels.formatting.titleForDate, { date: formattedDate });
   }
 
   return labels.formatting.titleFallback;
@@ -51,6 +51,6 @@ export function formatRfqMeta(
   language: SupportedLanguage
 ) {
   const location = joinLocation([city, state, country]) || labels.formatting.locationTbd;
-  const date = eventDate ? formatRfqDate(eventDate, language) : labels.dateTbd;
+  const date = (eventDate ? formatRfqDate(eventDate, language) : null) ?? labels.dateTbd;
   return `${location} · ${date}`;
 }

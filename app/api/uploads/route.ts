@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
-import { createClient } from "@supabase/supabase-js";
 import { requireAdminUser } from "@/lib/admin/requireAdmin";
 import { parseMediaAsset } from "@/lib/images";
 
@@ -13,7 +11,7 @@ import {
   validateVideoUpload,
 } from "@/lib/media-processing";
 import { deleteFromR2, getOwnedR2ObjectKey, isR2Configured, uploadToR2 } from "@/lib/r2";
-import { getSupabaseServer } from "@/lib/supabase/server";
+import { createAuthenticatedRequestClient } from "@/lib/supabase/request";
 import { readUploadForm, reserveUpload, UploadLimitError } from "@/lib/upload-limits";
 import type { MediaAsset } from "@/types/images";
 
@@ -22,59 +20,14 @@ type UploadFormData = {
   getAll(name: string): FormDataEntryValue[];
 };
 
-async function requireUser() {
-  const supabase = await getSupabaseServer();
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
-
-  if (!error && user) {
-    return { supabase, user };
-  }
-
-  const authorization = await headersSafeAuthorization();
-  if (!authorization) {
-    return { supabase, user: null };
-  }
-
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !anonKey) {
-    return { supabase, user: null };
-  }
-
-  const bearerClient = createClient(url, anonKey, {
-    global: {
-      headers: {
-        Authorization: authorization,
-      },
-    },
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  });
-
-  const {
-    data: { user: bearerUser },
-  } = await bearerClient.auth.getUser();
-
-  return { supabase: bearerClient, user: bearerUser ?? null };
+async function requireUser(request: Request) {
+  const supabase = await createAuthenticatedRequestClient(request);
+  const { data: { user }, error } = await supabase.auth.getUser();
+  return { supabase, user: error ? null : user };
 }
 
-async function headersSafeAuthorization() {
-  try {
-    const requestHeaders = await headers();
-    const authorization = requestHeaders.get("authorization");
-    return authorization?.startsWith("Bearer ") ? authorization : null;
-  } catch {
-    return null;
-  }
-}
-
-async function requireVendor() {
-  const { supabase, user } = await requireUser();
+async function requireVendor(auth: Awaited<ReturnType<typeof requireUser>>) {
+  const { supabase, user } = auth;
   if (!user) {
     return { supabase, user: null, vendor: null, error: "Not authenticated." } as const;
   }
@@ -154,8 +107,8 @@ export async function POST(request: Request) {
   }
 
   // Authenticate before reading or buffering multipart data.
-  const { user: authenticatedUser } = await requireUser();
-  if (!authenticatedUser) return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
+  const auth = await requireUser(request);
+  if (!auth.user) return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
   let release: (() => void) | undefined;
   try {
     release = reserveUpload();
@@ -163,7 +116,7 @@ export async function POST(request: Request) {
     const target = String(formData.get("target") ?? "").trim();
     if (!target) return NextResponse.json({ error: "Missing upload target." }, { status: 400 });
     if (target === "client-avatar") {
-      const { supabase, user } = await requireUser();
+      const { supabase, user } = auth;
       if (!user) {
         return NextResponse.json({ error: "You must be logged in to upload an avatar." }, { status: 401 });
       }
@@ -199,7 +152,7 @@ export async function POST(request: Request) {
     }
 
     if (target === "vendor-logo") {
-      const { supabase, user, vendor, error } = await requireVendor();
+      const { supabase, user, vendor, error } = await requireVendor(auth);
       if (error || !vendor || !user) {
         return NextResponse.json({ error: error ?? "Vendor profile not found." }, { status: 401 });
       }
@@ -237,7 +190,7 @@ export async function POST(request: Request) {
     }
 
     if (target === "vendor-team-headshot") {
-      const { user, vendor, error } = await requireVendor();
+      const { user, vendor, error } = await requireVendor(auth);
       if (error || !vendor || !user) {
         return NextResponse.json({ error: error ?? "Vendor profile not found." }, { status: 401 });
       }
@@ -260,7 +213,7 @@ export async function POST(request: Request) {
     }
 
     if (target === "vendor-hero" || target === "vendor-thumbnail") {
-      const { supabase, user, vendor, error } = await requireVendor();
+      const { supabase, user, vendor, error } = await requireVendor(auth);
       if (error || !vendor || !user) {
         return NextResponse.json({ error: error ?? "Vendor profile not found." }, { status: 401 });
       }
@@ -297,7 +250,7 @@ export async function POST(request: Request) {
     }
 
     if (target === "vendor-gallery" || target === "vendor-video") {
-      const { supabase, user, vendor, error } = await requireVendor();
+      const { supabase, user, vendor, error } = await requireVendor(auth);
       if (error || !vendor || !user) {
         return NextResponse.json({ error: error ?? "Vendor profile not found." }, { status: 401 });
       }

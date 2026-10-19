@@ -1,3 +1,4 @@
+import { formatCalendarDate } from "@/lib/calendar-date";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { sendVendorQuoteReply } from "@/app/quote-replies/actions";
@@ -94,7 +95,7 @@ export default async function VendorInboxThreadPage({
           <div className="text-secondary">
             {location} ·{" "}
             {detail.rfq.event_date
-              ? new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(detail.rfq.event_date))
+              ? formatCalendarDate(detail.rfq.event_date, locale) ?? labels.dateTbd
               : labels.dateTbd}
           </div>
         </div>

@@ -10,10 +10,12 @@ export function matchInboxInvitesToRfqs<
 }
 
 export function parseQuoteAmountCents(value: string) {
-  const normalized = value.trim().replace(/[$,\s]/g, "");
-  if (!/^\d+(?:\.\d{1,2})?$/.test(normalized)) return null;
-  const cents = Math.round(Number(normalized) * 100);
-  return Number.isSafeInteger(cents) && cents > 0 ? cents : null;
+  const normalized = value.trim().replace(/^\$\s*/, "");
+  if (!/^(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d{1,2})?$/.test(normalized)) return null;
+  const [whole, fraction = ""] = normalized.replace(/,/g, "").split(".");
+  const cents = Number(whole) * 100 + Number(fraction.padEnd(2, "0"));
+  // Match the PostgreSQL integer column and server-side quote validation.
+  return Number.isSafeInteger(cents) && cents > 0 && cents <= 2_147_483_647 ? cents : null;
 }
 
 export function buildQuoteVendorSelection(vendorIds: string[], maxVendors = 10) {

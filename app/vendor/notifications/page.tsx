@@ -1,3 +1,4 @@
+import { formatCalendarDate } from "@/lib/calendar-date";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
@@ -160,7 +161,7 @@ export default async function VendorNotificationsPage({
                   ? [
                       locationLabel,
                       requestData.eventDate
-                        ? new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(new Date(requestData.eventDate))
+                        ? formatCalendarDate(requestData.eventDate, "en-US")
                         : null,
                     ]
                       .filter(Boolean)

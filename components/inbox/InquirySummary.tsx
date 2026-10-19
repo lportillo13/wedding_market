@@ -1,3 +1,4 @@
+import { formatCalendarDate } from "@/lib/calendar-date";
 import type { InboxRfqRow } from "@/lib/inbox";
 
 type InquirySummaryProps = {
@@ -76,7 +77,7 @@ export default function InquirySummary({
       };
   const location = [rfq.city, rfq.state, rfq.country].filter(Boolean).join(", ") || locationTbd;
   const date = rfq.event_date
-    ? new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(`${rfq.event_date}T00:00:00`))
+    ? formatCalendarDate(rfq.event_date, locale) ?? eventDateTbd
     : eventDateTbd;
   const guests = typeof rfq.guest_count === "number"
     ? String(rfq.guest_count)

@@ -1,9 +1,7 @@
-import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { createAuthenticatedRequestClient } from "@/lib/supabase/request";
 
 const registerSchema = z.object({
   token: z.string().min(1),
@@ -16,7 +14,7 @@ const unregisterSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const supabase = await createRequestSupabaseClient();
+  const supabase = await createAuthenticatedRequestClient(request);
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -62,7 +60,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const supabase = await createRequestSupabaseClient();
+  const supabase = await createAuthenticatedRequestClient(request);
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -95,44 +93,4 @@ export async function DELETE(request: Request) {
   }
 
   return NextResponse.json({ ok: true });
-}
-
-async function createRequestSupabaseClient() {
-  const cookieClient = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await cookieClient.auth.getUser();
-
-  if (user) {
-    return cookieClient;
-  }
-
-  const authorization = await readBearerAuthorization();
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!authorization || !url || !anonKey) {
-    return cookieClient;
-  }
-
-  return createClient(url, anonKey, {
-    global: {
-      headers: {
-        Authorization: authorization,
-      },
-    },
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  });
-}
-
-async function readBearerAuthorization() {
-  try {
-    const requestHeaders = await headers();
-    const authorization = requestHeaders.get("authorization");
-    return authorization?.startsWith("Bearer ") ? authorization : null;
-  } catch {
-    return null;
-  }
 }

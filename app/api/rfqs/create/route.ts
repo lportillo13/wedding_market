@@ -5,6 +5,7 @@ import { createVendorNewRequestNotification } from "@/lib/notifications";
 
 import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 import { createAuthenticatedRequestClient } from "@/lib/supabase/request";
+import { parseCalendarDate } from "@/lib/calendar-date";
 
 const payloadSchema = z.object({
   rfq_id: z.string().uuid().optional().nullable(),
@@ -25,7 +26,7 @@ const payloadSchema = z.object({
   language: z.string().optional().nullable(),
   theme: z.string().optional().nullable(),
   message: z.string().trim().min(1).max(2000),
-  event_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().nullable(),
+  event_date: z.string().refine((value) => parseCalendarDate(value) !== null).optional().nullable(),
   flexible: z.boolean().optional(),
 })
   .refine((input) => Boolean(input.vendor_id) || Boolean(input.vendor_ids?.length), {
@@ -52,6 +53,11 @@ const QUOTE_EXPIRES_DAYS = 14;
 
 export async function POST(request: Request) {
   const supabase = await createAuthenticatedRequestClient(request);
+  const { data: authData } = await supabase.auth.getUser();
+  const user = authData?.user ?? null;
+  if (!user) {
+    return NextResponse.json({ ok: false, message: "Please log in to send a request." }, { status: 401 });
+  }
 
   let json: unknown;
   try {
@@ -68,13 +74,6 @@ export async function POST(request: Request) {
   const input = parsed.data;
   const vendorIds = Array.from(new Set([...(input.vendor_ids ?? []), ...(input.vendor_id ? [input.vendor_id] : [])]));
   const isMultiQuote = vendorIds.length > 1;
-  const { data: authData } = await supabase.auth.getUser();
-  const user = authData?.user ?? null;
-
-  if (!user) {
-    return NextResponse.json({ ok: false, message: "Please log in to send a request." }, { status: 401 });
-  }
-
   const eventDate = input.event_date ?? null;
   const singleBudget = input.budget ?? null;
 

@@ -1,3 +1,4 @@
+import { formatCalendarDate } from "@/lib/calendar-date";
 import Link from "next/link";
 import AutocompleteInput from "@/components/search/AutocompleteInput";
 import ThreadOpenLink from "@/components/inbox/ThreadOpenLink";
@@ -230,7 +231,7 @@ export default async function AccountInboxPage({
               const location =
                 [item.rfq?.city, item.rfq?.state, item.rfq?.country].filter(Boolean).join(", ") || labels.locationTbd;
               const eventDate = item.rfq?.event_date
-                ? new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(item.rfq.event_date))
+                ? formatCalendarDate(item.rfq.event_date, locale) ?? labels.dateTbd
                 : labels.dateTbd;
               const preview = trimPreview(item.latestQuote?.message) ?? labels.notesFallback;
 

@@ -1,3 +1,4 @@
+import { formatCalendarDate } from "@/lib/calendar-date";
 import Link from "next/link";
 import AcceptButton from "@/app/account/rfqs/[id]/AcceptButton";
 import { markAccountInboxThreadRead } from "@/app/account/inbox/actions";
@@ -110,7 +111,7 @@ export default async function AccountInboxThreadPage({
           <div className="text-secondary">
             {location} ·{" "}
             {detail.rfq.event_date
-              ? new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(new Date(detail.rfq.event_date))
+              ? formatCalendarDate(detail.rfq.event_date, locale) ?? labels.dateTbd
               : labels.dateTbd}
           </div>
         </div>

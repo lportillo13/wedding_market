@@ -77,8 +77,15 @@ type CreateThreadReplyNotificationInput = {
 };
 
 async function getRecipientLanguage(client: SupabaseClient, recipientId: string, rfqId: string, vendorId: string) {
-  const { data } = await client.rpc('notification_recipient_language', { p_recipient:recipientId,p_rfq:rfqId,p_vendor:vendorId });
-  return isSupportedLanguage(data) ? data : DEFAULT_LANGUAGE;
+  try {
+    const { data } = await client.rpc("notification_recipient_language", {
+      p_recipient: recipientId, p_rfq: rfqId, p_vendor: vendorId,
+    }).abortSignal(AbortSignal.timeout(5000));
+    return isSupportedLanguage(data) ? data : DEFAULT_LANGUAGE;
+  } catch {
+    console.warn("Notification language lookup failed; using the default language.");
+    return DEFAULT_LANGUAGE;
+  }
 }
 
 async function insertNotification(
@@ -94,7 +101,9 @@ async function insertNotification(
   }
 ) {
   const notificationId = randomUUID();
-  const result = await client
+  let result;
+  try {
+    result = await client
     .from("notifications")
     .insert([
       {
@@ -106,19 +115,23 @@ async function insertNotification(
         body: input.body,
         data: input.data,
       },
-    ]);
+    ]).abortSignal(AbortSignal.timeout(5000));
+  } catch {
+    console.warn("Notification could not be saved.");
+    return { data: null, error: { message: "Unable to save notification." } };
+  }
 
   if (!result.error) {
-    await Promise.all([
-      sendMobilePushNotification(client, {
+    const deliveries = await Promise.allSettled([
+      Promise.resolve().then(() => sendMobilePushNotification(client, {
         notificationId,
         recipientId: input.recipientId,
         type: input.type,
         title: input.title,
         body: input.body,
         data: input.data,
-      }),
-      deliverNotificationEmail({
+      })),
+      Promise.resolve().then(() => deliverNotificationEmail({
         notificationId,
         recipientId: input.recipientId,
         type: input.type,
@@ -126,8 +139,12 @@ async function insertNotification(
         body: input.body,
         data: input.data,
         language: input.language,
-      }),
+      })),
     ]);
+    if (deliveries.some((delivery) => delivery.status === "rejected")) {
+      // Do not log recipient addresses, message content, tokens or provider bodies.
+      console.warn("Notification saved; an external delivery failed.");
+    }
   }
 
   return { data: result.error ? null : { id: notificationId }, error: result.error };

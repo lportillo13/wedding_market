@@ -7,9 +7,23 @@ function payloadMessage(payload: unknown) {
 
 export async function requestJson<T>(url: string, init: RequestInit = {}, timeoutMs = 15_000): Promise<T> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  let timedOut = false;
+  const timeout = setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, timeoutMs);
+  const cancel = () => {
+    clearTimeout(timeout);
+    controller.abort(init.signal?.reason);
+  };
+  init.signal?.addEventListener("abort", cancel, { once: true });
 
   try {
+    if (init.signal?.aborted) {
+      const error = new Error("The request was cancelled.");
+      error.name = "AbortError";
+      throw error;
+    }
     const response = await fetch(url, { ...init, signal: controller.signal });
     const raw = await response.text();
     let payload: unknown = null;
@@ -28,11 +42,12 @@ export async function requestJson<T>(url: string, init: RequestInit = {}, timeou
 
     return payload as T;
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
+    if (timedOut) {
       throw new Error("The request timed out. Check your connection and try again.");
     }
     throw error;
   } finally {
     clearTimeout(timeout);
+    init.signal?.removeEventListener("abort", cancel);
   }
 }
