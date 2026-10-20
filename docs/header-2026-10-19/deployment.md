@@ -1,6 +1,6 @@
 # Application release handoff — October 19, 2026
 
-Status: live is `ef0975b0ac58adf2d66ff57beacc3813fa4d3af6`, including the subsequent vendor profiles, inbox organization and functional inquiry/proposal/message fixes. The latest [workflow review and release evidence](../quote-flow-2026-10-19/implementation-review.md) records the applied migration, rollback-only production database tests, exact release receipt and independent public checks. The direct deployment gateway is installed and verified; routine releases no longer require owner terminal commands. Earlier header releases below are historical.
+Status: live is `4c0ac2468dab0af9133d582d643808001da49c57`, including the account-menu loading repair and all prior profile, inbox and inquiry/message changes. The [latest repair review and release evidence](../header-account-2026-10-19/review.md) records server-rendered account navigation, bounded failures, exact deployment receipt and live EN/ES phone verification. The direct deployment gateway is installed and verified; routine releases no longer require owner terminal commands. Earlier header releases below are historical.
 
 ## Latest warm styling release
 
