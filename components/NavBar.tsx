@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import type { User } from "@supabase/supabase-js";
+import type { HeaderUser } from "@/lib/header-account";
 import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -15,6 +15,7 @@ import HeaderSignOutButton from "./HeaderSignOutButton";
 import HeaderIcon from "./HeaderIcon";
 import HeaderLanguageSwitch from "./HeaderLanguageSwitch";
 import HeaderBotanicalAccent from "./HeaderBotanicalAccent";
+import HeaderAccountRetry from "./HeaderAccountRetry";
 import VendorsMegaMenu, { type HeaderVendorCategory } from "./VendorsMegaMenu";
 
 type NavBarProps = {
@@ -23,8 +24,8 @@ type NavBarProps = {
   isVendor?: boolean;
   notificationLink?: ReactNode;
   vendorCategories: HeaderVendorCategory[];
-  user?: User | null;
-  authReady?: boolean;
+  user?: HeaderUser | null;
+  accountUnavailable?: boolean;
 };
 export default function NavBar({
   authMenu,
@@ -33,7 +34,7 @@ export default function NavBar({
   notificationLink,
   vendorCategories,
   user,
-  authReady = true,
+  accountUnavailable = false,
 }: NavBarProps) {
   const pathname = usePathname() ?? "/";
   const { language, dictionary } = useLanguage();
@@ -157,7 +158,7 @@ export default function NavBar({
         </nav>
         <div className="wm-site-header__desktop-actions">
           <HeaderLanguageSwitch compact />
-          {authReady && !isVendor ? (
+          {!accountUnavailable && !isVendor ? (
             <Link href="/rfq/new" className="wm-site-header__cta">
               {dictionary.nav.requestQuotes}
               <HeaderIcon name="arrow" width="16" height="16" />
@@ -197,13 +198,7 @@ export default function NavBar({
             </Link>
           ) : null}
           <div className="wm-site-header__auth">
-            {authReady ? (
-              authMenu
-            ) : (
-              <span className="wm-site-header__loading" role="status">
-                <span className="visually-hidden">{labels.loadingAccount}</span>
-              </span>
-            )}
+            {authMenu}
           </div>
         </div>
         <div className="wm-site-header__mobile-actions">
@@ -361,10 +356,10 @@ export default function NavBar({
               </div>
             </nav>
             <div
-              className={`wm-mobile-navigation__account${authReady && !isAuthenticated ? " wm-mobile-navigation__account--guest" : ""}`}
+              className={`wm-mobile-navigation__account${!accountUnavailable && !isAuthenticated ? " wm-mobile-navigation__account--guest" : ""}`}
             >
-              {!authReady ? (
-                <p role="status">{labels.loadingAccount}</p>
+              {accountUnavailable ? (
+                <HeaderAccountRetry />
               ) : isAuthenticated ? (
                 <>
                   <Link
@@ -423,7 +418,7 @@ export default function NavBar({
                 </>
               )}
             </div>
-            {authReady && !isAuthenticated ? (
+            {!accountUnavailable && !isAuthenticated ? (
               <Link
                 href="/signup/vendor"
                 className="wm-mobile-navigation__vendor-join"
@@ -438,7 +433,7 @@ export default function NavBar({
           <div className="wm-mobile-navigation__footer">
             <Link
               href={
-                !authReady
+                accountUnavailable
                   ? "/vendors"
                   : isVendor
                     ? "/vendor/inbox"
@@ -447,7 +442,7 @@ export default function NavBar({
               className="wm-site-header__cta"
               onClick={close}
             >
-              {!authReady
+              {accountUnavailable
                 ? dictionary.nav.vendors
                 : isVendor
                   ? dictionary.auth.vendorRfqs

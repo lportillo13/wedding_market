@@ -11,7 +11,7 @@ export default function AuthStateSync() {
     const {
       data: { subscription },
     } = supabaseBrowser.auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "TOKEN_REFRESHED") {
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "TOKEN_REFRESHED" || event === "USER_UPDATED") {
         startTransition(() => {
           router.refresh();
         });

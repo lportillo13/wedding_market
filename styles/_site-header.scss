@@ -323,12 +323,27 @@ html {
   color: var(--wm-nav-ink);
   border-radius: 50%;
 }
-.wm-site-header__loading {
-  display: block;
-  width: 70px;
-  height: 36px;
-  border-radius: 6px;
-  background: var(--wm-nav-blush);
+.wm-header-account-retry {
+  p {
+    color: var(--wm-nav-muted);
+    font-size: 0.8rem;
+    margin-bottom: 0.65rem;
+  }
+  button {
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--wm-nav-line);
+    border-radius: 24px;
+    color: var(--wm-nav-accent);
+    background: var(--wm-nav-paper);
+    &:hover {
+      background: var(--wm-nav-blush);
+    }
+  }
+  &--compact p {
+    max-width: 12rem;
+    font-size: 0.7rem;
+  }
 }
 .wm-site-header__mobile-actions {
   display: none;

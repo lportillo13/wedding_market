@@ -1,114 +1,41 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import type { User } from "@supabase/supabase-js";
 import NavBar from "@/components/NavBar";
-import AuthDropdown from "@/components/AuthDropdown";
-import GuestAuthActions from "@/components/GuestAuthActions";
+import AuthMenu from "@/components/AuthMenu";
 import NotificationLink from "@/components/NotificationLink";
-import { ACCOUNT_NOTIFICATION_TYPES, VENDOR_NOTIFICATION_TYPES } from "@/lib/notification-types";
-import { supabaseBrowser } from "@/lib/supabase/client";
+import {
+  ACCOUNT_NOTIFICATION_TYPES,
+  VENDOR_NOTIFICATION_TYPES,
+} from "@/lib/notification-types";
 import type { HeaderVendorCategory } from "@/components/VendorsMegaMenu";
+import type { HeaderAccount } from "@/lib/header-account";
 
-type NavBarContainerState = {
-  user: User | null;
-  isVendor: boolean;
-  ready: boolean;
-};
-
-export default function NavBarContainer({ vendorCategories }: { vendorCategories: HeaderVendorCategory[] }) {
-  const [state, setState] = useState<NavBarContainerState>({
-    user: null,
-    isVendor: false,
-    ready: false,
-  });
-
-  useEffect(() => {
-    let active = true;
-
-    const syncVendorFlag = async (user: User) => {
-      try {
-        const { data: isVendor } = await supabaseBrowser.rpc("is_vendor", { _uid: user.id });
-        if (!active) return;
-        setState((current) =>
-          current.user?.id === user.id ? { ...current, isVendor: !!isVendor, ready: true } : current
-        );
-      } catch {
-        if (!active) return;
-        setState((current) =>
-          current.user?.id === user.id ? { ...current, isVendor: false, ready: true } : current
-        );
-      }
-    };
-
-    const syncUser = (nextUser: User | null) => {
-      if (!nextUser) {
-        if (active) {
-          setState({ user: null, isVendor: false, ready: true });
-        }
-        return;
-      }
-
-      if (active) {
-        setState((current) => {
-          const sameUser = current.user?.id === nextUser.id;
-          return {
-            user: nextUser,
-            isVendor: sameUser ? current.isVendor : false,
-            ready: sameUser,
-          };
-        });
-      }
-
-      void syncVendorFlag(nextUser);
-    };
-
-    void supabaseBrowser.auth
-      .getSession()
-      .then(({ data }) => {
-        if (active) {
-          syncUser(data.session?.user ?? null);
-        }
-      })
-      .catch(() => {
-        if (active) {
-          syncUser(null);
-        }
-      });
-
-    const {
-      data: { subscription },
-    } = supabaseBrowser.auth.onAuthStateChange((_event, session) => {
-      syncUser(session?.user ?? null);
-    });
-
-    return () => {
-      active = false;
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  const authMenu = !state.ready ? (
-    <div className="ms-auto" />
-  ) : state.user ? (
-    <AuthDropdown user={state.user} isVendor={state.isVendor} />
-  ) : (
-    <GuestAuthActions />
-  );
-
+export default function NavBarContainer({
+  vendorCategories,
+  account,
+}: {
+  vendorCategories: HeaderVendorCategory[];
+  account: HeaderAccount;
+}) {
+  const user = account.status === "authenticated" ? account.user : null;
+  const isVendor = account.status === "authenticated" && account.isVendor;
   return (
     <NavBar
-      authMenu={authMenu}
-      user={state.user}
-      authReady={state.ready}
-      isAuthenticated={state.ready && !!state.user}
-      isVendor={state.ready && state.isVendor}
+      authMenu={<AuthMenu account={account} />}
+      user={user}
+      accountUnavailable={account.status === "unavailable"}
+      isAuthenticated={!!user}
+      isVendor={isVendor}
       notificationLink={
-        state.ready && state.user ? (
+        user ? (
           <NotificationLink
-            userId={state.user.id}
-            href={state.isVendor ? "/vendor/notifications" : "/account/notifications"}
-            types={state.isVendor ? [...VENDOR_NOTIFICATION_TYPES] : [...ACCOUNT_NOTIFICATION_TYPES]}
+            userId={user.id}
+            href={isVendor ? "/vendor/notifications" : "/account/notifications"}
+            types={
+              isVendor
+                ? [...VENDOR_NOTIFICATION_TYPES]
+                : [...ACCOUNT_NOTIFICATION_TYPES]
+            }
           />
         ) : undefined
       }

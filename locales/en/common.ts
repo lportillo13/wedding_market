@@ -23,7 +23,8 @@ const common = {
     "guestDescription": "Save your favorites and keep every conversation together.",
     "myWedding": "My wedding",
     "vendorSpace": "Your business",
-    "loadingAccount": "Loading your account…",
+    "accountUnavailable": "We couldn’t check your account. Please try again.",
+    "retryAccount": "Retry",
     "joinVendors": "Are you a wedding professional?",
     "joinAction": "Join as a vendor",
     "signUp": "Create an account"

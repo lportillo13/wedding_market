@@ -15,6 +15,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { DEFAULT_LANGUAGE, dictionaries, isSupportedLanguage, type SupportedLanguage } from "@/lib/i18n";
 import { getRequestLanguage } from "@/lib/i18n/server";
 import type { HeaderVendorCategory } from "@/components/VendorsMegaMenu";
+import { loadHeaderAccount, type HeaderAccount } from "@/lib/header-account";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -61,15 +62,18 @@ function getFallbackVendorCategories(): HeaderVendorCategory[] {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   let initialLanguage: SupportedLanguage | undefined;
   let vendorCategories = getFallbackVendorCategories();
+  let account: HeaderAccount = { status: "unavailable" };
 
   try {
     const supabase = await createSupabaseServerClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    account = await loadHeaderAccount({
+      getUser: () => supabase.auth.getUser(),
+      isVendor: (userId, signal) => supabase.rpc("is_vendor", { _uid: userId }).abortSignal(signal),
+    });
+    const user = account.status === "authenticated" ? account.user : null;
 
     if (user) {
-      const { data: profile } = await supabase.from("profiles").select("language").eq("id", user.id).maybeSingle();
+      const { data: profile } = await supabase.from("profiles").select("language").eq("id", user.id).abortSignal(AbortSignal.timeout(2000)).maybeSingle();
 
       if (profile && isSupportedLanguage(profile.language)) {
         initialLanguage = profile.language;
@@ -79,7 +83,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     const { data: categoryRows, error: categoryError } = await supabase
       .from("categories")
       .select("key, label")
-      .order("id", { ascending: true });
+      .order("id", { ascending: true })
+      .abortSignal(AbortSignal.timeout(4000));
 
     if (!categoryError) {
       const categoriesFromDatabase = (categoryRows ?? []).flatMap((row) => {
@@ -127,7 +132,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <ScrollReveal />
         <LanguageProvider initialLanguage={resolvedLanguage}>
           <div className="wm-site-shell">
-            <NavBarContainer vendorCategories={vendorCategories} />
+            <NavBarContainer vendorCategories={vendorCategories} account={account} />
             <div className="wm-site-shell__content">{children}</div>
             <SiteFooter vendorCategories={vendorCategories} />
           </div>

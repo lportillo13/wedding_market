@@ -1,0 +1,11 @@
+# Account menu loading repair — October 19, 2026
+
+The Samsung Browser report showed the mobile account section indefinitely displaying “Cargando tu cuenta…”. The previous header started with `ready: false` and waited for the browser Supabase session and a separate `is_vendor` RPC. Neither wait had an application deadline; the duplicate AuthMenu implemented the same dependency. The exact network/session condition on the owner's phone was not captured.
+
+The header now renders from the account already verified with server-side `getUser`, including its authoritative vendor flag. Its first HTML already contains guest actions or the correct client/vendor links. No browser session refresh or role RPC is required to reveal navigation. Existing auth-event refreshes keep server props current after sign-in, sign-out, token refresh and profile updates. Only ID, email and the two display metadata fields cross the server boundary; protected pages/APIs retain their independent authorization.
+
+The combined account check has a six-second deadline. Slow role requests are aborted, late auth results cannot start a new role request, and errors do not classify vendors as clients or signed-out guests. An unavailable check displays a localized retry button that reloads the current page. Optional language/category reads also have bounded waits. The warm menu layout is retained.
+
+Validation: all 70 web tests passed, including eight new cases for missing sessions, client/vendor routing, safe serialization, transport errors, never-settling auth/role checks, late completion and server-rendered EN/ES account states. TypeScript, ESLint and the production Next build passed. Browser checks on the local production build at 390 × 844 verified immediate guest actions in Spanish and English. [Local phone screenshot](local-phone-menu-es.png).
+
+Deployment: prepared for the installed Wedding Market gateway against independently verified live base `ef0975b0ac58adf2d66ff57beacc3813fa4d3af6`. Exact release completion and public/browser verification will be recorded after rollout. No database migration or native binary publication is needed. No real account credentials or physical Samsung device were used for the regression checks.

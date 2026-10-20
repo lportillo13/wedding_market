@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import type { User } from "@supabase/supabase-js";
+import type { HeaderUser } from "@/lib/header-account";
 import Link from "next/link";
 import HeaderSignOutButton from "./HeaderSignOutButton";
 import { parseCloudinaryImage } from "@/lib/images";
@@ -12,7 +12,7 @@ import { supabaseBrowser } from "@/lib/supabase/client";
 import type { CloudinaryImage } from "@/types/images";
 
 type AuthDropdownProps = {
-  user: User;
+  user: HeaderUser;
   isVendor: boolean;
 };
 
