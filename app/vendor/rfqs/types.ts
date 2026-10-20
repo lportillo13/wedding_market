@@ -18,6 +18,7 @@ export type RfqRow = {
 };
 
 export type InviteRow = {
+  accepted_quote_id?: string | null;
   rfq_id: string;
   vendor_id: string;
   status: string | null;

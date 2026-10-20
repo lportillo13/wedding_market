@@ -40,6 +40,18 @@ test('live-schema authorization and transaction regressions', async t => {
   await db.exec(await readFile(new URL('../supabase/migrations/202610190004_contact_privacy.sql', import.meta.url), 'utf8'));
   await db.exec(await readFile(new URL('../supabase/migrations/202610190005_admin_mfa.sql', import.meta.url), 'utf8'));
   await db.exec(await readFile(new URL('../supabase/migrations/202610190006_inquiry_conversations.sql', import.meta.url), 'utf8'));
+  // Legacy group data exists before migration 007; this verifies preservation
+  // and the narrow reopening of system-generated closures.
+  await db.exec(`INSERT INTO auth.users(id) VALUES ('${id(90)}');
+    INSERT INTO profiles(id,role) VALUES ('${id(90)}','user') ON CONFLICT(id) DO UPDATE SET role='user';
+    INSERT INTO rfqs(id,owner_id) VALUES ('${id(92)}','${id(90)}'),('${id(93)}','${id(90)}');
+    INSERT INTO rfq_invites(rfq_id,vendor_id,status,closed_at,closed_reason,expires_at) VALUES
+      ('${id(92)}','${id(11)}','accepted',null,null,now()+interval '1 day'),
+      ('${id(92)}','${id(12)}','declined',now(),'accepted_other_vendor',now()+interval '1 day'),
+      ('${id(93)}','${id(12)}','declined',now(),'archived_by_client',now()+interval '1 day');
+    INSERT INTO quotes(id,rfq_id,vendor_id) VALUES ('${id(95)}','${id(92)}','${id(11)}');
+    UPDATE rfqs SET accepted_quote_id='${id(95)}',accepted_at=now() WHERE id='${id(92)}';`);
+  await db.exec(await readFile(new URL('../supabase/migrations/202610200007_independent_vendor_bookings.sql', import.meta.url), 'utf8'));
   const deny = async (role, user, sql, params) => assert.rejects(as(role, user, sql, params), { code: '42501' });
   await t.test('anonymous cannot mutate any formerly unprotected table', async () => {
     for (const table of ['amenity_lookup','languages','vendor_amenities','vendor_pricing','vendor_spaces','vendor_team']) {
@@ -90,7 +102,7 @@ test('live-schema authorization and transaction regressions', async t => {
   });
   await t.test('reviews require the correct accepted booking, force real dates, and update ratings', async () => {
     await deny('authenticated', 1, 'INSERT INTO reviews(rfq_id,vendor_id,author_id,stars) VALUES ($1,$2,$3,5)', [id(21),id(11),id(1)]);
-    await db.query('UPDATE rfqs SET accepted_quote_id=$1 WHERE id=$2', [id(31),id(21)]);
+    await as('authenticated',1,'SELECT accept_vendor_quote($1,(SELECT id FROM quotes WHERE rfq_id=$1 ORDER BY version DESC LIMIT 1),false,false)',[id(21)]);
     await deny('authenticated', 2, 'INSERT INTO reviews(rfq_id,vendor_id,author_id,stars) VALUES ($1,$2,$3,5)', [id(21),id(11),id(2)]);
     await as('authenticated',1,"INSERT INTO reviews(rfq_id,vendor_id,author_id,stars,created_at) VALUES ($1,$2,$3,4,now()+interval '1 year')",[id(21),id(11),id(1)]);
     assert.equal((await db.query('SELECT rating_count FROM vendors WHERE id=$1',[id(11)])).rows[0].rating_count,1);
@@ -134,15 +146,15 @@ test('live-schema authorization and transaction regressions', async t => {
     assert.equal((await db.query('SELECT amenity_key FROM vendor_amenities WHERE vendor_id=$1',[id(11)])).rows[0].amenity_key,'profile-regression');
     assert.equal((await db.query('SELECT capacity_max FROM vendors WHERE id=$1',[id(11)])).rows[0].capacity_max,120);
   });
-  await t.test('acceptance verifies ownership, closes competing invitations, and is idempotent',async()=>{
+  await t.test('acceptance verifies ownership, leaves other invitations open, and is idempotent',async()=>{
     await db.exec(`INSERT INTO rfq_invites(rfq_id,vendor_id,expires_at) VALUES ('${id(23)}','${id(11)}',now()+interval '1 day'),('${id(23)}','${id(12)}',now()+interval '1 day');
       INSERT INTO quotes(id,rfq_id,vendor_id) VALUES ('${id(33)}','${id(23)}','${id(11)}');`);
     await deny('authenticated',2,'SELECT accept_vendor_quote($1,$2,false,false)',[id(23),id(33)]);
     await deny('authenticated',1,'UPDATE rfqs SET accepted_quote_id=$1 WHERE id=$2',[id(31),id(23)]);
     await as('authenticated',1,'SELECT accept_vendor_quote($1,$2,true,false)',[id(23),id(33)]);
-    assert.equal((await db.query('SELECT status FROM rfq_invites WHERE rfq_id=$1 AND vendor_id=$2',[id(23),id(12)])).rows[0].status,'declined');
+    assert.equal((await db.query('SELECT status FROM rfq_invites WHERE rfq_id=$1 AND vendor_id=$2',[id(23),id(12)])).rows[0].status,'invited');
     assert.equal((await as('authenticated',1,'SELECT accept_vendor_quote($1,$2,true,false) AS result',[id(23),id(33)])).rows[0].result.alreadyAccepted,true);
-    await deny('authenticated',1,'UPDATE rfqs SET accepted_quote_id=null,accepted_at=null WHERE id=$1',[id(23)]);
+    await deny('authenticated',1,'UPDATE rfq_invites SET accepted_quote_id=null,accepted_at=null WHERE rfq_id=$1 AND vendor_id=$2',[id(23),id(11)]);
     await as('authenticated',3,"INSERT INTO quote_messages(quote_id,sender_id,sender_role,body) VALUES ($1,$2,'vendor','Accepted follow-up')",[id(33),id(3)]);
     await as('authenticated',3,"UPDATE rfq_invites SET closed_at=now(),closed_reason='archived_by_vendor' WHERE rfq_id=$1 AND vendor_id=$2",[id(23),id(11)]);
     await deny('authenticated',3,"INSERT INTO quote_messages(quote_id,sender_id,sender_role,body) VALUES ($1,$2,'vendor','Closed message')",[id(33),id(3)]);
@@ -253,9 +265,59 @@ test('live-schema authorization and transaction regressions', async t => {
     await db.query("UPDATE rfq_invites SET expires_at=now()-interval '1 day' WHERE rfq_id=$1",[id(1100)]);
     await deny('authenticated',1,"INSERT INTO quote_messages(rfq_id,vendor_id,sender_id,sender_role,body) VALUES ($1,$2,$3,'client','Expired')",[id(1100),id(11),id(1)]);
   });
+  await t.test('migration preserves existing bookings and only reopens legacy automatic closures',async()=>{
+    const rows=(await db.query('SELECT * FROM rfq_invites WHERE rfq_id=$1 ORDER BY vendor_id',[id(92)])).rows;
+    assert.equal(rows[0].accepted_quote_id,id(95)); assert.ok(rows[0].accepted_at);
+    assert.equal(rows[1].accepted_quote_id,null); assert.equal(rows[1].status,'invited'); assert.equal(rows[1].closed_at,null);
+    const manual=(await db.query('SELECT * FROM rfq_invites WHERE rfq_id=$1',[id(93)])).rows[0];
+    assert.equal(manual.closed_reason,'archived_by_client'); assert.ok(manual.closed_at);
+  });
+  await t.test('group vendors book independently with private consent, messages, summaries and reviews',async()=>{
+    await db.exec(`INSERT INTO rfqs(id,owner_id,contact_email,contact_phone) VALUES ('${id(1300)}','${id(1)}','isolated@example.invalid','+15550000000');
+      INSERT INTO rfq_invites(rfq_id,vendor_id,expires_at) VALUES ('${id(1300)}','${id(11)}',now()+interval '1 day'),('${id(1300)}','${id(12)}',now()+interval '1 day');`);
+    await as('authenticated',3,'INSERT INTO quotes(id,rfq_id,vendor_id,amount_cents) VALUES ($1,$2,$3,10000)',[id(1301),id(1300),id(11)]);
+    await as('authenticated',4,'INSERT INTO quotes(id,rfq_id,vendor_id,amount_cents) VALUES ($1,$2,$3,20000)',[id(1302),id(1300),id(12)]);
+    await as('authenticated',1,'SELECT accept_vendor_quote($1,$2,true,false)',[id(1300),id(1301)]);
+    assert.equal((await as('authenticated',1,'SELECT can_user_review($1,$2,$3) ok',[id(1),id(12),id(1300)])).rows[0].ok,false);
+    assert.equal((await as('authenticated',4,'SELECT wm_can_submit_quote($1,$2) ok',[id(1300),id(12)])).rows[0].ok,true);
+    await as('authenticated',4,'INSERT INTO quotes(id,rfq_id,vendor_id,amount_cents) VALUES ($1,$2,$3,21000)',[id(1303),id(1300),id(12)]);
+    await as('authenticated',4,"INSERT INTO quote_messages(rfq_id,vendor_id,sender_id,sender_role,body) VALUES ($1,$2,$3,'vendor','Still open after the other booking')",[id(1300),id(12),id(4)]);
+    let rows=(await as('authenticated',1,"SELECT * FROM list_inbox_threads_v2('client',1,false,'',$1)",[id(1300)])).rows;
+    assert.equal(rows.filter(x=>x.accepted_here).length,1); assert.equal(rows.find(x=>x.invite.vendor_id===id(12)).rfq.accepted_quote_id,null);
+    let contact=(await as('authenticated',4,'SELECT * FROM rfqs_visible WHERE id=$1',[id(1300)])).rows[0];
+    assert.equal(contact.contact_email,null);assert.equal(contact.contact_phone,null);assert.equal(contact.accepted_quote_id,null);
+    await assert.rejects(as('authenticated',1,'SELECT accept_vendor_quote($1,$2,false,true)',[id(1300),id(1302)]),{code:'22023'});
+    await as('authenticated',1,'SELECT accept_vendor_quote($1,$2,false,true)',[id(1300),id(1303)]);
+    assert.equal((await as('authenticated',1,'SELECT accept_vendor_quote($1,$2,true,false) result',[id(1300),id(1303)])).rows[0].result.alreadyAccepted,true);
+    for (const [owner,vendor,email,phone,quote] of [[3,11,'isolated@example.invalid',null,1301],[4,12,null,'+15550000000',1303]]) {
+      contact=(await as('authenticated',owner,'SELECT * FROM rfqs_visible WHERE id=$1',[id(1300)])).rows[0];
+      assert.equal(contact.contact_email,email); assert.equal(contact.contact_phone,phone);assert.equal(contact.accepted_quote_id,id(quote));
+      assert.equal((await as('authenticated',1,'SELECT can_user_review($1,$2,$3) ok',[id(1),id(vendor),id(1300)])).rows[0].ok,true);
+      await as('authenticated',1,'INSERT INTO reviews(rfq_id,vendor_id,author_id,stars) VALUES ($1,$2,$3,5)',[id(1300),id(vendor),id(1)]);
+      await as('authenticated',1,"INSERT INTO notifications(recipient_id,actor_id,type,title,data) VALUES ($1,$2,'vendor_quote_accepted','Isolated booking',$3)",[id(owner),id(1),{rfqId:id(1300),vendorId:id(vendor),quoteId:id(quote)}]);
+    }
+    assert.equal((await as('authenticated',4,'SELECT * FROM quote_messages WHERE rfq_id=$1 AND vendor_id=$2',[id(1300),id(11)])).rows.length,0);
+    rows=(await as('authenticated',1,"SELECT * FROM list_inbox_threads_v2('client',1,false,'',$1)",[id(1300)])).rows;
+    assert.equal(rows.filter(x=>x.accepted_here).length,2);
+    assert.equal((await db.query('SELECT accepted_quote_id FROM rfqs WHERE id=$1',[id(1300)])).rows[0].accepted_quote_id,null);
+    await deny('authenticated',3,'INSERT INTO quotes(rfq_id,vendor_id) VALUES ($1,$2)',[id(1300),id(11)]);
+    await deny('authenticated',1,'UPDATE rfq_invites SET accepted_quote_id=null WHERE rfq_id=$1 AND vendor_id=$2',[id(1300),id(11)]);
+    await deny('authenticated',4,'UPDATE rfq_invites SET accepted_quote_id=$1 WHERE rfq_id=$2 AND vendor_id=$3',[id(1301),id(1300),id(12)]);
+    await deny('authenticated',1,"UPDATE rfq_invites SET status='invited' WHERE rfq_id=$1 AND vendor_id=$2",[id(1300),id(11)]);
+    await deny('authenticated',1,"UPDATE rfq_invites SET status='accepted' WHERE rfq_id=$1 AND vendor_id=$2",[id(1100),id(13)]);
+    await deny('authenticated',2,'SELECT accept_vendor_quote($1,$2,false,false)',[id(1300),id(1301)]);
+    await db.query("UPDATE rfq_invites SET expires_at=now()-interval '1 day' WHERE rfq_id=$1",[id(1300)]);
+    for (const [owner,vendor] of [[3,11],[4,12]]) await as('authenticated',owner,"INSERT INTO quote_messages(rfq_id,vendor_id,sender_id,sender_role,body) VALUES ($1,$2,$3,'vendor','Booked follow-up')",[id(1300),id(vendor),id(owner)]);
+  });
   await t.test('the live verification script always rolls its fixtures back',async()=>{
     const result=await db.exec(await readFile(new URL('../docs/quote-flow-2026-10-19/live-transaction-check.sql',import.meta.url),'utf8'));
     const proof=result.at(-1).rows[0].workflow_verification;
     assert.equal(proof.fixturesRolledBack,true);assert.equal(proof.staleAcceptanceDenied,true);assert.equal(proof.preProposalMessages,true);
   });
+  await t.test('independent-booking live verification uses isolated records and always rolls back',async()=>{
+    const result=await db.exec(await readFile(new URL('../docs/independent-bookings-2026-10-20/live-transaction-check.sql',import.meta.url),'utf8'));
+    const proof=result.at(-1).rows[0].workflow_verification;
+    for (const key of ['fixturesRolledBack','independentBookings','separateReviews','perVendorConsent','perVendorBookingNotifications','bookingForgeryDenied','vendorIsolation']) assert.equal(proof[key],true,key);
+  });
+
 });

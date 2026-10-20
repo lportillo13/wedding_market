@@ -16,6 +16,8 @@ export type InboxInviteRow = {
   rfq_id: string;
   vendor_id: string;
   status: string | null;
+  accepted_quote_id?: string | null;
+  accepted_at?: string | null;
   expires_at: string | null;
   created_at: string;
   updated_at: string | null;
@@ -129,19 +131,8 @@ function normalizeInviteStatus(status: string | null | undefined) {
   return status?.toLowerCase().trim() ?? null;
 }
 
-function effectiveInviteStatus(
-  invite: InboxInviteRow,
-  rfq: InboxRfqRow | null,
-  quotes: InboxQuoteRow[],
-): InboxInviteRow {
-  if (rfq?.accepted_quote_id) {
-    const acceptedHere = quotes.some((quote) => quote.id === rfq.accepted_quote_id);
-    return {
-      ...invite,
-      status: acceptedHere ? "accepted" : "declined",
-      closed_reason: acceptedHere ? invite.closed_reason : invite.closed_reason ?? "accepted_other_vendor",
-    };
-  }
+function effectiveInviteStatus(invite: InboxInviteRow): InboxInviteRow {
+  if (invite.accepted_quote_id) return { ...invite, status: "accepted" };
 
   const normalized = normalizeInviteStatus(invite.status);
   if (normalized === "accepted" || normalized === "declined" || normalized === "expired" || !invite.expires_at) {
@@ -254,9 +245,9 @@ async function markThreadNotificationsRead(
     .then((result) => ({ error: result.error }));
 }
 
-function resolveClientStatus(invite: InboxInviteRow, rfq: InboxRfqRow | null, quotes: InboxQuoteRow[]): ClientInboxStatus {
+function resolveClientStatus(invite: InboxInviteRow, quotes: InboxQuoteRow[]): ClientInboxStatus {
   const normalized = normalizeInviteStatus(invite.status);
-  const accepted = Boolean(rfq?.accepted_quote_id && quotes.some((quote) => quote.id === rfq.accepted_quote_id));
+  const accepted = Boolean(invite.accepted_quote_id);
 
   if (accepted || normalized === "accepted") {
     return "accepted";
@@ -273,9 +264,9 @@ function resolveClientStatus(invite: InboxInviteRow, rfq: InboxRfqRow | null, qu
   return "waiting_on_vendor";
 }
 
-function resolveVendorStatus(invite: InboxInviteRow, rfq: InboxRfqRow | null, quotes: InboxQuoteRow[]): VendorInboxStatus {
+function resolveVendorStatus(invite: InboxInviteRow, quotes: InboxQuoteRow[]): VendorInboxStatus {
   const normalized = normalizeInviteStatus(invite.status);
-  const accepted = Boolean(rfq?.accepted_quote_id && quotes.some((quote) => quote.id === rfq.accepted_quote_id));
+  const accepted = Boolean(invite.accepted_quote_id);
 
   if (accepted || normalized === "accepted") {
     return "accepted";
@@ -352,19 +343,14 @@ async function loadInboxSummaries(viewer: "client" | "vendor", options: InboxPag
   if (error) throw new Error(error.message);
   const rows = (data ?? []) as InboxSummary[];
   const items = rows.filter(row => row.invite?.rfq_id).map((row) => {
-    let invite = row.invite;
-    if (row.rfq.accepted_quote_id) {
-      invite = { ...invite, status: row.accepted_here ? "accepted" : "declined" };
-    } else {
-      invite = effectiveInviteStatus(invite, row.rfq, row.latest_quote ? [row.latest_quote] : []);
-    }
+    const invite = effectiveInviteStatus(row.invite);
     const readAt = viewer === "client" ? invite.client_last_read_at : invite.vendor_last_read_at ?? invite.viewed_at;
     const quotes = row.latest_quote ? [row.latest_quote] : [];
     return {
       threadKey: buildThreadKey(invite.rfq_id, invite.vendor_id), invite, rfq: row.rfq, vendor: row.vendor,
       latestQuote: row.latest_quote, quoteCount: row.quote_count, lastActivityAt: row.last_activity_at,
       isUnread: row.unread_at ? isUnreadSince(row.unread_at, readAt) : false,
-      statusKey: viewer === "client" ? resolveClientStatus(invite,row.rfq,quotes) : resolveVendorStatus(invite,row.rfq,quotes),
+      statusKey: viewer === "client" ? resolveClientStatus(invite,quotes) : resolveVendorStatus(invite,quotes),
     };
   });
   return { items, total: Number(rows[0]?.total_count ?? 0), activeCount: Number(rows[0]?.active_count ?? 0), archivedCount: Number(rows[0]?.archived_count ?? 0) };
@@ -384,7 +370,7 @@ export async function loadVendorInboxThreads(userId: string, options: InboxPageO
 async function loadThreadInvite(client: SupabaseClient, rfqId: string, vendorId: string) {
   return client
     .from("rfq_invites")
-    .select("rfq_id, vendor_id, status, expires_at, created_at, updated_at, viewed_at, last_activity_at, client_last_read_at, vendor_last_read_at, closed_at, closed_reason, reveal_email, reveal_phone")
+    .select("rfq_id, vendor_id, status, accepted_quote_id, accepted_at, expires_at, created_at, updated_at, viewed_at, last_activity_at, client_last_read_at, vendor_last_read_at, closed_at, closed_reason, reveal_email, reveal_phone")
     .eq("rfq_id", rfqId)
     .eq("vendor_id", vendorId)
     .maybeSingle<InboxInviteRow>();
@@ -448,7 +434,7 @@ export async function loadClientThreadDetail(userId: string, threadKey: string):
 
   return {
     threadKey,
-    invite: effectiveInviteStatus(inviteResult.data, rfq, quotesResult.data),
+    invite: effectiveInviteStatus(inviteResult.data),
     rfq,
     vendor: vendorResult.data[0] ?? null,
     quotes: [...quotesResult.data].sort(quoteSortDescending),
@@ -511,7 +497,7 @@ export async function loadVendorThreadDetail(userId: string, threadKey: string):
 
   return {
     threadKey,
-    invite: effectiveInviteStatus(inviteResult.data, rfq, quotesResult.data),
+    invite: effectiveInviteStatus(inviteResult.data),
     rfq,
     vendor,
     quotes: [...quotesResult.data].sort(quoteSortDescending),

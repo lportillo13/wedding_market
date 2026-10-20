@@ -1,0 +1,21 @@
+{
+  "verifiedAt": "2026-10-20T14:00:45.136359+00:00",
+  "groupCreation": true,
+  "contactPrivacy": true,
+  "singleCreation": true,
+  "acceptanceRetry": true,
+  "idempotentRetry": true,
+  "separateReviews": true,
+  "vendorIsolation": true,
+  "acceptedFollowUp": true,
+  "perVendorConsent": true,
+  "emptyFolderCounts": true,
+  "fixturesRolledBack": true,
+  "versionedProposals": true,
+  "independentBookings": true,
+  "preProposalMessages": true,
+  "bookingForgeryDenied": true,
+  "staleAcceptanceDenied": true,
+  "unauthorizedSendDenied": true,
+  "perVendorBookingNotifications": true
+}

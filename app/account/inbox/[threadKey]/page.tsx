@@ -72,8 +72,8 @@ export default async function AccountInboxThreadPage({
     );
   }
 
-  const {accepted, closed: conversationClosed, canAccept} = getConversationState(detail.invite, detail.rfq.accepted_quote_id, detail.quotes.map(q => q.id));
-  const acceptedQuote = detail.quotes.find(q => q.id === detail.rfq.accepted_quote_id) ?? null;
+  const {accepted, closed: conversationClosed, canAccept} = getConversationState(detail.invite, (detail.invite.accepted_quote_id ?? null), detail.quotes.map(q => q.id));
+  const acceptedQuote = detail.quotes.find(q => q.id === (detail.invite.accepted_quote_id ?? null)) ?? null;
   const location =
     [detail.rfq.city, detail.rfq.state, detail.rfq.country].filter(Boolean).join(", ") ||
     dictionary.account.rfqsPage.formatting.locationTbd;
@@ -134,12 +134,17 @@ export default async function AccountInboxThreadPage({
                   {detail.latestQuote.message ? <div>{detail.latestQuote.message}</div> : null}
                   {canAccept ? (
                     <div className="mt-3">
-                      <p className="small text-secondary">{language === "es" ? "Al aceptar, se cierran las otras ofertas de esta solicitud." : "Accepting closes the other offers in this request."}</p>
+                      <p className="small text-secondary">{language === "es" ? "Aceptas solo la propuesta de este proveedor. Las otras conversaciones siguen abiertas." : "You are accepting only this vendor’s proposal. Your other conversations stay open."}</p>
                       <AcceptButton rfq_id={detail.rfq.id} quote_id={detail.latestQuote.id} />
                     </div>
                   ) : acceptedQuote ? (
                     <div className="alert alert-success mt-3 mb-0">
                       {language === "es" ? "Has aceptado esta propuesta." : "You accepted this proposal."}
+                      <div className="mt-2">
+                        <Link href={`/account/reviews/new/${detail.rfq.id}?vendor=${encodeURIComponent(detail.invite.vendor_id)}`}>
+                          {language === "es" ? "Reseñar a este proveedor" : "Review this vendor"}
+                        </Link>
+                      </div>
                     </div>
                   ) : null}
                 </>

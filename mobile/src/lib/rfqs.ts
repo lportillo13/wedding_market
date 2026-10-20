@@ -257,7 +257,7 @@ export async function loadMobileInbox(role: Role, language: "en" | "es" = "en", 
       subtitle:[rfq.city,rfq.state,rfq.country].filter(Boolean).join(", ") || String(rfq.notes ?? ""),
       meta:formatThreadDate(nullableString(rfq.event_date) ?? nullableString(invite.created_at),language),
       status:accepted_here ? "accepted" : String(invite.status ?? "invited"),expiresAt:nullableString(invite.expires_at),
-      closedAt:nullableString(invite.closed_at),acceptedQuoteId:nullableString(rfq.accepted_quote_id),contactEmail:nullableString(rfq.contact_email),contactPhone:nullableString(rfq.contact_phone),
+      closedAt:nullableString(invite.closed_at),acceptedQuoteId:nullableString(invite.accepted_quote_id),contactEmail:nullableString(rfq.contact_email),contactPhone:nullableString(rfq.contact_phone),
       request:toMobileRequestDetails(rfq),quotes:latest ? [latest] : [],latestQuote:latest,messages:[],
     };
   });
@@ -296,7 +296,7 @@ async function loadMobileThreadData(role: Role, language: "en" | "es", selected:
 
     const { data: invites, error: invitesError } = await client
       .from("rfq_invites")
-      .select("rfq_id, vendor_id, status, expires_at, created_at, updated_at, closed_at, reveal_email, reveal_phone")
+      .select("rfq_id, vendor_id, status, accepted_quote_id, expires_at, created_at, updated_at, closed_at, reveal_email, reveal_phone")
       .eq("vendor_id", vendor.id)
       .eq("rfq_id",selected.rfqId)
       .order("updated_at", { ascending: false })
@@ -333,7 +333,7 @@ async function loadMobileThreadData(role: Role, language: "en" | "es", selected:
         .sort((a, b) => b.version - a.version || timestamp(b.createdAt) - timestamp(a.createdAt));
       const latest = threadQuotes[0] ?? null;
       const quoteMessages = threadMessages;
-      const acceptedQuoteId = typeof rfq?.accepted_quote_id === "string" ? rfq.accepted_quote_id : null;
+      const acceptedQuoteId = nullableString(invite.accepted_quote_id);
       const lastActivity = Math.max(
         timestamp(String(invite.updated_at ?? invite.created_at)),
         timestamp(String(rfq?.updated_at ?? rfq?.created_at ?? "")),
@@ -385,7 +385,7 @@ async function loadMobileThreadData(role: Role, language: "en" | "es", selected:
 
   const rfqIds = rfqRows.map((rfq) => String(rfq.id));
   const [{ data: invites, error: invitesError }, { data: quotes, error: quoteError }] = await Promise.all([
-    client.from("rfq_invites").select("rfq_id, vendor_id, status, expires_at, created_at, updated_at, closed_at").in("rfq_id", rfqIds).eq("vendor_id",selected.vendorId),
+    client.from("rfq_invites").select("rfq_id, vendor_id, status, accepted_quote_id, expires_at, created_at, updated_at, closed_at").in("rfq_id", rfqIds).eq("vendor_id",selected.vendorId),
     client
       .from("quotes")
       .select("id, rfq_id, vendor_id, version, amount_cents, currency, message, created_at")
@@ -414,7 +414,7 @@ async function loadMobileThreadData(role: Role, language: "en" | "es", selected:
       .sort((a, b) => b.version - a.version || timestamp(b.createdAt) - timestamp(a.createdAt));
     const latest = threadQuotes[0] ?? null;
     const quoteMessages = threadMessages;
-    const acceptedQuoteId = typeof rfq.accepted_quote_id === "string" ? rfq.accepted_quote_id : null;
+    const acceptedQuoteId = nullableString(invite.accepted_quote_id);
     const lastActivity = Math.max(
       timestamp(String(invite.updated_at ?? invite.created_at)),
       timestamp(String(rfq.updated_at ?? rfq.created_at ?? "")),

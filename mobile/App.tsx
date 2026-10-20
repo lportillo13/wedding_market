@@ -515,7 +515,7 @@ const copy = {
     fixedDate: "Fixed date",
     budget: "Budget",
     refresh: "Refresh",
-    conversationClosed: "This conversation is closed because another quote was selected or the request expired.",
+    conversationClosed: "This conversation was archived, declined or expired.",
     you: "You",
     noQuoteYet: "No quote yet. The vendor will reply here after reviewing the request.",
     authTitle: "Sign in to your platform workspace.",
@@ -849,7 +849,7 @@ const copy = {
     fixedDate: "Fecha fija",
     budget: "Presupuesto",
     refresh: "Actualizar",
-    conversationClosed: "Esta conversación está cerrada porque se eligió otra cotización o venció la solicitud.",
+    conversationClosed: "Esta conversación fue archivada, rechazada o venció.",
     you: "Tú",
     noQuoteYet: "Aún no hay cotización. El proveedor responderá aquí después de revisar la solicitud.",
     authTitle: "Inicia sesión en tu espacio de trabajo.",
@@ -4747,8 +4747,8 @@ function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" 
                 Alert.alert(
                   labels.acceptQuote,
                   language === "en"
-                    ? "Accept this quote and close the other vendor requests?"
-                    : "¿Aceptar esta cotización y cerrar las otras solicitudes?",
+                    ? "Accept this vendor’s proposal? Your other vendor conversations will stay open."
+                    : "¿Aceptar la propuesta de este proveedor? Las otras conversaciones seguirán abiertas.",
                   [
                     { text: language === "en" ? "Cancel" : "Cancelar", style: "cancel" },
                     { text: labels.acceptQuote, onPress: () => void acceptQuote() },

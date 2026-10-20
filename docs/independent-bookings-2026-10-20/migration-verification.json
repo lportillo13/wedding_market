@@ -1,0 +1,11 @@
+{
+  "messageCount": 13,
+  "migrationRecorded": true,
+  "backfilledBookings": 553,
+  "historicalBookings": 553,
+  "migrationStatement": "Reviewed migration SHA256 64a9a5a7b0b6ee3f07720fb172b7018b3c04c2d2cb37bed96eebd8729dcecf27",
+  "reviewThreadUnique": true,
+  "invalidBookedStatuses": 0,
+  "anonymousAcceptAllowed": false,
+  "wholeRequestReviewUnique": false
+}

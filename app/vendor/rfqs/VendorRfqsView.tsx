@@ -71,8 +71,8 @@ export default function VendorRfqsView({ hasVendorProfile, items, vendorId, vend
         <div className="vstack gap-3">
           {items.map(({ invite, latestQuote, quotesForRfq, rfq, latestQuoteMessages }) => {
             const hasAcceptedQuote = Boolean(
-              rfq?.accepted_quote_id &&
-                quotesForRfq.some((quote) => quote.id === rfq.accepted_quote_id)
+              invite.accepted_quote_id &&
+                quotesForRfq.some((quote) => quote.id === invite.accepted_quote_id)
             );
             const contactRevealed = hasAcceptedQuote;
             const revealEmail = invite.reveal_email ?? contactRevealed;

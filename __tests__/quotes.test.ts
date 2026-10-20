@@ -9,7 +9,7 @@ const vendorId = "00000000-0000-4000-8000-000000000002";
 const userId = "00000000-0000-4000-8000-000000000003";
 const payload = { rfqId, vendorId, amountCents: 125050, message: " Proposal " };
 
-function fixture(options: { ownsVendor?: boolean; closed?: boolean; expired?: boolean; accepted?: boolean; saveDenied?: boolean; metadataFails?: boolean } = {}) {
+function fixture(options: { ownsVendor?: boolean; closed?: boolean; expired?: boolean; accepted?: boolean; anotherAccepted?: boolean; saveDenied?: boolean; metadataFails?: boolean } = {}) {
   const writes: { table: string; body: Record<string, unknown> }[] = [];
   const client = createClient("https://quotes.example.invalid", "synthetic-public-key", {
     auth: { persistSession: false, autoRefreshToken: false },
@@ -22,8 +22,8 @@ function fixture(options: { ownsVendor?: boolean; closed?: boolean; expired?: bo
       let data: unknown;
       let status = 200;
       if (table === "vendors") data = options.ownsVendor === false ? [] : [{ id: vendorId, business_name: "Synthetic vendor" }];
-      else if (table === "rfqs_visible") data = [{ owner_id: "synthetic-recipient", accepted_quote_id: options.accepted ? "accepted" : null }];
-      else if (table === "rfq_invites" && request.method === "GET") data = [{ status: "invited", closed_at: options.closed ? "2026-01-01" : null,
+      else if (table === "rfqs_visible") data = [{ owner_id: "synthetic-recipient", accepted_quote_id: options.anotherAccepted ? "other-booking" : null }];
+      else if (table === "rfq_invites" && request.method === "GET") data = [{ status: "invited", accepted_quote_id: options.accepted ? "accepted" : null, closed_at: options.closed ? "2026-01-01" : null,
         expires_at: options.expired ? "2020-01-01T00:00:00Z" : null }];
       else if (table === "quotes") {
         data = options.saveDenied ? { code: "42501", message: "synthetic state changed" } : { id: "saved-quote", version: 3, created_at: "2026-10-19T12:00:00Z" };
@@ -72,4 +72,11 @@ test("a saved quote remains successful if metadata and notification delivery fai
   assert.equal(writes[0].body.message, "Proposal");
   assert.equal("version" in writes[0].body, false);
   if (result.ok) assert.equal(result.quote.version, 3);
+});
+
+test("a booking with a different vendor does not block this vendor’s proposal", async () => {
+  const { client, writes } = fixture({ anotherAccepted: true });
+  const result = await submitVendorQuote(client, userId, payload, async () => ({ data: null, error: null }));
+  assert.equal(result.ok, true);
+  assert.equal(writes.filter(write => write.table === "quotes").length, 1);
 });

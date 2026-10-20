@@ -34,17 +34,17 @@ export async function submitVendorQuote(
     if (!vendor) return { ok: false, status: 403, message: "Vendor access required." };
 
     const [{ data: invite, error: inviteError }, { data: rfq, error: rfqError }] = await Promise.all([
-      client.from("rfq_invites").select("status, expires_at, closed_at")
+      client.from("rfq_invites").select("status, accepted_quote_id, expires_at, closed_at")
         .eq("rfq_id", input.rfqId).eq("vendor_id", input.vendorId)
-        .maybeSingle<{ status: string | null; expires_at: string | null; closed_at: string | null }>(),
-      client.from("rfqs_visible").select("owner_id, accepted_quote_id").eq("id", input.rfqId)
-        .maybeSingle<{ owner_id: string | null; accepted_quote_id: string | null }>(),
+        .maybeSingle<{ status: string | null; accepted_quote_id: string | null; expires_at: string | null; closed_at: string | null }>(),
+      client.from("rfqs_visible").select("owner_id").eq("id", input.rfqId)
+        .maybeSingle<{ owner_id: string | null }>(),
     ]);
     if (inviteError || rfqError) return { ok: false, status: 503, message: "Unable to load this request. Please try again." };
     if (!invite || !rfq) return { ok: false, status: 404, message: "Request not found." };
     const status = invite.status?.trim().toLowerCase() ?? "";
     const expired = Boolean(invite.expires_at && Date.parse(invite.expires_at) <= Date.now());
-    if (rfq.accepted_quote_id || invite.closed_at || ["declined", "expired", "accepted"].includes(status) || expired) {
+    if (invite.accepted_quote_id || invite.closed_at || ["declined", "expired", "accepted"].includes(status) || expired) {
       return { ok: false, status: 409, message: "This quote request is closed or expired." };
     }
 

@@ -1,14 +1,17 @@
 import {
   createQuoteRequests,
+  loadMobileInbox,
   sendQuoteThreadReply,
   type MobileInboxThread,
   type QuoteRequestInput,
 } from "../src/lib/rfqs";
 import { requestJson } from "../src/lib/http";
 import { createSubmissionId, isQuoteThreadClosed } from "../src/lib/quoteUtils";
+import { supabase } from "../src/lib/supabase";
 
 jest.mock("../src/lib/supabase", () => ({
   supabase: {
+    rpc: jest.fn(),
     auth: {
       getSession: jest.fn(async () => ({
         data: { session: { access_token: "synthetic-session-token" } },
@@ -125,4 +128,19 @@ test("archived accepted threads stay read only and deduplication IDs have UUID s
   expect(createSubmissionId()).toMatch(
     /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/,
   );
+});
+
+test("native inbox reads bookings from each invitation instead of the shared inquiry shortcut", async () => {
+  const rpc = supabase!.rpc as unknown as jest.Mock;
+  rpc.mockResolvedValue({ error: null, data: [
+    { invite: { rfq_id: id(20), vendor_id: id(10), status: "accepted", accepted_quote_id: id(40) },
+      rfq: { accepted_quote_id: id(40) }, vendor: { business_name: "Example photographer" }, latest_quote: null, accepted_here: true, total_count: 2 },
+    { invite: { rfq_id: id(20), vendor_id: id(11), status: "responded", accepted_quote_id: null },
+      rfq: { accepted_quote_id: id(40) }, vendor: { business_name: "Example venue" }, latest_quote: null, accepted_here: false, total_count: 2 },
+  ] });
+  const { threads } = await loadMobileInbox("client", "en");
+  expect(threads[0].acceptedQuoteId).toBe(id(40));
+  expect(threads[1].acceptedQuoteId).toBeNull();
+  expect(threads[1].status).toBe("responded");
+  expect(isQuoteThreadClosed(threads[1].status, threads[1].expiresAt, threads[1].acceptedQuoteId, [])).toBe(false);
 });

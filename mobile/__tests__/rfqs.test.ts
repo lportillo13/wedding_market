@@ -33,10 +33,10 @@ describe("mobile quote helpers", () => {
     });
   });
 
-  test("keeps the accepted vendor open and independently closes competing vendor threads", () => {
+  test("keeps booked follow-up open while another vendor remains independently available", () => {
     const acceptedQuoteId = "quote-vendor-1";
     expect(isQuoteThreadClosed("accepted", "2020-01-01T00:00:00Z", acceptedQuoteId, [acceptedQuoteId])).toBe(false);
-    expect(isQuoteThreadClosed("quoted", null, acceptedQuoteId, ["quote-vendor-2"])).toBe(true);
+    expect(isQuoteThreadClosed("quoted", null, null, ["quote-vendor-2"])).toBe(false);
     expect(isQuoteThreadClosed("quoted", "2020-01-01T00:00:00Z", null, [], Date.parse("2020-01-02T00:00:00Z"))).toBe(true);
   });
 

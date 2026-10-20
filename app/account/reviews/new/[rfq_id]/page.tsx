@@ -11,11 +11,14 @@ import ReviewForm from "./ReviewForm";
 
 export default async function NewReviewPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ rfq_id: string }>;
+  searchParams: Promise<{ vendor?: string }>;
 }) {
   const { rfq_id } = await params;
-  const { dictionary } = await getRequestI18n();
+  const { vendor: selectedVendor } = await searchParams;
+  const { dictionary, language } = await getRequestI18n();
   const labels = dictionary.account.reviewsPage;
   const supabase = await createSupabaseServerClient();
 
@@ -77,19 +80,31 @@ export default async function NewReviewPage({
     );
   }
 
-  let vendorId: string | null = null;
-  if (rfq.accepted_quote_id) {
-    const { data: quote, error: quoteErr } = await supabase
-      .from("quotes")
-      .select("vendor_id")
-      .eq("id", rfq.accepted_quote_id)
-      .maybeSingle<{ vendor_id: string }>();
+  const { data: bookings, error: bookingError } = await supabase
+    .from("rfq_invites")
+    .select("vendor_id")
+    .eq("rfq_id", rfq_id)
+    .not("accepted_quote_id", "is", null);
+  if (bookingError) throw new Error(bookingError.message);
+  const vendorId = selectedVendor
+    ? bookings?.find((booking) => booking.vendor_id === selectedVendor)?.vendor_id ?? null
+    : bookings?.length === 1 ? bookings[0].vendor_id : null;
 
-    if (quoteErr) {
-      throw new Error(quoteErr.message);
-    }
-
-    vendorId = quote?.vendor_id ?? null;
+  if (!selectedVendor && bookings && bookings.length > 1) {
+    const { data: vendors, error: vendorError } = await supabase.from("thread_vendors")
+      .select("id, business_name").in("id", bookings.map((booking) => booking.vendor_id));
+    if (vendorError) throw new Error(vendorError.message);
+    return (
+      <main className="container py-4" style={{ maxWidth: 720 }}>
+        <h1 className="mb-3">{labels.newTitle}</h1>
+        <p>{language === "es" ? "Elige el proveedor que quieres reseñar." : "Choose the vendor you want to review."}</p>
+        <ul className="list-unstyled vstack gap-3">
+          {vendors?.map((vendor) => (
+            <li key={vendor.id}><Link href={`/account/reviews/new/${rfq_id}?vendor=${encodeURIComponent(vendor.id)}`}>{vendor.business_name}</Link></li>
+          ))}
+        </ul>
+      </main>
+    );
   }
 
   if (!vendorId) {

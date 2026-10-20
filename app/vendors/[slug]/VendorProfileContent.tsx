@@ -191,7 +191,7 @@ export default function VendorProfileContent({
 
       {reviewRfqId && (
         <div className="my-2">
-          <Link className="btn btn-primary" href={`/account/reviews/new/${reviewRfqId}`}>
+          <Link className="btn btn-primary" href={`/account/reviews/new/${reviewRfqId}?vendor=${encodeURIComponent(vendor.id)}`}>
             {labels.writeReview}
           </Link>
         </div>

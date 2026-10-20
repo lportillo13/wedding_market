@@ -57,7 +57,7 @@ export default async function VendorInboxThreadPage({
     );
   }
 
-  const {accepted, closed: conversationClosed, canPropose} = getConversationState(detail.invite, detail.rfq.accepted_quote_id, detail.quotes.map(q => q.id));
+  const {accepted, closed: conversationClosed, canPropose} = getConversationState(detail.invite, (detail.invite.accepted_quote_id ?? null), detail.quotes.map(q => q.id));
   const location =
     [detail.rfq.city, detail.rfq.state, detail.rfq.country].filter(Boolean).join(", ") || "-";
   const inviteAccepted = accepted;

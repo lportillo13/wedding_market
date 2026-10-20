@@ -31,7 +31,7 @@ The [migration integrity check](migration-verification.json) confirms version 00
 
 ## Product rule and practical limits
 
-Existing acceptance behavior remains one winning vendor per inquiry, closing its competing offers. The client sees that consequence before accepting and can compare the request's proposals. The owner was asked whether mixed-service group requests should instead book services independently; that decision is pending and was not silently changed.
+Historical behavior in this October 19 release selected one winning vendor per inquiry. On October 20 the owner explicitly confirmed independent vendor bookings and authorized isolated test data. That decision supersedes the prior pending rule; see [the independent-booking implementation and release review](../independent-bookings-2026-10-20/review.md).
 
 No real client/vendor login credentials were supplied for browser acceptance. UI scenarios are fictional; database role checks are separate from a signed-in two-account browser test. Notification failures no longer corrupt action results, but there is no durable delivery outbox. Ordered history uses bounded REST batches while rendering the selected thread's complete history. Database checks are transactional, not a simultaneous multi-connection stress test.
 

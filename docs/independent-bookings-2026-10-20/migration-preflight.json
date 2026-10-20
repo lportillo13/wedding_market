@@ -1,0 +1,15 @@
+{
+  "messages": 13,
+  "migration006": true,
+  "migration007": false,
+  "legacyBookings": 553,
+  "invalidLegacyBookings": 0,
+  "legacyAutomaticClosures": 0,
+  "reviewThreadUnique": true,
+  "migrationColumns": [
+    "version",
+    "statements",
+    "name"
+  ],
+  "reviewedMigrationSha256": "64a9a5a7b0b6ee3f07720fb172b7018b3c04c2d2cb37bed96eebd8729dcecf27"
+}
