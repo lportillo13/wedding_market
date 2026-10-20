@@ -1,6 +1,6 @@
 # Application release handoff — October 19, 2026
 
-Status: live is `4c0ac2468dab0af9133d582d643808001da49c57`, including the account-menu loading repair and all prior profile, inbox and inquiry/message changes. The [latest repair review and release evidence](../header-account-2026-10-19/review.md) records server-rendered account navigation, bounded failures, exact deployment receipt and live EN/ES phone verification. The direct deployment gateway is installed and verified; routine releases no longer require owner terminal commands. Earlier header releases below are historical.
+Status: live is `4691853c1c480306f229273529214af51e05a162`, including independent vendor bookings and all earlier header/profile/inbox/workflow repairs. The [latest independent-booking review and release evidence](../independent-bookings-2026-10-20/review.md) records migration 007, isolated rollback-only live checks, exact deployment receipt and independent public verification. The direct deployment gateway is installed and verified; routine releases no longer require owner terminal commands. Earlier header releases below are historical.
 
 ## Latest warm styling release
 
