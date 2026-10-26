@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-26T23:00:44.509671+00:00",
+  "migrations": [
+    {
+      "version": "202610260009",
+      "sourceMd5": "ad0a21a34b5eb6b5edd99c3b17649439"
+    },
+    {
+      "version": "202610260010",
+      "sourceMd5": "30e76b4dfcb83143256aecd520f9b993"
+    },
+    {
+      "version": "202610260011",
+      "sourceMd5": "80a456f58141c9d09d0a26f1c9972e02"
+    }
+  ],
+  "postingRulesEnforced": true,
+  "publishedSeedVendors": 0,
+  "publishedUnmarkedVendors": 4
+}

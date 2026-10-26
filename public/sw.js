@@ -1,4 +1,4 @@
-const CACHE_VERSION = "wm-pwa-v2-852b185e1785";
+const CACHE_VERSION = "wm-pwa-v2-aae8324d30fa";
 const OFFLINE_CACHE = `${CACHE_VERSION}-offline`;
 const OFFLINE_ASSETS = ["/offline.html", "/icon.svg"];
 

@@ -11,7 +11,9 @@ const nextConfig: NextConfig = {
       { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self)" },
       { key: "Strict-Transport-Security", value: "max-age=31536000" },
       { key: "Content-Security-Policy", value: "base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'" },
-    ] }];
+    ] }, {source:'/offline.html',headers:[
+      {key:'Cache-Control',value:'public, max-age=0, must-revalidate, no-transform'},
+    ]}];
   },
   serverExternalPackages: ["ffmpeg-static", "sharp"],
   sassOptions: {
