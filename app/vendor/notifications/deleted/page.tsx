@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getRequestI18n } from "@/lib/i18n/server";
 import { redirect } from "next/navigation";
 import {
   permanentlyDeleteAllNotifications,
@@ -6,7 +7,7 @@ import {
   restoreSelectedNotifications,
 } from "@/app/account/notifications/actions";
 import AutocompleteInput from "@/components/search/AutocompleteInput";
-import { isMissingNotificationTableError, loadNotifications } from "@/lib/notification-center";
+import { isMissingNotificationTableError, loadNotifications } from "@/features/notifications/server/inbox";
 import { buildAutocompleteSuggestions } from "@/lib/search/autocomplete";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -25,6 +26,7 @@ export default async function VendorDeletedNotificationsPage({
   searchParams?: Promise<{ q?: string }>;
 }) {
   const supabase = await createSupabaseServerClient();
+  const { language } = await getRequestI18n();
   const search = searchParams ? await searchParams : undefined;
   const query = search?.q?.trim().toLowerCase() ?? "";
   const {
@@ -42,8 +44,7 @@ export default async function VendorDeletedNotificationsPage({
       <main className="pb-4">
         <h1 className="mb-3">Deleted notifications</h1>
         <div className="alert alert-warning mb-0">
-          The notifications table does not exist in the local database yet. Run
-          <code> sql/notifications.sql</code> to enable it.
+          {language === "es" ? "Las notificaciones no están disponibles por el momento. Inténtalo de nuevo más tarde o contacta a soporte." : "Notifications are temporarily unavailable. Please try again later or contact support."}
         </div>
       </main>
     );

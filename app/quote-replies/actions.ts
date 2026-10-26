@@ -2,7 +2,7 @@
 import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getRequestI18n } from "@/lib/i18n/server";
-import { sendThreadMessage } from "@/lib/thread-messages";
+import { sendThreadMessage } from "@/features/conversations/server/messages";
 
 export type QuoteReplyState = { ok: boolean; message?: string };
 async function send(

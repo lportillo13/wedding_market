@@ -248,8 +248,8 @@ const common = {
     },
     "notificationsPage": {
       "title": "Notifications",
-      "missingTablePrefix": "The notifications table does not exist in the local database yet. Run the SQL in",
-      "missingTableSuffix": "in Supabase to enable it.",
+      "missingTablePrefix": "Notifications are temporarily unavailable.",
+      "missingTableSuffix": "Please try again later or contact support.",
       "intro": "When a vendor responds to or updates a quote, you'll see it here.",
       "moveAllToDeleted": "Move all to deleted",
       "empty": "You don't have any notifications yet. Quote responses will appear here.",

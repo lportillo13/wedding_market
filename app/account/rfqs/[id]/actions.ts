@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { buildThreadKey } from "@/lib/inbox";
-import { acceptVendorQuote } from "@/lib/quotes/accept";
+import { buildThreadKey } from "@/features/conversations/server/inbox";
+import { acceptVendorQuote } from "@/features/proposals/server/accept";
 import { getRequestI18n } from "@/lib/i18n/server";
 
 import { getSupabaseServer } from "@/lib/supabase/server";

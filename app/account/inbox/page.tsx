@@ -2,7 +2,7 @@ import Link from "next/link";
 import InboxPageView from "@/components/inbox/InboxPageView";
 import { buildAutocompleteSuggestions } from "@/lib/search/autocomplete";
 import { getRequestI18n } from "@/lib/i18n/server";
-import { loadClientInboxThreads } from "@/lib/inbox";
+import { loadClientInboxThreads } from "@/features/conversations/server/inbox";
 import {
   presentInboxConversation,
   type InboxFilters,

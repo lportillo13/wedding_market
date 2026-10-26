@@ -1,0 +1,35 @@
+# EAS archives start at the parent Git repository. Allow only native sources
+# and the product rules imported from ../shared. Inspect the actual EAS archive
+# before the first build; this policy is not proof of the uploaded archive.
+*
+!mobile/
+!mobile/package.json
+!mobile/package-lock.json
+!mobile/app.json
+!mobile/eas.json
+!mobile/metro.config.js
+!mobile/tsconfig.json
+!mobile/App.tsx
+!mobile/src/
+!mobile/src/**
+!mobile/assets/
+!mobile/assets/**
+!shared/
+!shared/**
+
+# Never include environment files, signing material or reviewer credentials,
+# including if somebody accidentally places one under an allowed directory.
+**/.env*
+**/credentials.json
+**/*service-account*.json
+**/*.jks
+**/*.keystore
+**/*.p8
+**/*.p12
+**/*.pem
+**/*.key
+**/node_modules/
+**/.git/
+**/.cache/
+**/.expo/
+**/dist/

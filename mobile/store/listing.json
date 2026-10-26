@@ -1,0 +1,32 @@
+{
+  "status": "draft",
+  "brandApproved": false,
+  "publisherConfirmed": false,
+  "appName": "The Wedding Market",
+  "bundleIdentifier": "com.theweddingmarket.app",
+  "website": "https://thewedmarket.com",
+  "privacyUrl": "https://thewedmarket.com/privacy",
+  "termsUrl": "https://thewedmarket.com/terms",
+  "deletionUrl": "https://thewedmarket.com/account-deletion",
+  "supportUrl": null,
+  "supportEmail": null,
+  "proposedPrimaryCategory": "Lifestyle",
+  "locales": {
+    "en": {
+      "name": "The Wedding Market",
+      "subtitle": "Plan your Costa Rica wedding",
+      "shortDescription": "Find wedding vendors in Costa Rica, request quotes, and message your favorites.",
+      "description": "Plan your wedding in Costa Rica with The Wedding Market.\n\nExplore wedding vendors, view their photos and service details, and save your favorites. Send individual or group quote requests and keep a private conversation with each vendor. Review proposals and choose vendors independently for your wedding.\n\nKeep your wedding date, guest count, and planning preferences in your profile to make requesting quotes easier.\n\nFor vendors, manage your business profile, selected media, service details, availability, and proposals from your phone.\n\nAvailable in English and Spanish. Bookings, contracts, and payments for wedding services are arranged directly between couples and vendors.",
+      "keywords": "wedding,Costa Rica,vendors,venues,photography,planning,quotes,boda",
+      "screenshotCaptions": ["Find your wedding team", "Explore photos and services", "Save your favorite vendors", "Request quotes for your wedding", "Keep each conversation private", "Manage your vendor profile"]
+    },
+    "es": {
+      "name": "The Wedding Market",
+      "subtitle": "Tu boda en Costa Rica",
+      "shortDescription": "Encuentra proveedores para tu boda en Costa Rica y solicita cotizaciones.",
+      "description": "Planea tu boda en Costa Rica con The Wedding Market.\n\nExplora proveedores, mira sus fotos y servicios, y guarda tus favoritos. Solicita cotizaciones individuales o a varios proveedores y mantén una conversación privada con cada uno. Revisa las propuestas y elige a cada proveedor de forma independiente.\n\nGuarda la fecha de tu boda, la cantidad de invitados y tus preferencias en tu perfil para facilitar las solicitudes de cotización.\n\nSi eres proveedor, administra desde tu teléfono el perfil de tu negocio, las fotos que elijas compartir, tus servicios, disponibilidad y propuestas.\n\nDisponible en español e inglés. Las reservas, los contratos y los pagos de los servicios de boda se acuerdan directamente entre las parejas y los proveedores.",
+      "keywords": "boda,Costa Rica,proveedores,lugares,fotografia,organizacion,cotizaciones,wedding",
+      "screenshotCaptions": ["Encuentra el equipo para tu boda", "Explora fotos y servicios", "Guarda tus proveedores favoritos", "Solicita cotizaciones para tu boda", "Conversaciones privadas con cada proveedor", "Administra el perfil de tu negocio"]
+    }
+  }
+}

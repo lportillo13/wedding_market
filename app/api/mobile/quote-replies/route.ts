@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAuthenticatedRequestClient } from "@/lib/supabase/request";
-import { sendThreadMessage } from "@/lib/thread-messages";
+import { sendThreadMessage } from "@/features/conversations/server/messages";
 
 export async function POST(request: Request) {
   const client = await createAuthenticatedRequestClient(request);

@@ -1,4 +1,4 @@
-import type { QuoteMessageRow } from "@/lib/quote-messages";
+import type { QuoteMessageRow } from "@/features/conversations/server/quote-messages";
 
 type QuoteConversationProps = {
   messages: QuoteMessageRow[];

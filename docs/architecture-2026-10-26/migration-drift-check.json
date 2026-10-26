@@ -1,0 +1,62 @@
+{
+  "checkedAt": "2026-10-26T17:30:40.487Z",
+  "matches": true,
+  "migrations": [
+    {
+      "version": "202610190000",
+      "file": "202610190000_live_schema_baseline.sql",
+      "comparison": "exact-source",
+      "sha256": "17ad9fd094febd7ac71aa6d5d2ef8abfef85e6e3aefe611e1973a9d58c07badf",
+      "matches": true
+    },
+    {
+      "version": "202610190001",
+      "file": "202610190001_security_hardening.sql",
+      "comparison": "exact-source",
+      "sha256": "4a960a418ed657dea1c1cd8d2b85e70b8bc8ee7c3704af98e477abe148e5087e",
+      "matches": true
+    },
+    {
+      "version": "202610190002",
+      "file": "202610190002_atomic_workflows.sql",
+      "comparison": "line-ending-normalized",
+      "sha256": "6285d3cfb3bd4979e47c365c24a7bce6c01438eb0b0cb580cc4aab9c12a9e300",
+      "matches": true
+    },
+    {
+      "version": "202610190003",
+      "file": "202610190003_scoped_query_summaries.sql",
+      "comparison": "exact-source",
+      "sha256": "138fb6cb2cbb20d07017bd21fec9e30ae02e7f5849b2c5cad1a7480b040db5ae",
+      "matches": true
+    },
+    {
+      "version": "202610190004",
+      "file": "202610190004_contact_privacy.sql",
+      "comparison": "line-ending-normalized",
+      "sha256": "454e2cacaf9950a6dfd9596a2c02b60322387cbf81c6e1a1499c75eedf919a81",
+      "matches": true
+    },
+    {
+      "version": "202610190005",
+      "file": "202610190005_admin_mfa.sql",
+      "comparison": "line-ending-normalized",
+      "sha256": "7500a2e476bee35cbff03c95e136602cfc1e62f0d773bb7b7a905fd07dc51214",
+      "matches": true
+    },
+    {
+      "version": "202610190006",
+      "file": "202610190006_inquiry_conversations.sql",
+      "comparison": "recorded-sha256",
+      "sha256": "1c4eaffc00bf01a487e175db9573132c321d6262a2af2a1dc39e9baff6b9a7be",
+      "matches": true
+    },
+    {
+      "version": "202610200007",
+      "file": "202610200007_independent_vendor_bookings.sql",
+      "comparison": "recorded-sha256",
+      "sha256": "64a9a5a7b0b6ee3f07720fb172b7018b3c04c2d2cb37bed96eebd8729dcecf27",
+      "matches": true
+    }
+  ]
+}

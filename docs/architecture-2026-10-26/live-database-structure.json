@@ -1,0 +1,271 @@
+{
+  "indexes": 69,
+  "policies": 86,
+  "relations": [
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "amenity_lookup",
+      "options": null
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "blog_posts",
+      "options": null
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "categories",
+      "options": null
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "languages",
+      "options": null
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "notifications",
+      "options": null
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "profile_translated_fields",
+      "options": null
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "profiles",
+      "options": null
+    },
+    {
+      "rls": false,
+      "kind": "v",
+      "name": "profiles_resolved",
+      "options": [
+        "security_invoker=true"
+      ]
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "quote_messages",
+      "options": null
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "quotes",
+      "options": null
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "reviews",
+      "options": null
+    },
+    {
+      "rls": false,
+      "kind": "v",
+      "name": "reviews_public",
+      "options": [
+        "security_invoker=true"
+      ]
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "rfq_invites",
+      "options": null
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "rfqs",
+      "options": null
+    },
+    {
+      "rls": false,
+      "kind": "v",
+      "name": "rfqs_visible",
+      "options": [
+        "security_barrier=true"
+      ]
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "site_settings",
+      "options": null
+    },
+    {
+      "rls": false,
+      "kind": "v",
+      "name": "thread_vendors",
+      "options": [
+        "security_barrier=true"
+      ]
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "user_push_tokens",
+      "options": null
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "vendor_amenities",
+      "options": null
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "vendor_availability",
+      "options": null
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "vendor_categories",
+      "options": null
+    },
+    {
+      "rls": false,
+      "kind": "v",
+      "name": "vendor_latest_quotes",
+      "options": [
+        "security_invoker=true"
+      ]
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "vendor_locations",
+      "options": null
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "vendor_media",
+      "options": null
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "vendor_pricing",
+      "options": null
+    },
+    {
+      "rls": false,
+      "kind": "v",
+      "name": "vendor_profile_view",
+      "options": [
+        "security_invoker=true"
+      ]
+    },
+    {
+      "rls": false,
+      "kind": "v",
+      "name": "vendor_public_search",
+      "options": [
+        "security_invoker=true"
+      ]
+    },
+    {
+      "rls": false,
+      "kind": "v",
+      "name": "vendor_ratings",
+      "options": [
+        "security_invoker=true"
+      ]
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "vendor_spaces",
+      "options": null
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "vendor_team",
+      "options": null
+    },
+    {
+      "rls": true,
+      "kind": "r",
+      "name": "vendors",
+      "options": null
+    }
+  ],
+  "checked_at": "2026-10-26T17:24:43.421167+00:00",
+  "migrations": [
+    {
+      "name": "live_schema_baseline",
+      "sql_md5": "d3e993adfe1e8ad30610c7db2046dc6c",
+      "version": "202610190000"
+    },
+    {
+      "name": "security_hardening",
+      "sql_md5": "fff835a510eedeea66775a9e420bce82",
+      "version": "202610190001"
+    },
+    {
+      "name": "atomic_workflows",
+      "sql_md5": "970f353ae6f758ca54d42846ecd74110",
+      "version": "202610190002"
+    },
+    {
+      "name": "scoped_query_summaries",
+      "sql_md5": "deb8b077845ab4f4b967c06ee92d4282",
+      "version": "202610190003"
+    },
+    {
+      "name": "contact_privacy",
+      "sql_md5": "2b9509fb5b0f15c42d26b58665878243",
+      "version": "202610190004"
+    },
+    {
+      "name": "admin_mfa",
+      "sql_md5": "09fb242053852fb8fd08e9b47b764b20",
+      "version": "202610190005"
+    },
+    {
+      "name": "inquiry_conversations",
+      "sql_md5": "fbdc04348083cf6ba9620959fe55e6c5",
+      "version": "202610190006"
+    },
+    {
+      "name": "independent_vendor_bookings",
+      "sql_md5": "cf76d540e9ef2b1dc388e26fbf839a17",
+      "version": "202610200007"
+    }
+  ],
+  "database_version": "17.6",
+  "foreign_key_gaps": [
+    {
+      "name": "profile_translated_fields_language_fkey",
+      "relation": "profile_translated_fields",
+      "definition": "FOREIGN KEY (language) REFERENCES languages(code) ON DELETE CASCADE"
+    },
+    {
+      "name": "profiles_language_fkey",
+      "relation": "profiles",
+      "definition": "FOREIGN KEY (language) REFERENCES languages(code) ON UPDATE CASCADE"
+    },
+    {
+      "name": "invites_accepted_quote_thread_fkey",
+      "relation": "rfq_invites",
+      "definition": "FOREIGN KEY (rfq_id, vendor_id, accepted_quote_id) REFERENCES quotes(rfq_id, vendor_id, id)"
+    }
+  ],
+  "unprotected_anonymous_writes": [],
+  "definer_without_fixed_search_path": []
+}

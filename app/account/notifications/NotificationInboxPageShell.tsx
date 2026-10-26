@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { NotificationMailboxScope } from "@/lib/notification-center";
+import type { NotificationMailboxScope } from "@/features/notifications/server/inbox";
 
 type NotificationInboxPageShellProps = {
   scope: NotificationMailboxScope;

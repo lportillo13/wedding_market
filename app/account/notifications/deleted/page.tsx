@@ -8,7 +8,7 @@ import Link from "next/link";
 import AutocompleteInput from "@/components/search/AutocompleteInput";
 import { getLanguageLocale } from "@/lib/i18n";
 import { getRequestI18n } from "@/lib/i18n/server";
-import { isMissingNotificationTableError, loadNotifications } from "@/lib/notification-center";
+import { isMissingNotificationTableError, loadNotifications } from "@/features/notifications/server/inbox";
 import { buildAutocompleteSuggestions } from "@/lib/search/autocomplete";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -47,7 +47,7 @@ export default async function AccountDeletedNotificationsPage({
       <main className="container py-4">
         <h1 className="mb-3">{labels.deletedTitle}</h1>
         <div className="alert alert-warning mb-0">
-          {labels.missingTablePrefix} <code>sql/notifications.sql</code> {labels.missingTableSuffix}
+          {labels.missingTablePrefix} {labels.missingTableSuffix}
         </div>
       </main>
     );

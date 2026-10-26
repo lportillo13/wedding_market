@@ -6,7 +6,7 @@ import NotificationLink from "@/components/NotificationLink";
 import {
   ACCOUNT_NOTIFICATION_TYPES,
   VENDOR_NOTIFICATION_TYPES,
-} from "@/lib/notification-types";
+} from "@/shared/notifications/events";
 import type { HeaderVendorCategory } from "@/components/VendorsMegaMenu";
 import type { HeaderAccount } from "@/lib/header-account";
 

@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { createClient } from "@supabase/supabase-js";
-import { MAX_QUOTE_AMOUNT_CENTS, parseQuoteAmountCents, quoteInputSchema } from "@/lib/quotes/input";
-import { submitVendorQuote } from "@/lib/quotes/submit";
+import { MAX_QUOTE_AMOUNT_CENTS, parseQuoteAmountCents, quoteInputSchema } from "@/features/proposals/domain/input";
+import { submitVendorQuote } from "@/features/proposals/server/submit";
 
 const rfqId = "00000000-0000-4000-8000-000000000001";
 const vendorId = "00000000-0000-4000-8000-000000000002";

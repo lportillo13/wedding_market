@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { fetchVendorSummaries } from "@/lib/vendor-summaries";
+import { fetchVendorSummaries } from "@/features/vendors/client/summaries";
 import { getShortlist } from "@/lib/shortlist";
 
 test("large shortlists load every vendor using bounded, deduplicated requests", async (t) => {

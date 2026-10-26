@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import sharp from 'sharp';
 import { MAX_MULTIPART_BYTES, readUploadForm, reserveUpload, UploadLimitError } from '@/lib/upload-limits';
-import { processImageUpload, validateVideoUpload } from '@/lib/media-processing';
+import { processImageUpload, validateVideoUpload } from '@/features/media/server/processing';
 
 test('multipart size is checked even when Content-Length is absent or false', async () => {
   let cancelled = false;

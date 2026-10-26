@@ -2,7 +2,7 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { parseMediaAsset } from '@/lib/images';
-import { buildStorageKey, processCarouselLogoUpload, processImageUpload, validateImageUpload } from '@/lib/media-processing';
+import { buildStorageKey, processCarouselLogoUpload, processImageUpload, validateImageUpload } from '@/features/media/server/processing';
 import { deleteFromR2, getOwnedR2ObjectKey, isR2Configured, uploadToR2 } from '@/lib/r2';
 import { getSiteUrl } from '@/lib/site-url';
 import { createSupabaseServerClient } from '@/lib/supabase/server';

@@ -2,6 +2,8 @@
 
 Expo React Native app for the full The Wedding Market platform.
 
+`App.tsx` is the thin Expo entry point. Application composition/navigation is in `src/application`, feature screens are in `src/features`, reusable controls are in `src/ui`, and styles/translations/content have their own modules. Pure cross-platform rules live in the parent `shared` directory. Read [the architecture review](../docs/architecture-2026-10-26/README.md) before adding a new screen or workflow; `src/app` is reserved for an intentional Expo Router migration.
+
 ## Environments
 
 For local development, the app can run against the existing local stack:
@@ -54,6 +56,8 @@ npm run start
 This project targets Expo SDK 56 and includes native modules used by the production app. Use a development build instead of Expo Go. If Expo Go shows "Project is incompatible with this version of Expo Go", install the Android development build from EAS and then run `npm run start`.
 
 ## Quality Checks
+
+Store launch preparation, brand concepts, remaining blockers and lessons from Digital Wedding are in [the current launch package](../docs/mobile-launch-2026-10-26/README.md). Run `npm run launch:audit` for the offline readiness report; `-- --strict` fails while blockers or required verification remain. This inspection does not create or submit builds. Final native icon exports are still pending. The root `.easignore` limits uploads to native sources/assets and sibling `shared` rules; inspect the actual EAS archive before the first release build.
 
 Run the complete local mobile gate before creating an EAS build:
 

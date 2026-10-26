@@ -1,5 +1,5 @@
-import { formatQuoteAmount } from "./quotes/format";
-import { formatCalendarDate } from "./calendar-date";
+import { formatQuoteAmount } from "../shared/proposals/format";
+import { formatCalendarDate } from "../shared/calendar/date";
 import {
   dictionaries,
   getLanguageLocale,
@@ -9,7 +9,7 @@ import type {
   InboxThreadListItem,
   ClientInboxStatus,
   VendorInboxStatus,
-} from "./inbox";
+} from "../features/conversations/server/inbox";
 
 export type InboxScope = "client" | "vendor";
 export type InboxFilters = {

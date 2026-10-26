@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildNotificationEmail, getNotificationEmailAction } from "../../lib/notification-email";
+import { buildNotificationEmail, getNotificationEmailAction } from "../../features/notifications/server/email";
 
 test("routes each notification to the independent client or vendor conversation", () => {
   const data = { rfqId: "rfq-1", vendorId: "vendor-1" };

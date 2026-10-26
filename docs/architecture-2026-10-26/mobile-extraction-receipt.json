@@ -1,0 +1,646 @@
+{
+  "source": "mobile/App.tsx",
+  "originalLines": 8992,
+  "originalSha256": "81e62254f8bf345705f42f3497947ec53125aa064a248f95341a4a83744835d9",
+  "modules": [
+    {
+      "file": "mobile/src/app/types.ts",
+      "lines": 22,
+      "dependencies": []
+    },
+    {
+      "file": "mobile/src/theme/tokens.ts",
+      "lines": 24,
+      "dependencies": []
+    },
+    {
+      "file": "mobile/src/app/navigation.ts",
+      "lines": 62,
+      "dependencies": [
+        "src/app/types.ts",
+        "src/i18n/copy.ts"
+      ]
+    },
+    {
+      "file": "mobile/src/content/catalog.ts",
+      "lines": 125,
+      "dependencies": [
+        "src/app/types.ts"
+      ]
+    },
+    {
+      "file": "mobile/src/content/countries.ts",
+      "lines": 218,
+      "dependencies": []
+    },
+    {
+      "file": "mobile/src/i18n/copy.ts",
+      "lines": 673,
+      "dependencies": []
+    },
+    {
+      "file": "mobile/src/ui/links.ts",
+      "lines": 7,
+      "dependencies": []
+    },
+    {
+      "file": "mobile/src/ui/format.ts",
+      "lines": 40,
+      "dependencies": [
+        "src/i18n/copy.ts"
+      ]
+    },
+    {
+      "file": "mobile/src/ui/media.ts",
+      "lines": 8,
+      "dependencies": []
+    },
+    {
+      "file": "mobile/src/ui/calendars.tsx",
+      "lines": 288,
+      "dependencies": [
+        "src/i18n/copy.ts",
+        "src/theme/styles.ts",
+        "src/theme/tokens.ts"
+      ]
+    },
+    {
+      "file": "mobile/src/ui/forms.tsx",
+      "lines": 165,
+      "dependencies": [
+        "src/theme/styles.ts",
+        "src/i18n/copy.ts",
+        "src/theme/tokens.ts"
+      ]
+    },
+    {
+      "file": "mobile/src/ui/ProtectedScreen.tsx",
+      "lines": 21,
+      "dependencies": [
+        "src/features/auth/AuthScreen.tsx"
+      ]
+    },
+    {
+      "file": "mobile/src/features/auth/AuthScreen.tsx",
+      "lines": 936,
+      "dependencies": [
+        "src/i18n/copy.ts",
+        "src/content/catalog.ts",
+        "src/theme/styles.ts",
+        "src/theme/tokens.ts",
+        "src/ui/forms.tsx",
+        "src/content/countries.ts"
+      ]
+    },
+    {
+      "file": "mobile/src/features/vendors/components/VendorCard.tsx",
+      "lines": 88,
+      "dependencies": [
+        "src/i18n/copy.ts",
+        "src/theme/styles.ts",
+        "src/theme/tokens.ts",
+        "src/content/catalog.ts"
+      ]
+    },
+    {
+      "file": "mobile/src/features/vendors/screens/VendorSearchScreen.tsx",
+      "lines": 414,
+      "dependencies": [
+        "src/i18n/copy.ts",
+        "src/ui/format.ts",
+        "src/theme/styles.ts",
+        "src/theme/tokens.ts",
+        "src/app/types.ts",
+        "src/content/catalog.ts",
+        "src/features/vendors/components/VendorCard.tsx"
+      ]
+    },
+    {
+      "file": "mobile/src/features/shortlist/FavoritesScreen.tsx",
+      "lines": 118,
+      "dependencies": [
+        "src/i18n/copy.ts",
+        "src/theme/styles.ts",
+        "src/theme/tokens.ts",
+        "src/features/vendors/components/VendorCard.tsx"
+      ]
+    },
+    {
+      "file": "mobile/src/features/home/VendorLogoCarousel.tsx",
+      "lines": 82,
+      "dependencies": [
+        "src/i18n/copy.ts",
+        "src/theme/styles.ts"
+      ]
+    },
+    {
+      "file": "mobile/src/features/inquiries/RequestQuoteModal.tsx",
+      "lines": 227,
+      "dependencies": [
+        "src/i18n/copy.ts",
+        "src/theme/styles.ts",
+        "src/theme/tokens.ts",
+        "src/ui/forms.tsx",
+        "src/ui/calendars.tsx",
+        "src/content/catalog.ts"
+      ]
+    },
+    {
+      "file": "mobile/src/features/account/AccountProfileScreen.tsx",
+      "lines": 306,
+      "dependencies": [
+        "src/app/types.ts",
+        "src/theme/styles.ts",
+        "src/theme/tokens.ts",
+        "src/i18n/copy.ts",
+        "src/ui/forms.tsx",
+        "src/content/catalog.ts",
+        "src/ui/links.ts"
+      ]
+    },
+    {
+      "file": "mobile/src/features/admin/AdminDashboardScreen.tsx",
+      "lines": 104,
+      "dependencies": [
+        "src/app/types.ts",
+        "src/theme/styles.ts",
+        "src/theme/tokens.ts",
+        "src/i18n/copy.ts"
+      ]
+    },
+    {
+      "file": "mobile/src/features/vendors/screens/VendorWorkspaceScreen.tsx",
+      "lines": 638,
+      "dependencies": [
+        "src/app/types.ts",
+        "src/i18n/copy.ts",
+        "src/theme/styles.ts",
+        "src/theme/tokens.ts",
+        "src/ui/media.ts",
+        "src/ui/format.ts",
+        "src/ui/forms.tsx",
+        "src/ui/calendars.tsx"
+      ]
+    },
+    {
+      "file": "mobile/src/features/vendors/screens/VendorPublicProfileScreen.tsx",
+      "lines": 109,
+      "dependencies": [
+        "src/i18n/copy.ts",
+        "src/theme/styles.ts",
+        "src/theme/tokens.ts",
+        "src/features/vendors/screens/VendorDetailScreen.tsx"
+      ]
+    },
+    {
+      "file": "mobile/src/features/inbox/InboxScreen.tsx",
+      "lines": 481,
+      "dependencies": [
+        "src/i18n/copy.ts",
+        "src/theme/styles.ts",
+        "src/theme/tokens.ts",
+        "src/ui/calendars.tsx",
+        "src/content/catalog.ts",
+        "src/ui/format.ts",
+        "src/app/types.ts",
+        "src/ui/forms.tsx"
+      ]
+    },
+    {
+      "file": "mobile/src/features/vendors/screens/VendorDetailScreen.tsx",
+      "lines": 533,
+      "dependencies": [
+        "src/app/types.ts",
+        "src/theme/styles.ts",
+        "src/theme/tokens.ts",
+        "src/i18n/copy.ts",
+        "src/content/catalog.ts",
+        "src/ui/format.ts",
+        "src/ui/calendars.tsx"
+      ]
+    },
+    {
+      "file": "mobile/src/app/ScreenContent.tsx",
+      "lines": 264,
+      "dependencies": [
+        "src/app/types.ts",
+        "src/i18n/copy.ts",
+        "src/theme/styles.ts",
+        "src/content/catalog.ts",
+        "src/theme/tokens.ts",
+        "src/features/home/VendorLogoCarousel.tsx",
+        "src/features/vendors/screens/VendorSearchScreen.tsx",
+        "src/ui/ProtectedScreen.tsx",
+        "src/features/vendors/screens/VendorPublicProfileScreen.tsx",
+        "src/features/admin/AdminDashboardScreen.tsx",
+        "src/features/vendors/screens/VendorWorkspaceScreen.tsx",
+        "src/features/account/AccountProfileScreen.tsx",
+        "src/features/shortlist/FavoritesScreen.tsx",
+        "src/features/inbox/InboxScreen.tsx"
+      ]
+    },
+    {
+      "file": "mobile/src/app/App.tsx",
+      "lines": 530,
+      "dependencies": [
+        "src/app/navigation.ts",
+        "src/app/types.ts",
+        "src/i18n/copy.ts",
+        "src/theme/styles.ts",
+        "src/theme/tokens.ts",
+        "src/ui/links.ts",
+        "src/features/vendors/screens/VendorDetailScreen.tsx",
+        "src/app/ScreenContent.tsx",
+        "src/features/inquiries/RequestQuoteModal.tsx",
+        "src/features/auth/AuthScreen.tsx"
+      ]
+    },
+    {
+      "file": "mobile/src/theme/styles.ts",
+      "lines": 2850,
+      "dependencies": [
+        "src/theme/tokens.ts"
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "name": "TabKey",
+      "module": "mobile/src/app/types.ts",
+      "originalBodySha256": "9222eb259c6bd616161735bee273c73369403c64367e46f8c09381d0ad1e09b4",
+      "copiedBodySha256": "9222eb259c6bd616161735bee273c73369403c64367e46f8c09381d0ad1e09b4"
+    },
+    {
+      "name": "IconName",
+      "module": "mobile/src/app/types.ts",
+      "originalBodySha256": "b8f8d621ce64782cd3da10fea3fad83873014c54a6527d804c6afbf9d67156a9",
+      "copiedBodySha256": "b8f8d621ce64782cd3da10fea3fad83873014c54a6527d804c6afbf9d67156a9"
+    },
+    {
+      "name": "SearchViewMode",
+      "module": "mobile/src/app/types.ts",
+      "originalBodySha256": "469dc673b01f0a6d9f5227d1e3300e04d9cf369d1fdc6467dbbe992b2aaf2df0",
+      "copiedBodySha256": "469dc673b01f0a6d9f5227d1e3300e04d9cf369d1fdc6467dbbe992b2aaf2df0"
+    },
+    {
+      "name": "ClientProfileForm",
+      "module": "mobile/src/app/types.ts",
+      "originalBodySha256": "d463138fa537949207fbf03f543561d0a615b29abd41167655bd99c09771d161",
+      "copiedBodySha256": "d463138fa537949207fbf03f543561d0a615b29abd41167655bd99c09771d161"
+    },
+    {
+      "name": "colors",
+      "module": "mobile/src/theme/tokens.ts",
+      "originalBodySha256": "56aba0f6d32b07dcdd8c1ee9d98a373be1b82e04304fb0fa911948deb4aea26d",
+      "copiedBodySha256": "56aba0f6d32b07dcdd8c1ee9d98a373be1b82e04304fb0fa911948deb4aea26d"
+    },
+    {
+      "name": "fontFamilies",
+      "module": "mobile/src/theme/tokens.ts",
+      "originalBodySha256": "d9cdcdb492636eedf087e912dc5fe6f1603fcb0a3e2cea0080a9aec5d7b35bbd",
+      "copiedBodySha256": "d9cdcdb492636eedf087e912dc5fe6f1603fcb0a3e2cea0080a9aec5d7b35bbd"
+    },
+    {
+      "name": "tabIcons",
+      "module": "mobile/src/app/navigation.ts",
+      "originalBodySha256": "c10162b727b8bb4f3e488669ab415ef9ca37ec2b53e895613ac5ddf13ca74473",
+      "copiedBodySha256": "c10162b727b8bb4f3e488669ab415ef9ca37ec2b53e895613ac5ddf13ca74473"
+    },
+    {
+      "name": "clientTabs",
+      "module": "mobile/src/app/navigation.ts",
+      "originalBodySha256": "47014511e52836c9edb77f6543a51207e727e3558726125f1ead0557d8e7324e",
+      "copiedBodySha256": "47014511e52836c9edb77f6543a51207e727e3558726125f1ead0557d8e7324e"
+    },
+    {
+      "name": "guestTabs",
+      "module": "mobile/src/app/navigation.ts",
+      "originalBodySha256": "f26594e5db46cb31d8eb7a5cd14025c5eb4ec88a46fd23107a0f7dfb108f30da",
+      "copiedBodySha256": "f26594e5db46cb31d8eb7a5cd14025c5eb4ec88a46fd23107a0f7dfb108f30da"
+    },
+    {
+      "name": "vendorTabs",
+      "module": "mobile/src/app/navigation.ts",
+      "originalBodySha256": "f7c234c30bb6a8138b65906e6b65303dce38223b6042594aeec218a8ce5546d0",
+      "copiedBodySha256": "f7c234c30bb6a8138b65906e6b65303dce38223b6042594aeec218a8ce5546d0"
+    },
+    {
+      "name": "adminTabs",
+      "module": "mobile/src/app/navigation.ts",
+      "originalBodySha256": "f225cd91a9f701bb4aaa15eb1b7d0b7efd071d6c59dbd76258dd1ca91724647c",
+      "copiedBodySha256": "f225cd91a9f701bb4aaa15eb1b7d0b7efd071d6c59dbd76258dd1ca91724647c"
+    },
+    {
+      "name": "tabLabel",
+      "module": "mobile/src/app/navigation.ts",
+      "originalBodySha256": "f08a76800385d0676c0a29a5a1e5a59740df5d28777d613573c84343c066a8f1",
+      "copiedBodySha256": "f08a76800385d0676c0a29a5a1e5a59740df5d28777d613573c84343c066a8f1"
+    },
+    {
+      "name": "roleTabs",
+      "module": "mobile/src/app/navigation.ts",
+      "originalBodySha256": "b97f55c67d6ba7d98e239a5138304f9c3854d16e40de7b81dea3cb25970912ea",
+      "copiedBodySha256": "b97f55c67d6ba7d98e239a5138304f9c3854d16e40de7b81dea3cb25970912ea"
+    },
+    {
+      "name": "heroImageUrl",
+      "module": "mobile/src/content/catalog.ts",
+      "originalBodySha256": "e5ccb220c30d5d341434732580295711816d8c5a9552e3800cad3f3dffbfb9f8",
+      "copiedBodySha256": "e5ccb220c30d5d341434732580295711816d8c5a9552e3800cad3f3dffbfb9f8"
+    },
+    {
+      "name": "categories",
+      "module": "mobile/src/content/catalog.ts",
+      "originalBodySha256": "946b2fa3ef62dbb59488b7bdf4f414b43b6a3cd763073fd33322ce6a99546856",
+      "copiedBodySha256": "946b2fa3ef62dbb59488b7bdf4f414b43b6a3cd763073fd33322ce6a99546856"
+    },
+    {
+      "name": "detailSections",
+      "module": "mobile/src/content/catalog.ts",
+      "originalBodySha256": "a30c397fc9f2d4951d55d0e43ff172cb4ec62870164a32657c2ad874d6042c67",
+      "copiedBodySha256": "a30c397fc9f2d4951d55d0e43ff172cb4ec62870164a32657c2ad874d6042c67"
+    },
+    {
+      "name": "weddingThemeOptions",
+      "module": "mobile/src/content/catalog.ts",
+      "originalBodySha256": "7b1125e41431fb561df4dd2c673a34c9132cfd7e0d076065a541302a09752d24",
+      "copiedBodySha256": "7b1125e41431fb561df4dd2c673a34c9132cfd7e0d076065a541302a09752d24"
+    },
+    {
+      "name": "weddingStyleCards",
+      "module": "mobile/src/content/catalog.ts",
+      "originalBodySha256": "64fef9b08bcff906e3051fa47ad0f61bc59145662a222b518765bf25f9613eda",
+      "copiedBodySha256": "64fef9b08bcff906e3051fa47ad0f61bc59145662a222b518765bf25f9613eda"
+    },
+    {
+      "name": "categoryLabel",
+      "module": "mobile/src/content/catalog.ts",
+      "originalBodySha256": "a729908a6760ccd2849e230f1526622bf02109436cfc2f4c5fe98d97e9b186a0",
+      "copiedBodySha256": "a729908a6760ccd2849e230f1526622bf02109436cfc2f4c5fe98d97e9b186a0"
+    },
+    {
+      "name": "themeOptions",
+      "module": "mobile/src/content/catalog.ts",
+      "originalBodySha256": "d9690ec1778f6ea003117a209f96ea9a60424ee007845e674b0f53745cc9876f",
+      "copiedBodySha256": "d9690ec1778f6ea003117a209f96ea9a60424ee007845e674b0f53745cc9876f"
+    },
+    {
+      "name": "countryNames",
+      "module": "mobile/src/content/countries.ts",
+      "originalBodySha256": "32c6b219390c2211f38fde8d4fb0bcf180c24c6a8c07f53aeb2041f113325c14",
+      "copiedBodySha256": "32c6b219390c2211f38fde8d4fb0bcf180c24c6a8c07f53aeb2041f113325c14"
+    },
+    {
+      "name": "countryOptions",
+      "module": "mobile/src/content/countries.ts",
+      "originalBodySha256": "b182918ea6058c7f0e5cb0abfbbece152d02902d3062dce65e4c21a6287fc2c9",
+      "copiedBodySha256": "b182918ea6058c7f0e5cb0abfbbece152d02902d3062dce65e4c21a6287fc2c9"
+    },
+    {
+      "name": "copy",
+      "module": "mobile/src/i18n/copy.ts",
+      "originalBodySha256": "7464bae40c4a0c288d5e0839f4d0f7f4be4a6ff613b14dc5bd1a7b40f4202da8",
+      "copiedBodySha256": "7464bae40c4a0c288d5e0839f4d0f7f4be4a6ff613b14dc5bd1a7b40f4202da8"
+    },
+    {
+      "name": "openPublicWebPath",
+      "module": "mobile/src/ui/links.ts",
+      "originalBodySha256": "2cb7cbef92aa92a220e3b3e6c33ce5bf39428972700bf73fbdf043120a7209fc",
+      "copiedBodySha256": "2cb7cbef92aa92a220e3b3e6c33ce5bf39428972700bf73fbdf043120a7209fc"
+    },
+    {
+      "name": "formatCategory",
+      "module": "mobile/src/ui/format.ts",
+      "originalBodySha256": "14c359a71a1c9279b5da49087cb8097ed9616d4b557ba46552e040657ec085d2",
+      "copiedBodySha256": "14c359a71a1c9279b5da49087cb8097ed9616d4b557ba46552e040657ec085d2"
+    },
+    {
+      "name": "formatMoney",
+      "module": "mobile/src/ui/format.ts",
+      "originalBodySha256": "7e8f4c788ad50dfd3fac8c9f3ad0466ef1f3966347b51e7478696c5662a1f426",
+      "copiedBodySha256": "7e8f4c788ad50dfd3fac8c9f3ad0466ef1f3966347b51e7478696c5662a1f426"
+    },
+    {
+      "name": "vendorLocationLabel",
+      "module": "mobile/src/ui/format.ts",
+      "originalBodySha256": "642ae88d83abcd54768ad432357c6049ff319845fe467041ebbe8727f7a3ab08",
+      "copiedBodySha256": "642ae88d83abcd54768ad432357c6049ff319845fe467041ebbe8727f7a3ab08"
+    },
+    {
+      "name": "hasVendorCoordinates",
+      "module": "mobile/src/ui/format.ts",
+      "originalBodySha256": "aae6594df5d3dc80853fc890833dd4f2e8fc81df8e51e7ca2e63256409b8d6a3",
+      "copiedBodySha256": "aae6594df5d3dc80853fc890833dd4f2e8fc81df8e51e7ca2e63256409b8d6a3"
+    },
+    {
+      "name": "imageUrlFromAsset",
+      "module": "mobile/src/ui/media.ts",
+      "originalBodySha256": "eb4a137aafe03a0f125ef3ee35723cd63a4b617fd22f33d4354796feb5ea4071",
+      "copiedBodySha256": "eb4a137aafe03a0f125ef3ee35723cd63a4b617fd22f33d4354796feb5ea4071"
+    },
+    {
+      "name": "QuoteDateCalendar",
+      "module": "mobile/src/ui/calendars.tsx",
+      "originalBodySha256": "36d8b48eda0781bd346a85731a9465cc483f91defebf9dd2ccaf4d7cd9c9bd80",
+      "copiedBodySha256": "36d8b48eda0781bd346a85731a9465cc483f91defebf9dd2ccaf4d7cd9c9bd80"
+    },
+    {
+      "name": "parseDateValue",
+      "module": "mobile/src/ui/calendars.tsx",
+      "originalBodySha256": "1ba59d305d4599b181d1d2c73c93aca0643433bf36bfa9452577b9d02cc82c64",
+      "copiedBodySha256": "1ba59d305d4599b181d1d2c73c93aca0643433bf36bfa9452577b9d02cc82c64"
+    },
+    {
+      "name": "dateKey",
+      "module": "mobile/src/ui/calendars.tsx",
+      "originalBodySha256": "e1b0b3691568c0690b405c1d33da3e1a98bc82728e25a20c7cb8736a9bebfc4d",
+      "copiedBodySha256": "e1b0b3691568c0690b405c1d33da3e1a98bc82728e25a20c7cb8736a9bebfc4d"
+    },
+    {
+      "name": "AvailabilityPreview",
+      "module": "mobile/src/ui/calendars.tsx",
+      "originalBodySha256": "692674e21761e74c99151c15bcb8a698ab174f2a575a764db07b1bab47c9fcfa",
+      "copiedBodySha256": "692674e21761e74c99151c15bcb8a698ab174f2a575a764db07b1bab47c9fcfa"
+    },
+    {
+      "name": "EditableAvailabilityCalendar",
+      "module": "mobile/src/ui/calendars.tsx",
+      "originalBodySha256": "2f4a9c6bda7788fa49434a6cdc5a2b91162c0a98f26192fbfdb25d67b3fc1225",
+      "copiedBodySha256": "2f4a9c6bda7788fa49434a6cdc5a2b91162c0a98f26192fbfdb25d67b3fc1225"
+    },
+    {
+      "name": "FieldLabel",
+      "module": "mobile/src/ui/forms.tsx",
+      "originalBodySha256": "2d469777ce54ea84dfcaa464e096a84327823028da77cf014c16e0be22895ba8",
+      "copiedBodySha256": "2d469777ce54ea84dfcaa464e096a84327823028da77cf014c16e0be22895ba8"
+    },
+    {
+      "name": "NativeSelect",
+      "module": "mobile/src/ui/forms.tsx",
+      "originalBodySha256": "5263ed828ae133f9445aaf3bf37d99fbb1bf75651a374a629ba24d052f13a254",
+      "copiedBodySha256": "5263ed828ae133f9445aaf3bf37d99fbb1bf75651a374a629ba24d052f13a254"
+    },
+    {
+      "name": "SearchableCountryDropdown",
+      "module": "mobile/src/ui/forms.tsx",
+      "originalBodySha256": "14726382b76211eeaebe0d32a0fd088b97d423b3dd9c380f75cb2c2f03625d78",
+      "copiedBodySha256": "14726382b76211eeaebe0d32a0fd088b97d423b3dd9c380f75cb2c2f03625d78"
+    },
+    {
+      "name": "ProtectedScreen",
+      "module": "mobile/src/ui/ProtectedScreen.tsx",
+      "originalBodySha256": "93df87f623e6e3936cebff0b7e7ce26ea22247501af43638ef94c2d67bf13966",
+      "copiedBodySha256": "93df87f623e6e3936cebff0b7e7ce26ea22247501af43638ef94c2d67bf13966"
+    },
+    {
+      "name": "AuthScreen",
+      "module": "mobile/src/features/auth/AuthScreen.tsx",
+      "originalBodySha256": "8de305e7e81507b186f1ab89529e97e2a6acb840cda207ff79e7a4fcd3edca25",
+      "copiedBodySha256": "8de305e7e81507b186f1ab89529e97e2a6acb840cda207ff79e7a4fcd3edca25"
+    },
+    {
+      "name": "PasswordRecoveryModal",
+      "module": "mobile/src/features/auth/AuthScreen.tsx",
+      "originalBodySha256": "a1fdbf16bcd69e3bc34415eb531fcd7e0724aa00cbe1bdb772d860260c942c75",
+      "copiedBodySha256": "a1fdbf16bcd69e3bc34415eb531fcd7e0724aa00cbe1bdb772d860260c942c75"
+    },
+    {
+      "name": "VendorCard",
+      "module": "mobile/src/features/vendors/components/VendorCard.tsx",
+      "originalBodySha256": "7b753c38493a2c34d2f9cf72d52e14d8e78914ee735e75261b1479ea3d11319d",
+      "copiedBodySha256": "7b753c38493a2c34d2f9cf72d52e14d8e78914ee735e75261b1479ea3d11319d"
+    },
+    {
+      "name": "SearchMapResults",
+      "module": "mobile/src/features/vendors/screens/VendorSearchScreen.tsx",
+      "originalBodySha256": "0f4d140bc3efbfb3e83b639732bb96459bdd7b1d4ce7499e8ce6cb680d09a4ca",
+      "copiedBodySha256": "0f4d140bc3efbfb3e83b639732bb96459bdd7b1d4ce7499e8ce6cb680d09a4ca"
+    },
+    {
+      "name": "VendorSearchScreen",
+      "module": "mobile/src/features/vendors/screens/VendorSearchScreen.tsx",
+      "originalBodySha256": "1f5edcc7d96131ac86e32ee333ecbaa1bfeee1a0fca332d0432f16029a9d6ce6",
+      "copiedBodySha256": "1f5edcc7d96131ac86e32ee333ecbaa1bfeee1a0fca332d0432f16029a9d6ce6"
+    },
+    {
+      "name": "FavoritesScreen",
+      "module": "mobile/src/features/shortlist/FavoritesScreen.tsx",
+      "originalBodySha256": "8322f9966de0c89be89b7b467bf5087a49aafe7a603e00708fdc548b00126c4d",
+      "copiedBodySha256": "8322f9966de0c89be89b7b467bf5087a49aafe7a603e00708fdc548b00126c4d"
+    },
+    {
+      "name": "VendorLogoCarousel",
+      "module": "mobile/src/features/home/VendorLogoCarousel.tsx",
+      "originalBodySha256": "8aae7abbeace77a72bf7a32eeea786e63db143b78d2dd5e60522dfde0123b61c",
+      "copiedBodySha256": "8aae7abbeace77a72bf7a32eeea786e63db143b78d2dd5e60522dfde0123b61c"
+    },
+    {
+      "name": "RequestQuoteModal",
+      "module": "mobile/src/features/inquiries/RequestQuoteModal.tsx",
+      "originalBodySha256": "ad3f29ea9778ba552e209bb2bd9f9477f8078f3d6a22e020214d4916ef0b6f49",
+      "copiedBodySha256": "ad3f29ea9778ba552e209bb2bd9f9477f8078f3d6a22e020214d4916ef0b6f49"
+    },
+    {
+      "name": "AccountProfileScreen",
+      "module": "mobile/src/features/account/AccountProfileScreen.tsx",
+      "originalBodySha256": "f3c8d0a357954c8dea2a1eba8ce29cc363a5d5f8b214f484e165a661b5a877c2",
+      "copiedBodySha256": "f3c8d0a357954c8dea2a1eba8ce29cc363a5d5f8b214f484e165a661b5a877c2"
+    },
+    {
+      "name": "DashboardStat",
+      "module": "mobile/src/features/admin/AdminDashboardScreen.tsx",
+      "originalBodySha256": "31d3ba94bf0477014b66f331bec74454a66e16328c5c46a42182477d4e2ac3b2",
+      "copiedBodySha256": "31d3ba94bf0477014b66f331bec74454a66e16328c5c46a42182477d4e2ac3b2"
+    },
+    {
+      "name": "AdminDashboardScreen",
+      "module": "mobile/src/features/admin/AdminDashboardScreen.tsx",
+      "originalBodySha256": "ddcda7f53a58690469b2755aa536e0a5094a7f20d592fec095edd51aac0112e4",
+      "copiedBodySha256": "ddcda7f53a58690469b2755aa536e0a5094a7f20d592fec095edd51aac0112e4"
+    },
+    {
+      "name": "vendorEditorTabs",
+      "module": "mobile/src/features/vendors/screens/VendorWorkspaceScreen.tsx",
+      "originalBodySha256": "f591bbe34150514e86c911c02122890e69aeb2d5c6f1fd73e957366c66859497",
+      "copiedBodySha256": "f591bbe34150514e86c911c02122890e69aeb2d5c6f1fd73e957366c66859497"
+    },
+    {
+      "name": "VendorWorkspaceScreen",
+      "module": "mobile/src/features/vendors/screens/VendorWorkspaceScreen.tsx",
+      "originalBodySha256": "2cdb3a9621177d179c8e8f0dc7057c001e2829047e7f3a4859948eaa4a721384",
+      "copiedBodySha256": "2cdb3a9621177d179c8e8f0dc7057c001e2829047e7f3a4859948eaa4a721384"
+    },
+    {
+      "name": "VendorFieldGroup",
+      "module": "mobile/src/features/vendors/screens/VendorWorkspaceScreen.tsx",
+      "originalBodySha256": "08d990e4ef0b65b1fb3304f86d9645f6b7e6fc0cd67c0f0cf22fd24ad0da9c54",
+      "copiedBodySha256": "08d990e4ef0b65b1fb3304f86d9645f6b7e6fc0cd67c0f0cf22fd24ad0da9c54"
+    },
+    {
+      "name": "LanguageSegment",
+      "module": "mobile/src/features/vendors/screens/VendorWorkspaceScreen.tsx",
+      "originalBodySha256": "44dd02d9303ad75d063710c08df893974646520a30174ae8ee977fd9959cc651",
+      "copiedBodySha256": "44dd02d9303ad75d063710c08df893974646520a30174ae8ee977fd9959cc651"
+    },
+    {
+      "name": "CurrentMediaPreview",
+      "module": "mobile/src/features/vendors/screens/VendorWorkspaceScreen.tsx",
+      "originalBodySha256": "5e1f6e62e5260127ff4628df5e3c2ebc8c1b183561e05ed986bc13da865ec76e",
+      "copiedBodySha256": "5e1f6e62e5260127ff4628df5e3c2ebc8c1b183561e05ed986bc13da865ec76e"
+    },
+    {
+      "name": "VendorPublicProfileScreen",
+      "module": "mobile/src/features/vendors/screens/VendorPublicProfileScreen.tsx",
+      "originalBodySha256": "4624fb9a7cfaab1543a6e01109d92a98dc7cbe6142ac47478ddcedbe4d94bd4a",
+      "copiedBodySha256": "4624fb9a7cfaab1543a6e01109d92a98dc7cbe6142ac47478ddcedbe4d94bd4a"
+    },
+    {
+      "name": "InboxScreen",
+      "module": "mobile/src/features/inbox/InboxScreen.tsx",
+      "originalBodySha256": "6b4d6ee6e0b59c36dda667da36707b139c874b357aff291b04de155f3f357010",
+      "copiedBodySha256": "6b4d6ee6e0b59c36dda667da36707b139c874b357aff291b04de155f3f357010"
+    },
+    {
+      "name": "InfoMetric",
+      "module": "mobile/src/features/vendors/screens/VendorDetailScreen.tsx",
+      "originalBodySha256": "2a05e658905449c1c286157fab04cde5908eee5c49d837fca05cb743859c7c96",
+      "copiedBodySha256": "2a05e658905449c1c286157fab04cde5908eee5c49d837fca05cb743859c7c96"
+    },
+    {
+      "name": "DetailSection",
+      "module": "mobile/src/features/vendors/screens/VendorDetailScreen.tsx",
+      "originalBodySha256": "ddbeb0f913d798037bc354abc691fde00e2f5a772b327403be75aa88b69c21e3",
+      "copiedBodySha256": "ddbeb0f913d798037bc354abc691fde00e2f5a772b327403be75aa88b69c21e3"
+    },
+    {
+      "name": "EmptySectionText",
+      "module": "mobile/src/features/vendors/screens/VendorDetailScreen.tsx",
+      "originalBodySha256": "54b785fe3b8a5d36378ed796855d954e3b08c632d1999e9de291a6c1bb71b0e6",
+      "copiedBodySha256": "54b785fe3b8a5d36378ed796855d954e3b08c632d1999e9de291a6c1bb71b0e6"
+    },
+    {
+      "name": "VendorDetailScreen",
+      "module": "mobile/src/features/vendors/screens/VendorDetailScreen.tsx",
+      "originalBodySha256": "3824e4d8f56e304e959d4ebe7279c0ec36e73803386ac1f4cc6545fa52ca35e6",
+      "copiedBodySha256": "3824e4d8f56e304e959d4ebe7279c0ec36e73803386ac1f4cc6545fa52ca35e6"
+    },
+    {
+      "name": "ScreenContent",
+      "module": "mobile/src/app/ScreenContent.tsx",
+      "originalBodySha256": "b364772a922cdabd206a3f01488dceeecdfdd6fff749976f5327a3499b8bc961",
+      "copiedBodySha256": "b364772a922cdabd206a3f01488dceeecdfdd6fff749976f5327a3499b8bc961"
+    },
+    {
+      "name": "App",
+      "module": "mobile/src/app/App.tsx",
+      "originalBodySha256": "96e744020929e59e9dc54942884b0685e8f83673896f9e98d19339835ef070ea",
+      "copiedBodySha256": "96e744020929e59e9dc54942884b0685e8f83673896f9e98d19339835ef070ea"
+    },
+    {
+      "name": "styles",
+      "module": "mobile/src/theme/styles.ts",
+      "originalBodySha256": "bd50c0c1cad4d26c3152c904d156fbf029ad9d4ad694eed02f3e9d7b63acc741",
+      "copiedBodySha256": "bd50c0c1cad4d26c3152c904d156fbf029ad9d4ad694eed02f3e9d7b63acc741"
+    }
+  ]
+}

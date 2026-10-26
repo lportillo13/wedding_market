@@ -1,6 +1,8 @@
 # Apple App Store Launch Checklist
 
-Last updated: August 12, 2026
+Last reviewed: October 26, 2026
+
+Start with the [current launch preparation and blockers](mobile-launch-2026-10-26/README.md), including branding, self-service deletion, user-content safeguards, bilingual support, business-model notes and native build proof. The existing email-only deletion link is not a completed launch requirement. Run `npm run launch:audit` from `mobile`.
 
 ## Build
 
@@ -24,7 +26,7 @@ npm run build:ios:production
 
 - Add the deployed privacy policy URL (`/privacy`) and support URL.
 - Complete App Privacy using the same data inventory as the Google Play Data Safety declaration.
-- Provide review notes and working client, vendor, and admin test accounts where each role is reviewable.
+- Provide review notes and isolated client/vendor test accounts for reviewable features; reviewers should not receive a production administrator login.
 - Add screenshots for every required device size and complete the age rating, category, description, and keywords.
 - Confirm account deletion is reachable in the app and at `/account-deletion`.
 - Verify notification credentials and delivery in the production EAS build.

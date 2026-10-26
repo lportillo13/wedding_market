@@ -11,7 +11,7 @@ import {
 import { useRouter } from "next/navigation";
 import { ProfileSectionContext } from "./ProfileEditorContext";
 import { getVendorServiceProfile } from "@/lib/vendorServiceProfile";
-import { getProfileEssentials } from "@/shared/vendorProfileProgress";
+import { getProfileEssentials } from "@/shared/vendors/profile-progress";
 import ProfileForm from "./profileForm";
 import ImagesForm from "./ImagesForm";
 import ContactForm from "./contactForm";

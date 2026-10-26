@@ -1,4 +1,4 @@
-import { prepareProfilePricing, profilePriceToCents } from "../../../shared/vendorPricing";
+import { prepareProfilePricing, profilePriceToCents } from "../../../shared/vendors/pricing";
 import { mobileConfig } from "./config";
 import { requestJson } from "./http";
 import { supabase } from "./supabase";

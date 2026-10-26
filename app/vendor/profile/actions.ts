@@ -3,8 +3,8 @@
 import {
   prepareProfilePricing,
   profilePriceToCents,
-} from "@/shared/vendorPricing";
-import { parseCalendarDate } from "@/lib/calendar-date";
+} from "@/shared/vendors/pricing";
+import { parseCalendarDate } from "@/shared/calendar/date";
 import { revalidatePath } from "next/cache";
 import type { VendorImage } from "@/types/vendor";
 import { deleteFromR2, getOwnedR2ObjectKey } from "@/lib/r2";

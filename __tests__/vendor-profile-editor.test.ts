@@ -4,9 +4,9 @@ import assert from "node:assert/strict";
 import {
   prepareProfilePricing,
   profilePriceToCents,
-} from "../shared/vendorPricing";
-import { getProfileEssentials } from "../shared/vendorProfileProgress";
-import { getVendorPricingOrder } from "../shared/vendorServiceProfile";
+} from "../shared/vendors/pricing";
+import { getProfileEssentials } from "../shared/vendors/profile-progress";
+import { getVendorPricingOrder } from "../shared/vendors/service-profile";
 
 test("photography suggestions fit the service while saved custom and legacy rows survive", () => {
   assert.ok(getVendorPricingOrder(["photography"]).includes("photo_coverage"));

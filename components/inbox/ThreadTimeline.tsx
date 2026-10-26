@@ -1,6 +1,6 @@
-import { formatQuoteAmount } from "@/lib/quotes/format";
-import type { QuoteMessageRow } from "@/lib/quote-messages";
-import type { InboxQuoteRow } from "@/lib/inbox";
+import { formatQuoteAmount } from "@/shared/proposals/format";
+import type { QuoteMessageRow } from "@/features/conversations/server/quote-messages";
+import type { InboxQuoteRow } from "@/features/conversations/server/inbox";
 
 type ThreadTimelineProps = {
   quotes: InboxQuoteRow[];

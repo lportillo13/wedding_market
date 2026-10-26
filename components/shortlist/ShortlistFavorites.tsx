@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import ContextualSponsoredUnits from "@/components/ads/ContextualSponsoredUnits";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getShortlist, removeFromShortlist } from "@/lib/shortlist";
-import { useVendorSummaries } from "@/lib/useVendorSummaries";
+import { useVendorSummaries } from "@/features/vendors/client/useVendorSummaries";
 
 export default function ShortlistFavorites() {
   const [ids, setIds] = useState<string[]>(() => (typeof window !== "undefined" ? getShortlist() : []));

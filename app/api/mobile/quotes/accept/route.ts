@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAuthenticatedRequestClient } from "@/lib/supabase/request";
-import { acceptVendorQuote } from "@/lib/quotes/accept";
+import { acceptVendorQuote } from "@/features/proposals/server/accept";
 export async function POST(request: Request) {
   const client = await createAuthenticatedRequestClient(request);
   const {

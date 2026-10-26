@@ -1,13 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { createClient } from "@supabase/supabase-js";
-import { createInquiry, inquiryInputSchema } from "@/lib/inquiries";
-import { sendThreadMessage } from "@/lib/thread-messages";
-import { acceptVendorQuote } from "@/lib/quotes/accept";
-import { getConversationState } from "@/lib/conversation-state";
-import { formatQuoteAmount } from "@/lib/quotes/format";
-import { fetchThreadMessages } from "@/lib/quote-messages";
-import { parseThreadReplyNotificationData } from "@/lib/notification-types";
+import { createInquiry, inquiryInputSchema } from "@/features/inquiries/server/create";
+import { sendThreadMessage } from "@/features/conversations/server/messages";
+import { acceptVendorQuote } from "@/features/proposals/server/accept";
+import { getConversationState } from "@/shared/conversations/state";
+import { formatQuoteAmount } from "@/shared/proposals/format";
+import { fetchThreadMessages } from "@/features/conversations/server/quote-messages";
+import { parseThreadReplyNotificationData } from "@/shared/notifications/events";
 
 const id = (n: number) =>
   `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;

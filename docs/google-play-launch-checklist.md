@@ -1,6 +1,8 @@
 # Google Play Launch Checklist
 
-Last updated: August 12, 2026
+Last reviewed: October 26, 2026
+
+Start with the [current launch preparation and blockers](mobile-launch-2026-10-26/README.md), including branding, self-service deletion, content reporting/blocking, support, verified source archives and native binaries. The older checklist below does not establish readiness. Run `npm run launch:audit` from `mobile`; the default EAS Android submission target is now an internal draft.
 
 ## Build
 

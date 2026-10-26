@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "check": "npm run typecheck && npm run lint && npm run build",
+    "check": "npm run architecture:check && npm run typecheck && npm run lint && npm run build",
     "schema:supabase": "node ./scripts/generate-supabase-schema.mjs",
     "email:deploy-auth": "node ./scripts/deploy-supabase-email-templates.mjs",
     "blog:import-samples": "node ./scripts/import-sample-blog-posts.js",
@@ -17,7 +17,10 @@
     "test": "npm run test:build && npm run test:run",
     "test:build": "tsc -p tsconfig.test.json",
     "test:run": "node ./scripts/run-tests.mjs",
-    "test:database": "node --test scripts/test-database-security.mjs"
+    "test:database": "node --test scripts/test-database-security.mjs",
+    "db:inspect": "node scripts/database/inspect.mjs",
+    "architecture:check": "node scripts/check-architecture.mjs",
+    "test:tooling": "node --test scripts/database/connection.test.mjs scripts/database/catalog.test.mjs scripts/audit-mobile-launch.test.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1053.0",

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { formatCalendarDate, parseCalendarDate } from "@/lib/calendar-date";
+import { formatCalendarDate, parseCalendarDate } from "@/shared/calendar/date";
 
 test("wedding dates remain the selected day across viewer time zones", () => {
   for (const timeZone of ["America/Costa_Rica", "America/Los_Angeles", "Pacific/Kiritimati"]) {

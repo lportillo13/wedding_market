@@ -248,8 +248,8 @@ const common = {
     },
     "notificationsPage": {
       "title": "Notificaciones",
-      "missingTablePrefix": "La tabla de notificaciones todavía no existe en la base de datos local. Ejecuta el SQL de",
-      "missingTableSuffix": "en Supabase para activarla.",
+      "missingTablePrefix": "Las notificaciones no están disponibles por el momento.",
+      "missingTableSuffix": "Inténtalo de nuevo más tarde o contacta a soporte.",
       "intro": "Cuando un proveedor responda o actualice una cotización, la verás aquí.",
       "moveAllToDeleted": "Mover todas a eliminadas",
       "empty": "Aún no tienes notificaciones. Las respuestas a tus cotizaciones aparecerán aquí.",

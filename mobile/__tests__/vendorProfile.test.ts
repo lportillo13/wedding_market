@@ -2,8 +2,8 @@ import {
   profilePricingDrafts,
   prepareProfilePricing,
   profilePriceToCents,
-} from "../../shared/vendorPricing";
-import { getVendorPricingOrder } from "../../shared/vendorServiceProfile";
+} from "../../shared/vendors/pricing";
+import { getVendorPricingOrder } from "../../shared/vendors/service-profile";
 
 test("native editor preserves saved custom and legacy packages rather than replacing them with venue defaults", () => {
   const drafts = profilePricingDrafts([

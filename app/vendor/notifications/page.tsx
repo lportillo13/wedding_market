@@ -1,5 +1,5 @@
 import { getRequestI18n } from "@/lib/i18n/server";
-import { formatCalendarDate } from "@/lib/calendar-date";
+import { formatCalendarDate } from "@/shared/calendar/date";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
@@ -12,13 +12,13 @@ import NotificationOpenLink from "@/components/NotificationOpenLink";
 import {
   isMissingNotificationTableError,
   loadNotifications,
-} from "@/lib/notification-center";
-import { buildThreadKey } from "@/lib/inbox";
+} from "@/features/notifications/server/inbox";
+import { buildThreadKey } from "@/features/conversations/server/inbox";
 import {
   parseThreadReplyNotificationData,
   parseVendorNewRequestNotificationData,
   parseVendorQuoteAcceptedNotificationData,
-} from "@/lib/notification-types";
+} from "@/shared/notifications/events";
 import { buildAutocompleteSuggestions } from "@/lib/search/autocomplete";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -66,8 +66,7 @@ export default async function VendorNotificationsPage({
       <main className="pb-4">
         <h1 className="mb-3">Vendor notifications</h1>
         <div className="alert alert-warning mb-0">
-          The notifications table does not exist in the local database yet. Run
-          <code> sql/notifications.sql</code> to enable it.
+          {language === "es" ? "Las notificaciones no están disponibles por el momento. Inténtalo de nuevo más tarde o contacta a soporte." : "Notifications are temporarily unavailable. Please try again later or contact support."}
         </div>
       </main>
     );

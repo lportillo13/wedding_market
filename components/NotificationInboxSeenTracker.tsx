@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { markNotificationsRead } from "@/app/account/notifications/actions";
-import type { NotificationMailboxScope } from "@/lib/notification-center";
+import type { NotificationMailboxScope } from "@/features/notifications/server/inbox";
 
 type NotificationInboxSeenTrackerProps = {
   scope: NotificationMailboxScope;

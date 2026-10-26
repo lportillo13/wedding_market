@@ -4,7 +4,7 @@ import {
   getInboxHref,
   presentInboxConversation,
 } from "../lib/inbox-presentation";
-import type { ClientInboxThreadListItem } from "../lib/inbox";
+import type { ClientInboxThreadListItem } from "../features/conversations/server/inbox";
 
 const conversation: ClientInboxThreadListItem = {
   threadKey: "request-123__vendor-456",

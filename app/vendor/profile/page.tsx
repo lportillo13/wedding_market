@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-import { profilePricingDrafts } from "@/shared/vendorPricing";
+import { profilePricingDrafts } from "@/shared/vendors/pricing";
 import { redirect } from "next/navigation";
 import { getRoles } from "@/lib/auth/roles";
 import { createSupabaseServerClient } from "@/lib/supabase/server";

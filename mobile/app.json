@@ -38,7 +38,11 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.theweddingmarket.app"
+      "bundleIdentifier": "com.theweddingmarket.app",
+      "infoPlist": {
+        "CFBundleLocalizations": ["en", "es"],
+        "CFBundleDevelopmentRegion": "en"
+      }
     },
     "android": {
       "package": "com.theweddingmarket.app",

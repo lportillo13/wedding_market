@@ -1,0 +1,33 @@
+{
+  "checkedAt": "2026-10-26T17:34:40.982Z",
+  "passed": true,
+  "checkedModules": 351,
+  "migrations": 8,
+  "largestNativeModules": [
+    {
+      "file": "mobile/src/features/auth/AuthScreen.tsx",
+      "lines": 915
+    },
+    {
+      "file": "mobile/src/theme/styles/vendor-profile.ts",
+      "lines": 862
+    },
+    {
+      "file": "mobile/src/features/vendors/screens/VendorWorkspaceScreen.tsx",
+      "lines": 617
+    },
+    {
+      "file": "mobile/src/lib/rfqs.ts",
+      "lines": 543
+    },
+    {
+      "file": "mobile/src/lib/auth.ts",
+      "lines": 542
+    },
+    {
+      "file": "mobile/src/features/vendors/screens/VendorDetailScreen.tsx",
+      "lines": 518
+    }
+  ],
+  "errors": []
+}

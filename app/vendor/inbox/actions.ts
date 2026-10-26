@@ -2,11 +2,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { buildThreadKey, markVendorThreadViewed, parseThreadKey } from "@/lib/inbox";
+import { buildThreadKey, markVendorThreadViewed, parseThreadKey } from "@/features/conversations/server/inbox";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
-import { parseQuoteAmountCents } from "@/lib/quotes/input";
-import { submitVendorQuote } from "@/lib/quotes/submit";
+import { parseQuoteAmountCents } from "@/features/proposals/domain/input";
+import { submitVendorQuote } from "@/features/proposals/server/submit";
 import { getRequestI18n } from "@/lib/i18n/server";
 
 export type SendQuoteState = { ok: boolean; message?: string };

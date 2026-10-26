@@ -10,9 +10,9 @@ import { getRequestI18n } from "@/lib/i18n/server";
 import {
   isMissingNotificationTableError,
   loadNotifications,
-} from "@/lib/notification-center";
+} from "@/features/notifications/server/inbox";
 import NotificationOpenLink from "@/components/NotificationOpenLink";
-import { parseQuoteAnsweredNotificationData, parseThreadReplyNotificationData } from "@/lib/notification-types";
+import { parseQuoteAnsweredNotificationData, parseThreadReplyNotificationData } from "@/shared/notifications/events";
 import { buildAutocompleteSuggestions } from "@/lib/search/autocomplete";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
@@ -71,7 +71,7 @@ export default async function AccountNotificationsPage({
       <main className="container py-4">
         <h1 className="mb-3">{labels.title}</h1>
         <div className="alert alert-warning mb-0">
-          {labels.missingTablePrefix} <code>sql/notifications.sql</code> {labels.missingTableSuffix}
+          {labels.missingTablePrefix} {labels.missingTableSuffix}
         </div>
       </main>
     );

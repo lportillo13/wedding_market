@@ -1,7 +1,7 @@
-import { formatQuoteAmount } from "@/lib/quotes/format";
-import { getConversationState } from "@/lib/conversation-state";
+import { formatQuoteAmount } from "@/shared/proposals/format";
+import { getConversationState } from "@/shared/conversations/state";
 import ThreadRefresh from "@/components/inbox/ThreadRefresh";
-import { formatCalendarDate } from "@/lib/calendar-date";
+import { formatCalendarDate } from "@/shared/calendar/date";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { sendVendorQuoteReply } from "@/app/quote-replies/actions";
@@ -13,7 +13,7 @@ import QuoteReplyForm from "@/components/quotes/QuoteReplyForm";
 import { getRoles } from "@/lib/auth/roles";
 import { getLanguageLocale } from "@/lib/i18n";
 import { getRequestI18n } from "@/lib/i18n/server";
-import { loadVendorThreadDetail } from "@/lib/inbox";
+import { loadVendorThreadDetail } from "@/features/conversations/server/inbox";
 import QuoteForm from "../QuoteForm";
 
 export default async function VendorInboxThreadPage({

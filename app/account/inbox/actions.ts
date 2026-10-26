@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import { buildThreadKey, markClientThreadRead, parseThreadKey } from "@/lib/inbox";
+import { buildThreadKey, markClientThreadRead, parseThreadKey } from "@/features/conversations/server/inbox";
 import { isMissingOwnerColumnError, type OwnerColumn } from "@/lib/supabase/ownerColumns";
 import { getSupabaseServer } from "@/lib/supabase/server";
 

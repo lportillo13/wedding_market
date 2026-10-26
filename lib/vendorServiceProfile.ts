@@ -1,1 +1,1 @@
-export * from "../shared/vendorServiceProfile";
+export * from "../shared/vendors/service-profile";

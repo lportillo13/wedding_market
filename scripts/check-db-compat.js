@@ -4,7 +4,7 @@ const { Client } = require('pg');
 
 const ROOT = process.cwd();
 const connectionString = process.env.SUPABASE_DB_URL || 'postgresql://postgres:postgres@127.0.0.1:54322/postgres';
-const includeDirs = ['app', 'lib', 'components'];
+const includeDirs = ['app', 'features', 'lib', 'components', 'shared', 'mobile/src'];
 const fileExtensions = new Set(['.ts', '.tsx']);
 
 function walk(dir) {

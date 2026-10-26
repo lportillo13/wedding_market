@@ -9,7 +9,7 @@ import {
   processVideoUpload,
   validateImageUpload,
   validateVideoUpload,
-} from "@/lib/media-processing";
+} from "@/features/media/server/processing";
 import { deleteFromR2, getOwnedR2ObjectKey, isR2Configured, uploadToR2 } from "@/lib/r2";
 import { createAuthenticatedRequestClient } from "@/lib/supabase/request";
 import { readUploadForm, reserveUpload, UploadLimitError } from "@/lib/upload-limits";

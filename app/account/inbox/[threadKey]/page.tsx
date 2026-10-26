@@ -1,7 +1,7 @@
-import { formatQuoteAmount } from "@/lib/quotes/format";
-import { getConversationState } from "@/lib/conversation-state";
+import { formatQuoteAmount } from "@/shared/proposals/format";
+import { getConversationState } from "@/shared/conversations/state";
 import ThreadRefresh from "@/components/inbox/ThreadRefresh";
-import { formatCalendarDate } from "@/lib/calendar-date";
+import { formatCalendarDate } from "@/shared/calendar/date";
 import Link from "next/link";
 import AcceptButton from "@/app/account/rfqs/[id]/AcceptButton";
 import { markAccountInboxThreadRead } from "@/app/account/inbox/actions";
@@ -12,7 +12,7 @@ import InquirySummary from "@/components/inbox/InquirySummary";
 import QuoteReplyForm from "@/components/quotes/QuoteReplyForm";
 import { getLanguageLocale } from "@/lib/i18n";
 import { getRequestI18n } from "@/lib/i18n/server";
-import { loadClientThreadDetail } from "@/lib/inbox";
+import { loadClientThreadDetail } from "@/features/conversations/server/inbox";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export default async function AccountInboxThreadPage({

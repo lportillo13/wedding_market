@@ -20,6 +20,10 @@ Read [docs/project-context.md](docs/project-context.md) when resuming this proje
 
 ## Working in this repository
 
+- Read `docs/architecture-2026-10-26/README.md` for the current feature boundaries and database audit. Business workflows belong in `features/`; cross-platform pure rules belong in `shared/`. Existing compatibility exports must not acquire duplicate implementations.
+- Native composition lives in `mobile/src/application`, feature screens in `mobile/src/features`, and translations/styles in their own modules. Keep `mobile/App.tsx` as the Expo entry point; do not reintroduce the screen monolith or create `src/app` unless intentionally adopting Expo Router.
+- `supabase/migrations` is the only active migration chain. `supabase/legacy` and the recovered baseline are not scripts to replay over live data. Validate structural changes with `npm run architecture:check`, `npm run db:inspect`, and `npm run test:database` in addition to application checks.
+
 - The web app is at the root; the Expo app has its own dependencies and scripts under `mobile`.
 - Consult root `package.json` and `mobile/package.json` for the checks appropriate to a change.
 - Preserve existing unrelated changes. Never copy credentials or raw authentication links into project notes.

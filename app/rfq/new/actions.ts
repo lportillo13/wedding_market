@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getRequestI18n } from "@/lib/i18n/server";
 import { getSupabaseServer } from "@/lib/supabase/server";
-import { createInquiry } from "@/lib/inquiries";
+import { createInquiry } from "@/features/inquiries/server/create";
 
 export type CreateRfqState = { ok: boolean; message?: string };
 export async function createRfqAndInvites(

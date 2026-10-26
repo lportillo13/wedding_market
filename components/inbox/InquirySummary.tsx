@@ -1,5 +1,5 @@
-import { formatCalendarDate } from "@/lib/calendar-date";
-import type { InboxRfqRow } from "@/lib/inbox";
+import { formatCalendarDate } from "@/shared/calendar/date";
+import type { InboxRfqRow } from "@/features/conversations/server/inbox";
 
 type InquirySummaryProps = {
   rfq: InboxRfqRow;

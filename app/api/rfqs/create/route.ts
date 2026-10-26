@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAuthenticatedRequestClient } from "@/lib/supabase/request";
-import { createInquiry } from "@/lib/inquiries";
+import { createInquiry } from "@/features/inquiries/server/create";
 
 export async function POST(request: Request) {
   const client = await createAuthenticatedRequestClient(request);

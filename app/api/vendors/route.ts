@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { searchVendorDirectory } from '@/lib/vendor-directory';
+import { searchVendorDirectory } from '@/features/vendors/server/directory';
 
 export async function GET(request: Request) {
   try {

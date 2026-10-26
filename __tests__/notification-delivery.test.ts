@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import * as email from "@/lib/notification-email";
-import * as push from "@/lib/push-notifications";
-import { createQuoteAnsweredNotification } from "@/lib/notifications";
+import * as email from "@/features/notifications/server/email";
+import * as push from "@/features/notifications/server/push";
+import { createQuoteAnsweredNotification } from "@/features/notifications/server/notifications";
 
 function clientFixture(failInsert = false) {
   return {

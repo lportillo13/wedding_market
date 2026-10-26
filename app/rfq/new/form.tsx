@@ -7,7 +7,7 @@ import ContextualSponsoredUnits from "@/components/ads/ContextualSponsoredUnits"
 import { useLanguage } from "@/contexts/LanguageContext";
 import { tokenizeAdText } from "@/lib/content/vendorAds";
 import { clearShortlist, getShortlist, removeFromShortlist } from "@/lib/shortlist";
-import { useVendorSummaries } from "@/lib/useVendorSummaries";
+import { useVendorSummaries } from "@/features/vendors/client/useVendorSummaries";
 import { createRfqAndInvites, type CreateRfqState } from "./actions";
 
 export type RfqPrefill = {

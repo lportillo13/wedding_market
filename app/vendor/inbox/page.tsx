@@ -4,7 +4,7 @@ import InboxPageView from "@/components/inbox/InboxPageView";
 import { buildAutocompleteSuggestions } from "@/lib/search/autocomplete";
 import { getRequestI18n } from "@/lib/i18n/server";
 import { getRoles } from "@/lib/auth/roles";
-import { loadVendorInboxThreads } from "@/lib/inbox";
+import { loadVendorInboxThreads } from "@/features/conversations/server/inbox";
 import {
   presentInboxConversation,
   type InboxFilters,

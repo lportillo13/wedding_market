@@ -1,4 +1,4 @@
-import { directoryInteger, searchVendorDirectory } from "@/lib/vendor-directory";
+import { directoryInteger, searchVendorDirectory } from "@/features/vendors/server/directory";
 import { getRoles } from "@/lib/auth/roles";
 import { VENDOR_ADS_PUBLICLY_VISIBLE } from "@/lib/content/vendorAds";
 import { loadSponsoredVendorAds, loadVendorAdsConfig } from "@/lib/content/vendorAdsServer";

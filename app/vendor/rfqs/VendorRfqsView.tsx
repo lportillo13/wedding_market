@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { formatCalendarDate } from "@/lib/calendar-date";
+import { formatCalendarDate } from "@/shared/calendar/date";
 import QuoteConversation from "@/components/quotes/QuoteConversation";
 import QuoteReplyForm from "@/components/quotes/QuoteReplyForm";
 import QuoteForm from "../inbox/QuoteForm";

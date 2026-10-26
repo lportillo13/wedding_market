@@ -1,0 +1,178 @@
+import { colors } from "../tokens";
+import { StyleSheet } from "react-native";
+export const inboxStyles = StyleSheet.create({
+    inboxList: {
+        gap: 10,
+    },
+    inboxCard: {
+        alignItems: "center",
+        backgroundColor: colors.paper,
+        borderColor: colors.line,
+        borderRadius: 24,
+        borderWidth: 1,
+        flexDirection: "row",
+        gap: 12,
+        padding: 14,
+    },
+    inboxIcon: {
+        alignItems: "center",
+        backgroundColor: colors.soft,
+        borderRadius: 22,
+        height: 44,
+        justifyContent: "center",
+        width: 44,
+    },
+    inboxTitle: {
+        color: colors.ink,
+        fontSize: 15,
+        fontWeight: "900",
+    },
+    inboxSubtitle: {
+        color: colors.muted,
+        fontSize: 13,
+        fontWeight: "700",
+        marginTop: 4,
+    },
+    inboxMeta: {
+        color: colors.muted,
+        fontSize: 12,
+        marginTop: 4,
+    },
+    inboxAmount: {
+        color: colors.ink,
+        fontSize: 13,
+        fontWeight: "900",
+        maxWidth: 96,
+        textAlign: "right",
+    },
+    quoteSummaryCard: {
+        backgroundColor: colors.ink,
+        borderRadius: 26,
+        gap: 8,
+        marginBottom: 12,
+        padding: 18,
+    },
+    requestDetailsCard: {
+        backgroundColor: colors.paper,
+        borderColor: colors.line,
+        borderRadius: 24,
+        borderWidth: 1,
+        gap: 14,
+        marginBottom: 12,
+        padding: 16,
+    },
+    requestDetailsList: {
+        gap: 11,
+    },
+    requestDetailRow: {
+        alignItems: "flex-start",
+        flexDirection: "row",
+        gap: 10,
+    },
+    requestDetailText: {
+        flex: 1,
+        gap: 2,
+    },
+    requestDetailLabel: {
+        color: colors.muted,
+        fontSize: 11,
+        fontWeight: "900",
+        textTransform: "uppercase",
+    },
+    requestDetailValue: {
+        color: colors.ink,
+        fontSize: 14,
+        fontWeight: "700",
+    },
+    requestMessageBox: {
+        backgroundColor: colors.soft,
+        borderRadius: 16,
+        gap: 5,
+        padding: 12,
+    },
+    requestMessageText: {
+        color: colors.ink,
+        fontSize: 14,
+        lineHeight: 20,
+    },
+    quoteSummaryHeader: {
+        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    acceptedBadge: {
+        backgroundColor: "#DDF5E7",
+        borderRadius: 999,
+        color: "#146C43",
+        fontSize: 11,
+        fontWeight: "900",
+        overflow: "hidden",
+        paddingHorizontal: 9,
+        paddingVertical: 5,
+    },
+    quoteSummaryAmount: {
+        color: colors.paper,
+        fontSize: 28,
+        fontWeight: "900",
+    },
+    quoteSummaryBody: {
+        color: "rgba(255,255,255,0.78)",
+        fontSize: 14,
+        lineHeight: 21,
+    },
+    messageBubble: {
+        borderRadius: 22,
+        gap: 5,
+        maxWidth: "88%",
+        padding: 12,
+    },
+    messageBubbleOwn: {
+        alignSelf: "flex-end",
+        backgroundColor: "#E5F4F1",
+    },
+    messageBubbleOther: {
+        alignSelf: "flex-start",
+        backgroundColor: colors.soft,
+    },
+    messageSender: {
+        color: colors.tealDark,
+        fontSize: 11,
+        fontWeight: "900",
+        textTransform: "uppercase",
+    },
+    messageBody: {
+        color: colors.ink,
+        fontSize: 14,
+        lineHeight: 20,
+    },
+    proposalActivityCard: {
+        alignSelf: "stretch",
+        backgroundColor: colors.paper,
+        borderColor: colors.line,
+        borderRadius: 20,
+        borderWidth: 1,
+        gap: 6,
+        padding: 13,
+    },
+    characterCount: {
+        alignSelf: "flex-end",
+        color: colors.muted,
+        fontSize: 11,
+        marginTop: -6,
+    },
+    contactLink: {
+        color: colors.tealDark,
+        fontSize: 14,
+        fontWeight: "800",
+        textDecorationLine: "underline",
+    },
+    replyComposer: {
+        backgroundColor: colors.paper,
+        borderColor: colors.line,
+        borderRadius: 24,
+        borderWidth: 1,
+        gap: 10,
+        marginTop: 12,
+        padding: 14,
+    }
+});
