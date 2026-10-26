@@ -2,23 +2,25 @@
   "expo": {
     "name": "The Wedding Market",
     "slug": "the-wedding-market",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon-512.png",
+    "icon": "./assets/brand/app-icon.png",
     "userInterfaceStyle": "light",
     "scheme": "theweddingmarket",
     "plugins": [
       [
         "expo-notifications",
         {
-          "icon": "./assets/icon-192.png",
-          "color": "#1D7A72"
+          "icon": "./assets/brand/notification.png",
+          "color": "#4B352C"
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "Allow The Wedding Market to access images you choose for profile and vendor media."
+          "photosPermission": "Allow The Wedding Market to access images you choose for profile and vendor media.",
+          "cameraPermission": false,
+          "microphonePermission": false
         }
       ],
       "expo-font",
@@ -26,10 +28,10 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/icon-512.png",
+          "image": "./assets/brand/splash.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#F8F8F6"
+          "backgroundColor": "#FBF7F0"
         }
       ]
     ],
@@ -40,7 +42,10 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.theweddingmarket.app",
       "infoPlist": {
-        "CFBundleLocalizations": ["en", "es"],
+        "CFBundleLocalizations": [
+          "en",
+          "es"
+        ],
         "CFBundleDevelopmentRegion": "en"
       }
     },
@@ -51,11 +56,13 @@
         "android.permission.POST_NOTIFICATIONS"
       ],
       "blockedPermissions": [
-        "android.permission.RECORD_AUDIO"
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA"
       ],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon-512.png",
-        "backgroundColor": "#F8F8F6"
+        "foregroundImage": "./assets/brand/adaptive-foreground.png",
+        "monochromeImage": "./assets/brand/adaptive-monochrome.png",
+        "backgroundColor": "#4B352C"
       }
     },
     "web": {

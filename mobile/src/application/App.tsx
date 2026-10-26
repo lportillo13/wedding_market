@@ -1,3 +1,7 @@
+import brandMark from '../../assets/brand/mark.png';
+import { CommunityConsent } from "../features/account/CommunityConsent";
+import { COMMUNITY_TERMS_VERSION } from "../../../shared/safety/copy";
+import { confirmAccountDeletion } from "../features/account/deletion";
 import { PasswordRecoveryModal } from "../features/auth/AuthScreen";
 import { RequestQuoteModal } from "../features/inquiries/RequestQuoteModal";
 import { VendorDetailScreen } from "../features/vendors/screens/VendorDetailScreen";
@@ -11,7 +15,6 @@ import { getShortlist, toggleShortlist } from "../lib/shortlist";
 import { supabase } from "../lib/supabase";
 import { styles } from "../theme/styles";
 import { colors } from "../theme/tokens";
-import { openPublicWebPath } from "../ui/links";
 import { roleTabs, tabIcons, tabLabel } from "./navigation";
 import { ScreenContent } from "./ScreenContent";
 import { type IconName, type TabKey } from "./types";
@@ -23,7 +26,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFonts } from "expo-font";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ActivityIndicator, Alert, BackHandler, Image, Linking, Platform, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, AppState, BackHandler, Image, Linking, Platform, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -61,6 +64,17 @@ export default function App() {
     setActiveTab(roleTabs(state.profile?.role ?? (state.user ? "client" : "guest"))[0].key);
     setIsAccountMenuOpen(false);
     return nextLanguage;
+  }, []);
+
+  useEffect(() => {
+    if (!supabase || Platform.OS === 'web') return;
+    const auth=supabase.auth;
+    const updateRefresh=(state:string)=>{
+      void (state==='active'?auth.startAutoRefresh():auth.stopAutoRefresh());
+    };
+    updateRefresh(AppState.currentState);
+    const listener=AppState.addEventListener('change',updateRefresh);
+    return ()=>{listener.remove();void auth.stopAutoRefresh();};
   }, []);
 
   useEffect(() => {
@@ -294,7 +308,7 @@ export default function App() {
       {!isDetailOpen ? <View style={[styles.header, isHomeOpen && styles.headerOverlay]}>
         <View style={styles.headerBrandRow}>
           <View style={styles.logoMark}>
-            <Ionicons name="sparkles-outline" size={18} color={colors.gold} />
+            <Image source={brandMark} style={{width:34,height:34,tintColor:colors.paper}} accessibilityIgnoresInvertColors />
           </View>
           <View>
             <Text style={[styles.brand, isHomeOpen && styles.headerOverlayText]}>The Wedding Market</Text>
@@ -372,7 +386,7 @@ export default function App() {
                   <TouchableOpacity
                     onPress={() => {
                       setIsAccountMenuOpen(false);
-                      void openPublicWebPath("/account-deletion");
+                      confirmAccountDeletion(language);
                     }}
                     style={styles.accountMenuItem}
                   >
@@ -396,6 +410,7 @@ export default function App() {
         keyboardDismissMode={Platform.OS === "ios" ? "interactive" : "on-drag"}
         keyboardShouldPersistTaps="handled"
       >
+        {userEmail && profile && profile.communityTermsVersion !== COMMUNITY_TERMS_VERSION ? <CommunityConsent language={language} onAccepted={()=>setProfile({...profile,communityTermsVersion:COMMUNITY_TERMS_VERSION})} /> : null}
         {selectedVendor ? (
           <VendorDetailScreen
             slug={selectedVendor.slug}

@@ -2,9 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const { Client } = require('pg');
 const { createClient } = require('@supabase/supabase-js');
+const { assertLocalFixtureTargets } = require('./database/local-fixture-target.cjs');
 
 const connectionString = process.env.SUPABASE_DB_URL || 'postgresql://postgres:postgres@127.0.0.1:54322/postgres';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://127.0.0.1:54321';
+// Never connect this development seeder to a production database or forwarded production tunnel.
+assertLocalFixtureTargets(connectionString,supabaseUrl);
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const seedBatch = process.env.RANDOM_VENDOR_SEED_BATCH || 'random-provider-seed-v1';
 const vendorsPerCategory = Math.max(1, Number(process.env.RANDOM_VENDORS_PER_CATEGORY || 8));
@@ -1200,9 +1203,9 @@ async function main() {
     };
 
     const outPath = path.join(process.cwd(), 'supabase', 'random-vendors.local.json');
-    fs.writeFileSync(outPath, JSON.stringify(summary, null, 2));
+    fs.writeFileSync(outPath, JSON.stringify(summary, null, 2), {mode:0o600});
     console.log(`Wrote ${outPath}`);
-    console.log(JSON.stringify(summary, null, 2));
+    console.log(JSON.stringify({seed_batch:seedBatch,created_vendors:createdVendors.length,created_reviews:reviewsCreated}));
   } catch (error) {
     await pg.query('rollback');
     throw error;

@@ -20,6 +20,13 @@ Read [docs/project-context.md](docs/project-context.md) when resuming this proje
 
 ## Working in this repository
 
+- Keep resource use bounded: public directory caches must be public-only, small, short-lived and invalidated after writes. Never cache authenticated HTML or private RLS results across accounts. Preserve foreground-only inbox refresh, in-flight guards, fixed-size database pages and existing upload/media admission limits.
+- Use Supabase Usage and aggregate database counters for routine health checks. Avoid repeated broad log scans or idle Logs Explorer polling; incident log reads should use a short, filtered window.
+- The owner approved the refined outlined WM identity on October 26, 2026. SVG masters are under `public/brand`; regenerate platform assets with `node scripts/generate-brand-assets.mjs` instead of creating unrelated logos at each size. Keep the dedicated white notification mark and Android safe-zone checks.
+- Wedding Market's confirmed publisher is PORTILLO'S DESIGN CR LLC, Florida, United States. Support/privacy contact is `hello@thewedmarket.com`; free Cloudflare routing to the owner's chosen verified inbox was activated and delivery confirmed October 26. No Hetzner email subscription was ordered.
+- Launch accounts are free for couples and vendors. Wedding-service contracts/payments are arranged directly with vendors. No paid digital access, subscription, checkout or sponsored placement is part of this launch. Keep public store/social links hidden until real destinations are confirmed; never restore sample contact details or unsupported vendor-verification/count claims.
+- Preserve authenticated deletion initiation, durable cleanup status, independent vendors' bookings, recorded posting-rules acceptance, private content reports, server-enforced contact blocks and MFA moderation. Archive/delete inbox controls are distinct from account deletion and blocking.
+
 - Read `docs/architecture-2026-10-26/README.md` for the current feature boundaries and database audit. Business workflows belong in `features/`; cross-platform pure rules belong in `shared/`. Existing compatibility exports must not acquire duplicate implementations.
 - Native composition lives in `mobile/src/application`, feature screens in `mobile/src/features`, and translations/styles in their own modules. Keep `mobile/App.tsx` as the Expo entry point; do not reintroduce the screen monolith or create `src/app` unless intentionally adopting Expo Router.
 - `supabase/migrations` is the only active migration chain. `supabase/legacy` and the recovered baseline are not scripts to replay over live data. Validate structural changes with `npm run architecture:check`, `npm run db:inspect`, and `npm run test:database` in addition to application checks.

@@ -5,6 +5,7 @@ import { supabase } from "./supabase";
 export type AppRole = "guest" | "client" | "vendor" | "admin";
 
 export type AuthProfile = {
+  communityTermsVersion?: string | null;
   role: AppRole;
   fullName: string | null;
   language: "en" | "es";
@@ -177,7 +178,7 @@ export async function loadAuthState(): Promise<AuthState> {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role, full_name, language, phone, tentative_wedding_date, guest_count, wedding_budget, wedding_theme")
+    .select("role, full_name, language, phone, tentative_wedding_date, guest_count, wedding_budget, wedding_theme, community_terms_version")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -195,6 +196,7 @@ export async function loadAuthState(): Promise<AuthState> {
   return {
     user,
     profile: {
+      communityTermsVersion: typeof profile?.community_terms_version === "string" ? profile.community_terms_version : null,
       role,
       fullName: typeof profile?.full_name === "string" ? profile.full_name : null,
       language: profile?.language === "es" ? "es" : "en",
@@ -230,16 +232,16 @@ async function provisionAuthenticatedAccount(authenticatedUser?: User | null): P
 
   const { data: existingProfile, error: existingProfileError } = await supabase
     .from("profiles")
-    .select("id")
+    .select("id, suspended_at")
     .eq("id", user.id)
-    .maybeSingle<{ id: string }>();
+    .maybeSingle<{ id: string; suspended_at: string | null }>();
 
   if (existingProfileError) {
     throw new Error(existingProfileError.message);
   }
 
   const pending = pendingSignUpFromUser(user);
-  if (existingProfile && !pending) {
+  if (existingProfile && (!pending || existingProfile.suspended_at)) {
     return loadAuthState();
   }
 

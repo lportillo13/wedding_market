@@ -1,3 +1,4 @@
+import ContentSafety from "@/components/safety/ContentSafety";
 import { formatQuoteAmount } from "@/shared/proposals/format";
 import { getConversationState } from "@/shared/conversations/state";
 import ThreadRefresh from "@/components/inbox/ThreadRefresh";
@@ -81,6 +82,7 @@ export default async function AccountInboxThreadPage({
   return (
     <main className="wm-thread container py-4">
       <ThreadRefresh />
+      <ContentSafety kind="conversation" targetId={detail.rfq.id} vendorId={detail.invite.vendor_id} language={language} />
       <ThreadReadSync activityKey={`${detail.messages.at(-1)?.id ?? ""}:${detail.latestQuote?.id ?? ""}:${detail.invite.status ?? ""}`} threadKey={decodedThreadKey} markThreadRead={markAccountInboxThreadRead} />
       <Link className="btn btn-outline-secondary btn-sm mb-3" href="/account/inbox">
         {labels.back}

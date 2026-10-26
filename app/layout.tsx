@@ -1,3 +1,5 @@
+import CommunityConsent from "@/components/safety/CommunityConsent";
+import { COMMUNITY_TERMS_VERSION } from "@/shared/safety/copy";
 import "../styles/bootstrap-theme.scss";
 import type { Metadata } from "next";
 import type { Viewport } from "next";
@@ -39,12 +41,12 @@ export const metadata: Metadata = {
       { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
       { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
-    apple: "/icon-192.png",
+    apple: "/apple-touch-icon.png",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#b8922a",
+  themeColor: "#4B352C",
 };
 
 function getFallbackVendorCategories(): HeaderVendorCategory[] {
@@ -60,6 +62,7 @@ function getFallbackVendorCategories(): HeaderVendorCategory[] {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  let needsCommunityConsent = false;
   let initialLanguage: SupportedLanguage | undefined;
   let vendorCategories = getFallbackVendorCategories();
   let account: HeaderAccount = { status: "unavailable" };
@@ -73,8 +76,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     const user = account.status === "authenticated" ? account.user : null;
 
     if (user) {
-      const { data: profile } = await supabase.from("profiles").select("language").eq("id", user.id).abortSignal(AbortSignal.timeout(2000)).maybeSingle();
+      const { data: profile } = await supabase.from("profiles").select("language, community_terms_version").eq("id", user.id).abortSignal(AbortSignal.timeout(2000)).maybeSingle();
 
+      needsCommunityConsent = profile?.community_terms_version !== COMMUNITY_TERMS_VERSION;
       if (profile && isSupportedLanguage(profile.language)) {
         initialLanguage = profile.language;
       }
@@ -133,6 +137,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <LanguageProvider initialLanguage={resolvedLanguage}>
           <div className="wm-site-shell">
             <NavBarContainer vendorCategories={vendorCategories} account={account} />
+            {needsCommunityConsent ? <CommunityConsent language={resolvedLanguage} /> : null}
             <div className="wm-site-shell__content">{children}</div>
             <SiteFooter vendorCategories={vendorCategories} />
           </div>

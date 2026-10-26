@@ -1,3 +1,4 @@
+import { ContentSafety } from "./ContentSafety";
 import { type IconName } from "../../application/types";
 import { themeOptions } from "../../content/catalog";
 import { copy } from "../../i18n/copy";
@@ -221,6 +222,7 @@ export function InboxScreen({ role, language }: { role: AppRole; language: "en" 
         <View style={styles.dashboardHero}>
           <Text style={styles.kicker}>{selectedThread.status}</Text>
           <Text style={styles.title}>{selectedThread.title}</Text>
+          <ContentSafety key={selectedThread.id} kind="conversation" targetId={selectedThread.rfqId} vendorId={selectedThread.vendorId} language={language} />
           <Text style={styles.body}>{selectedThread.subtitle}</Text>
         </View>
         {message ? (

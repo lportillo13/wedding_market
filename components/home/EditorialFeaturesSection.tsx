@@ -8,14 +8,14 @@ const EDITORIAL_COPY = {
     headingLine1: "The marketplace built",
     headingLine2: "for your perfect day.",
     tagline:
-      "A curated platform that connects you with the best wedding professionals — organised, reviewed, and ready to book.",
+      "A place to discover wedding professionals, explore their work, and start a conversation about your celebration.",
   },
   es: {
     eyebrow: "Para parejas · por diseño",
     headingLine1: "El marketplace creado",
     headingLine2: "para tu día perfecto.",
     tagline:
-      "Una plataforma curada que te conecta con los mejores profesionales de bodas — organizados, verificados y listos para reservar.",
+      "Un lugar para descubrir profesionales de bodas, conocer su trabajo y conversar sobre tu celebración.",
   },
 } as const;
 
@@ -24,8 +24,8 @@ const PLATFORM_FEATURES = [
     id: "discover",
     titleEn: "Discover vendors",
     titleEs: "Descubre proveedores",
-    descriptionEn: "Browse hundreds of curated wedding professionals by category, style, and budget.",
-    descriptionEs: "Explora cientos de profesionales de bodas por categoría, estilo y presupuesto.",
+    descriptionEn: "Explore wedding professionals by category, style, and budget.",
+    descriptionEs: "Explora profesionales de bodas por categoría, estilo y presupuesto.",
     image: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
   },
   {

@@ -21,6 +21,7 @@ export default function WorkspaceFooter() {
           <Link href="/account-deletion">
             {language === "es" ? "Eliminar cuenta" : "Account deletion"}
           </Link>
+          <Link href="/support">{language === "es" ? "Soporte" : "Support"}</Link>
         </nav>
       </div>
     </footer>

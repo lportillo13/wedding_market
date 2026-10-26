@@ -1,16 +1,16 @@
 import { Platform } from "react-native";
 
 export const colors = {
-  ink: "#161A1D",
-  muted: "#6D747A",
-  line: "#ECEFF1",
-  paper: "#FFFFFF",
-  warm: "#F8F8F6",
-  teal: "#1D7A72",
-  tealDark: "#161A1D",
-  gold: "#F1B84B",
-  blush: "#FFF0EE",
-  soft: "#F2F4F3",
+  ink: "#4B352C",
+  muted: "#776554",
+  line: "#E8DED1",
+  paper: "#FFFEFC",
+  warm: "#FBF7F0",
+  teal: "#765943",
+  tealDark: "#4B352C",
+  gold: "#C9AC79",
+  blush: "#F8EEEA",
+  soft: "#F2ECE3",
 };
 
 

@@ -48,6 +48,16 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           description: "Manage sponsored vendors and campaign banners",
         },
         {
+          href: "/private-control-room-hub/moderation",
+          label: "Content reports",
+          description: "Review content and account safety reports",
+        },
+        {
+          href: "/private-control-room-hub/account-requests",
+          label: "Account requests",
+          description: "Process account deletion and media cleanup",
+        },
+        {
           href: "/private-control-room-hub/operations",
           label: "Operations",
           description: "Utilities for day-to-day management",

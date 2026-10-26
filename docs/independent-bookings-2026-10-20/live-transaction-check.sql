@@ -19,6 +19,8 @@ BEGIN
   INSERT INTO auth.users(id,raw_user_meta_data) VALUES(client_id,'{}'),(owner_a,'{}'),(owner_b,'{}');
   INSERT INTO public.profiles(id,role,language) VALUES(client_id,'user','en'),(owner_a,'vendor','en'),(owner_b,'vendor','es')
     ON CONFLICT(id) DO UPDATE SET role=excluded.role,language=excluded.language;
+  -- Synthetic actors explicitly accept the current posting rules.
+  UPDATE public.profiles SET community_terms_version='2026-10-26',community_terms_accepted_at=now() WHERE id IN (client_id,owner_a,owner_b);
   INSERT INTO public.vendors(id,owner_id,slug,business_name,is_published) VALUES
     (vendor_a,owner_a,'rollback-only-audit-vendor-a','Rollback fixture A',true),
     (vendor_b,owner_b,'rollback-only-audit-vendor-b','Rollback fixture B',true);

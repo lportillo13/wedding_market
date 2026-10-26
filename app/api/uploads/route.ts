@@ -110,6 +110,9 @@ export async function POST(request: Request) {
   // Authenticate before reading or buffering multipart data.
   const auth = await requireUser(request);
   if (!auth.user) return NextResponse.json({ error: "Not authenticated." }, { status: 401 });
+  const {data:postingProfile,error:postingError}=await auth.supabase.from("profiles").select("community_terms_version,suspended_at").eq("id",auth.user.id).maybeSingle();
+  if(postingError)return NextResponse.json({error:"Account controls are temporarily unavailable."},{status:503});
+  if(!postingProfile||postingProfile.suspended_at||postingProfile.community_terms_version!=="2026-10-26")return NextResponse.json({error:"Review the Terms and Community Guidelines before uploading, or contact support if your account is restricted."},{status:403});
   let release: (() => void) | undefined;
   try {
     release = reserveUpload();

@@ -24,8 +24,10 @@ def plan(root, active, receipt, now, inspect, in_use):
     if not receipt.get('applicationDeployed') or receipt.get('step') != 'complete':
         raise ValueError('No successful deployment receipt')
     commit = receipt.get('releaseCommit', '')
-    if not re.fullmatch('[a-f0-9]{40}', commit) or not active.name.endswith('-' + commit[:12]):
+    if active.parent != root or not re.fullmatch('[a-f0-9]{40}', commit) or not active.name.endswith('-' + commit[:12]):
         raise ValueError('Active release does not match receipt')
+    if inspect(active)[0] != commit:
+        raise ValueError('Active Git revision differs from receipt')
     rollback = Path(receipt['rollbackCopy']).resolve(strict=True)
     if rollback == active:
         raise ValueError('Rollback resolves to active release')

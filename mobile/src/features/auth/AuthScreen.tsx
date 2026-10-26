@@ -1,3 +1,4 @@
+import brandMark from '../../../assets/brand/mark.png';
 import { themeOptions, weddingStyleCards } from "../../content/catalog";
 import { countryOptions } from "../../content/countries";
 import { copy } from "../../i18n/copy";
@@ -721,7 +722,7 @@ export function AuthScreen({
           <ExpoStatusBar style="dark" />
           <View style={styles.signupModalHeader}>
             <View style={styles.signupModalLogo}>
-              <Text style={styles.signupModalLogoText}>TWM</Text>
+              <Image source={brandMark} style={{width:46,height:40,tintColor:colors.ink}} />
             </View>
             <TouchableOpacity onPress={requestCloseSignupModal} style={styles.signupModalCloseButton}>
               <Ionicons name="close" size={22} color={colors.ink} />

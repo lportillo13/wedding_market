@@ -85,9 +85,9 @@ const common = {
       "errorMessage": "No pudimos suscribirte ahora. Intentalo de nuevo."
     },
     "contact": {
-      "email": "hola@weddingmarket.com",
-      "phone": "+1 (800) 555-0199",
-      "location": "Miami, FL"
+      "email": "hello@thewedmarket.com",
+      "phone": "",
+      "location": "Florida, Estados Unidos"
     },
     "legal": {
       "terms": "Terminos",
@@ -1100,7 +1100,7 @@ const common = {
       "viewAll": "Ver todas las categorias",
       "spotlightLabel": "Categoria destacada",
       "heading": "Explora categorías populares",
-      "description": "Ya sea que busques el lugar perfecto o estés afinando los detalles de la decoración, nuestro directorio reúne profesionales verificados en cada categoría.",
+      "description": "Ya sea que busques el lugar perfecto o estés afinando los detalles de la decoración, nuestro directorio te permite explorar profesionales de bodas por categoría.",
       "seeVendors": "Ver proveedores →",
       "items": [
         {

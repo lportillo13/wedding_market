@@ -1,23 +1,26 @@
-# Preparation validation — October 26, 2026
+# Launch preparation validation — October 26, 2026
 
-The prepared source is not a signed store candidate. No EAS build/upload, store-console edit, reviewer-account creation, database mutation, live web deployment or public release was performed.
+The web/backend and native source have distinct release evidence. Local native exports and EAS source archive inspection do not create a signed AAB/IPA or publish an app. The approved demo quarantine changed only the exact seeded cohort; no real customer account was deleted or used as a fixture.
 
 | Check | Result |
 | --- | --- |
-| Mobile TypeScript | Passed after patch updates. |
-| Mobile ESLint | Passed with zero warnings after patch updates. |
-| Mobile Jest | 10 suites / 49 tests passed after patch updates. |
-| Expo compatibility | Online check passed after aligning Expo `~56.0.24`, dev client `~56.0.28`, splash `~56.0.16` and jest-expo `~56.0.6`. Lockfile updated. |
-| Offline audit regression tests | 5 passed: empty, opaque, colored and translucent notification-image failures; white mark with transparent padding; listing field validation. |
-| Launch audit source checks | Node syntax check and focused ESLint with the repository ignore override passed. |
-| Android Hermes export | Passed, 750 modules, approximately 2.8 MB bytecode plus font assets. |
-| iOS Hermes export | Passed, 751 modules, approximately 2.8 MB bytecode plus font assets. The CLI printed a forced-exit notice after successful export and returned exit 0. This is bundling on Windows, not an iOS native build. |
-| Source-ignore policy samples | The installed Git-ignore matcher included native config/code/assets and sibling shared rules; excluded server/admin source, root/mobile env files, credentials/signing examples, store docs, dependencies and unrelated attachments. Real EAS archive proof remains pending. |
-| Launch audit | Inspection completed; 8 source/asset checks pass, 7 are blocked, and 12 require evidence. It explicitly reports `readyForSubmission: false`; strict mode must fail. |
-| Public URLs | HTTPS privacy, terms and account-deletion returned 200; `/support` returned 404. No contact mailbox verification was performed. |
-| Generated brand boards | Visually inspected as concept presentations; neither is an approved vector master, tested 16 px favicon, actual notification resource or final store asset. |
+| Web TypeScript / ESLint / production build | Passed; 64 static-generation entries and the new support/policy/deletion/moderation routes compiled. |
+| Web application tests | 78 passed, including bounded caches/refresh/deadlines and deletion-provider failure handling. |
+| PostgreSQL regressions | 32 passed with all migrations 000–011: ownership/MFA, deletion retry/isolation/stale JWT, consent/report/block/moderation, restricted-account deletion controls and exact-cohort quarantine rollback intent. |
+| Architecture | Feature/shared boundaries pass; no dependency cycles or boundary violations. |
+| Tooling tests | 14 passed: source archive failures, icon transparency/safe zone/alpha channel, literal listing limits, local seeder targets, database catalog/TLS and neutral PWA cache behavior. |
+| Live database vs replay | Matches: 351 columns, 89 constraints, 79 indexes, 113 policies, 52 functions, 8 views. Only documented CRLF and PostgreSQL NOT NULL catalog differences are normalized. |
+| Mobile TypeScript / ESLint / tests | Passed; 10 suites / 49 tests. |
+| Expo compatibility | Online check passed for the selected SDK56 patch versions. |
+| Android Hermes export | Passed, 802 modules, approximately 2.9MB bytecode, six font/brand assets. |
+| iOS Hermes export | Passed, 803 modules, approximately 2.9MB bytecode. This is a local bundle on Windows, not an iOS native build. |
+| Real Android/iOS archives | EAS25.2 archive stage passed. Both contain 94 byte-matched files, 1,070,054 bytes. Fingerprint `6e3157d2c569e852705aa2b400142c424d2ddf4c46ffaaab73c30e3233f23522`. No missing/extra paths, symlinks or known server-key markers. Full hashes in source-archives.json. |
+| Brand pixels/config | 1024 RGB app icon without alpha; distinct safe-zone adaptive/themed layers, actual white/transparent96 notification mark, separate splash, web favicon/Apple/PWA sizes, Play512 icon and RGB1024×500 feature graphic. Owner approved the outlined identity. |
+| Launch audit | 15 source/asset checks pass; zero blocked; 12 manual verification categories remain. Strict mode must remain nonzero and readyForSubmission remains false. The receipt records the base commit and whether native source was dirty. |
+| Support inbox | Cloudflare inbound routing active; owner confirmed actual Gmail receipt. No paid mailbox subscription ordered. This does not configure outgoing replies or prove transactional delivery. |
+| Demo directory | 152 confirmed seeds hidden and accounts restricted, zero seed listings remain published; four unmarked listings left unchanged. Aggregate receipt committed; private before snapshot/conditional rollback kept outside source. |
 
-The initial sandbox Expo compatibility check fell back to its cached map. The online check then identified four compatible patch updates; those were applied before the final checks. Initial sandbox Hermes exports failed writing temporary bytecode; rerunning the same exports outside the sandbox succeeded. Neither failure was treated as a passed check.
+Production deployment/public verification will be recorded in adjacent deployment-success.json and public-release-checks.json. Native source packaging evidence is deliberately separate from signed binary/device/console acceptance. The initial archive attempt produced an empty directory; directory allowlist negations were corrected and real contents measured. Image alpha-channel inspection was added after finding fully opaque RGBA output. No unnecessary runtime dependency was added for branding.
 
 ## Open dependency findings
 
@@ -30,4 +33,6 @@ These are the dependency paths observed locally. This check does not prove those
 
 ## Practical limits
 
-Local exports used the existing local environment and do not prove production endpoint correctness. Final AAB/IPA signing, compiled notification artwork, Android native library alignment/target API, Apple SDK/privacy manifests, push delivery, auth confirmation/recovery, permission behavior, physical-device acceptance and store forms remain unverified. No production users or messages were used as fixtures. Web/backend deployment must accompany later verified application fixes through the established Wedding Market gateway; publishing a mobile binary is separate.
+Local exports used the existing local environment. Production endpoints, app records, signing keys, APNs/FCM, permissions/privacy manifests, encrypted device-session/backup handling, Android target API/native alignment, Apple SDK, real native EN/ES screenshots and physical Android/iPhone/iPad acceptance remain release gates. The five high Expo-tooling package findings above remain open pending reviewed remediation/disposition; the audit is not clean. No signed cloud build, store upload/submission or public app release was performed.
+
+The deletion/moderation provider drill and real backup-retention policy remain operational gates before store submission. Email completion requires sender API acceptance; final inbox receipt must be checked in the isolated drill. Root retention is reviewed/planner-tested but needs owner installation; no automatic cleanup is claimed active. Web/backend deployment follows the restricted Wedding Market gateway and preserves a verified rollback.

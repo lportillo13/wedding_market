@@ -1,3 +1,4 @@
+import { confirmAccountDeletion } from "./deletion";
 import { type ClientProfileForm } from "../../application/types";
 import { themeOptions } from "../../content/catalog";
 import { copy } from "../../i18n/copy";
@@ -274,18 +275,25 @@ export function AccountProfileScreen({
 
       <View style={styles.formSection}>
         <Text style={styles.sectionTitle}>{copy[form.language].accountControls}</Text>
-        <TouchableOpacity onPress={() => void openPublicWebPath("/privacy")} style={styles.secondaryButton}>
+        <TouchableOpacity onPress={() => void openPublicWebPath("/privacy?lang="+form.language)} style={styles.secondaryButton}>
           <Ionicons name="shield-checkmark-outline" size={17} color={colors.tealDark} />
           <Text style={styles.secondaryButtonText}>{copy[form.language].privacyPolicy}</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => void openPublicWebPath("/terms")} style={styles.secondaryButton}>
+        <TouchableOpacity onPress={() => void openPublicWebPath("/terms?lang="+form.language)} style={styles.secondaryButton}>
           <Ionicons name="document-text-outline" size={17} color={colors.tealDark} />
           <Text style={styles.secondaryButtonText}>{copy[form.language].termsOfService}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => void openPublicWebPath("/support?lang="+form.language)} style={styles.secondaryButton}>
+          <Ionicons name="help-circle-outline" size={17} color={colors.tealDark} />
+          <Text style={styles.secondaryButtonText}>{form.language === "es" ? "Soporte" : "Support"}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => void openPublicWebPath("/community-guidelines?lang="+form.language)} style={styles.secondaryButton}>
+          <Text style={styles.secondaryButtonText}>{form.language === "es" ? "Normas de la comunidad" : "Community guidelines"}</Text>
         </TouchableOpacity>
         <Text style={styles.body}>{copy[form.language].deleteAccountHelp}</Text>
         <TouchableOpacity
           onPress={() => {
-            void openPublicWebPath("/account-deletion");
+            confirmAccountDeletion(form.language);
           }}
           style={styles.secondaryButton}
         >

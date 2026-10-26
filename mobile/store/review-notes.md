@@ -1,37 +1,34 @@
-# App review notes — draft, October 26, 2026
+# App review preparation — October 26, 2026
 
-Use this draft for Wedding Market only. It is based on current source and the published terms; verify it against the final binary and confirm the business model with the owner before entering store declarations. Do not copy Digital Wedding's paid web-hosting explanation: Wedding Market has different users and functionality.
+Publisher confirmed by the owner: **PORTILLO'S DESIGN CR LLC, Florida, United States**. Support: **hello@thewedmarket.com**; inbound delivery confirmed. Website: https://thewedmarket.com. These answers reflect the owner-confirmed launch model; verify the final binary before entering console declarations. They are specific to Wedding Market, informed by Digital Wedding's 2.1(b) review hold.
 
-## Business model explanation
+## Business model answers
 
-The Wedding Market connects couples planning weddings in Costa Rica with wedding-service providers. Couples can discover providers, save favorites, request proposals, and communicate privately with each invited provider. Providers manage their profile, media, availability, and proposals. This app supports account creation; it is not restricted to existing Digital Wedding customers.
+1. **Who uses paid content/services?** Couple and vendor accounts are free. Wedding Market does not sell paid digital content, account access, memberships, subscriptions, credits, listing fees, commissions or sponsored placements in this launch. Couples may separately purchase real-world wedding services from vendors.
+2. **Where are purchases made?** Contracts, deposits, payments, cancellations and refunds for wedding services are arranged directly between the couple and vendor. Wedding Market provides discovery, inquiries, proposals and private conversations. It has no in-app checkout or payment processing for these agreements.
+3. **What previously purchased content/services are available?** There are no paid digital entitlements or prior-purchase unlocks. Vendor proposals describe real-world wedding services. Access to discovery and account features does not depend on a previous purchase.
+4. **What can be used without In-App Purchase?** Discovery, vendor photos/details, favorites, wedding preferences, individual/group quote requests, separate vendor conversations, independent proposal acceptance, and vendor profile/media/availability/proposal management are free. No In-App Purchase is offered.
+5. **Are physical services bundled with paid digital content?** No. This release has no paid digital bundle, subscription, promotion or sponsored listing. Service agreements remain between each couple and vendor.
 
-The reviewed native source contains no consumer checkout, digital credit purchase, paid feature unlock, or subscription purchase flow. Current terms describe bookings, contracts, cancellations, and payments for wedding services as agreements directly between the couple and provider. Public sponsored placements remain disabled. Confirm whether vendor access, membership, listing fees, commissions, or any previously purchased access exist before calling either role free in review notes. Confirm the legal publisher separately.
-
-Apple previously asked Digital Wedding these five questions. Prepare factual Wedding Market answers in advance:
-
-1. **Who uses the paid content or services?** Couples arranging wedding services and providers offering those services. Explain separately any fees paid to Wedding Market; these are not established by this source review.
-2. **Where are purchases made?** Current terms place wedding-service agreements and payments directly between couples and providers. No native checkout was found. Verify the release candidate and owner business model.
-3. **What previously purchased content/services are available?** Vendor proposals and communications about real-world wedding services. Do not claim there are no paid digital entitlements until vendor membership/access is confirmed.
-4. **What can be used without In-App Purchase?** Describe the actual accessible discovery, planning, quote, messaging, and vendor-management features. Identify any paid access explicitly.
-5. **Are physical goods/services bundled with digital content?** Current terms cover wedding services; no bundled native checkout was found. Confirm no paid digital listing, promotion, or membership bundle before submitting this answer.
-
-Physical wedding services and paid digital promotion/access must be evaluated separately. The relevant starting point for physical services is [Apple guideline 3.1.3(e)](https://developer.apple.com/app-store/review/guidelines/#other-purchase-methods); this is a preparation assessment, not a promise of approval.
+The relevant starting point for physical services is [Apple guideline 3.1.3(e)](https://developer.apple.com/app-store/review/guidelines/#other-purchase-methods). Reassess both stores' rules before introducing paid digital access or promotions.
 
 ## Review accounts and walkthrough
 
-Create dedicated, least-privilege fictional client and vendor accounts and sample listings on the actual review backend. Keep credentials only in each console's private app-access form and an approved private credential store. Do not put them in this folder, screenshots, source, app binaries, or build archives. Reviewers do not need a production administrator login. Do not send invitations or messages to real customers.
+Dedicated client/vendor review accounts are still required on the actual review backend. Keep credentials only in private console access forms and an approved private credential store. No production administrator login is needed. The 152 confirmed seeded vendors were hidden/restricted; do not reuse them as review accounts or make fictional vendors public in the live directory. Use an isolated review environment/fixtures and confirm the binary's configured backend.
 
-Give both reviewers access through the complete review period. Exercise these steps before declaring accounts ready:
+1. Browse vendor photos/details and switch English/Spanish.
+2. Sign in as the fictional couple, accept the current posting rules, set date/guests, save a vendor and send an individual inquiry.
+3. Send a group inquiry to two fictional providers; each must see only its own conversation.
+4. As each provider, ask a question before pricing, send/revise a proposal, and reply after acceptance.
+5. Accept each provider independently; confirm contact consent, review eligibility and notifications stay isolated.
+6. Report the selected public listing/conversation, block/unblock the other participant, and verify server denial of new messages/proposals/inquiries while blocked. Blocking does not cancel a separate contract.
+7. Initiate full-account deletion from the app account controls with confirmation. The app records a request/reference and a 30-day deadline; support email is not required. Complete the MFA operator drill, including media/CDN/backup review and confirmation delivery, before claiming end-to-end verification.
+8. Open the bilingual privacy, terms, support and community pages. Confirm the exact labels and behavior from the signed candidate.
 
-1. Browse sample vendor profiles and photos; switch English/Spanish.
-2. Sign in as the fictional client, set date/guests, save a vendor, and send an individual request.
-3. Send a group request to two fictional providers; verify each sees only its own private conversation.
-4. As a fictional provider, ask a question before a proposal, send/revise a proposal, and reply after acceptance.
-5. As client, accept each provider independently; confirm contact consent and notifications remain isolated by provider.
-6. Demonstrate working account deletion and report/block controls once implemented. Current email-only deletion and missing moderation controls are launch blockers; do not describe them as complete.
-7. Show privacy, support, and account controls. Record the exact menu labels in each language from the final candidate.
+## Release controls and evidence
 
-## Release controls
+Version is 1.0.0; permanent identifier is `com.theweddingmarket.app`. Real Android/iOS source archives were inspected (94 files, approximately 1.1 MB each); this is source packaging evidence, not a signed build. Local Hermes exports also do not establish production configuration or physical-device behavior.
 
-An Android APK is for direct testing; Play distribution requires the signed production AAB. iOS distribution requires a signed device IPA and the matching App Store Connect record. Uploaded, processed, submitted, approved, released, and publicly installable are separate states; retain receipts for each. Prefer manual public release for Apple and managed publishing in Play so approval does not unintentionally launch the app. The EAS Android submission default is internal/draft; submitting or publishing remains a separate action.
+Play needs a signed production AAB; Apple needs a signed device IPA and matching App Store Connect record. Verify signing ownership, push credentials, target SDK/native-library alignment, native privacy/permission manifests, backup/session security, actual production endpoints and EN/ES device screenshots. Record source/artifact hashes and separate upload, processing, submission, approval, release and public-install receipts.
+
+Keep Android EAS submission **internal/draft**. Configure managed publishing in Play and manual public release in Apple deliberately. No new signed cloud build, store submission or public app release has been performed in this preparation work.

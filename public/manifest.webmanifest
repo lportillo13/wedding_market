@@ -5,10 +5,14 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#f8f8f6",
-  "theme_color": "#b8922a",
+  "background_color": "#FBF7F0",
+  "theme_color": "#4B352C",
   "orientation": "portrait-primary",
-  "categories": ["lifestyle", "shopping", "productivity"],
+  "categories": [
+    "lifestyle",
+    "shopping",
+    "productivity"
+  ],
   "icons": [
     {
       "src": "/icon-192.png",
@@ -23,7 +27,7 @@
       "purpose": "any"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -32,7 +36,7 @@
       "src": "/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ],
   "shortcuts": [

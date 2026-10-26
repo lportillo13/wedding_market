@@ -1,4 +1,4 @@
-import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, DeleteObjectsCommand, ListObjectsV2Command, GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { ownedR2ObjectKey } from "./r2-ownership";
 
 function stripTrailingSlash(value: string) {
@@ -132,6 +132,20 @@ export async function deleteFromR2(key: string, ownerPrefix: string) {
       Key: key,
     }), {abortSignal:AbortSignal.timeout(15000)}
   );
+}
+
+/** On-demand deletion work: one 20-object batch; retry drains the same exact owner prefix. */
+export async function drainOwnedR2Prefix(ownerPrefix:string) {
+  if (!getOwnedR2ObjectKey(ownerPrefix+'ownership-check',ownerPrefix)) throw new Error('Invalid media owner prefix.');
+  const bucket=readBucket(); const r2Client=getClient();
+  const page=await r2Client.send(new ListObjectsV2Command({Bucket:bucket,Prefix:ownerPrefix,MaxKeys:20}),{abortSignal:AbortSignal.timeout(10_000)});
+  const keys=(page.Contents ?? []).map(object=>object.Key).filter((key):key is string=>Boolean(key));
+  if (keys.some(key=>getOwnedR2ObjectKey(key,ownerPrefix)!==key)) throw new Error('Media ownership check failed.');
+  if (keys.length) {
+    const result=await r2Client.send(new DeleteObjectsCommand({Bucket:bucket,Delete:{Objects:keys.map(Key=>({Key})),Quiet:true}}),{abortSignal:AbortSignal.timeout(10_000)});
+    if (result.Errors?.length) throw new Error('Some media could not be removed. Retry this batch.');
+  }
+  return !page.IsTruncated;
 }
 
 export async function getFromR2(key: string) {

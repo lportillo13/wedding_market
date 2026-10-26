@@ -18,7 +18,10 @@ test('live-schema authorization and transaction regressions', async t => {
     INSERT INTO rfqs(id,owner_id) VALUES ('${id(21)}','${id(1)}'),('${id(22)}','${id(2)}'),('${id(23)}','${id(1)}');
     INSERT INTO rfq_invites(rfq_id,vendor_id,expires_at) VALUES ('${id(21)}','${id(11)}',now()+interval '1 day'),('${id(22)}','${id(12)}',now()+interval '1 day');
     INSERT INTO quotes(id,rfq_id,vendor_id,amount_cents,message) VALUES ('${id(31)}','${id(21)}','${id(11)}',10000,'Private quote');`);
-  const as = async (role, user, sql, params = [], aal = user===5 ? 'aal2' : 'aal1') => {
+  let consentReady=false;
+  const as = async (role, user, sql, params = [], aal = user===5 ? 'aal2' : 'aal1', consentFixture=true) => {
+    // Workflow fixtures represent accounts that accepted the current rules. Dedicated consent checks opt out.
+    if(consentReady && consentFixture && role==='authenticated' && user) await db.query("UPDATE profiles SET community_terms_version='2026-10-26',community_terms_accepted_at=now() WHERE id=$1 AND community_terms_version IS NULL",[id(user)]);
     await db.exec('BEGIN');
     try {
       await db.exec(`SET LOCAL ROLE ${role}`);
@@ -53,6 +56,11 @@ test('live-schema authorization and transaction regressions', async t => {
     UPDATE rfqs SET accepted_quote_id='${id(95)}',accepted_at=now() WHERE id='${id(92)}';`);
   await db.exec(await readFile(new URL('../supabase/migrations/202610200007_independent_vendor_bookings.sql', import.meta.url), 'utf8'));
   await db.exec(await readFile(new URL('../supabase/migrations/202610260008_notification_mailbox_pages.sql', import.meta.url), 'utf8'));
+  await db.exec(await readFile(new URL('../supabase/migrations/202610260009_account_deletion_workflow.sql', import.meta.url), 'utf8'));
+  await db.exec(await readFile(new URL('../supabase/migrations/202610260010_content_safety.sql', import.meta.url), 'utf8'));
+  await db.exec(await readFile(new URL('../supabase/migrations/202610260011_restricted_account_controls.sql', import.meta.url), 'utf8'));
+  await db.exec("UPDATE public.site_settings SET value='true'::jsonb WHERE key='community_rules_enforced'");
+  consentReady=true;
   const deny = async (role, user, sql, params) => assert.rejects(as(role, user, sql, params), { code: '42501' });
   await t.test('anonymous cannot mutate any formerly unprotected table', async () => {
     for (const table of ['amenity_lookup','languages','vendor_amenities','vendor_pricing','vendor_spaces','vendor_team']) {
@@ -328,6 +336,81 @@ test('live-schema authorization and transaction regressions', async t => {
     await deny('anon',null,"SELECT list_notification_mailbox('account',false,'',1)");
     await db.exec(`DELETE FROM notifications WHERE recipient_id='${id(2)}' AND (title IN ('Deleted fixture','Vendor fixture') OR title='Resource fixture');`);
   });
+  await t.test('deletion requests are scoped and idempotent; processing preserves independent bookings and blocks stale JWT writes',async()=>{
+    await db.exec(`INSERT INTO auth.users(id,email) VALUES ('${id(9000)}','client@fixture.invalid'),('${id(9001)}','vendor@fixture.invalid'),('${id(9002)}','other@fixture.invalid');
+      UPDATE profiles SET role='vendor' WHERE id IN ('${id(9001)}','${id(9002)}');
+      INSERT INTO vendors(id,owner_id,slug,business_name) VALUES ('${id(9003)}','${id(9001)}','delete-fixture','Delete fixture'),('${id(9004)}','${id(9002)}','keep-fixture','Keep fixture');
+      INSERT INTO rfqs(id,owner_id) VALUES ('${id(9005)}','${id(9000)}'),('${id(9006)}','${id(1)}');
+      INSERT INTO rfq_invites(rfq_id,vendor_id) VALUES ('${id(9006)}','${id(9003)}'),('${id(9006)}','${id(9004)}');
+      INSERT INTO quotes(id,rfq_id,vendor_id) VALUES ('${id(9008)}','${id(9006)}','${id(9003)}'),('${id(9009)}','${id(9006)}','${id(9004)}');
+      UPDATE rfq_invites SET status='accepted',accepted_quote_id=CASE vendor_id WHEN '${id(9003)}' THEN '${id(9008)}'::uuid ELSE '${id(9009)}'::uuid END WHERE rfq_id='${id(9006)}';
+      UPDATE rfqs SET accepted_quote_id='${id(9008)}' WHERE id='${id(9006)}';`);
+    const request=async(user)=>(await as('authenticated',user,"SELECT request_account_deletion('es') AS receipt")).rows[0].receipt;
+    const vendor=await request(9001);assert.equal((await request(9001)).id,vendor.id);
+    await deny('anon',null,"SELECT request_account_deletion('en')");
+    await deny('authenticated',9001,'SELECT contact_email FROM account_deletion_requests');
+    assert.equal((await as('authenticated',9000,'SELECT id FROM account_deletion_requests WHERE id=$1',[vendor.id])).rows.length,0);
+    await deny('authenticated',9001,'SELECT purge_requested_account($1)',[vendor.id]);
+    await as('service_role',null,'SELECT purge_requested_account($1)',[vendor.id]);
+    await as('service_role',null,'SELECT purge_requested_account($1)',[vendor.id]); // retry
+    assert.equal((await db.query('SELECT count(*)::int n FROM account_deletion_media WHERE request_id=$1',[vendor.id])).rows[0].n,2);
+    assert.equal((await db.query('SELECT accepted_quote_id FROM rfq_invites WHERE rfq_id=$1 AND vendor_id=$2',[id(9006),id(9004)])).rows[0].accepted_quote_id,id(9009));
+    assert.equal((await db.query('SELECT count(*)::int n FROM profiles WHERE id=$1',[id(9001)])).rows[0].n,0);
+    await deny('authenticated',9001,'INSERT INTO rfqs(owner_id) VALUES ($1)',[id(9001)]);
+    await assert.rejects(as('service_role',null,'SELECT finish_account_deletion($1)',[vendor.id]),/Media cleanup/);
+    await as('service_role',null,'UPDATE account_deletion_media SET done=true WHERE request_id=$1',[vendor.id]);
+    await as('service_role',null,'SELECT finish_account_deletion($1)',[vendor.id]);
+    const complete=(await db.query('SELECT * FROM account_deletion_requests WHERE id=$1',[vendor.id])).rows[0];
+    assert.equal(complete.status,'completed');assert.equal(complete.user_id,null);assert.equal(complete.contact_email,null);
+    const client=await request(9000);await as('service_role',null,'SELECT purge_requested_account($1)',[client.id]);
+    assert.equal((await db.query('SELECT id FROM rfqs WHERE id=$1',[id(9005)])).rows.length,0);
+    assert.equal((await db.query('SELECT id FROM rfqs WHERE id=$1',[id(9006)])).rows.length,1);
+    const administrator=await request(5);
+    await assert.rejects(as('service_role',null,'SELECT purge_requested_account($1)',[administrator.id]),{code:'23514'});
+  });
+  await t.test('consent, filtering, private reports, two-way blocking and MFA moderation are enforced on the server',async()=>{
+    await db.exec(`INSERT INTO auth.users(id) VALUES ('${id(9101)}');
+      INSERT INTO rfqs(id,owner_id) VALUES ('${id(9100)}','${id(1)}'),('${id(9102)}','${id(9101)}');
+      INSERT INTO rfq_invites(rfq_id,vendor_id) VALUES ('${id(9100)}','${id(11)}'),('${id(9100)}','${id(12)}'),('${id(9102)}','${id(11)}');`);
+    const message=(rfq,vendor,user,body)=>[id(rfq),id(vendor),id(user),user===3||user===4?'vendor':'client',body];
+    const insert='INSERT INTO quote_messages(rfq_id,vendor_id,sender_id,sender_role,body) VALUES ($1,$2,$3,$4,$5) RETURNING id';
+    await assert.rejects(as('authenticated',9101,insert,message(9102,11,9101,'Consent required'), 'aal1',false),{code:'42501'});
+    await as('authenticated',9101,'SELECT accept_community_terms()',[],'aal1',false);
+    await as('authenticated',9101,insert,message(9102,11,9101,'Accepted rules'));
+    await assert.rejects(as('authenticated',1,insert,message(9100,11,1,'javascript:malicious')),{code:'22023'});
+    await as('authenticated',1,'SELECT set_conversation_block($1,$2,true)',[id(9100),id(11)]);
+    assert.equal((await as('authenticated',1,'SELECT conversation_safety_state($1,$2) AS blocked',[id(9100),id(11)])).rows[0].blocked,true);
+    assert.equal((await as('authenticated',3,'SELECT conversation_safety_state($1,$2) AS blocked',[id(9100),id(11)])).rows[0].blocked,false);
+    await deny('authenticated',2,'SELECT set_conversation_block($1,$2,true)',[id(9100),id(11)]);
+    await deny('authenticated',3,insert,message(9100,11,3,'Blocked sender'));
+    await deny('authenticated',1,insert,message(9100,11,1,'Blocked sender'));
+    await deny('authenticated',3,'INSERT INTO quotes(rfq_id,vendor_id) VALUES ($1,$2)',[id(9100),id(11)]);
+    await as('authenticated',1,'UPDATE rfq_invites SET client_last_read_at=now() WHERE rfq_id=$1 AND vendor_id=$2',[id(9100),id(11)]);
+    const otherMessage=(await as('authenticated',4,insert,message(9100,12,4,'Other vendor remains private'))).rows[0].id;
+    await as('authenticated',1,'SELECT set_conversation_block($1,$2,false)',[id(9100),id(11)]);
+    const ownMessage=(await as('authenticated',3,insert,message(9100,11,3,'Review this message'))).rows[0].id;
+    const args=['conversation',id(9100),id(11),'harassment','Please review the last message'];
+    const report=(await as('authenticated',1,'SELECT report_content($1,$2,$3,$4,$5) AS id',args)).rows[0].id;
+    assert.equal((await as('authenticated',1,'SELECT report_content($1,$2,$3,$4,$5) AS id',args)).rows[0].id,report);
+    assert.equal((await as('authenticated',2,'SELECT id FROM content_reports WHERE id=$1',[report])).rows.length,0);
+    await assert.rejects(as('authenticated',5,'SELECT read_moderation_case($1)',[report],'aal1'),{code:'42501'});
+    const context=(await as('authenticated',5,'SELECT read_moderation_case($1) AS items',[report])).rows[0].items;
+    assert.ok(context.some(item=>item.id===ownMessage));assert.ok(!context.some(item=>item.id===otherMessage));
+    await deny('authenticated',5,"SELECT resolve_content_report($1,'remove_message',$2)",[report,otherMessage]);
+    await as('authenticated',5,"SELECT resolve_content_report($1,'remove_message',$2)",[report,ownMessage]);
+    assert.equal((await db.query('SELECT body FROM quote_messages WHERE id=$1',[ownMessage])).rows[0].body,'[Removed by moderation]');
+    await deny('authenticated',3,'UPDATE profiles SET suspended_at=now() WHERE id=$1',[id(3)]);
+    await deny('anon',null,'SELECT report_content($1,$2,$3,$4,$5)',args);
+  });
+  await t.test('restricted accounts retain their own profile/deletion controls without private data or write access',async()=>{
+    await db.query('UPDATE profiles SET suspended_at=now() WHERE id=$1',[id(9101)]);
+    assert.equal((await as('authenticated',9101,'SELECT id FROM profiles')).rows.length,1);
+    assert.equal((await as('authenticated',9101,'SELECT id FROM profiles WHERE id=$1',[id(1)])).rows.length,0);
+    assert.equal((await as('authenticated',9101,'SELECT id FROM rfqs')).rows.length,0);
+    await deny('authenticated',9101,"UPDATE profiles SET full_name='bypass' WHERE id=$1",[id(9101)]);
+    const receipt=(await as('authenticated',9101,'SELECT request_account_deletion() AS receipt',[],'aal1',false)).rows[0].receipt;
+    assert.equal(receipt.status,'pending');
+  });
   await t.test('the live verification script always rolls its fixtures back',async()=>{
     const result=await db.exec(await readFile(new URL('../docs/quote-flow-2026-10-19/live-transaction-check.sql',import.meta.url),'utf8'));
     const proof=result.at(-1).rows[0].workflow_verification;
@@ -339,4 +422,18 @@ test('live-schema authorization and transaction regressions', async t => {
     for (const key of ['fixturesRolledBack','independentBookings','separateReviews','perVendorConsent','perVendorBookingNotifications','bookingForgeryDenied','vendorIsolation']) assert.equal(proof[key],true,key);
   });
 
+  await t.test('the reviewed demo quarantine only hides the exact seed cohort and preserves its rollback state',async()=>{
+    const before=(await db.query('SELECT count(*)::int AS n FROM vendors WHERE is_published')).rows[0].n;
+    for(let index=0;index<152;index++) {
+      await db.query('INSERT INTO auth.users(id,email) VALUES ($1,$2)',[id(20000+index),`vendor.demo.fixture-${index}@wedding-market.local`]);
+      await db.query("UPDATE profiles SET role='vendor' WHERE id=$1",[id(20000+index)]);
+      await db.query("INSERT INTO vendors(id,owner_id,slug,business_name,is_published,extra_info) VALUES ($1,$2,$3,'Quarantine fixture',true,'{\"seed_batch\":\"random-provider-seed-v1\"}')",[id(21000+index),id(20000+index),`demo-fixture-${index}`]);
+    }
+    const result=await db.exec(await readFile(new URL('../docs/mobile-launch-2026-10-26/quarantine-confirmed-demos.sql',import.meta.url),'utf8'));
+    const receipt=result.at(-1).rows[0].seed_quarantine_receipt;
+    assert.equal(receipt.hiddenVendors,152);assert.equal(receipt.restrictedAccounts,152);assert.equal(receipt.stillPublishedSeeds,0);
+    assert.equal(receipt.before.length,152);assert.ok(receipt.before.every(row=>row.was_published&&row.was_suspended===null));
+    assert.equal((await db.query('SELECT count(*)::int AS n FROM vendors WHERE is_published')).rows[0].n,before);
+    assert.equal((await as('authenticated',20000,'SELECT * FROM quotes')).rows.length,0);
+  });
 });

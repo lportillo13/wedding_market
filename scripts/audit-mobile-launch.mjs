@@ -13,15 +13,18 @@ const mobile = path.join(root, 'mobile');
 const readJson = async file => JSON.parse(await fs.readFile(file, 'utf8'));
 
 export async function inspectPng(input) {
+  const {hasAlpha}=await sharp(input).metadata();
   const { data, info } = await sharp(input).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-  let visible = 0, white = true, transparent = false, clearPixels = 0;
+  let visible = 0, white = true, transparent = false, clearPixels = 0, maxRadiusFraction=0;
   for (let offset = 0; offset < data.length; offset += 4) {
     if (data[offset + 3] < 255) transparent = true;
     if (!data[offset + 3]) { clearPixels++; continue; }
     visible++;
+    const pixel=offset/4;
+    maxRadiusFraction=Math.max(maxRadiusFraction,Math.hypot(pixel%info.width+.5-info.width/2,Math.floor(pixel/info.width)+.5-info.height/2)/Math.min(info.width,info.height));
     if (data[offset] !== 255 || data[offset + 1] !== 255 || data[offset + 2] !== 255) white = false;
   }
-  return { width: info.width, height: info.height, transparent, clearPixels, visible, white };
+  return { width: info.width, height: info.height, hasAlpha, transparent, clearPixels, visible, white, maxRadiusFraction };
 }
 
 export function listingErrors(listing) {
@@ -62,8 +65,8 @@ export async function auditLaunch() {
   const copyErrors = listingErrors(listing);
   check('listing-copy-lengths', !copyErrors.length, copyErrors.length ? copyErrors.join('; ') : 'EN/ES draft names, subtitles, short/full descriptions and keywords fit store field limits.');
   check('support-destination', Boolean(listing.supportUrl && listing.supportEmail),
-    'An owned support page and a monitored email address still need confirmation. /support returned 404 on October 26.');
-  check('brand-selected', listing.brandApproved === true, 'Concept boards are drafts; finalize the identity and production assets before marking this approved.');
+    'Owned support URL and email are present; verify the deployed EN/ES page and end-to-end delivery.');
+  check('brand-selected', listing.brandApproved === true, 'Owner approved the outlined WM identity on October 26; platform assets derive from the committed SVG masters.');
 
   async function inspect(file) {
     if (!file) return null;
@@ -75,11 +78,11 @@ export async function auditLaunch() {
     inspect(config.icon), inspect(config.android.adaptiveIcon?.foregroundImage),
     inspect(config.android.adaptiveIcon?.monochromeImage), inspect(notification?.icon),
   ]);
-  check('app-icon-master', icon?.width === 1024 && icon?.height === 1024 && !icon?.transparent,
+  check('app-icon-master', icon?.width === 1024 && icon?.height === 1024 && !icon?.transparent && !icon?.hasAlpha,
     { file: config.icon, measured: icon, requirement: 'A 1024×1024 opaque PNG master for the iOS/default icon; no baked rounded corners.' });
-  check('adaptive-foreground', Boolean(foreground?.clearPixels && foreground?.visible && config.android.adaptiveIcon.foregroundImage !== config.icon),
+  check('adaptive-foreground', Boolean(foreground?.clearPixels && foreground?.visible && foreground.maxRadiusFraction<=1/3 && config.android.adaptiveIcon.foregroundImage !== config.icon),
     { file: config.android.adaptiveIcon?.foregroundImage, requirement: 'Separate transparent foreground; verify safe-area cropping with launcher masks.' });
-  check('themed-icon', Boolean(monochrome?.clearPixels && monochrome?.visible),
+  check('themed-icon', Boolean(monochrome?.clearPixels && monochrome?.visible && monochrome.maxRadiusFraction<=1/3),
     'Prepare a dedicated monochrome adaptive-icon layer for themed Android launchers. This is a brand quality gate.');
   check('notification-icon', notificationIcon?.width === 96 && notificationIcon?.height === 96 && notificationIcon?.clearPixels > 0 && notificationIcon?.white && notificationIcon?.visible > 0,
     { file: notification?.icon, measured: notificationIcon, requirement: '96×96 visible all-white symbol on genuine transparency, not the colored launcher icon.' });
@@ -91,9 +94,9 @@ export async function auditLaunch() {
     'A source allowlist covers mobile and its sibling shared rules; actual EAS archive inspection is still required.');
 
   for (const [id, detail] of [
-    ['publisher-and-business-model', 'Confirm legal publisher, support contact, vendor fees/access, service payments and any paid digital promotions. Do not copy DW declarations.'],
-    ['self-service-deletion', 'Current account controls open an email-only request page. Implement and test authenticated account/data deletion with retention handling.'],
-    ['user-content-safeguards', 'Implement and test content reporting, abusive-user blocking, filtering/moderation and support handling. Inbox archive/delete does not block users.'],
+    ['publisher-and-business-model', "Owner confirmed PORTILLO'S DESIGN CR LLC, Florida, United States: free couple/vendor accounts, direct vendor payments, sponsored placements off. Verify these answers against the final binary and console declarations."],
+    ['self-service-deletion', 'Web/native source records authenticated deletion requests with a 30-day deadline. Verify MFA processing, origin/CDN/backup handling and confirmation email using an isolated end-to-end drill before submission.'],
+    ['user-content-safeguards', 'Source includes reports, two-way contact blocks, a first-pass text filter, recorded rules acceptance and MFA moderation. Verify the complete device/moderator workflow and timely report handling before submission.'],
     ['production-environment', 'Verify EAS production public values against the Wedding Market Supabase project and HTTPS website. No environment secrets are read by this audit.'],
     ['native-permissions-and-privacy', 'Inspect AAB/IPA permissions, SDK privacy manifests, backup/session storage, consent, media handling and the final privacy declarations.'],
     ['dependency-advisories', 'October 26 npm audit reports five high-severity package findings from two underlying node-forge/Zod advisories through Expo tooling. Review current exposure/remediation before signing; do not force-downgrade Expo to SDK 44.'],
@@ -107,9 +110,11 @@ export async function auditLaunch() {
 
   const counts = Object.fromEntries(['pass', 'blocked', 'verification-required'].map(status => [status, checks.filter(item => item.status === status).length]));
   let sourceCommit = null;
+  let sourceWorkingTreeDirty = null;
   try { sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8', windowsHide: true }).trim(); } catch { /* A source archive may not contain Git. */ }
+  try { sourceWorkingTreeDirty=Boolean(execFileSync('git',['status','--porcelain','--','mobile','shared','.easignore'],{cwd:root,encoding:'utf8',windowsHide:true}).trim()); } catch { /* No Git metadata in an archive. */ }
   const fingerprint = createHash('sha256').update(JSON.stringify({ app, eas, pkg, listing })).digest('hex');
-  return { schemaVersion: 1, checkedAt: new Date().toISOString(), sourceCommit, configurationFingerprint: fingerprint,
+  return { schemaVersion: 1, checkedAt: new Date().toISOString(), sourceCommit, sourceWorkingTreeDirty, configurationFingerprint: fingerprint,
     version: pkg.version, readyForSubmission: false, scope: 'Offline configuration/asset audit; no signing, native build, external-account verification, upload or publication.',
     counts, checks };
 }

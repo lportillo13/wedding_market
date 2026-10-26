@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { PublicJsonCache } from '../lib/resources/public-json-cache';
 import { RefreshGate, INBOX_LIST_REFRESH_MS, INBOX_THREAD_REFRESH_MS } from '../shared/resources/refresh-gate';
+import {withDeadline} from '../shared/resources/deadline';
 
 test('public cache coalesces requests, returns copies, expires, and never caches failures', async () => {
   let now=0, calls=0;
@@ -35,4 +36,11 @@ test('refresh wakeups coalesce and concurrent work cannot overlap',()=>{
   assert.equal(gate.begin(0),true);assert.equal(gate.begin(10_000),false);
   gate.finish();assert.equal(gate.begin(1_000),false);assert.equal(gate.begin(5_000),true);
   assert.equal(INBOX_LIST_REFRESH_MS,60_000);assert.equal(INBOX_THREAD_REFRESH_MS,30_000);
+});
+
+test('network deadlines abort hung work and do not retry writes',async()=>{
+  let calls=0;let signal:AbortSignal|undefined;
+  await assert.rejects(withDeadline(next=>{calls++;signal=next;return new Promise(()=>{});},10),/timed out/);
+  assert.equal(calls,1);assert.equal(signal?.aborted,true);
+  assert.equal(await withDeadline(async()=>42,100),42);
 });

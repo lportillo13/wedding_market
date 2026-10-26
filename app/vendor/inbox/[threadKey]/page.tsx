@@ -1,3 +1,4 @@
+import ContentSafety from "@/components/safety/ContentSafety";
 import { formatQuoteAmount } from "@/shared/proposals/format";
 import { getConversationState } from "@/shared/conversations/state";
 import ThreadRefresh from "@/components/inbox/ThreadRefresh";
@@ -67,6 +68,7 @@ export default async function VendorInboxThreadPage({
   return (
     <main className="wm-thread pb-4">
       <ThreadRefresh />
+      <ContentSafety kind="conversation" targetId={detail.rfq.id} vendorId={detail.invite.vendor_id} language={language} />
       <ThreadReadSync activityKey={`${detail.messages.at(-1)?.id ?? ""}:${detail.latestQuote?.id ?? ""}:${detail.invite.status ?? ""}`} threadKey={decodedThreadKey} markThreadRead={markVendorInboxThreadRead} />
       <Link className="btn btn-outline-secondary btn-sm mb-3" href="/vendor/inbox">
         {labels.back}

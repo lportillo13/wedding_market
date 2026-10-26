@@ -1,3 +1,4 @@
+import { ContentSafety } from "../../inbox/ContentSafety";
 import { type IconName } from "../../../application/types";
 import { categoryLabel, detailSections } from "../../../content/catalog";
 import { copy } from "../../../i18n/copy";
@@ -227,6 +228,7 @@ export function VendorDetailScreen({
       </View>
 
       <View style={styles.detailSheet}>
+      <ContentSafety key={vendor.id} kind="vendor" targetId={vendor.id} language={language} />
       <View style={styles.detailActionBar}>
         <TouchableOpacity onPress={() => onRequestQuote(vendor)} style={styles.detailQuoteButton}>
           <Ionicons name="send-outline" size={17} color="#FFFFFF" />

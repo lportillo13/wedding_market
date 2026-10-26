@@ -1,14 +1,15 @@
 {
   "schemaVersion": 1,
-  "checkedAt": "2026-10-26T17:06:16.401Z",
-  "sourceCommit": "88407ec9c8871b090466eb55b34a79ffa6e81d55",
-  "configurationFingerprint": "e76c75025442b67cbd3f69fba561b6c91c9f952af3e3b0c2a757925e61663a7c",
-  "version": "0.1.0",
+  "checkedAt": "2026-10-26T22:29:11.620Z",
+  "sourceCommit": "b768471d2c81ba484887676838382cc0ca391b49",
+  "sourceWorkingTreeDirty": true,
+  "configurationFingerprint": "c69cad5d135ab67c2095b001c7832845c7cccf10a3746cbe0390fdcaf6954132",
+  "version": "1.0.0",
   "readyForSubmission": false,
   "scope": "Offline configuration/asset audit; no signing, native build, external-account verification, upload or publication.",
   "counts": {
-    "pass": 8,
-    "blocked": 7,
+    "pass": 15,
+    "blocked": 0,
     "verification-required": 12
   },
   "checks": [
@@ -20,7 +21,7 @@
     {
       "id": "version-consistency",
       "status": "pass",
-      "detail": "Current source version 0.1.0; choose the public launch version before signing."
+      "detail": "Current source version 1.0.0; choose the public launch version before signing."
     },
     {
       "id": "store-build-profile",
@@ -49,62 +50,66 @@
     },
     {
       "id": "support-destination",
-      "status": "blocked",
-      "detail": "An owned support page and a monitored email address still need confirmation. /support returned 404 on October 26."
+      "status": "pass",
+      "detail": "Owned support URL and email are present; verify the deployed EN/ES page and end-to-end delivery."
     },
     {
       "id": "brand-selected",
-      "status": "blocked",
-      "detail": "Concept boards are drafts; finalize the identity and production assets before marking this approved."
+      "status": "pass",
+      "detail": "Owner approved the outlined WM identity on October 26; platform assets derive from the committed SVG masters."
     },
     {
       "id": "app-icon-master",
-      "status": "blocked",
+      "status": "pass",
       "detail": {
-        "file": "./assets/icon-512.png",
+        "file": "./assets/brand/app-icon.png",
         "measured": {
-          "width": 512,
-          "height": 512,
+          "width": 1024,
+          "height": 1024,
+          "hasAlpha": false,
           "transparent": false,
           "clearPixels": 0,
-          "visible": 262144,
-          "white": false
+          "visible": 1048576,
+          "white": false,
+          "maxRadiusFraction": 0.7064162472205451
         },
         "requirement": "A 1024×1024 opaque PNG master for the iOS/default icon; no baked rounded corners."
       }
     },
     {
       "id": "adaptive-foreground",
-      "status": "blocked",
+      "status": "pass",
       "detail": {
-        "file": "./assets/icon-512.png",
+        "file": "./assets/brand/adaptive-foreground.png",
         "requirement": "Separate transparent foreground; verify safe-area cropping with launcher masks."
       }
     },
     {
       "id": "themed-icon",
-      "status": "blocked",
+      "status": "pass",
       "detail": "Prepare a dedicated monochrome adaptive-icon layer for themed Android launchers. This is a brand quality gate."
     },
     {
       "id": "notification-icon",
-      "status": "blocked",
+      "status": "pass",
       "detail": {
-        "file": "./assets/icon-192.png",
+        "file": "./assets/brand/notification.png",
         "measured": {
-          "width": 192,
-          "height": 192,
-          "transparent": false,
-          "clearPixels": 0,
-          "visible": 36864,
-          "white": false
+          "width": 96,
+          "height": 96,
+          "hasAlpha": true,
+          "transparent": true,
+          "clearPixels": 7737,
+          "visible": 1479,
+          "white": true,
+          "maxRadiusFraction": 0.46660388342552156
         },
         "requirement": "96×96 visible all-white symbol on genuine transparency, not the colored launcher icon."
       }
     },
     {
       "id": "splash-asset",
-      "status": "blocked",
+      "status": "pass",
       "detail": "Prepare a separate transparent splash mark; inspect a preview/production binary rather than Expo Go."
     },
     {
@@ -115,17 +120,17 @@
     {
       "id": "publisher-and-business-model",
       "status": "verification-required",
-      "detail": "Confirm legal publisher, support contact, vendor fees/access, service payments and any paid digital promotions. Do not copy DW declarations."
+      "detail": "Owner confirmed PORTILLO'S DESIGN CR LLC, Florida, United States: free couple/vendor accounts, direct vendor payments, sponsored placements off. Verify these answers against the final binary and console declarations."
     },
     {
       "id": "self-service-deletion",
       "status": "verification-required",
-      "detail": "Current account controls open an email-only request page. Implement and test authenticated account/data deletion with retention handling."
+      "detail": "Web/native source records authenticated deletion requests with a 30-day deadline. Verify MFA processing, origin/CDN/backup handling and confirmation email using an isolated end-to-end drill before submission."
     },
     {
       "id": "user-content-safeguards",
       "status": "verification-required",
-      "detail": "Implement and test content reporting, abusive-user blocking, filtering/moderation and support handling. Inbox archive/delete does not block users."
+      "detail": "Source includes reports, two-way contact blocks, a first-pass text filter, recorded rules acceptance and MFA moderation. Verify the complete device/moderator workflow and timely report handling before submission."
     },
     {
       "id": "production-environment",

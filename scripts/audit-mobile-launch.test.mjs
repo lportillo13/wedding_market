@@ -39,3 +39,19 @@ test('a translucent white square is not a transparent notification background', 
   assert.equal(result.transparent, true);
   assert.equal(result.clearPixels, 0);
 });
+
+test('adaptive safe-area measurement distinguishes central artwork from clipped corners',async()=>{
+  const full=await sharp({create:{width:108,height:108,channels:4,background:'#ffffff'}}).png().toBuffer();
+  assert.ok((await inspectPng(full)).maxRadiusFraction>1/3);
+  const small=await sharp({create:{width:40,height:40,channels:4,background:'#ffffff'}}).png().toBuffer();
+  const centered=await sharp({create:{width:108,height:108,channels:4,background:'#00000000'}}).composite([{input:small,left:34,top:34}]).png().toBuffer();
+  assert.ok((await inspectPng(centered)).maxRadiusFraction<=1/3);
+});
+
+test('opaque pixels alone do not establish an alpha-free Apple icon',async()=>{
+  const rgba=await sharp({create:{width:32,height:32,channels:4,background:'#4B352C'}}).png().toBuffer();
+  const rgb=await sharp(rgba).removeAlpha().png().toBuffer();
+  assert.equal((await inspectPng(rgba)).transparent,false);
+  assert.equal((await inspectPng(rgba)).hasAlpha,true);
+  assert.equal((await inspectPng(rgb)).hasAlpha,false);
+});

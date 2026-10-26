@@ -85,9 +85,9 @@ const common = {
       "errorMessage": "We couldn't subscribe you right now. Please try again."
     },
     "contact": {
-      "email": "hello@weddingmarket.com",
-      "phone": "+1 (800) 555-0199",
-      "location": "Miami, FL"
+      "email": "hello@thewedmarket.com",
+      "phone": "",
+      "location": "Florida, United States"
     },
     "legal": {
       "terms": "Terms",
@@ -1098,7 +1098,7 @@ const common = {
     },
     "categories": {
       "heading": "Explore popular categories",
-      "description": "Whether you're searching for the perfect venue or putting the finishing touches on decor, our directory showcases vetted professionals across every category.",
+      "description": "Whether you're searching for the perfect venue or putting the finishing touches on decor, our directory helps you explore wedding professionals by category.",
       "viewAll": "See all categories",
       "spotlightLabel": "Popular pick",
       "seeVendors": "See vendors →",

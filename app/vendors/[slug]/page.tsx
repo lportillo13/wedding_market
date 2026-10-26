@@ -1,3 +1,5 @@
+import ContentSafety from "@/components/safety/ContentSafety";
+import { getRequestLanguage } from "@/lib/i18n/server";
 import type { Metadata } from "next";
 import { getRoles } from "@/lib/auth/roles";
 import { loadVendorAdsConfig } from "@/lib/content/vendorAdsServer";
@@ -59,7 +61,8 @@ export default async function VendorProfilePage({
     loadVendorAdsConfig(),
   ]);
 
-  return (
+  const language = await getRequestLanguage();
+  return (<>
     <VendorPageShell
       profile={profile}
       contactPrefill={contactPrefill}
@@ -67,5 +70,6 @@ export default async function VendorProfilePage({
       isLoggedIn={Boolean(user)}
       adsConfig={adsConfig}
     />
-  );
+    <div className="container"><ContentSafety kind="vendor" targetId={profile.vendor.id} language={language} /></div>
+  </>);
 }
