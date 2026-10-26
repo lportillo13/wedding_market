@@ -93,9 +93,9 @@ The restructuring gives this work clear ownership; it does not claim it already 
 
 ## Release
 
-Prepared against verified live application commit `4691853c1c480306f229273529214af51e05a162`. Application deployment uses the existing restricted gateway, preserves the preceding release, and must produce an exact target-commit receipt plus independent public checks. This application release needs no schema migration. Native source changes require a future signed binary; a website deployment does not update installed iOS/Android apps.
+Release **`82a12b3df5b567ffac3c8cd35391418584f8eb3c` is deployed**, prepared against prior live commit `4691853c1c480306f229273529214af51e05a162`. The restricted gateway's detached service finished successfully with that exact target commit. [The receipt](deployment-success.json) records passing shadow/live probes and rollback at `/var/www/wedding-market.before-20261026-174313`. [Independent public verification](public-release-checks.json) passed for health, directory/profile pages, CSS assets, warm/server-rendered guest account controls, private cache/security headers, protected web/native APIs, inbox redirects and direct-origin rejection (403).
 
-The release receipt and public verification are recorded alongside this review once complete.
+This application release required no schema migration. Customer data and the separate DW application were not changed. Native source changes require a future signed binary; a website deployment does not update installed iOS/Android apps. The subsequent documentation-only commit records release evidence and does not represent another application release.
 
 ## Reference guidance
 
