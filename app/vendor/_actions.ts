@@ -1,4 +1,5 @@
 "use server";
+import { invalidatePublicVendorCache } from "@/features/vendors/server/cache";
 
 import { revalidatePath } from "next/cache";
 import { getSupabaseServer } from "@/lib/supabase/server";
@@ -85,6 +86,7 @@ export async function saveProfile(formData: FormData) {
 
   revalidatePath("/vendor/profile");
   revalidatePath(`/vendors/${slug}`);
+  invalidatePublicVendorCache();
   revalidatePath("/vendors");
 }
 
@@ -105,6 +107,7 @@ export async function saveLocation(formData: FormData) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/vendor/location");
+  invalidatePublicVendorCache();
   revalidatePath("/vendors");
 }
 
@@ -137,6 +140,7 @@ export async function saveCategories(formData: FormData) {
   }
 
   revalidatePath("/vendor/categories");
+  invalidatePublicVendorCache();
   revalidatePath("/vendors");
 }
 
@@ -152,5 +156,6 @@ export async function setPublish(publish: boolean) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/vendor/publish");
+  invalidatePublicVendorCache();
   revalidatePath("/vendors");
 }

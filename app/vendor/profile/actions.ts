@@ -1,4 +1,5 @@
 "use server";
+import { invalidatePublicVendorCache } from "@/features/vendors/server/cache";
 
 import {
   prepareProfilePricing,
@@ -377,6 +378,7 @@ export async function saveContact(
 
   revalidatePath("/vendor/profile");
   revalidatePath(`/vendors/${vendor.slug}`);
+  invalidatePublicVendorCache();
   revalidatePath("/vendors");
 
   return { ok: true, message: "Contact details saved." };
@@ -421,6 +423,7 @@ export async function removeLogoImage(
 
   revalidatePath("/vendor/profile");
   revalidatePath(`/vendors/${vendor.slug}`);
+  invalidatePublicVendorCache();
   revalidatePath("/vendors");
 
   return { ok: true, message: "Logo removed." };
@@ -474,6 +477,7 @@ export async function savePricing(
   }
   revalidatePath("/vendor/profile");
   revalidatePath(`/vendors/${vendor.slug}`);
+  invalidatePublicVendorCache();
   revalidatePath("/vendors");
   return { ok: true, message: "Pricing saved." };
 }
@@ -512,6 +516,7 @@ export async function saveAmenities(
 
   revalidatePath("/vendor/profile");
   revalidatePath(`/vendors/${vendor.slug}`);
+  invalidatePublicVendorCache();
   revalidatePath("/vendors");
 
   return { ok: true, message: "Amenities saved." };
@@ -764,6 +769,7 @@ export async function removeHeroImage(
   await destroyPreviousAsset(vendor.hero_image.public_id, user.id);
   revalidatePath("/vendor/profile");
   revalidatePath(`/vendors/${vendor.slug}`);
+  invalidatePublicVendorCache();
   revalidatePath("/vendors");
   return { ok: true, message: "Hero image removed." };
 }
@@ -795,6 +801,7 @@ export async function removeThumbnailImage(
   await destroyPreviousAsset(vendor.thumbnail_image.public_id, user.id);
   revalidatePath("/vendor/profile");
   revalidatePath(`/vendors/${vendor.slug}`);
+  invalidatePublicVendorCache();
   revalidatePath("/vendors");
   return { ok: true, message: "Thumbnail image removed." };
 }

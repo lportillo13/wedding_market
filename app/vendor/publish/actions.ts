@@ -1,5 +1,6 @@
 "use server";
 
+import { invalidatePublicVendorCache } from "@/features/vendors/server/cache";
 import { revalidatePath } from "next/cache";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
@@ -43,6 +44,8 @@ export async function setPublishStatus(
 
     if (uperr) return { ok: false, message: uperr.message };
 
+    invalidatePublicVendorCache();
+    revalidatePath("/vendors");
     revalidatePath("/vendor/publish");
     revalidatePath(`/vendors/${vendor.slug}`); // public page
     return { ok: true, message: publish ? "Published!" : "Unpublished.", published: publish };

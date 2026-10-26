@@ -1,0 +1,212 @@
+{
+  "tables": [
+    {
+      "name": "amenity_lookup",
+      "bytes": 65536,
+      "seq_scan": 16662,
+      "index_scan": 34078,
+      "dead_estimate": 0,
+      "live_estimate": 99
+    },
+    {
+      "name": "blog_posts",
+      "bytes": 81920,
+      "seq_scan": 465,
+      "index_scan": 331,
+      "dead_estimate": 0,
+      "live_estimate": 6
+    },
+    {
+      "name": "categories",
+      "bytes": 65536,
+      "seq_scan": 10,
+      "index_scan": 436901,
+      "dead_estimate": 0,
+      "live_estimate": 19
+    },
+    {
+      "name": "languages",
+      "bytes": 32768,
+      "seq_scan": 3,
+      "index_scan": 18,
+      "dead_estimate": 0,
+      "live_estimate": 2
+    },
+    {
+      "name": "notifications",
+      "bytes": 98304,
+      "seq_scan": 88,
+      "index_scan": 2469,
+      "dead_estimate": 0,
+      "live_estimate": 9
+    },
+    {
+      "name": "profile_translated_fields",
+      "bytes": 32768,
+      "seq_scan": 7,
+      "index_scan": 4,
+      "dead_estimate": 0,
+      "live_estimate": 5
+    },
+    {
+      "name": "profiles",
+      "bytes": 73728,
+      "seq_scan": 33,
+      "index_scan": 1157,
+      "dead_estimate": 13,
+      "live_estimate": 163
+    },
+    {
+      "name": "quote_messages",
+      "bytes": 98304,
+      "seq_scan": 31,
+      "index_scan": 34,
+      "dead_estimate": 21,
+      "live_estimate": 13
+    },
+    {
+      "name": "quotes",
+      "bytes": 409600,
+      "seq_scan": 64,
+      "index_scan": 43933,
+      "dead_estimate": 5,
+      "live_estimate": 559
+    },
+    {
+      "name": "reviews",
+      "bytes": 475136,
+      "seq_scan": 51,
+      "index_scan": 16639,
+      "dead_estimate": 2,
+      "live_estimate": 552
+    },
+    {
+      "name": "rfq_invites",
+      "bytes": 565248,
+      "seq_scan": 47,
+      "index_scan": 573,
+      "dead_estimate": 15,
+      "live_estimate": 563
+    },
+    {
+      "name": "rfqs",
+      "bytes": 376832,
+      "seq_scan": 115,
+      "index_scan": 486,
+      "dead_estimate": 9,
+      "live_estimate": 561
+    },
+    {
+      "name": "site_settings",
+      "bytes": 49152,
+      "seq_scan": 5,
+      "index_scan": 9396,
+      "dead_estimate": 0,
+      "live_estimate": 1
+    },
+    {
+      "name": "user_push_tokens",
+      "bytes": 32768,
+      "seq_scan": 3,
+      "index_scan": 1,
+      "dead_estimate": 0,
+      "live_estimate": 0
+    },
+    {
+      "name": "vendor_amenities",
+      "bytes": 212992,
+      "seq_scan": 12,
+      "index_scan": 16662,
+      "dead_estimate": 0,
+      "live_estimate": 980
+    },
+    {
+      "name": "vendor_availability",
+      "bytes": 581632,
+      "seq_scan": 17,
+      "index_scan": 16661,
+      "dead_estimate": 0,
+      "live_estimate": 2065
+    },
+    {
+      "name": "vendor_categories",
+      "bytes": 40960,
+      "seq_scan": 13808,
+      "index_scan": 138657,
+      "dead_estimate": 0,
+      "live_estimate": 157
+    },
+    {
+      "name": "vendor_locations",
+      "bytes": 90112,
+      "seq_scan": 13808,
+      "index_scan": 172732,
+      "dead_estimate": 0,
+      "live_estimate": 156
+    },
+    {
+      "name": "vendor_media",
+      "bytes": 253952,
+      "seq_scan": 11,
+      "index_scan": 16631,
+      "dead_estimate": 0,
+      "live_estimate": 456
+    },
+    {
+      "name": "vendor_pricing",
+      "bytes": 393216,
+      "seq_scan": 12,
+      "index_scan": 16661,
+      "dead_estimate": 0,
+      "live_estimate": 608
+    },
+    {
+      "name": "vendor_spaces",
+      "bytes": 212992,
+      "seq_scan": 15942,
+      "index_scan": 698,
+      "dead_estimate": 0,
+      "live_estimate": 304
+    },
+    {
+      "name": "vendor_team",
+      "bytes": 237568,
+      "seq_scan": 11,
+      "index_scan": 16661,
+      "dead_estimate": 0,
+      "live_estimate": 310
+    },
+    {
+      "name": "vendors",
+      "bytes": 811008,
+      "seq_scan": 14928,
+      "index_scan": 393186,
+      "dead_estimate": 9,
+      "live_estimate": 156
+    }
+  ],
+  "database": {
+    "blks_hit": 151815778,
+    "blks_read": 1840,
+    "deadlocks": 0,
+    "temp_bytes": 19411217020,
+    "numbackends": 8,
+    "stats_reset": "2026-05-07T18:19:10.020686+00:00",
+    "xact_commit": 7030745,
+    "xact_rollback": 561
+  },
+  "checked_at": "2026-10-26T18:03:13.216823+00:00",
+  "connections": {
+    "idle": 5,
+    "active": 1,
+    "internal": 8
+  },
+  "database_size_bytes": 19836051,
+  "notification_indexes": [
+    "CREATE UNIQUE INDEX notifications_pkey ON public.notifications USING btree (id)",
+    "CREATE INDEX notifications_recipient_created_idx ON public.notifications USING btree (recipient_id, created_at DESC)",
+    "CREATE INDEX notifications_recipient_deleted_idx ON public.notifications USING btree (recipient_id, deleted_at, created_at DESC)",
+    "CREATE INDEX notifications_recipient_unread_idx ON public.notifications USING btree (recipient_id, read_at, created_at DESC)",
+    "CREATE INDEX notifications_actor_created_idx ON public.notifications USING btree (actor_id, created_at)"
+  ]
+}

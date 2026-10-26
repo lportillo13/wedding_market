@@ -52,6 +52,7 @@ test('live-schema authorization and transaction regressions', async t => {
     INSERT INTO quotes(id,rfq_id,vendor_id) VALUES ('${id(95)}','${id(92)}','${id(11)}');
     UPDATE rfqs SET accepted_quote_id='${id(95)}',accepted_at=now() WHERE id='${id(92)}';`);
   await db.exec(await readFile(new URL('../supabase/migrations/202610200007_independent_vendor_bookings.sql', import.meta.url), 'utf8'));
+  await db.exec(await readFile(new URL('../supabase/migrations/202610260008_notification_mailbox_pages.sql', import.meta.url), 'utf8'));
   const deny = async (role, user, sql, params) => assert.rejects(as(role, user, sql, params), { code: '42501' });
   await t.test('anonymous cannot mutate any formerly unprotected table', async () => {
     for (const table of ['amenity_lookup','languages','vendor_amenities','vendor_pricing','vendor_spaces','vendor_team']) {
@@ -308,6 +309,24 @@ test('live-schema authorization and transaction regressions', async t => {
     await deny('authenticated',2,'SELECT accept_vendor_quote($1,$2,false,false)',[id(1300),id(1301)]);
     await db.query("UPDATE rfq_invites SET expires_at=now()-interval '1 day' WHERE rfq_id=$1",[id(1300)]);
     for (const [owner,vendor] of [[3,11],[4,12]]) await as('authenticated',owner,"INSERT INTO quote_messages(rfq_id,vendor_id,sender_id,sender_role,body) VALUES ($1,$2,$3,'vendor','Booked follow-up')",[id(1300),id(vendor),id(owner)]);
+  });
+  await t.test('mailbox pages preserve ownership, scopes, literal JSON search and folder counts',async()=>{
+    await db.exec(`INSERT INTO notifications(id,recipient_id,type,title,data,created_at)
+      SELECT ('00000000-0000-4000-8000-'||lpad(n::text,12,'0'))::uuid,'${id(2)}','quote_answered','Resource fixture',jsonb_build_object('marker','literal_%_match'), '2026-01-01'::timestamptz
+      FROM generate_series(8000,8120) n;
+      INSERT INTO notifications(recipient_id,type,title,deleted_at) VALUES ('${id(2)}','quote_answered','Deleted fixture',now()),('${id(2)}','vendor_new_request','Vendor fixture',null);`);
+    const call=async(user,scope='account',deleted=false,query='',page=1)=>(await as('authenticated',user,'SELECT list_notification_mailbox($1,$2,$3,$4) AS result',[scope,deleted,query,page])).rows[0].result;
+    const first=await call(2);const second=await call(2,'account',false,'',2);const last=await call(2,'account',false,'',999);
+    assert.equal(first.total,121);assert.equal(first.data.length,50);assert.equal(last.page,3);assert.equal(last.data.length,21);
+    assert.equal(new Set([...first.data,...second.data,...last.data].map(x=>x.id)).size,121);
+    assert.equal(first.deletedCount,1);assert.equal(first.unreadCount,121);
+    assert.equal((await call(2,'account',true)).data[0].title,'Deleted fixture');
+    assert.equal((await call(2,'account',false,'LITERAL_%_MATCH')).total,121);
+    assert.equal((await call(2,'account',false,'literal___match')).total,0);
+    assert.equal((await call(2,'vendor')).total,1);assert.equal((await call(2,'invalid')).total,0);
+    assert.equal((await call(1,'account',false,'literal_%_match')).total,0);
+    await deny('anon',null,"SELECT list_notification_mailbox('account',false,'',1)");
+    await db.exec(`DELETE FROM notifications WHERE recipient_id='${id(2)}' AND (title IN ('Deleted fixture','Vendor fixture') OR title='Resource fixture');`);
   });
   await t.test('the live verification script always rolls its fixtures back',async()=>{
     const result=await db.exec(await readFile(new URL('../docs/quote-flow-2026-10-19/live-transaction-check.sql',import.meta.url),'utf8'));

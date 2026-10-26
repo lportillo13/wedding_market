@@ -1,3 +1,4 @@
+import { invalidatePublicVendorCache } from "@/features/vendors/server/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { requireAdminUser } from "@/lib/admin/requireAdmin";
@@ -30,6 +31,7 @@ export async function PUT(request: NextRequest) {
   }
 
   revalidatePath("/private-control-room-hub/vendor-ads");
+  invalidatePublicVendorCache();
   revalidatePath("/vendors");
 
   return NextResponse.json({ ok: true, config });

@@ -1,3 +1,4 @@
+import { invalidatePublicVendorCache } from "@/features/vendors/server/cache";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { requireAdminUser } from "@/lib/admin/requireAdmin";
@@ -184,7 +185,8 @@ export async function POST(request: Request) {
 
       revalidatePath("/vendor/profile");
       revalidatePath(`/vendors/${vendor.slug}`);
-      revalidatePath("/vendors");
+      invalidatePublicVendorCache();
+  revalidatePath("/vendors");
 
       return NextResponse.json({ ok: true, asset });
     }
@@ -244,7 +246,8 @@ export async function POST(request: Request) {
 
       revalidatePath("/vendor/profile");
       revalidatePath(`/vendors/${vendor.slug}`);
-      revalidatePath("/vendors");
+      invalidatePublicVendorCache();
+  revalidatePath("/vendors");
 
       return NextResponse.json({ ok: true, asset });
     }
@@ -300,7 +303,8 @@ export async function POST(request: Request) {
       saved=true;
       revalidatePath("/vendor/profile");
       revalidatePath(`/vendors/${vendor.slug}`);
-      revalidatePath("/vendors");
+      invalidatePublicVendorCache();
+  revalidatePath("/vendors");
 
       return NextResponse.json({ ok: true, assets: uploadedAssets });
       } finally {

@@ -1,5 +1,4 @@
 
-import { ACCOUNT_NOTIFICATION_TYPES, VENDOR_NOTIFICATION_TYPES } from "@/shared/notifications/events";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export type NotificationMailboxScope = "account" | "vendor";
@@ -23,22 +22,17 @@ export function isNotificationPermissionError(message: string | undefined) {
   return message?.toLowerCase().includes("permission denied");
 }
 
-function getScopeTypes(scope: NotificationMailboxScope) {
-  return scope === "vendor" ? [...VENDOR_NOTIFICATION_TYPES] : [...ACCOUNT_NOTIFICATION_TYPES];
-}
-
-export async function loadNotifications(userId: string, scope: NotificationMailboxScope) {
+export async function loadNotifications(scope: NotificationMailboxScope, options: { deleted?: boolean; query?: string; page?: string } = {}) {
   const supabase = await createSupabaseServerClient();
-
-  const { data, error } = await supabase
-    .from("notifications")
-    .select("id, type, title, body, data, read_at, deleted_at, created_at")
-    .eq("recipient_id", userId)
-    .in("type", getScopeTypes(scope))
-    .order("created_at", { ascending: false });
-
+  const requestedPage = Number(options.page ?? 1);
+  const { data, error } = await supabase.rpc('list_notification_mailbox', {
+    p_scope: scope, p_deleted: options.deleted ?? false, p_query: options.query?.trim().slice(0,200) ?? '',
+    p_page: Number.isSafeInteger(requestedPage) && requestedPage > 0 ? Math.min(requestedPage,1_000_000) : 1,
+  }).abortSignal(AbortSignal.timeout(10_000));
+  const result = data as { data: NotificationRow[]; total: number; activeCount: number; deletedCount: number; unreadCount: number; page: number; pageSize: number } | null;
   return {
-    data: (data ?? []) as NotificationRow[],
+    data: result?.data ?? [], total: result?.total ?? 0, activeCount: result?.activeCount ?? 0,
+    deletedCount: result?.deletedCount ?? 0, unreadCount: result?.unreadCount ?? 0, page: result?.page ?? 1, pageSize: 50,
     error,
   };
 }

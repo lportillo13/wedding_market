@@ -1,3 +1,4 @@
+import { invalidatePublicVendorCache } from "@/features/vendors/server/cache";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -157,7 +158,8 @@ export default async function NewReviewPage({
   async function action(prev: CreateReviewState, fd: FormData): Promise<CreateReviewState> {
     const result = await createReview(prev, fd);
     if (result.ok) {
-      revalidatePath("/vendors");
+      invalidatePublicVendorCache();
+  revalidatePath("/vendors");
     }
     return result;
   }

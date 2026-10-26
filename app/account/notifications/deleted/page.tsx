@@ -1,3 +1,4 @@
+import MailboxPagination from "@/components/notifications/MailboxPagination";
 import { redirect } from "next/navigation";
 import {
   permanentlyDeleteAllNotifications,
@@ -24,14 +25,14 @@ function formatNotificationDate(value: string, locale: string) {
 export default async function AccountDeletedNotificationsPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ q?: string }>;
+  searchParams?: Promise<{ q?: string; page?: string }>;
 }) {
   const supabase = await createSupabaseServerClient();
   const { dictionary, language } = await getRequestI18n();
   const labels = dictionary.account.notificationsPage;
   const locale = getLanguageLocale(language);
   const search = searchParams ? await searchParams : undefined;
-  const query = search?.q?.trim().toLowerCase() ?? "";
+  const query = search?.q?.trim().slice(0,200) ?? "";
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -40,7 +41,8 @@ export default async function AccountDeletedNotificationsPage({
     redirect(`/login?next=${encodeURIComponent("/account/notifications/deleted")}`);
   }
 
-  const { data: items, error } = await loadNotifications(user.id, "account");
+  const mailbox = await loadNotifications("account", { deleted: true, query, page: search?.page });
+  const { data: items, error, total, page, activeCount } = mailbox;
 
   if (isMissingNotificationTableError(error?.message)) {
     return (
@@ -57,23 +59,8 @@ export default async function AccountDeletedNotificationsPage({
     throw new Error(error.message);
   }
 
-  const deletedItems = items
-    .filter((item) => Boolean(item.deleted_at))
-    .filter((notification) => {
-      if (!query) {
-        return true;
-      }
-
-      const haystack = [notification.title, notification.body, JSON.stringify(notification.data)]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-      return haystack.includes(query);
-    });
-  const activeCount = items.filter((item) => !item.deleted_at).length;
-  const searchSuggestions = buildAutocompleteSuggestions(
-    items.filter((item) => Boolean(item.deleted_at)).flatMap((item) => [item.title, item.body]),
-  );
+  const deletedItems = items;
+  const searchSuggestions = buildAutocompleteSuggestions(items.flatMap(item => [item.title,item.body]));
 
   return (
     <main className="wm-notification-page container py-4">
@@ -99,7 +86,7 @@ export default async function AccountDeletedNotificationsPage({
         </Link>
         <span className="wm-notification-tabs__link wm-notification-tabs__link--active">
           {labels.deletedTitle}
-          {deletedItems.length ? <span className="wm-notification-tabs__count">{deletedItems.length}</span> : null}
+          {total ? <span className="wm-notification-tabs__count">{total}</span> : null}
         </span>
       </div>
 
@@ -181,6 +168,7 @@ export default async function AccountDeletedNotificationsPage({
             </div>
         </form>
       )}
+      <MailboxPagination base="/account/notifications/deleted" query={query} page={page} total={total} language={language} />
     </main>
   );
 }

@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-10-26T17:58:07Z",
+  "scope": "Read-only host counters and Wedding Market managed paths; no logs, credentials or customer rows",
+  "cpuCount": 4,
+  "loadAverage": [
+    0,
+    0.04296875,
+    0.08984375
+  ],
+  "memory": {
+    "MemTotal": 8127705088,
+    "MemAvailable": 6783541248,
+    "SwapTotal": 2147479552,
+    "SwapFree": 2146168832
+  },
+  "disk": {
+    "totalBytes": 80290492416,
+    "availableBytes": 65372901376,
+    "freeInodes": 4690375
+  },
+  "activeApplication": "/var/www/wedding-market-releases/20261026-174313-82a12b3df5b5",
+  "releases": [
+    {
+      "name": "20261020-140205-4691853c1c48",
+      "active": false
+    },
+    {
+      "name": "20261026-174313-82a12b3df5b5",
+      "active": true
+    }
+  ]
+}

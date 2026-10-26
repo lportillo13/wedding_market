@@ -56,6 +56,7 @@ export type MobileQuoteRequestDetails = {
 
 export type MobileInboxThread = {
   id: string;
+  refreshKey?: string;
   rfqId: string;
   vendorId: string;
   title: string;
@@ -241,7 +242,7 @@ async function loadMessages(rfqId: string, vendorId: string): Promise<MobileInbo
 
 type MobileSummary = {
   invite: Record<string,unknown>; rfq: Record<string,unknown>; vendor: Record<string,unknown>;
-  latest_quote: Parameters<typeof toMobileQuote>[0] | null; accepted_here: boolean; total_count: number;
+  latest_quote: Parameters<typeof toMobileQuote>[0] | null; accepted_here: boolean; total_count: number; last_activity_at: string;
 };
 export async function loadMobileInbox(role: Role, language: "en" | "es" = "en", page = 1) {
   const client = requiredClient();
@@ -249,9 +250,12 @@ export async function loadMobileInbox(role: Role, language: "en" | "es" = "en", 
   const { data,error }=await client.rpc("list_inbox_threads_v2",{p_viewer:viewer,p_page:page,p_archived:false});
   if (error) throw new Error(error.message);
   const rows=(data ?? []) as MobileSummary[];
-  const threads=rows.filter(row=>row.invite?.rfq_id).map(({invite,rfq,vendor,latest_quote,accepted_here}): MobileInboxThread=>{
+  const threads=rows.filter(row=>row.invite?.rfq_id).map(({invite,rfq,vendor,latest_quote,accepted_here,last_activity_at}): MobileInboxThread=>{
     const latest=latest_quote ? toMobileQuote(latest_quote) : null;
+    // Read markers touch updated_at too; they must not trigger another history read/write.
+    const changes = Object.fromEntries(Object.entries(invite).filter(([key]) => !['client_last_read_at','vendor_last_read_at','updated_at'].includes(key)));
     return {
+      refreshKey: JSON.stringify([last_activity_at,changes,rfq,vendor,latest_quote,accepted_here]),
       id:`${invite.rfq_id}:${invite.vendor_id}`,rfqId:String(invite.rfq_id),vendorId:String(invite.vendor_id),
       title:viewer === "vendor" ? `${language === "es" ? "Solicitud de boda" : "Wedding request"} ${String(invite.rfq_id).slice(0,8)}` : String(vendor.business_name ?? "Vendor"),
       subtitle:[rfq.city,rfq.state,rfq.country].filter(Boolean).join(", ") || String(rfq.notes ?? ""),
@@ -270,7 +274,7 @@ export async function loadMobileInboxThread(role: Role, language: "en" | "es", t
     await requiredClient().from("rfq_invites").update({[role === "vendor" || role === "admin" ? "vendor_last_read_at" : "client_last_read_at"]:new Date().toISOString()})
       .eq("rfq_id",detail.rfqId).eq("vendor_id",detail.vendorId);
   }
-  return detail;
+  return detail ? { ...detail, refreshKey: thread.refreshKey } : null;
 }
 
 async function loadMobileThreadData(role: Role, language: "en" | "es", selected: MobileInboxThread): Promise<MobileInboxThread[]> {

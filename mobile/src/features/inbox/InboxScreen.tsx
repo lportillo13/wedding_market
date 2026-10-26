@@ -12,6 +12,7 @@ import { FieldLabel } from "../../ui/forms";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Alert, AppState, Linking, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { INBOX_LIST_REFRESH_MS, INBOX_THREAD_REFRESH_MS } from "../../../../shared/resources/refresh-gate";
 
 export function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" }) {
   const replySubmission = useRef<{id:string;body:string;thread:string} | null>(null);
@@ -19,6 +20,9 @@ export function InboxScreen({ role, language }: { role: AppRole; language: "en" 
   const [threads, setThreads] = useState<MobileInboxThread[]>([]);
   const [selectedThread, setSelectedThread] = useState<MobileInboxThread | null>(null);
   const selectedThreadRef = useRef<MobileInboxThread | null>(null);
+  const refreshVersion = useRef(0);
+  const refreshInFlight = useRef(0);
+  const lastRefreshAt = useRef(0);
   const [inboxPage,setInboxPage] = useState(1);
   const [totalThreads,setTotalThreads] = useState(0);
   useEffect(()=>{selectedThreadRef.current=selectedThread;},[selectedThread]);
@@ -34,21 +38,28 @@ export function InboxScreen({ role, language }: { role: AppRole; language: "en" 
   const [message, setMessage] = useState("");
   const isVendorViewer = role === "vendor" || role === "admin";
 
-  const refreshInbox = useCallback(async (shouldApply: () => boolean = () => true, foreground = true) => {
+  const refreshInbox = useCallback(async (shouldApply: () => boolean = () => true, foreground = true, forceDetail = true) => {
+    const version = ++refreshVersion.current;
+    const mayApply = () => shouldApply() && version === refreshVersion.current;
+    refreshInFlight.current++; lastRefreshAt.current = Date.now();
     if (foreground) {setIsLoading(true);setMessage("");}
     try {
       const {threads:nextThreads,total} = await loadMobileInbox(role, language,inboxPage);
-      if (!shouldApply()) return;
+      if (!mayApply()) return;
       setThreads(nextThreads); setTotalThreads(total);
       if (selectedThreadRef.current) {
         const current=selectedThreadRef.current;
-        const detail=await loadMobileInboxThread(role,language,current);
-        if (shouldApply() && selectedThreadRef.current?.id === current.id) setSelectedThread(detail);
+        const summary=nextThreads.find(thread=>thread.id === current.id);
+        if (forceDetail || !summary?.refreshKey || summary.refreshKey !== current.refreshKey) {
+          const detail=await loadMobileInboxThread(role,language,summary ?? current);
+          if (mayApply() && selectedThreadRef.current?.id === current.id) setSelectedThread(detail);
+        }
       }
     } catch (error) {
-      if (shouldApply() && foreground) setMessage(error instanceof Error ? error.message : "Unable to load inbox.");
+      if (mayApply() && foreground) setMessage(error instanceof Error ? error.message : "Unable to load inbox.");
     } finally {
-      if (shouldApply() && foreground) setIsLoading(false);
+      refreshInFlight.current--;
+      if (mayApply() && foreground) setIsLoading(false);
     }
   }, [language, role,inboxPage]);
 
@@ -62,14 +73,13 @@ export function InboxScreen({ role, language }: { role: AppRole; language: "en" 
 
   useEffect(() => {
     let mounted = true;
-    let refreshing = false;
-    const refresh = async () => {
-      if (AppState.currentState !== "active" || refreshing || isSending || isSendingQuote || isAcceptingQuote) return;
-      refreshing = true;
-      try {await refreshInbox(() => mounted,false);} finally {refreshing = false;}
+    const refresh = (resumed = false) => {
+      const interval = resumed ? 5_000 : selectedThreadRef.current ? INBOX_THREAD_REFRESH_MS : INBOX_LIST_REFRESH_MS;
+      if (AppState.currentState !== "active" || refreshInFlight.current || Date.now()-lastRefreshAt.current < interval || isSending || isSendingQuote || isAcceptingQuote) return;
+      void refreshInbox(() => mounted,false,false);
     };
-    const timer = setInterval(() => {void refresh();},15000);
-    const subscription = AppState.addEventListener("change",state => {if (state === "active") void refresh();});
+    const timer = setInterval(() => refresh(),INBOX_THREAD_REFRESH_MS);
+    const subscription = AppState.addEventListener("change",state => {if (state === "active") refresh(true);});
     return () => {mounted = false;clearInterval(timer);subscription.remove();};
   },[refreshInbox,isSending,isSendingQuote,isAcceptingQuote]);
 

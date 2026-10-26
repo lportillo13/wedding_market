@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-10-26T18:13:31.118Z",
+  "source": "https://supabase.com/dashboard/org/cgzfxohacxshcsqmyiam/usage",
+  "plan": "Free",
+  "egressGB": 0.06,
+  "egressIncludedGB": 5,
+  "databaseDashboardMB": 35,
+  "databaseIncludedMB": 500,
+  "monthlyActiveUsers": 1,
+  "storageGB": 0,
+  "logIngestionGB": 0.05,
+  "logQueryGB": 0,
+  "realtimeMessages": 0,
+  "realtimePeakConnections": 1,
+  "notes": "Dashboard aggregates can lag; database physical size and plan accounting use different measures."
+}

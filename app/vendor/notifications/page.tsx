@@ -1,3 +1,4 @@
+import MailboxPagination from "@/components/notifications/MailboxPagination";
 import { getRequestI18n } from "@/lib/i18n/server";
 import { formatCalendarDate } from "@/shared/calendar/date";
 import Link from "next/link";
@@ -45,12 +46,12 @@ function trimLine(text: string | null | undefined, maxLength = 110) {
 export default async function VendorNotificationsPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ q?: string }>;
+  searchParams?: Promise<{ q?: string; page?: string }>;
 }) {
   const {language} = await getRequestI18n();
   const supabase = await createSupabaseServerClient();
   const search = searchParams ? await searchParams : undefined;
-  const query = search?.q?.trim().toLowerCase() ?? "";
+  const query = search?.q?.trim().slice(0,200) ?? "";
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -59,7 +60,8 @@ export default async function VendorNotificationsPage({
     redirect(`/login?next=${encodeURIComponent("/vendor/notifications")}`);
   }
 
-  const { data: items, error } = await loadNotifications(user.id, "vendor");
+  const mailbox = await loadNotifications("vendor", { deleted: false, query, page: search?.page });
+  const { data: items, error, total, page, unreadCount, deletedCount } = mailbox;
 
   if (isMissingNotificationTableError(error?.message)) {
     return (
@@ -74,24 +76,8 @@ export default async function VendorNotificationsPage({
 
   if (error) throw new Error(error.message);
 
-  const activeItems = items
-    .filter((item) => !item.deleted_at)
-    .filter((notification) => {
-      if (!query) {
-        return true;
-      }
-
-      const haystack = [notification.title, notification.body, JSON.stringify(notification.data)]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-      return haystack.includes(query);
-    });
-  const unreadCount = activeItems.filter((item) => !item.read_at).length;
-  const deletedCount = items.filter((item) => Boolean(item.deleted_at)).length;
-  const searchSuggestions = buildAutocompleteSuggestions(
-    items.filter((item) => !item.deleted_at).flatMap((item) => [item.title, item.body]),
-  );
+  const activeItems = items;
+  const searchSuggestions = buildAutocompleteSuggestions(items.flatMap(item => [item.title,item.body]));
 
   return (
     <NotificationInboxPageShell scope="vendor" unreadCount={unreadCount}>
@@ -116,7 +102,7 @@ export default async function VendorNotificationsPage({
         <div className="wm-notification-tabs">
           <span className="wm-notification-tabs__link wm-notification-tabs__link--active">
             Inbox
-            {activeItems.length ? <span className="wm-notification-tabs__count">{activeItems.length}</span> : null}
+            {total ? <span className="wm-notification-tabs__count">{total}</span> : null}
           </span>
           <Link className="wm-notification-tabs__link" href={search?.q ? `/vendor/notifications/deleted?q=${encodeURIComponent(search.q)}` : "/vendor/notifications/deleted"}>
             Deleted
@@ -229,6 +215,7 @@ export default async function VendorNotificationsPage({
             </div>
           </form>
         )}
+      <MailboxPagination base="/vendor/notifications" query={query} page={page} total={total} language={language} />
       </main>
     </NotificationInboxPageShell>
   );
