@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
 import type { HeaderVendorCategory } from "@/components/VendorsMegaMenu";
-import { isHeaderLinkCurrent } from "@/lib/header-navigation";
+import { usesWorkspaceFooter } from "@/lib/header-navigation";
 import WorkspaceFooter from "./WorkspaceFooter";
 import { publisher } from "@/features/legal/identity";
 
@@ -31,7 +31,7 @@ export default function SiteFooter({ vendorCategories }: SiteFooterProps) {
   if (pathname.startsWith("/private-control-room-hub")) {
     return null;
   }
-  if (isHeaderLinkCurrent(pathname, "/account") || isHeaderLinkCurrent(pathname, "/vendor") || isHeaderLinkCurrent(pathname, "/signup") || isHeaderLinkCurrent(pathname, "/login") || isHeaderLinkCurrent(pathname, "/rfq")) {
+  if (usesWorkspaceFooter(pathname)) {
     return <WorkspaceFooter />;
   }
 

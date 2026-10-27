@@ -19,7 +19,7 @@ The initial Bellefair / Mrs Saint Delafield / Jost experiment was rejected and r
 
 ## Validation and release
 
-Root type checking, lint, architecture and production build pass; 88 web tests pass. Native type checking/lint and 75 tests pass; online Expo compatibility and Android/iOS Hermes exports pass. A first restricted export failed because Hermes could not write its temporary output; the verified rerun used the workspace temp directory and succeeded. No failed run is counted as a pass.
+Root type checking, lint, architecture and production build pass; 90 web tests pass. Native type checking/lint and 75 tests pass; online Expo compatibility and Android/iOS Hermes exports pass. A first restricted export failed because Hermes could not write its temporary output; the verified rerun used the workspace temp directory and succeeded. No failed run is counted as a pass.
 
 Guest browser checks cover 320px and 390px phone layouts and a 1440px desktop layout, with no horizontal overflow in the checked routes. Signup progression, password visibility, uploaded-file retention and back navigation are exercised with synthetic values without submitting an account. Local directory data is unavailable, so real-category and signed-in workspace rendering also require the live read-only verification recorded with the release. [Responsive checks](responsive-checks.json) and screenshots document the inspected layouts. Native bundle success does not establish installed-device visual acceptance.
 

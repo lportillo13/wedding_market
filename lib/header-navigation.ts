@@ -36,3 +36,11 @@ export function isHeaderLinkCurrent(pathname: string, href: string) {
     pathname === href || (href !== "/vendor" && pathname.startsWith(`${href}/`))
   );
 }
+
+// Workspace chrome includes nested routes even though the overview nav item
+// intentionally matches only its exact destination.
+export function usesWorkspaceFooter(pathname: string) {
+  return ['/account', '/vendor', '/signup', '/login', '/rfq'].some(root =>
+    pathname === root || pathname.startsWith(`${root}/`),
+  );
+}

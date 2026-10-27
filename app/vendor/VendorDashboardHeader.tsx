@@ -25,7 +25,7 @@ export default function VendorDashboardHeader() {
       <p className="wm-shell-title mb-3">{t("vendorDashboard.heading")}</p>
       <nav className="wm-workspace-nav" aria-label={t("vendorDashboard.heading")}>
       <div className="wm-workspace-nav__mobile">
-        <label htmlFor="vendor-workspace-section">{t("vendorDashboard.heading")}</label>
+        <label className="visually-hidden" htmlFor="vendor-workspace-section">{t("vendorDashboard.heading")}</label>
         <select id="vendor-workspace-section" className="form-select" value={activeHref} onChange={event => router.push(event.target.value)}>
           {tabs.map(tab => <option key={tab.href} value={tab.href}>{t(`vendorDashboard.tabs.${tab.key}`)}</option>)}
         </select>
