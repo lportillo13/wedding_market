@@ -1,10 +1,9 @@
 import { colors, fontFamilies } from "../tokens";
-import { Platform, StatusBar, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 export const sharedStyles = StyleSheet.create({
     root: {
         flex: 1,
         backgroundColor: colors.paper,
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight ?? 0 : 0,
     },
     signupProgressRow: {
         alignItems: "center",

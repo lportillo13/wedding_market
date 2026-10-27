@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-27T16:32:19.199Z",
+  "id": "e0cf3f92-a5ba-427b-97d6-7950dabc5e5d",
+  "status": "ERRORED",
+  "platform": "IOS",
+  "projectId": "ed313d2c-f5d1-42b7-bf2f-eb71bb496b4e",
+  "buildProfile": "store-captures",
+  "source": "72c63d6c62bb9975f20e8cd217fd836fcd6a5cf7",
+  "appVersion": "1.0.0",
+  "buildNumber": "5",
+  "distribution": "INTERNAL",
+  "isForIosSimulator": true,
+  "createdAt": "2026-10-27T16:23:12.628Z",
+  "submittedToStore": false,
+  "screenshotsArtifactAvailable": true,
+  "completedAt": "2026-10-27T16:29:32.032Z",
+  "errorCode": "UNKNOWN_CUSTOM_BUILD_ERROR"
+}

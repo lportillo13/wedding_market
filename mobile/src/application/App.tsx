@@ -27,7 +27,8 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFonts } from "expo-font";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ActivityIndicator, Alert, AppState, BackHandler, Image, Linking, Platform, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, AppState, BackHandler, Image, Linking, Platform, Pressable, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -293,6 +294,7 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.root}>
+      <View style={{flex:1}}>
       <StatusBar barStyle="dark-content" />
       <ExpoStatusBar style="dark" />
       {!isDetailOpen ? <View style={[styles.header, isHomeOpen && styles.headerOverlay]}>
@@ -306,6 +308,7 @@ export default function App() {
         </View>
         <View style={styles.headerActions}>
           <TouchableOpacity
+            testID="account-menu-toggle"
             accessibilityLabel={userEmail ? copy[language].profile : copy[language].logIn}
             accessibilityRole="button"
             accessibilityState={{ expanded: isAccountMenuOpen }}
@@ -320,8 +323,13 @@ export default function App() {
               <Ionicons name="person-outline" size={20} color={colors.ink} />
             )}
           </TouchableOpacity>
+        </View>
+      </View> : null}
+
           {isAccountMenuOpen ? (
-            <View style={styles.accountMenu}>
+            <View style={styles.accountMenuOverlay}>
+              <Pressable style={styles.accountMenuDismiss} accessibilityRole="button" accessibilityLabel={language === "es" ? "Cerrar menú" : "Close account menu"} onPress={() => setIsAccountMenuOpen(false)} />
+            <View style={styles.accountMenu} accessibilityViewIsModal>
               <View style={styles.accountMenuHeader}>
                 <Text style={styles.accountMenuTitle}>{userEmail ? profile?.fullName ?? userEmail : copy[language].guest}</Text>
                 <Text style={styles.accountMenuSubtitle}>{userEmail ? role : copy[language].browseAsGuest}</Text>
@@ -339,6 +347,8 @@ export default function App() {
                     const isActive = language === option.key;
                     return (
                       <TouchableOpacity
+                        accessibilityLabel={option.label}
+                        testID={`account-language-${option.key}`}
                         accessibilityRole="radio"
                         accessibilityState={{ checked: isActive }}
                         key={option.key}
@@ -361,6 +371,9 @@ export default function App() {
                 </View>
               </View>
               <TouchableOpacity
+                accessibilityRole="button"
+                accessibilityLabel={userEmail ? copy[language].profile : copy[language].logIn}
+                testID="account-profile-link"
                 onPress={() => {
                   setSelectedVendor(null);
                   setActiveTab("profile");
@@ -394,9 +407,8 @@ export default function App() {
                 </>
               ) : null}
             </View>
+            </View>
           ) : null}
-        </View>
-      </View> : null}
 
       <ScrollView
         ref={contentScrollRef}
@@ -519,6 +531,7 @@ export default function App() {
           setSelectedVendor(null);
         }}
       />
+      </View>
     </SafeAreaView>
   );
 }

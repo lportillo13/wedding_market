@@ -1,5 +1,5 @@
 import { colors, fontFamilies } from "../tokens";
-import { Platform, StatusBar, StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 export const authStyles = StyleSheet.create({
     authShell: {
         flexGrow: 1,
@@ -12,7 +12,6 @@ export const authStyles = StyleSheet.create({
     passwordRecoveryRoot: {
         backgroundColor: colors.paper,
         flex: 1,
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight ?? 0 : 0,
     },
     passwordRecoveryContent: {
         flexGrow: 1,
@@ -168,7 +167,6 @@ export const authStyles = StyleSheet.create({
     signupModalRoot: {
         backgroundColor: "#F8F8FC",
         flex: 1,
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight ?? 0 : 0,
     },
     signupModalHeader: {
         alignItems: "center",

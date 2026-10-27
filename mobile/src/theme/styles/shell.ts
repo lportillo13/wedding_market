@@ -1,5 +1,5 @@
 import { colors, fontFamilies } from "../tokens";
-import { Platform, StatusBar, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 export const shellStyles = StyleSheet.create({
     centeredRoot: {
         alignItems: "center",
@@ -22,7 +22,7 @@ export const shellStyles = StyleSheet.create({
         left: 0,
         position: "absolute",
         right: 0,
-        top: Platform.OS === "android" ? StatusBar.currentHeight ?? 0 : 0,
+        top: 0,
         zIndex: 50,
     },
     headerBrandRow: {
@@ -70,6 +70,13 @@ export const shellStyles = StyleSheet.create({
         fontSize: 17,
         fontWeight: "900",
     },
+    accountMenuOverlay: {
+        position: 'absolute', top: 0, right: 0, bottom: 0, left: 0,
+        zIndex: 60,
+    },
+    accountMenuDismiss: {
+        position: 'absolute', top: 0, right: 0, bottom: 0, left: 0,
+    },
     accountMenu: {
         backgroundColor: colors.paper,
         borderColor: colors.line,
@@ -79,12 +86,12 @@ export const shellStyles = StyleSheet.create({
         minWidth: 270,
         padding: 8,
         position: "absolute",
-        right: 0,
+        right: 20,
         shadowColor: "#000000",
         shadowOffset: { width: 0, height: 6 },
         shadowOpacity: 0.16,
         shadowRadius: 14,
-        top: 54,
+        top: 66,
         zIndex: 40,
     },
     accountMenuHeader: {

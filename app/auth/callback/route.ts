@@ -2,17 +2,13 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { authRedirectUrl, safeAuthNextPath } from '@/lib/auth-redirect';
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const requestedNext = requestUrl.searchParams.get("next");
-  const next = requestedNext?.startsWith("/")
-    && !requestedNext.startsWith("//")
-    && !requestedNext.includes("\\")
-    ? requestedNext
-    : "/";
-  const res = NextResponse.redirect(new URL(next, requestUrl.origin));
+  const next = safeAuthNextPath(requestUrl.searchParams.get("next"));
+  const res = NextResponse.redirect(authRedirectUrl(next));
   if (!code) return res;
 
   const cookieStore = await cookies(); // Next 15: await
@@ -58,7 +54,7 @@ export async function GET(request: Request) {
     const fallbackPath = next === "/reset-password"
       ? "/forgot-password?error=recovery"
       : "/login?error=auth_callback";
-    return NextResponse.redirect(new URL(fallbackPath, requestUrl.origin));
+    return NextResponse.redirect(authRedirectUrl(fallbackPath));
   }
   return res;
 }

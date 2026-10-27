@@ -9,7 +9,8 @@ import { FieldLabel, SearchableCountryDropdown } from "../../ui/forms";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Alert, Animated, Image, Modal, SafeAreaView, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Animated, Image, Modal, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 export function AuthScreen({
   onSignedIn,
@@ -547,7 +548,7 @@ export function AuthScreen({
   }
 
   return (
-    <SafeAreaView style={styles.root}>
+    <View style={styles.root}>
       <StatusBar barStyle="dark-content" />
       <ExpoStatusBar style="dark" />
       <ScrollView contentContainerStyle={styles.authScroll} keyboardShouldPersistTaps="handled">
@@ -717,6 +718,7 @@ export function AuthScreen({
         presentationStyle="fullScreen"
         visible={isSignupModalOpen}
       >
+        <SafeAreaProvider>
         <SafeAreaView style={styles.signupModalRoot}>
           <StatusBar barStyle="dark-content" />
           <ExpoStatusBar style="dark" />
@@ -788,8 +790,9 @@ export function AuthScreen({
             </TouchableOpacity>
           </View>
         </SafeAreaView>
+        </SafeAreaProvider>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -855,6 +858,7 @@ export function PasswordRecoveryModal({
       presentationStyle="fullScreen"
       visible={visible}
     >
+      <SafeAreaProvider>
       <SafeAreaView style={styles.passwordRecoveryRoot}>
         <StatusBar barStyle="dark-content" />
         <ExpoStatusBar style="dark" />
@@ -910,6 +914,7 @@ export function PasswordRecoveryModal({
           </View>
         </ScrollView>
       </SafeAreaView>
+      </SafeAreaProvider>
     </Modal>
   );
 }

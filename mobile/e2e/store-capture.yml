@@ -16,10 +16,13 @@ appId: com.theweddingmarket.app
 - waitForAnimationToEnd
 - takeScreenshot: "${CAPTURE_PREFIX}-en-categories"
 - tapOn:
-    text: "Log In"
-    index: 0
-- assertVisible: "Español"
-- tapOn: "Español"
+    id: "account-menu-toggle"
+- extendedWaitUntil:
+    visible:
+      id: "account-language-es"
+    timeout: 15000
+- tapOn:
+    id: "account-language-es"
 - waitForAnimationToEnd
 - stopApp
 - launchApp

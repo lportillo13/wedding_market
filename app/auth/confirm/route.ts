@@ -2,33 +2,22 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-
-function safeNextPath(requestedNext: string | null, type: EmailOtpType | null) {
-  if (
-    requestedNext?.startsWith("/")
-    && !requestedNext.startsWith("//")
-    && !requestedNext.includes("\\")
-  ) {
-    return requestedNext;
-  }
-
-  return type === "recovery" ? "/reset-password" : "/";
-}
+import { authRedirectUrl, safeAuthNextPath } from '@/lib/auth-redirect';
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const tokenHash = requestUrl.searchParams.get("token_hash");
   const type = requestUrl.searchParams.get("type") as EmailOtpType | null;
-  const next = safeNextPath(requestUrl.searchParams.get("next"), type);
+  const next = safeAuthNextPath(requestUrl.searchParams.get("next"), type === 'recovery' ? '/reset-password' : '/');
   const fallbackPath = type === "recovery"
     ? "/forgot-password?error=recovery"
     : "/login?error=auth_callback";
 
   if (!tokenHash || !type) {
-    return NextResponse.redirect(new URL(fallbackPath, requestUrl.origin));
+    return NextResponse.redirect(authRedirectUrl(fallbackPath));
   }
 
-  const response = NextResponse.redirect(new URL(next, requestUrl.origin));
+  const response = NextResponse.redirect(authRedirectUrl(next));
   const cookieStore = await cookies();
   const isProd = process.env.NODE_ENV === "production";
 
@@ -71,7 +60,7 @@ export async function GET(request: Request) {
   });
 
   if (error) {
-    return NextResponse.redirect(new URL(fallbackPath, requestUrl.origin));
+    return NextResponse.redirect(authRedirectUrl(fallbackPath));
   }
 
   return response;
