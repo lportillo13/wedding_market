@@ -10,6 +10,7 @@ import "../styles/account-inbox.scss";
 import "../styles/editorial-ui.scss";
 import "../styles/founders-inspired.scss";
 import "../styles/editorial-fonts.scss";
+import "../styles/footer-and-consent.scss";
 import NavBarContainer from "@/components/NavBarContainer";
 import AuthStateSync from "@/components/AuthStateSync";
 import PwaServiceWorkerRegistration from "@/components/PwaServiceWorkerRegistration";
@@ -136,9 +137,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <LanguageProvider initialLanguage={resolvedLanguage}>
           <div className="wm-site-shell">
             <NavBarContainer vendorCategories={vendorCategories} account={account} />
-            {needsCommunityConsent ? <CommunityConsent language={resolvedLanguage} /> : null}
             <div className="wm-site-shell__content">{children}</div>
             <SiteFooter vendorCategories={vendorCategories} />
+            {needsCommunityConsent ? <CommunityConsent /> : null}
           </div>
         </LanguageProvider>
       </body>

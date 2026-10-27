@@ -2,63 +2,43 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
 import type { HeaderVendorCategory } from "@/components/VendorsMegaMenu";
 import { usesWorkspaceFooter } from "@/lib/header-navigation";
 import WorkspaceFooter from "./WorkspaceFooter";
 import { publisher } from "@/features/legal/identity";
 
-type SiteFooterProps = {
-  vendorCategories: HeaderVendorCategory[];
-};
-
-type FooterMenuId = "navigation" | "contact";
+type SiteFooterProps = { vendorCategories: HeaderVendorCategory[] };
 
 export default function SiteFooter({ vendorCategories }: SiteFooterProps) {
   const pathname = usePathname();
   const t = useTranslation();
   const { language } = useLanguage();
+  const emailId = useId();
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
   const [subscribeError, setSubscribeError] = useState("");
-  const [openFooterMenus, setOpenFooterMenus] = useState<Record<FooterMenuId, boolean>>({
-    navigation: false,
-    contact: false,
-  });
+  const es = language === "es";
 
-  if (pathname.startsWith("/private-control-room-hub")) {
-    return null;
-  }
-  if (usesWorkspaceFooter(pathname)) {
-    return <WorkspaceFooter />;
-  }
+  if (pathname.startsWith("/private-control-room-hub")) return null;
+  if (usesWorkspaceFooter(pathname)) return <WorkspaceFooter />;
 
-  const featuredCategories = vendorCategories.slice(0, 5);
-  const currentYear = new Date().getFullYear();
-
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
+  async function handleSubscribe(event: React.FormEvent) {
+    event.preventDefault();
     const normalizedEmail = email.trim();
-    if (!normalizedEmail || subscribing) {
-      return;
-    }
-
+    if (!normalizedEmail || subscribing) return;
     setSubscribing(true);
     setSubscribeError("");
-
     try {
       const response = await fetch("/api/newsletter/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: normalizedEmail, website: "" }),
+        signal: AbortSignal.timeout(15000),
       });
-
-      if (!response.ok) {
-        throw new Error("Newsletter signup failed.");
-      }
-
+      if (!response.ok) throw new Error("Newsletter signup failed.");
       setSubscribed(true);
       setEmail("");
     } catch {
@@ -66,139 +46,71 @@ export default function SiteFooter({ vendorCategories }: SiteFooterProps) {
     } finally {
       setSubscribing(false);
     }
-  };
-
-  const toggleFooterMenu = (menu: FooterMenuId) => {
-    setOpenFooterMenus((current) => ({
-      ...current,
-      [menu]: !current[menu],
-    }));
-  };
-
-  const footerClassName = `wm-site-footer${pathname === "/" ? " wm-site-footer--home" : ""}`;
+  }
 
   return (
-    <footer className={footerClassName}>
-      <div className="container">
-
-        {/* ── Main grid ── */}
-        <div className="wm-site-footer__main">
-
-          {/* Left — newsletter */}
-          <div className="wm-site-footer__newsletter">
-            <p className="wm-site-footer__newsletter-eyebrow">
-              {t("footer.newsletter.eyebrow")}
-            </p>
-            <h2 className="wm-site-footer__newsletter-heading">
-              {t("footer.newsletter.heading")}
-            </h2>
-
+    <footer className={`wm-footer${pathname === "/" ? " wm-footer--home" : ""}`}>
+      <div className="wm-footer__inner">
+        <div className="wm-footer__identity">
+          <Link href="/" className="wm-footer__brand">Wedding Market</Link>
+          <p>{es ? "Tu día. Cada detalle." : "Your day. Every detail."}</p>
+        </div>
+        <div className="wm-footer__main">
+          <section className="wm-footer__newsletter" aria-labelledby="footer-newsletter-title">
+            <p className="wm-footer__eyebrow">{es ? "Un poco de inspiración" : "A little inspiration"}</p>
+            <h2 id="footer-newsletter-title">{es ? "Algo bonito en tu correo." : "Something lovely in your inbox."}</h2>
+            <p className="wm-footer__description">{es ? "Ideas para tu boda y novedades de Wedding Market." : "Wedding ideas and the latest from Wedding Market."}</p>
             {subscribed ? (
-              <p className="wm-site-footer__newsletter-success">
-                {t("footer.newsletter.successMessage")}
-              </p>
+              <p className="wm-footer__success" role="status">{t("footer.newsletter.successMessage")}</p>
             ) : (
-              <form className="wm-site-footer__newsletter-form" onSubmit={handleSubscribe}>
-                <input
-                  type="email"
-                  className="wm-site-footer__newsletter-input"
-                  placeholder={t("footer.newsletter.placeholder")}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={subscribing}
-                  required
-                  aria-label={t("footer.newsletter.placeholder")}
-                />
-                <button type="submit" className="wm-site-footer__newsletter-btn" disabled={subscribing}>
-                  {subscribing ? t("footer.newsletter.submitting") : t("footer.newsletter.submit")}
-                </button>
+              <form className="wm-footer__form" onSubmit={handleSubscribe} aria-busy={subscribing}>
+                <label htmlFor={emailId}>{es ? "Correo electrónico" : "Email address"}</label>
+                <div className="wm-footer__email-row">
+                  <input id={emailId} type="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={(event) => setEmail(event.target.value)} disabled={subscribing} required aria-describedby={subscribeError ? `${emailId}-error` : undefined} />
+                  <button type="submit" disabled={subscribing} aria-label={subscribing ? t("footer.newsletter.submitting") : (es ? "Unirme al boletín" : "Join the newsletter")}>
+                    <span>{subscribing ? (es ? "Enviando…" : "Joining…") : (es ? "Unirme" : "Join")}</span><span aria-hidden="true">→</span>
+                  </button>
+                </div>
               </form>
             )}
-            {subscribeError ? (
-              <p className="wm-site-footer__newsletter-error" role="alert">
-                {subscribeError}
-              </p>
-            ) : null}
-
-
-          </div>
-
-          {/* Right — columns */}
-          <div className="wm-site-footer__cols">
-
-            {/* Navigation */}
-            <div className={`wm-site-footer__col${openFooterMenus.navigation ? " is-open" : ""}`}>
-              <button
-                type="button"
-                className="wm-site-footer__col-heading"
-                aria-expanded={openFooterMenus.navigation}
-                aria-controls="footer-navigation-menu"
-                onClick={() => toggleFooterMenu("navigation")}
-              >
-                <span>{t("footer.sections.navigation")}</span>
-                <span className="wm-site-footer__col-caret" aria-hidden="true" />
-              </button>
-              <nav className="wm-site-footer__col-links" id="footer-navigation-menu">
-                <Link href="/about">{t("nav.about")}</Link>
-                <Link href="/vendors">{t("nav.vendors")}</Link>
-                <Link href="/blog">{t("nav.blog")}</Link>
-                <Link href="/shortlist">{t("nav.shortlist")}</Link>
-                <Link href="/signup">{t("nav.signUp")}</Link>
-                <Link href="/signup/vendor">{t("footer.vendorLinks.join")}</Link>
-                {featuredCategories.map((cat) => (
-                  <Link key={cat.key} href={`/vendors?category=${encodeURIComponent(cat.key)}`}>
-                    {cat.label[language]}
-                  </Link>
-                ))}
-              </nav>
-            </div>
-
-            {/* Contact */}
-            <div className={`wm-site-footer__col${openFooterMenus.contact ? " is-open" : ""}`}>
-              <button
-                type="button"
-                className="wm-site-footer__col-heading"
-                aria-expanded={openFooterMenus.contact}
-                aria-controls="footer-contact-menu"
-                onClick={() => toggleFooterMenu("contact")}
-              >
-                <span>{t("footer.sections.contact")}</span>
-                <span className="wm-site-footer__col-caret" aria-hidden="true" />
-              </button>
-              <address className="wm-site-footer__col-links wm-site-footer__contact" id="footer-contact-menu">
-                <a href={`mailto:${publisher.email}`}>
-                  {publisher.email}
-                </a>
-                <span>{publisher.name} · {language === "es" ? "Florida, Estados Unidos" : publisher.jurisdiction}</span>
-              </address>
-            </div>
-
-
-
+            {subscribeError ? <p id={`${emailId}-error`} className="wm-footer__error" role="alert">{subscribeError}</p> : null}
+            <Link href="/privacy" className="wm-footer__privacy">{es ? "Nuestra política de privacidad" : "Our privacy policy"}</Link>
+          </section>
+          <nav className="wm-footer__links" aria-labelledby="footer-explore-title">
+            <h3 id="footer-explore-title">{es ? "Explora" : "Explore"}</h3>
+            <Link href="/vendors">{t("nav.vendors")}</Link>
+            <Link href="/about">{t("nav.about")}</Link>
+            <Link href="/blog">{t("nav.blog")}</Link>
+            <Link href="/shortlist">{t("nav.shortlist")}</Link>
+            <Link href="/signup">{t("nav.signUp")}</Link>
+          </nav>
+          <nav className="wm-footer__links" aria-labelledby="footer-services-title">
+            <h3 id="footer-services-title">{es ? "Para tu boda" : "For your wedding"}</h3>
+            {vendorCategories.slice(0, 5).map((category) => (
+              <Link key={category.key} href={`/vendors?category=${encodeURIComponent(category.key)}`}>{category.label[language]}</Link>
+            ))}
+          </nav>
+          <div className="wm-footer__professionals">
+            <p className="wm-footer__eyebrow">{es ? "Profesionales de bodas" : "Wedding professionals"}</p>
+            <Link href="/signup/vendor" className="wm-footer__vendor-link">{t("footer.vendorLinks.join")}<span aria-hidden="true">↗</span></Link>
+            <Link href="/support" className="wm-footer__support">{es ? "¿Necesitas ayuda?" : "Need a hand?"}</Link>
+            <a href={`mailto:${publisher.email}`} className="wm-footer__email">{publisher.email}</a>
           </div>
         </div>
-
-        {/* ── Watermark ── */}
-        <div className="wm-site-footer__watermark" aria-hidden="true">
-          Wedding Market
-        </div>
-
-        {/* ── Bottom bar ── */}
-        <div className="wm-site-footer__bottom">
-          <p className="mb-0">
-            {t("footer.copyrightPrefix")} {currentYear} Wedding Market.{" "}
-            {language === "es" ? "Todos los derechos reservados." : "All rights reserved."}
-          </p>
-          <div className="wm-site-footer__legal-links">
+        <div className="wm-footer__bottom">
+          <div className="wm-footer__publisher">
+            <p>© {new Date().getFullYear()} Wedding Market. {es ? "Todos los derechos reservados." : "All rights reserved."}</p>
+            <p>{publisher.name} · {es ? "Florida, Estados Unidos" : publisher.jurisdiction}</p>
+          </div>
+          <nav className="wm-footer__legal" aria-label={es ? "Información legal" : "Legal information"}>
             <Link href="/terms">{t("footer.legal.terms")}</Link>
             <Link href="/privacy">{t("footer.legal.privacy")}</Link>
-            <Link href="/account-deletion">{language === "es" ? "Eliminar cuenta" : "Account deletion"}</Link>
-            <Link href="/support">{language === "es" ? "Soporte" : "Support"}</Link>
-            <Link href="/community-guidelines">{language === "es" ? "Comunidad" : "Community"}</Link>
+            <Link href="/community-guidelines">{es ? "Comunidad" : "Community"}</Link>
             <Link href="/cookies">Cookies</Link>
-          </div>
+            <Link href="/account-deletion">{es ? "Eliminar cuenta" : "Account deletion"}</Link>
+            <Link href="/support">{es ? "Soporte" : "Support"}</Link>
+          </nav>
         </div>
-
       </div>
     </footer>
   );
