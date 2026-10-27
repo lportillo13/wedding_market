@@ -53,4 +53,19 @@ describe('message notification lifecycle',()=>{
   const push=buildMessagePush({notificationId:id(5),recipientId:id(1),type:'quote_answered'},{token:'token',bindingId:id(4),language:'en'})!.data;
   const pending=s.controller.accept(push);while(!finish)await Promise.resolve();s.controller.setContext(null);finish({notificationId:id(5),rfqId:id(6),vendorId:id(7)});await pending;expect(s.ports.open).not.toHaveBeenCalled();
  });
+ test('a token change before session restoration is consumed once after restoration',async()=>{
+  const s=setup({deviceId:id(3),optedInAccountId:id(1),registered:{accountId:id(1),bindingId:id(4),expiresAt:'2030-01-01T00:00:00Z',sessionHash:'hash',language:'en',registeredAt:1_000_000}});
+  await s.controller.nativeTokenChanged();s.controller.setContext(context);await s.controller.refresh();
+  expect(s.ports.register).toHaveBeenCalledTimes(1);
+  await s.controller.refresh();expect(s.ports.register).toHaveBeenCalledTimes(1);expect(s.state()?.busy).toBe(false);
+ });
+ test('a genuine rotation during registration is not swallowed by the earlier result',async()=>{
+  const s=setup();s.controller.setContext(context);await s.controller.refresh();
+  let finish!:(value:{bindingId:string;expiresAt:string})=>void;
+  s.ports.register.mockImplementationOnce(()=>new Promise(resolve=>{finish=resolve;}));
+  const first=s.controller.refresh(true);while(!finish)await Promise.resolve();
+  const changed=s.controller.nativeTokenChanged();finish({bindingId:id(4),expiresAt:'2030-01-01T00:00:00Z'});
+  await first;await changed;await s.controller.refresh();
+  expect(s.ports.register).toHaveBeenCalledTimes(2);expect(s.state()?.busy).toBe(false);
+ });
 });

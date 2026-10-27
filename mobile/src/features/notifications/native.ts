@@ -10,12 +10,15 @@ import {mobileConfig} from '../../lib/config';
 import {requestJson} from '../../lib/http';
 import {supabase} from '../../lib/supabase';
 import {MessagePushController,initialPushState,type SavedPush,type PushContext} from './controller';
+import {NativeTokenChanges,type NativePushToken} from './nativeTokenChanges';
 
 type Notifications=typeof import('expo-notifications');
 let nativePromise:Promise<Notifications|null>|null=null;
 let scope:MessagePushScope|null=null;
 let lastIdentity='';const presented=new NoticeDeduplication();
 let tokenPending:Promise<string>|null=null;
+let nativeDeviceToken:NativePushToken|null=null;
+const nativeTokenChanges=new NativeTokenChanges();
 const storageKey='wm.mobile.message-notifications.v1';
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -73,7 +76,7 @@ export function useMessageNotifications({eligible,language,role,onOpen,onActivit
    const projectId=Constants.expoConfig?.extra?.eas?.projectId??Constants.easConfig?.projectId;
    if(typeof projectId!=='string'||!projectId)throw Error('Push project unavailable');
    if(!tokenPending){
-    const work=module.getExpoPushTokenAsync({projectId}).then(result=>result.data);
+    const work=module.getExpoPushTokenAsync({projectId,...(nativeDeviceToken?{devicePushToken:nativeDeviceToken}:{})}).then(result=>result.data);
     tokenPending=work;void work.then(()=>{if(tokenPending===work)tokenPending=null;},()=>{if(tokenPending===work)tokenPending=null;});
    }
    const pending=tokenPending;return withDeadline(()=>pending,15_000);
@@ -115,7 +118,12 @@ export function useMessageNotifications({eligible,language,role,onOpen,onActivit
    if(!module||!active)return;
    const received=module.addNotificationReceivedListener(notice=>controller.receive(notice.request.content.data));
    const opened=module.addNotificationResponseReceivedListener(response=>{if(response.actionIdentifier===module.DEFAULT_ACTION_IDENTIFIER)void controller.accept(response.notification.request.content.data);});
-   const token=module.addPushTokenListener(()=>{void controller.refresh(false,true);});
+   const token=module.addPushTokenListener(value=>{
+    const change=nativeTokenChanges.observe(value,Boolean(tokenPending));
+    if(!change)return;
+    nativeDeviceToken=change.token;
+    if(change.refresh)void controller.nativeTokenChanged();
+   });
    remove.push(()=>received.remove(),()=>opened.remove(),()=>token.remove());
   });
   const foreground=AppState.addEventListener('change',value=>{if(value==='active')void controller.refresh();});

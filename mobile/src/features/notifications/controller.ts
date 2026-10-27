@@ -27,6 +27,8 @@ export class MessagePushController {
  private handled=new NoticeDeduplication();
  private received=new NoticeDeduplication();
  private lastFailure=0;
+ private nativeTokenRevision=0;
+ private registeredNativeTokenRevision=0;
  private pendingRevoke:{context:PushContext;deviceId:string;bindingId:string}|null=null;
  constructor(private deps:Dependencies){}
  private now(){return (this.deps.now??Date.now)();}
@@ -58,6 +60,7 @@ export class MessagePushController {
   const context=this.context,version=this.generation;
   return this.serial(()=>this.sync(context,version,prompt,force));
  }
+ nativeTokenChanged(){this.nativeTokenRevision++;return this.refresh(false,true);}
  private async sync(context:PushContext|null,version:number,prompt:boolean,force:boolean){
   const current=()=>Boolean(context&&this.context===context&&version===this.generation);
   if(!context||!current())return;
@@ -80,10 +83,11 @@ export class MessagePushController {
    }
    const sessionHash=await this.deps.hash(context.accessToken);if(!current())return;
    const previous=value.registered;
-   if(!prompt&&!force&&previous?.accountId===context.accountId&&previous.sessionHash===sessionHash&&previous.language===context.language&&this.now()-previous.registeredAt<12*3600_000&&Date.parse(previous.expiresAt)>this.now()){
+   if(!prompt&&!force&&this.nativeTokenRevision===this.registeredNativeTokenRevision&&previous?.accountId===context.accountId&&previous.sessionHash===sessionHash&&previous.language===context.language&&this.now()-previous.registeredAt<12*3600_000&&Date.parse(previous.expiresAt)>this.now()){
     this.show({recipientId:context.accountId,bindingId:previous.bindingId,expiresAt:previous.expiresAt});this.emit({enabled:true,status:'on'});await this.accept(await this.deps.last());return;
    }
    if(!prompt&&!force&&this.lastFailure&&this.now()-this.lastFailure<60_000){this.emit({enabled:false,status:'error'});return;}
+   const tokenRevision=this.nativeTokenRevision;
    const token=await this.deps.token();if(!current())return;
    const binding=await this.deps.register(context,value.deviceId,token);
    const retire=()=>this.deps.unregister(context,value.deviceId,binding.bindingId);
@@ -91,6 +95,7 @@ export class MessagePushController {
    const registered:PushBinding={...binding,accountId:context.accountId,sessionHash,language:context.language,registeredAt:this.now()};
    try{await this.save({...value,optedInAccountId:context.accountId,registered});}catch(error){await retire().catch(()=>{});throw error;}
    if(!current()){await this.save({...value,registered:undefined});await retire();return;}
+   this.registeredNativeTokenRevision=tokenRevision;
    this.lastFailure=0;this.show({recipientId:context.accountId,bindingId:binding.bindingId,expiresAt:binding.expiresAt});this.emit({enabled:true,status:'on'});
    await this.accept(await this.deps.last());
   }catch{if(current()){this.lastFailure=this.now();this.show(null);this.emit({enabled:false,status:'error',retryDisable:this.saved?.optedInAccountId!==context.accountId&&this.pendingRevoke?.context.accountId===context.accountId});}}
