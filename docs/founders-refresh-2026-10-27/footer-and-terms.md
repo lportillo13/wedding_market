@@ -15,4 +15,10 @@ The public footer now has a light serif wordmark, restrained newsletter block, v
 - ESLint, all 90 root tests, architecture checks and production TypeScript/build passed. An initial build found stale generated types for the removed local fixture; only the verified development cache was cleared, and the subsequent build passed.
 - No migration, legal document revision, native source or app release is included.
 
-Deployment and live verification will be recorded after the exact release receipt.
+## Verified release
+
+Website commit **ac0676d15c5c4ec0b606f898bdf7020c691b7586** is live with the successful exact-commit [gateway receipt](footer-terms-deployment-success.json). Rollback is `/var/www/wedding-market.before-20261027-215023`. The gateway's health and anonymous authorization probes passed before and after switching.
+
+[Public verification](footer-terms-public-checks.json) passed for EN/ES home, directory, legal and compact onboarding footer rendering, all three served stylesheets, fixed-position notice CSS and the absent local fixture route (404). The first public verifier expected a literal support email; Cloudflare protects it in HTML. Decoding the public protection value confirms the unchanged `hello@thewedmarket.com` address, also visibly restored in the browser.
+
+Live browser measurements confirm no horizontal overflow at 1265px desktop and 375px phone content widths. Header/hero tops remain 24px/12px on desktop. The live footer has readable focus states, wrapping legal links and correct publisher/support details; [public-only desktop screenshot](live-footer-desktop.png). The current browser account already has terms accepted, so its notice is absent as expected; the pending-consent interactions were verified with the temporary local fixture without submitting acceptance. No newsletter was sent or consent record changed during QA.
