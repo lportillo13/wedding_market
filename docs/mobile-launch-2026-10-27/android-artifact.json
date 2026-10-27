@@ -1,10 +1,11 @@
 {
-  "buildId": "84c7d2e3-7c59-4515-8e6a-c97e9dfa7d26",
   "platform": "ANDROID",
-  "source": "cb214828b8b0776e39902795746ca3a0455b6552",
+  "build": "local Gradle release after EAS free quota exhaustion",
+  "source": "b6d9b25ab1b4cde6d45a8e2ca10b7025d14841e0",
   "appVersion": "1.0.0",
-  "buildNumber": "3",
-  "bytes": 49935567,
-  "sha256": "b763b6ff40f0e2c8dc99ec938c1925e191cab0eaba97642bcdef1c9cfda4772b",
-  "downloadedAt": "2026-10-27T05:25:25.242Z"
+  "buildNumber": "4",
+  "bytes": 49935564,
+  "sha256": "77c52666f9505112c6afa786f47c9fbd3bda7fe01f935a8137e28f83f160e596",
+  "completedAt": "2026-10-27T05:39:06.537Z",
+  "uploadKeyFingerprintVerified": true
 }

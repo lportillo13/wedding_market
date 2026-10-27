@@ -1,0 +1,20 @@
+{
+  "googlePlayDeveloperAccountId": "7845168685505373862",
+  "googlePlayAppId": "4976084269957952454",
+  "package": "com.theweddingmarket.app",
+  "version": "1.0.0",
+  "versionCode": 4,
+  "track": "internal",
+  "trackId": "4701544873469293957",
+  "releaseId": 1,
+  "releaseName": "1.0.0 (4) – Internal testing",
+  "status": "Active; Available to internal testers; Not reviewed",
+  "releasedAt": "2026-10-27T01:46:00-04:00",
+  "testerList": "Wedding Market Internal",
+  "testerCount": 1,
+  "audience": "Existing owner account only; Digital Wedding list unselected",
+  "joinUrl": "https://play.google.com/apps/internaltest/4701544873469293957",
+  "estimatedNewInstallDownloadMB": 16.5,
+  "publicProductionRelease": false,
+  "physicalDeviceDeliveryVerified": false
+}

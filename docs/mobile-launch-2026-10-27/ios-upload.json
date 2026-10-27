@@ -1,0 +1,20 @@
+{
+  "appStoreConnectAppId": "6827392554",
+  "easBuildId": "bad1c055-7d17-4ea6-8166-5cdd3db1c9a4",
+  "easSubmissionId": "562a1728-c0d4-4779-b397-d017c55f8bb7",
+  "version": "1.0.0",
+  "buildNumber": "2",
+  "appleUploadCreatedAt": "2026-10-27T01:26:00-04:00",
+  "appleProcessingComplete": true,
+  "observedBuildStatus": "Ready to Test",
+  "internalGroupName": "Wedding Market Internal",
+  "internalGroupId": "7d156831-4855-4b71-a2b0-5c3e5f47d5fe",
+  "automaticGroupDistribution": false,
+  "internalGroupBuildCount": 1,
+  "internalTesterCount": 1,
+  "tester": "Existing company account holder; no additional team user created",
+  "testerStatus": "Invited",
+  "productionReviewSubmitted": false,
+  "publiclyReleased": false,
+  "deviceDeliveryVerified": false
+}

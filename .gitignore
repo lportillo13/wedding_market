@@ -31,6 +31,8 @@ out/
 
 # Tooling & misc
 .expo/
+/mobile/android/
+/mobile/ios/
 dist/
 dist-tests/
 coverage/
