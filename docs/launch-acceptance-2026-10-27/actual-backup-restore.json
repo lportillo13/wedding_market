@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-10-27T18:20:06Z",
+  "backupCompletedAt": "2026-10-27T17:42:09.746Z",
+  "scope": "Wedding Market application dump: public, auth, supabase_migrations plus one owned test image",
+  "applicationDumpRestored": true,
+  "mediaObjectRestoredAndHashVerified": true,
+  "transientDatabaseStopped": true,
+  "plaintextRuntimeRemoved": true,
+  "memoryLimitBytes": 402653184,
+  "cpuQuotaPercent": 30,
+  "systemPostgresServiceInstalled": false,
+  "controlledDeviceBindingHealth": {
+    "registered": 1,
+    "active": 1,
+    "sessionAlive": 1,
+    "deliverable": 1
+  },
+  "authSchemaRestored": true,
+  "restoreAclErrors": false,
+  "constraintsVerified": true,
+  "counts": {
+    "publicTables": 27,
+    "authTables": 27,
+    "profiles": 167,
+    "authUsers": 272,
+    "migrations": 13,
+    "invalidForeignKeys": 0,
+    "allPublicTablesHaveRls": true
+  },
+  "databaseBytes": 837734,
+  "productionConnectionUsed": false,
+  "networkAvailable": false,
+  "managedSupabaseServicesTested": false,
+  "checkedIndependentlyAt": "2026-10-27T18:32:37Z",
+  "runtimeDirectoryCurrentlyAbsent": true,
+  "transientUnit": {
+    "LoadState": "not-found",
+    "ActiveState": "inactive"
+  }
+}

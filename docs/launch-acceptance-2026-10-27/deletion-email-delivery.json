@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-10-27T18:27:23.432Z",
+  "requestId": "88361a73-2d83-4d44-9fd1-0b57d9231cb6",
+  "provider": "Resend",
+  "providerEmailId": "01a17e94-9174-7f06-b4bf-8e6bfe563599",
+  "from": "The Wedding Market <accounts@mail.thewedmarket.com>",
+  "replyTo": "hello@thewedmarket.com",
+  "recipient": "isolated deletion acceptance fixture",
+  "sent": true,
+  "delivered": true,
+  "providerDeliveredAtMinute": "2026-10-27T18:17Z",
+  "ownerReadReceiptVerified": false
+}
+

@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-10-27T19:22:54.381Z",
+  "requestId": "88361a73-2d83-4d44-9fd1-0b57d9231cb6",
+  "scope": "Approved disposable deletion acceptance account only",
+  "mfaAdminWorkflowCompleted": true,
+  "permanentDeletionPerformed": true,
+  "loginRejected": true,
+  "ownedOriginAndWarmedCdnMediaUnavailable": true,
+  "completionEmailDelivered": true,
+  "providerEvidence": "Resend delivered; Gmail SMTP 250 2.0.0 OK",
+  "moderationQueueEmpty": true,
+  "deletionQueueEmpty": true,
+  "storeReviewAccountsUntouched": true,
+  "retainedEncryptedSnapshotHandled": "Reapply completed deletions before reconnecting a restored snapshot"
+}

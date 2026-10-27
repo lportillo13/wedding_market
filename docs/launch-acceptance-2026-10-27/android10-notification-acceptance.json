@@ -1,0 +1,100 @@
+{
+  "checkedAt": "2026-10-27T19:20:10.514Z",
+  "passed": true,
+  "source": "b61025e3ca2eb9ad86a933edb48f9e5b99095756",
+  "version": "1.0.0",
+  "androidBuild": 10,
+  "environment": "Isolated Android API 36 emulator, exact signed universal APK derived from inspected production AAB",
+  "delivery": "Normal Wedding Market APIs to its configured Expo/FCM sender; provider acceptance distinguished from OS notification presentation",
+  "scenarios": [
+    {
+      "scenario": "vendor-foreground10",
+      "notificationId": "f3bda5a3-c7e5-4e9d-a21b-dd8fbd135d93",
+      "apiAccepted": true,
+      "inboxNoticePersisted": true,
+      "cleanOsBaseline": true,
+      "osPresented": true,
+      "privatePreviewInOsRecord": false,
+      "notificationMarkedReadAfterTap": false,
+      "checkedAt": "2026-10-27T19:13:47.231Z"
+    },
+    {
+      "scenario": "vendor-background10",
+      "notificationId": "9cfe8047-5d60-4c4d-b7f6-43042bd337c5",
+      "apiAccepted": true,
+      "inboxNoticePersisted": true,
+      "cleanOsBaseline": true,
+      "osPresented": true,
+      "privatePreviewInOsRecord": false,
+      "notificationMarkedReadAfterTap": true,
+      "checkedAt": "2026-10-27T19:10:58.388Z"
+    },
+    {
+      "scenario": "vendor-closed10",
+      "notificationId": "7809c7a3-e195-4663-af61-f262cde76b3a",
+      "apiAccepted": true,
+      "inboxNoticePersisted": true,
+      "cleanOsBaseline": true,
+      "osPresented": true,
+      "privatePreviewInOsRecord": false,
+      "notificationMarkedReadAfterTap": true,
+      "checkedAt": "2026-10-27T19:12:53.724Z"
+    },
+    {
+      "scenario": "vendor-disabled10",
+      "notificationId": "ec02e6ee-c6b4-4a8a-9a70-aded76e43e5c",
+      "apiAccepted": true,
+      "inboxNoticePersisted": true,
+      "cleanOsBaseline": true,
+      "osPresented": false,
+      "privatePreviewInOsRecord": false,
+      "notificationMarkedReadAfterTap": false,
+      "checkedAt": "2026-10-27T19:14:59.829Z"
+    },
+    {
+      "scenario": "vendor-logout10",
+      "notificationId": "224bd900-7ba4-4e31-9020-677c22a9ab04",
+      "apiAccepted": true,
+      "inboxNoticePersisted": true,
+      "cleanOsBaseline": true,
+      "osPresented": false,
+      "privatePreviewInOsRecord": false,
+      "notificationMarkedReadAfterTap": false,
+      "checkedAt": "2026-10-27T19:16:31.072Z"
+    },
+    {
+      "scenario": "vendor-switched10",
+      "notificationId": "dbd77462-0d4a-47e4-ab52-990d5ba7ab25",
+      "apiAccepted": true,
+      "inboxNoticePersisted": true,
+      "cleanOsBaseline": true,
+      "osPresented": false,
+      "privatePreviewInOsRecord": false,
+      "notificationMarkedReadAfterTap": false,
+      "checkedAt": "2026-10-27T19:19:05.286Z"
+    },
+    {
+      "scenario": "couple-quote-foreground10",
+      "notificationId": "62184803-1855-4522-999f-07e09a4253ff",
+      "apiAccepted": true,
+      "inboxNoticePersisted": true,
+      "cleanOsBaseline": true,
+      "osPresented": true,
+      "privatePreviewInOsRecord": false,
+      "notificationMarkedReadAfterTap": true,
+      "checkedAt": "2026-10-27T19:19:16.168Z"
+    }
+  ],
+  "uiAcceptance": {
+    "restoredEncryptedSession": true,
+    "warmOptOutResponsive": true,
+    "backgroundTapOpensRequestDetails": true,
+    "coldProcessTapOpensRequestDetails": true,
+    "quoteTapOpensRequestDetails": true,
+    "accountSwitchRequiresSeparateOptIn": true
+  },
+  "iosPhysicalApnsPresentationTested": false,
+  "iosEvidence": "Signed production APNs entitlement/profile and assigned app-scoped provider credentials; shared notification rules/lifecycle tests. No physical iPhone was available.",
+  "fictionalPrivateFixturesOnly": true,
+  "publicVendorsRestored": false
+}

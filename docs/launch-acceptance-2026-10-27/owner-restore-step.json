@@ -1,0 +1,15 @@
+{
+  "preparedAt": "2026-10-27T18:19:40.996Z",
+  "hashes": {
+    "isolated-restore-worker.py": "5ce9ed297f12db650167e3c3e2addecf89a88a3c5d0f364dc7450fd33277be9d",
+    "owner-restore-acceptance.py": "adf73948fdc7ad00f9c7f8b65944b05da9cad71f345d1e36be7caa89d0bd3188"
+  },
+  "syntheticFullDumpRestorePassed": true,
+  "officialPostgresPackageVerified": true,
+  "rootActionPerformed": false,
+  "maximumMemoryMiB": 384,
+  "cpuQuotaPercent": 30,
+  "networkIsolated": true,
+  "systemPostgresServiceInstalled": false,
+  "retentionDryRunOnly": true
+}

@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-10-27T19:22:54.381Z",
+  "package": "com.theweddingmarket.app",
+  "appVersion": "1.0.0",
+  "versionCode": 10,
+  "source": "b61025e3ca2eb9ad86a933edb48f9e5b99095756",
+  "track": "production",
+  "releaseName": "1.0.0 (10) – Initial vendor recruitment",
+  "submitted": true,
+  "changes": 11,
+  "observedStatus": "Changes in review",
+  "automatedQuickChecks": "running before review",
+  "managedPublishing": false,
+  "selectedMarkets": 176,
+  "excluded": [
+    "China",
+    "Rest of World"
+  ],
+  "languages": [
+    "en-US",
+    "es-419"
+  ],
+  "directoryInitiallyEmptyDisclosed": true,
+  "freeAccountsDisclosed": true,
+  "reviewerAccessUpdatedAndSaved": true,
+  "estimatedDeviceDownloadMB": 16.6,
+  "warning": "No deobfuscation file; release minification disabled",
+  "approved": false,
+  "publicAvailabilityVerified": false
+}

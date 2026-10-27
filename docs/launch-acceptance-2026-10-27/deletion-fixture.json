@@ -1,9 +1,14 @@
 {
-  "createdAt": "2026-10-27T16:38:50.336Z",
+  "checkedAt": "2026-10-27T17:28:39.110Z",
+  "normalEmailConfirmedLogin": true,
+  "actualNativeProvisioningLogic": true,
+  "serviceRoleUsed": false,
   "isolatedTestAccount": true,
-  "customerAccountUsed": false,
   "storeReviewAccountsUntouched": true,
-  "confirmationRequired": true,
-  "redirectOrigin": "https://thewedmarket.com",
-  "completedDeletion": false
+  "scopedFixtureMediaUploaded": true,
+  "fixtureMediaReadableBeforeDeletion": true,
+  "deletionRequestRecorded": true,
+  "requestId": "88361a73-2d83-4d44-9fd1-0b57d9231cb6",
+  "permanentDeletionPerformed": false,
+  "providerEmailReceiptVerified": false
 }

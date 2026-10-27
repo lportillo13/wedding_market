@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-10-27T19:17:10.180Z",
+  "id": "5e15cf41-2b7a-474b-bf73-fb36777b363f",
+  "source": "b61025e3ca2eb9ad86a933edb48f9e5b99095756",
+  "version": "1.0.0",
+  "buildNumber": 7,
+  "bytes": 10640675,
+  "sha256": "f06b6b35dd2f4f479146e56c8964763851983c5ee54bba94a2b75f32edebdbb8",
+  "signedProductionBuild": true,
+  "submittedToStore": false
+}

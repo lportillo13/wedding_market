@@ -1,0 +1,228 @@
+{
+  "passed": true,
+  "scope": "Downloaded IPA metadata/privacy/profile and private-key marker inspection; Apple signature processing and device acceptance remain separate",
+  "info": {
+    "CFBundleIdentifier": "com.theweddingmarket.app",
+    "CFBundleDisplayName": "The Wedding Market",
+    "CFBundleShortVersionString": "1.0.0",
+    "CFBundleVersion": "7",
+    "DTSDKName": "iphoneos26.5",
+    "DTXcode": "2660",
+    "MinimumOSVersion": "16.4",
+    "UIDeviceFamily": [
+      1,
+      2
+    ],
+    "ITSAppUsesNonExemptEncryption": false,
+    "CFBundleLocalizations": [
+      "en",
+      "es"
+    ],
+    "NSAppTransportSecurity": {
+      "NSAllowsArbitraryLoads": false,
+      "NSAllowsLocalNetworking": true
+    },
+    "UIBackgroundModes": null
+  },
+  "permissions": {
+    "NSPhotoLibraryUsageDescription": "Allow The Wedding Market to access images you choose for profile and vendor media."
+  },
+  "privacyManifests": [
+    {
+      "file": "React-timing_privacy.bundle/PrivacyInfo.xcprivacy",
+      "tracking": false,
+      "trackingDomains": [],
+      "collected": [],
+      "accessedAPIs": [
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "35F9.1"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "ExpoLocalization_privacy.bundle/PrivacyInfo.xcprivacy",
+      "tracking": false,
+      "trackingDomains": [],
+      "collected": [],
+      "accessedAPIs": [
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "CA92.1"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "ExpoConstants_privacy.bundle/PrivacyInfo.xcprivacy",
+      "tracking": false,
+      "trackingDomains": [],
+      "collected": [],
+      "accessedAPIs": [
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "CA92.1"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "React-cxxreact_privacy.bundle/PrivacyInfo.xcprivacy",
+      "tracking": false,
+      "trackingDomains": [],
+      "collected": [],
+      "accessedAPIs": [
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "C617.1"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "ExpoApplication_privacy.bundle/PrivacyInfo.xcprivacy",
+      "tracking": false,
+      "trackingDomains": [],
+      "collected": [],
+      "accessedAPIs": [
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "C617.1"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "PrivacyInfo.xcprivacy",
+      "tracking": false,
+      "trackingDomains": [],
+      "collected": [],
+      "accessedAPIs": [
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "C617.1"
+          ]
+        },
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "CA92.1"
+          ]
+        },
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "35F9.1"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "ExpoNotifications_privacy.bundle/PrivacyInfo.xcprivacy",
+      "tracking": false,
+      "trackingDomains": [],
+      "collected": [],
+      "accessedAPIs": [
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "CA92.1"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "Frameworks/ReactNativeDependencies.framework/ReactNativeDependencies_folly.bundle/PrivacyInfo.xcprivacy",
+      "tracking": false,
+      "trackingDomains": [],
+      "collected": [],
+      "accessedAPIs": [
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "C617.1"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "Frameworks/ReactNativeDependencies.framework/ReactNativeDependencies_glog.bundle/PrivacyInfo.xcprivacy",
+      "tracking": false,
+      "trackingDomains": [],
+      "collected": [],
+      "accessedAPIs": [
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "C617.1"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "Frameworks/ReactNativeDependencies.framework/ReactNativeDependencies_boost.bundle/PrivacyInfo.xcprivacy",
+      "tracking": false,
+      "trackingDomains": [],
+      "collected": [],
+      "accessedAPIs": [
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "C617.1"
+          ]
+        },
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategorySystemBootTime",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "35F9.1"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "RNCAsyncStorage_resources.bundle/PrivacyInfo.xcprivacy",
+      "tracking": false,
+      "trackingDomains": [],
+      "collected": [],
+      "accessedAPIs": [
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "C617.1"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "React-Core_privacy.bundle/PrivacyInfo.xcprivacy",
+      "tracking": false,
+      "trackingDomains": [],
+      "collected": [],
+      "accessedAPIs": [
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryFileTimestamp",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "C617.1"
+          ]
+        },
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "CA92.1"
+          ]
+        }
+      ]
+    }
+  ],
+  "embeddedProfileMatchesVerifiedDownload": true,
+  "forbiddenFiles": [],
+  "privateKeyMarkers": [],
+  "files": 126
+}

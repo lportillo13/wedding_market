@@ -1,0 +1,15 @@
+{
+  "reviewedOn": "2026-10-27",
+  "requestId": "88361a73-2d83-4d44-9fd1-0b57d9231cb6",
+  "scope": "Approved disposable deletion acceptance fixture only",
+  "originCleanupReportedComplete": true,
+  "oldLoginRejected": true,
+  "previouslyCachedMediaReturned404AfterExactUrlPurge": true,
+  "encryptedBackupIncludesEarlierFixtureSnapshot": true,
+  "backupIsolatedFromActiveService": true,
+  "offHostCiphertextHashVerified": true,
+  "backupCopyErased": false,
+  "backupRetentionAutomationVerified": false,
+  "restoreRequirement": "Reapply completed deletion requests before reconnecting any restored snapshot to users. Preserve this request in the operational deletion ledger.",
+  "limitation": "Manual backup retention remains an operational follow-up; completion email states deletion from the active service and explicitly distinguishes isolated backups. This is not proof of full service recovery."
+}

@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-27T18:17:57.675Z",
+  "syntheticRestorePassed": true,
+  "productionDataUsed": false,
+  "systemServiceInstalled": false,
+  "customDumpRestored": true,
+  "trigramExtensionRestored": true,
+  "foreignKeyAndRlsChecksPassed": true,
+  "workerSourceOnlyPathsAdapted": true,
+  "counts": {
+    "publicTables": 23,
+    "authTables": 10,
+    "profiles": 2,
+    "authUsers": 2,
+    "migrations": 13,
+    "invalidForeignKeys": 0,
+    "allPublicTablesHaveRls": true
+  }
+}

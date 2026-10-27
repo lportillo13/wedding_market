@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-27T19:18:20.568Z",
+  "submissions": [
+    {
+      "id": "794d50de-42b8-4030-a59f-7835a440913c",
+      "status": "IN_QUEUE",
+      "createdAt": "2026-10-27T19:17:20.078Z",
+      "platform": "IOS"
+    },
+    {
+      "id": "f0aa5063-0939-4088-8fb8-00be08871648",
+      "status": "CANCELED",
+      "createdAt": "2026-10-27T17:45:21.427Z",
+      "completedAt": "2026-10-27T18:40:40.615Z",
+      "platform": "IOS"
+    }
+  ],
+  "publicReviewSubmitted": false
+}

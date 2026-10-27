@@ -1,0 +1,9 @@
+{
+  "preparedAt": "2026-10-27T18:00:15.887Z",
+  "helperSha256": "151bec2297c5ed4cea1eb1746df8278d9c20f184d2ba17bd8177959e822876b1",
+  "syntheticChecksPassed": 7,
+  "domain": "mail.thewedmarket.com",
+  "permission": "sending_access",
+  "rootActionPerformed": false,
+  "secretPrinted": false
+}
