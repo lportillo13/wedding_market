@@ -1,0 +1,197 @@
+{
+  "checkedAt": "2026-10-27T21:17:36.023Z",
+  "releaseCommit": "7807e2ac617b1386e62239267209d19827c2cecf",
+  "passed": true,
+  "checks": [
+    {
+      "path": "/",
+      "language": "en",
+      "status": 200,
+      "passed": true,
+      "fixedWordmark": true,
+      "editorialPreloads": true,
+      "noLegacyFonts": true,
+      "overlayHeader": true,
+      "discovery": true,
+      "heroTitle": true,
+      "noPublicAds": true
+    },
+    {
+      "path": "/?lang=es",
+      "language": "es",
+      "status": 200,
+      "passed": true,
+      "fixedWordmark": true,
+      "editorialPreloads": true,
+      "noLegacyFonts": true,
+      "overlayHeader": true,
+      "discovery": true,
+      "heroTitle": true,
+      "noPublicAds": true
+    },
+    {
+      "path": "/signup/vendor",
+      "language": "en",
+      "status": 200,
+      "passed": true,
+      "fixedWordmark": true,
+      "editorialPreloads": true,
+      "noLegacyFonts": true
+    },
+    {
+      "path": "/signup/vendor?lang=es",
+      "language": "es",
+      "status": 200,
+      "passed": true,
+      "fixedWordmark": true,
+      "editorialPreloads": true,
+      "noLegacyFonts": true
+    },
+    {
+      "path": "/login",
+      "language": "en",
+      "status": 200,
+      "passed": true,
+      "fixedWordmark": true,
+      "editorialPreloads": true,
+      "noLegacyFonts": true
+    },
+    {
+      "path": "/vendors",
+      "language": "en",
+      "status": 200,
+      "passed": true,
+      "fixedWordmark": true,
+      "editorialPreloads": true,
+      "noLegacyFonts": true
+    },
+    {
+      "path": "/vendors?lang=es",
+      "language": "es",
+      "status": 200,
+      "passed": true,
+      "fixedWordmark": true,
+      "editorialPreloads": true,
+      "noLegacyFonts": true
+    },
+    {
+      "path": "/blog",
+      "language": "en",
+      "status": 200,
+      "passed": true,
+      "fixedWordmark": true,
+      "editorialPreloads": true,
+      "noLegacyFonts": true
+    },
+    {
+      "path": "/about",
+      "language": "es",
+      "status": 200,
+      "passed": true,
+      "fixedWordmark": true,
+      "editorialPreloads": true,
+      "noLegacyFonts": true
+    },
+    {
+      "path": "/_next/static/css/d308e2a27edde546.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/03edffb4660abd27.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/6ece1e2f5ddab32d.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "global-editorial-styles",
+      "passed": true
+    },
+    {
+      "path": "/fonts/editorial/Acumin-Pro-Bold-Italic.woff2",
+      "status": 200,
+      "bytes": 43564,
+      "sha256": "0c4c83b299980a63044707d3c56ccce6a59d53e66feb4a9a14801b2ba380afc0",
+      "passed": true
+    },
+    {
+      "path": "/fonts/editorial/Acumin-Pro-Bold.woff2",
+      "status": 200,
+      "bytes": 42544,
+      "sha256": "ca560302d9aa171bf9ea443dcda8162333c61608868457b10798dc0aac164926",
+      "passed": true
+    },
+    {
+      "path": "/fonts/editorial/Acumin-Pro-Italic.woff2",
+      "status": 200,
+      "bytes": 44060,
+      "sha256": "2f58987bd7299ce7124c23c1c13eee2bb719882359fc9d3500178efe0d2580c0",
+      "passed": true
+    },
+    {
+      "path": "/fonts/editorial/Acumin-Pro-Regular.woff2",
+      "status": 200,
+      "bytes": 42592,
+      "sha256": "c448fb2a11e8575c6dcd1b59664a420c39e369f433e263b88bfe5ce02a43e782",
+      "passed": true
+    },
+    {
+      "path": "/fonts/editorial/GT-Super-Display-Bold.woff2",
+      "status": 200,
+      "bytes": 13360,
+      "sha256": "9d691230d978a15d0d83c203e6a3e358bf9730123dc3643484b2943d14a1e29d",
+      "passed": true
+    },
+    {
+      "path": "/fonts/editorial/GT-Super-Display-Light-Italic.woff2",
+      "status": 200,
+      "bytes": 13624,
+      "sha256": "d84ac54c16c5cf7a6a2c7cac22944b88068cf4cc9b2e2c7ae3166eecebdfe10d",
+      "passed": true
+    },
+    {
+      "path": "/fonts/editorial/GT-Super-Display-Light.woff2",
+      "status": 200,
+      "bytes": 12444,
+      "sha256": "c65f67abe05e0357332ef5889abd02463e00ca0a096c9b2478c33ef525555129",
+      "passed": true
+    },
+    {
+      "path": "/fonts/editorial/GT-Super-Display-Medium.woff2",
+      "status": 200,
+      "bytes": 13016,
+      "sha256": "cac60b93e8060135b657f208f4662405e86176cd16b8ceb126605a931d337c76",
+      "passed": true
+    },
+    {
+      "path": "/fonts/editorial/GT-Super-Display-Regular-Italic.woff2",
+      "status": 200,
+      "bytes": 13844,
+      "sha256": "dde927e8cccbb7aa57333defe59e70e5f85397d94131b28839997066b22db83e",
+      "passed": true
+    },
+    {
+      "path": "/fonts/editorial/GT-Super-Display-Regular.woff2",
+      "status": 200,
+      "bytes": 13324,
+      "sha256": "37d6f5c9f6d5c27e3aac95755bd5dd21d0bd9acbe2839c621b65ae0e5a555772",
+      "passed": true
+    },
+    {
+      "path": "/fonts/editorial/Lucia-BT.woff2",
+      "status": 200,
+      "bytes": 32276,
+      "sha256": "a227145f7093739b589d2f0bbb8a08a100f4831e36a498017859dd5a44ea32dd",
+      "passed": true
+    },
+    {
+      "kind": "empty-real-directory-preserved",
+      "status": 200,
+      "passed": true
+    }
+  ]
+}

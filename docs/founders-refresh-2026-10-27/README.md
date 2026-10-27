@@ -25,4 +25,12 @@ Public font assets live under `public/fonts/editorial`. GT Super Light is the di
 
 ## Validation
 
-TypeScript, ESLint, all 90 root tests and architecture checks passed. Desktop and 390/320px browser checks verified the light display type, body/control families, overlay header geometry, no horizontal overflow, video pause, mobile menu and discovery click/arrow-key behavior. Production build and live verification are recorded below when complete.
+TypeScript, ESLint, all 90 root tests, architecture checks and the production build passed. The first local build compiled but Windows denied a generated output directory; the permitted rerun completed successfully. Desktop and 390/320px browser checks verified the light display type, body/control families, overlay header geometry, no horizontal overflow, video pause, mobile menu and discovery click/arrow-key behavior.
+
+## Verified live release
+
+Website application commit **7807e2ac617b1386e62239267209d19827c2cecf** is live. The restricted gateway completed with the exact target commit and successful shadow/live health and anonymous authorization probes. Rollback is `/var/www/wedding-market.before-20261027-211505`. See [deployment receipt](deployment-success.json).
+
+[Independent public checks](public-release-checks.json) passed for nine bilingual homepage/interior requests, three fingerprinted stylesheets, all eleven font files with matching local/live SHA256 values and the truthful empty public directory. Browser checks confirm GT Super at weight 300 for the homepage/logo/directory/about/blog, Acumin for body text, and loaded GT Super/Acumin/Lucia font faces. Desktop width 1425px and phone width 375px match their scroll widths; the phone header begins at 16px inside the hero beginning at 8px. The live video pause returns to the photograph. [Live phone capture](live-home-mobile.png) contains public content only.
+
+No native source, signed artifact, store submission, EAS update or app release changed in this second typography/motion pass. The earlier saved native UX improvements remain unreleased.
