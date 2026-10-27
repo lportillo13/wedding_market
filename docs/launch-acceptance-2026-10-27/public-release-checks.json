@@ -1,0 +1,64 @@
+{
+  "checkedAt": "2026-10-27T16:54:07.550Z",
+  "deployedCommit": "596fe925adc22a39c8df9df86c4309536aea6719",
+  "authTokensUsed": false,
+  "passed": true,
+  "checks": [
+    {
+      "path": "/auth/callback?next=/login",
+      "status": 307,
+      "location": "https://thewedmarket.com/login",
+      "passed": true
+    },
+    {
+      "path": "/auth/callback?next=/account/profile",
+      "status": 307,
+      "location": "https://thewedmarket.com/account/profile",
+      "passed": true
+    },
+    {
+      "path": "/auth/callback?next=//example.com",
+      "status": 307,
+      "location": "https://thewedmarket.com/",
+      "passed": true
+    },
+    {
+      "path": "/auth/callback?next=/%0A/example.com",
+      "status": 307,
+      "location": "https://thewedmarket.com/",
+      "passed": true
+    },
+    {
+      "path": "/auth/confirm",
+      "status": 307,
+      "location": "https://thewedmarket.com/login?error=auth_callback",
+      "passed": true
+    },
+    {
+      "path": "/auth/confirm?type=recovery",
+      "status": 307,
+      "location": "https://thewedmarket.com/forgot-password?error=recovery",
+      "passed": true
+    },
+    {
+      "path": "/api/health",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/support",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/privacy",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/account-deletion",
+      "status": 200,
+      "passed": true
+    }
+  ]
+}

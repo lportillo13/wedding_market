@@ -12,7 +12,7 @@ import {
   validateVideoUpload,
 } from "@/features/media/server/processing";
 import { deleteFromR2, getOwnedR2ObjectKey, isR2Configured, uploadToR2 } from "@/lib/r2";
-import { createAuthenticatedRequestClient } from "@/lib/supabase/request";
+import { createAuthenticatedRequestClient, updateAuthenticatedUserMetadata } from "@/lib/supabase/request";
 import { readUploadForm, reserveUpload, UploadLimitError } from "@/lib/upload-limits";
 import type { MediaAsset } from "@/types/images";
 
@@ -139,8 +139,10 @@ export async function POST(request: Request) {
       const processed = await processImageUpload(file);
       const asset = await uploadProcessedAsset(["clients", user.id, "avatar"], processed);
 
-      const { error } = await supabase.auth.updateUser({ data: { avatar_image: asset } });
+      const { error } = await updateAuthenticatedUserMetadata(request, supabase, { avatar_image: asset });
       if (error) {
+        // A failed profile save must not leave the newly uploaded object orphaned.
+        try {await deleteFromR2(asset.public_id, `clients/${user.id}/avatar/`);} catch {/* The owner-prefix deletion workflow can retry cleanup. */}
         return NextResponse.json({ error: error.message }, { status: 500 });
       }
 

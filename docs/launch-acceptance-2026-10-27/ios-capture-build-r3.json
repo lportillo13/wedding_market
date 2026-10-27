@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-10-27T16:59:05.898Z",
+  "id": "330d8b92-1ea2-4793-ba68-96ad4b42a929",
+  "status": "FINISHED",
+  "platform": "IOS",
+  "projectId": "ed313d2c-f5d1-42b7-bf2f-eb71bb496b4e",
+  "buildProfile": "store-captures",
+  "source": "596fe925adc22a39c8df9df86c4309536aea6719",
+  "appVersion": "1.0.0",
+  "buildNumber": "5",
+  "distribution": "INTERNAL",
+  "isForIosSimulator": true,
+  "createdAt": "2026-10-27T16:48:51.017Z",
+  "submittedToStore": false,
+  "screenshotsArtifactAvailable": true,
+  "completedAt": "2026-10-27T16:56:14.434Z"
+}

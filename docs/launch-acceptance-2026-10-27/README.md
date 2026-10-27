@@ -9,6 +9,7 @@ Current signed private candidates are Android 1.0.0(6) and iOS 1.0.0(5), native 
 Acceptance in progress:
 
 - Actual native iPhone and 13-inch iPad EN/ES captures, with source and screenshot provenance. Use one isolated Expo macOS capture job and one simulator at a time, following the established Digital Wedding workflow. No customer or review credentials are needed for the public guest captures.
+- Native capture execution is now complete: [verified provenance](ios-native-captures.json) records eight actual captures/six unique images, correct dimensions and EN/ES cold-start persistence. Upload and store validation remain separate.
 - Message/quote delivery and tap routing, foreground/background/closed, opt-out/logout and account switching. Record provider acceptance separately from OS presentation and installed-app acceptance.
 - Fresh signup callback, transactional email receipt, MFA moderation/deletion, scoped media/CDN cleanup and an actual backup/recovery/retention check. Never delete the store-review accounts or a customer as a fixture.
 - Accurate store descriptions for the initial directory, final reviewer access, native assets and release controls. Public submission is conditional on the acceptance results; the owner has approved launching before vendors join.

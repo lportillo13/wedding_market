@@ -1,0 +1,138 @@
+{
+  "startedAt": "2026-10-27T16:52:49.111Z",
+  "buildId": "330d8b92-1ea2-4793-ba68-96ad4b42a929",
+  "sourceCommit": "596fe925adc22a39c8df9df86c4309536aea6719",
+  "bundleIdentifier": "com.theweddingmarket.app",
+  "nativeSimulatorCaptures": true,
+  "productionBackend": "https://thewedmarket.com",
+  "previousSignedCandidateSource": "803b7a67b7b0e928e6f72a10e36a3f1219732e9a",
+  "applicationSourceCommit": "596fe925adc22a39c8df9df86c4309536aea6719",
+  "realCustomerData": false,
+  "reviewerCredentialsIncluded": false,
+  "applicationDataWritten": false,
+  "pushDeliveryVerified": false,
+  "devices": [
+    {
+      "kind": "iphone",
+      "name": "iPhone 16 Pro Max",
+      "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-26-5",
+      "spanishPreferenceSurvivedColdStart": true
+    },
+    {
+      "kind": "ipad",
+      "name": "iPad Pro 13-inch (M5)",
+      "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-26-5",
+      "spanishPreferenceSurvivedColdStart": true
+    }
+  ],
+  "captures": [
+    {
+      "file": "iphone-en-home.png",
+      "kind": "iphone",
+      "language": "en",
+      "screen": "home",
+      "width": 1320,
+      "height": 2868,
+      "bytes": 1699200,
+      "sha256": "f48940f38c0554e9c6245d102865bd49c9fbd7c0c2e91690cad3920232e2c391",
+      "pngColorType": 2,
+      "duplicateNotUploaded": false
+    },
+    {
+      "file": "iphone-en-categories.png",
+      "kind": "iphone",
+      "language": "en",
+      "screen": "categories",
+      "width": 1320,
+      "height": 2868,
+      "bytes": 2432291,
+      "sha256": "c8f08ea34ee941cf9949beee19836dcae94292207e7e22f49cbaf42c417ddf70",
+      "pngColorType": 2,
+      "duplicateNotUploaded": false
+    },
+    {
+      "file": "iphone-es-home.png",
+      "kind": "iphone",
+      "language": "es",
+      "screen": "home",
+      "width": 1320,
+      "height": 2868,
+      "bytes": 1703711,
+      "sha256": "02e1e79d54da945ebc6960e297155f62495b3c20434a5faa55e3dd49a5f2dd3e",
+      "pngColorType": 2,
+      "duplicateNotUploaded": false
+    },
+    {
+      "file": "iphone-es-categories.png",
+      "kind": "iphone",
+      "language": "es",
+      "screen": "categories",
+      "width": 1320,
+      "height": 2868,
+      "bytes": 2438065,
+      "sha256": "a43308d0283670419f9aef65f80fe8d37074f8ad29e7a8bd5c059572ff86fd32",
+      "pngColorType": 2,
+      "duplicateNotUploaded": false
+    },
+    {
+      "file": "ipad-en-home.png",
+      "kind": "ipad",
+      "language": "en",
+      "screen": "home",
+      "width": 2064,
+      "height": 2752,
+      "bytes": 3743620,
+      "sha256": "4b7e30723ac5efc3a8964b258b64f66886ab0ef2c879b384c9bb8f632b043766",
+      "pngColorType": 2,
+      "duplicateNotUploaded": false
+    },
+    {
+      "file": "ipad-en-categories.png",
+      "kind": "ipad",
+      "language": "en",
+      "screen": "categories",
+      "width": 2064,
+      "height": 2752,
+      "bytes": 3743620,
+      "sha256": "4b7e30723ac5efc3a8964b258b64f66886ab0ef2c879b384c9bb8f632b043766",
+      "pngColorType": 2,
+      "duplicateNotUploaded": true
+    },
+    {
+      "file": "ipad-es-home.png",
+      "kind": "ipad",
+      "language": "es",
+      "screen": "home",
+      "width": 2064,
+      "height": 2752,
+      "bytes": 3745040,
+      "sha256": "2f897fa9691d9abc0abcf841a71cc5168fcec80481cef17f878a8220d81e3833",
+      "pngColorType": 2,
+      "duplicateNotUploaded": false
+    },
+    {
+      "file": "ipad-es-categories.png",
+      "kind": "ipad",
+      "language": "es",
+      "screen": "categories",
+      "width": 2064,
+      "height": 2752,
+      "bytes": 3745040,
+      "sha256": "2f897fa9691d9abc0abcf841a71cc5168fcec80481cef17f878a8220d81e3833",
+      "pngColorType": 2,
+      "duplicateNotUploaded": true
+    }
+  ],
+  "passed": true,
+  "version": "1.0.0",
+  "buildNumber": "1",
+  "javascriptBundleSha256": "2aeb8f74801f70ba632f8dc0f90780849592dff2db185aa5d406480904cac497",
+  "maestroVersion": "2.6.1",
+  "completedAt": "2026-10-27T16:56:06.330Z",
+  "verifiedAt": "2026-10-27T17:06:09.921Z",
+  "hashesAndDimensionsVerified": true,
+  "uniqueCaptures": 6,
+  "duplicateIpadViewsOmitted": true,
+  "actualSimulatorBuildNumber": "1",
+  "productionDeviceBuild": false
+}
