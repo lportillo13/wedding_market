@@ -130,6 +130,18 @@ export default function FoundersHeroSection({ hero }: FoundersHeroSectionProps) 
     void loadVendorLogos();
   }, []);
 
+  function scrollToDetails(event: React.MouseEvent<HTMLAnchorElement>) {
+    const section = document.getElementById("benefits");
+    if (!section) return;
+    event.preventDefault();
+    section.focus({ preventScroll: true });
+    // Layout offsets keep reveal transforms from shifting the scroll destination.
+    window.scrollTo({
+      top: section.offsetTop,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    });
+  }
+
   return (
     <section className="wm-founders-hero" aria-labelledby="wm-founders-hero-title" data-home-hero>
       <div className="wm-founders-hero__poster" style={{ backgroundImage: `url(${hero.imageUrl})` }} aria-hidden="true" />
@@ -197,9 +209,9 @@ export default function FoundersHeroSection({ hero }: FoundersHeroSectionProps) 
 
       <button type="button" className="wm-founders-hero__motion" onClick={() => setVideoPlaying((playing) => !playing)} aria-label={language === "es" ? videoPlaying ? "Pausar video de fondo" : "Reproducir video de fondo" : videoPlaying ? "Pause background video" : "Play background video"}>
         <span aria-hidden="true">{videoPlaying ? "Ⅱ" : "▷"}</span>
-        {language === "es" ? videoPlaying ? "Pausar video" : "Ver video" : videoPlaying ? "Pause video" : "Play video"}
+        <span className="wm-founders-hero__motion-label">{language === "es" ? videoPlaying ? "Pausar video" : "Ver video" : videoPlaying ? "Pause video" : "Play video"}</span>
       </button>
-      <a href="#benefits" className="wm-founders-hero__scroll-cue" aria-label={language === "es" ? "Explorar Wedding Market" : "Explore Wedding Market"}>
+      <a href="#benefits" className="wm-founders-hero__scroll-cue" onClick={scrollToDetails} aria-label={language === "es" ? "Desplazarse a la siguiente sección" : "Scroll to the next section"}>
         <svg
           viewBox="0 0 24 24"
           fill="none"

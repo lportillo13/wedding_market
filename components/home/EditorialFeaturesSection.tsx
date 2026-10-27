@@ -69,12 +69,12 @@ export default function EditorialFeaturesSection() {
     : ["Explore vendors", "Start a request", "View your favourites", "Open your conversations"];
 
   return (
-    <section className="wm-editorial-section" id="benefits">
+    <section className="wm-editorial-section" id="benefits" tabIndex={-1} aria-labelledby="wm-discovery-title">
       <div className="container">
         <div className="wm-editorial-section__header" data-reveal-group>
           <div className="wm-editorial-section__heading-col">
             <p className="wm-editorial-section__eyebrow">{copy.eyebrow}</p>
-            <h2 className="wm-editorial-section__heading">
+            <h2 className="wm-editorial-section__heading" id="wm-discovery-title">
               <span className="wm-reveal-line"><span>{copy.headingLine1}</span></span>
               <span className="wm-reveal-line"><em>{copy.headingLine2}</em></span>
             </h2>

@@ -1,0 +1,67 @@
+{
+  "checkedAt": "2026-10-27T22:37:06.464Z",
+  "desktop": {
+    "controls": [
+      {
+        "height": 44,
+        "paddingLeft": "3px",
+        "paddingRight": "3px"
+      },
+      {
+        "height": 44,
+        "paddingLeft": "16px",
+        "paddingRight": "16px"
+      },
+      {
+        "height": 44,
+        "paddingLeft": "16px",
+        "paddingRight": "16px"
+      },
+      {
+        "height": 0,
+        "paddingLeft": "16px",
+        "paddingRight": "16px"
+      }
+    ],
+    "hero": {
+      "bottom": 900,
+      "height": 900,
+      "left": 0,
+      "right": 1425,
+      "top": 0,
+      "width": 1425,
+      "x": 0,
+      "y": 0
+    },
+    "navFont": "12.48px",
+    "scroll": 1425,
+    "viewport": 900,
+    "width": 1425
+  },
+  "smallPhone": {
+    "arrowTop": 676,
+    "contentBottom": 579.296875,
+    "headingHeight": 96.75,
+    "heroHeight": 740,
+    "scroll": 305,
+    "viewport": 740,
+    "width": 305
+  },
+  "shortPhone": {
+    "arrowTop": 576,
+    "contentBottom": 502.421875,
+    "heroHeight": 640,
+    "scroll": 375,
+    "viewport": 640,
+    "width": 375
+  },
+  "arrowResult": {
+    "scrollY": 844,
+    "targetTop": 0,
+    "focus": "benefits"
+  },
+  "languagesTested": [
+    "en",
+    "es"
+  ]
+}
