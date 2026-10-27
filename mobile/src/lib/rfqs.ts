@@ -269,7 +269,7 @@ export async function loadMobileInbox(role: Role, language: "en" | "es" = "en", 
 }
 export type MobileThreadAddress=Pick<MobileInboxThread,'id'|'rfqId'|'vendorId'|'refreshKey'>;
 export async function loadMobileInboxThread(role: Role, language: "en" | "es", thread: MobileThreadAddress) {
-  const detail = (await loadMobileThreadData(role,language,thread)).find(item=>item.id===thread.id) ?? null;
+  const detail = (await loadMobileThreadData(role,language,thread)).find(item=>item.rfqId===thread.rfqId&&item.vendorId===thread.vendorId) ?? null;
   if (detail) {
     // Reading a thread on the phone also clears the website's unread marker.
     await requiredClient().from("rfq_invites").update({[role === "vendor" || role === "admin" ? "vendor_last_read_at" : "client_last_read_at"]:new Date().toISOString()})

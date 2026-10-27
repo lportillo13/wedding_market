@@ -109,7 +109,7 @@ export function InboxScreen({ role, language,openRequest=null,onOpenConsumed,rev
     handledOpen.current=openRequest.notificationId;
     const consume=()=>onOpenConsumed?.(openRequest.notificationId);
     const current=selectedThreadRef.current;
-    const address={id:`${openRequest.rfqId}__${openRequest.vendorId}`,rfqId:openRequest.rfqId,vendorId:openRequest.vendorId};
+    const address={id:`${openRequest.rfqId}:${openRequest.vendorId}`,rfqId:openRequest.rfqId,vendorId:openRequest.vendorId};
     if(current?.id===address.id){consume();if(!refreshInFlight.current)void refreshInbox(()=>mounted.current,false,true);return;}
     const hasDraft=Boolean(current&&(replyBody.trim()||quoteMessage!==(current.latestQuote?.message??'')||quoteAmount!==(typeof current.latestQuote?.amountCents==='number'?(current.latestQuote.amountCents/100).toFixed(2):'')));
     const open=()=>{consume();if(mounted.current)void openThread(address);};
