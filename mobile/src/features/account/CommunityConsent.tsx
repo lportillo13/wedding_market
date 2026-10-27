@@ -6,11 +6,11 @@ import {openPublicWebPath} from '../../ui/links';
 import {safetyCopy} from '../../../../shared/safety/copy';
 import {withDeadline} from '../../../../shared/resources/deadline';
 
-export function CommunityConsent({language,onAccepted}:{language:'en'|'es';onAccepted:()=>void}) {
+export function CommunityConsent({language,onAccepted}:{language:'en'|'es';onAccepted:()=>void|Promise<void>}) {
   const labels=safetyCopy[language];const [checked,setChecked]=useState(false);const [busy,setBusy]=useState(false);const [error,setError]=useState('');
   async function accept() {
     if(!checked||busy)return;setBusy(true);setError('');
-    try {const client=supabase;if(!client)throw Error();const {error}=await withDeadline(signal=>client.rpc('accept_community_terms').abortSignal(signal));if(error)throw error;onAccepted();}
+    try {const client=supabase;if(!client)throw Error();const {error}=await withDeadline(signal=>client.rpc('accept_community_terms').abortSignal(signal));if(error)throw error;await onAccepted();}
     catch {setError(labels.failed);}finally{setBusy(false);}
   }
   return <View style={styles.formSection}><Text style={styles.body}>{labels.consent}</Text>

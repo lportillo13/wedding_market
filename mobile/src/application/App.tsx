@@ -404,7 +404,12 @@ export default function App() {
         keyboardDismissMode={Platform.OS === "ios" ? "interactive" : "on-drag"}
         keyboardShouldPersistTaps="handled"
       >
-        {userEmail && profile && profile.communityTermsVersion !== COMMUNITY_TERMS_VERSION ? <CommunityConsent language={language} onAccepted={()=>setProfile({...profile,communityTermsVersion:COMMUNITY_TERMS_VERSION})} /> : null}
+        {userEmail && profile && profile.communityTermsVersion !== COMMUNITY_TERMS_VERSION ? <CommunityConsent language={language} onAccepted={async()=>{
+          const state=await restoreMobileAuthState();
+          if(!state.user||!state.profile)throw Error('Unable to finish account setup.');
+          const refreshed=state.profile;
+          setProfile(current=>current?.userId===refreshed.userId?{...refreshed,language:current.language}:current);
+        }} /> : null}
         {selectedVendor ? (
           <VendorDetailScreen
             slug={selectedVendor.slug}

@@ -1,10 +1,12 @@
 import type { User } from "@supabase/supabase-js";
 import { MOBILE_AUTH_CALLBACK_URL, parseMobileAuthCallback } from "./authUtils";
 import { supabase } from "./supabase";
+import { COMMUNITY_TERMS_VERSION } from "../../../shared/safety/copy";
 
 export type AppRole = "guest" | "client" | "vendor" | "admin";
 
 export type AuthProfile = {
+  userId: string;
   communityTermsVersion?: string | null;
   role: AppRole;
   fullName: string | null;
@@ -196,6 +198,7 @@ export async function loadAuthState(): Promise<AuthState> {
   return {
     user,
     profile: {
+      userId: user.id,
       communityTermsVersion: typeof profile?.community_terms_version === "string" ? profile.community_terms_version : null,
       role,
       fullName: typeof profile?.full_name === "string" ? profile.full_name : null,
@@ -232,9 +235,9 @@ async function provisionAuthenticatedAccount(authenticatedUser?: User | null): P
 
   const { data: existingProfile, error: existingProfileError } = await supabase
     .from("profiles")
-    .select("id, suspended_at")
+    .select("id, role, suspended_at, community_terms_version")
     .eq("id", user.id)
-    .maybeSingle<{ id: string; suspended_at: string | null }>();
+    .maybeSingle<{ id: string; role: string; suspended_at: string | null; community_terms_version: string | null }>();
 
   if (existingProfileError) {
     throw new Error(existingProfileError.message);
@@ -255,7 +258,11 @@ async function provisionAuthenticatedAccount(authenticatedUser?: User | null): P
     "Wedding Market user";
   const language = pending?.language ?? (user.user_metadata?.language === "es" ? "es" : "en");
 
-  const { error: profileError } = await supabase
+  // The Auth trigger creates a safe user profile. Initialize the selected vendor
+  // role once, then preserve profile edits while consent/draft setup is pending.
+  let communityTermsVersion = existingProfile?.community_terms_version ?? null;
+  if (!isVendor || existingProfile?.role !== "vendor") {
+    const { data: provisionedProfile, error: profileError } = await supabase
     .from("profiles")
     .upsert(
       {
@@ -271,10 +278,19 @@ async function provisionAuthenticatedAccount(authenticatedUser?: User | null): P
         wedding_theme: isVendor ? null : pending?.weddingTheme ?? null,
       },
       { onConflict: "id" },
-    );
+    )
+    .select("community_terms_version")
+    .single<{ community_terms_version: string | null }>();
 
-  if (profileError) {
-    throw new Error(profileError.message);
+    if (profileError) {
+      throw new Error(profileError.message);
+    }
+    communityTermsVersion = provisionedProfile?.community_terms_version ?? null;
+  }
+
+  if (isVendor && communityTermsVersion !== COMMUNITY_TERMS_VERSION) {
+    // Keep signup metadata intact so explicit consent can resume the draft setup.
+    return loadAuthState();
   }
 
   if (isVendor) {
@@ -336,7 +352,7 @@ async function provisionAuthenticatedAccount(authenticatedUser?: User | null): P
             lng: null,
             service_radius_km: 50,
           },
-          { onConflict: "vendor_id" },
+          { onConflict: "vendor_id", ignoreDuplicates: true },
         );
 
       if (locationError) throw new Error(locationError.message);
@@ -352,7 +368,7 @@ async function provisionAuthenticatedAccount(authenticatedUser?: User | null): P
         if (category?.id) {
           const { error: categoryError } = await supabase
             .from("vendor_categories")
-            .upsert({ vendor_id: vendorId, category_id: category.id });
+            .upsert({ vendor_id: vendorId, category_id: category.id }, { ignoreDuplicates: true });
 
           if (categoryError) throw new Error(categoryError.message);
         }

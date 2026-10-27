@@ -36,7 +36,7 @@ export function SearchMapResults({
   return (
     <View style={styles.mapResults}>
       <View
-        accessibilityLabel={`${labels.mapPreview}: ${displayVendors.length} ${labels.vendorsFound}`}
+        accessibilityLabel={`${labels.mapPreview}: ${displayVendors.length} ${displayVendors.length === 1 ? labels.vendorFound : labels.vendorsFound}`}
         style={styles.mapCanvas}
       >
         <View style={[styles.mapGridLine, styles.mapGridLineVerticalOne]} />
@@ -367,7 +367,7 @@ export function VendorSearchScreen({
         </View>
       ) : (
         <View style={styles.vendorList}>
-          <Text style={styles.resultCount}>{total} {labels.vendorsFound}</Text>
+          <Text style={styles.resultCount}>{total} {total === 1 ? labels.vendorFound : labels.vendorsFound}</Text>
           {viewMode === "map" ? (
             <SearchMapResults vendors={vendors} language={language} onOpenVendor={onOpenVendor} />
           ) : (
