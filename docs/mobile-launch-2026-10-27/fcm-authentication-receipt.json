@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-10-27T03:06:19.357Z",
+  "projectId": "the-wedding-market-a627b",
+  "serviceAccount": "wm-expo-push@the-wedding-market-a627b.iam.gserviceaccount.com",
+  "keyId": "8bb894ba4e88c0ed0d532ef6bfbd1d98543a40a1",
+  "oauthAuthenticated": true,
+  "validationOnly": true,
+  "fcmStatus": 400,
+  "fcmErrorCode": "INVALID_ARGUMENT",
+  "deviceDeliveryTested": false,
+  "privateValuesLogged": false
+}

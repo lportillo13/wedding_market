@@ -1,0 +1,28 @@
+# Signed release preparation — October 27, 2026
+
+This handoff supersedes the earlier missing-client-file, missing-credentials and plaintext-session status in the October 26 notes. The verified live website/backend remains `0052234b649f57f720480f56990f817e66916ae6`. Native source changes require their own signed build, device acceptance and store review. No public store release is established here.
+
+## Confirmed external setup
+
+The owner explicitly approved Wedding Market's Firebase messaging service account and its upload to the existing Wedding Market EAS project, Apple identifier/push/signing setup under team `Y9SATNJPFF`, and creation of the free Google Play draft with its displayed policy/export declarations. The owner also explicitly requested agent downloads. Credentials stay in the protected, ignored launch cache and Wedding Market EAS; no Digital Wedding credentials were changed or reused.
+
+- Firebase `the-wedding-market-a627b` remains on Spark with Analytics/Gemini off. Its verified public Android client configuration is supplied as the EAS file variable `WM_ANDROID_GOOGLE_SERVICES_FILE` in preview and production. The JSON contains no private server credential.
+- `wm-expo-push@the-wedding-market-a627b.iam.gserviceaccount.com` has only Firebase Cloud Messaging API Admin in this project. A locally generated key's public certificate was uploaded through Google's documented service-account key workflow; its private key was assigned to this package in EAS for FCM v1. Registered key ID `8bb894ba4e88c0ed0d532ef6bfbd1d98543a40a1`, certificate expiry October 27, 2027 UTC. OAuth authentication succeeded; an invalid-token validation-only request reached FCM without an authorization error. That is configuration proof, not phone delivery proof.
+- Apple identifier `com.theweddingmarket.app` has Push Notifications. APNs key `2488565L6W`, Wedding Market Production Push, is production/topic-specific for this identifier only. It was downloaded and its EC key validated, then assigned to this package in EAS. It does not cover development sandbox notifications.
+- Separate Apple Distribution certificate `GHLM4LL3QN`, serial `7D57F6DF0B893E20C555C58160B37022`, matches Wedding Market's new private key and verifies under Apple WWDR G3. Expiry October 27, 2027 UTC. Existing Digital Wedding certificate/profile were preserved.
+- App Store profile `TN7ADDFGD3`, UUID `105eafc6-3c94-4a96-8104-82cda5047b78`, Wedding Market App Store 2026, has the exact team/application identifier, production push, one matching new distribution certificate and no development device entitlement. CMS signature and downloaded certificate matching were checked. EAS accepted its P12/profile and reports credentials ready for this package.
+- App Store Connect record **The Wedding Market**, ID `6827392554`, is in Prepare for Submission. Google Play draft ID `4976084269957952454` is in organization account `7845168685505373862`. Neither draft creation nor credential assignment publishes the app.
+
+## Native changes and verification
+
+Native Supabase session and PKCE storage now uses authenticated AES-256-GCM ciphertext in AsyncStorage and a small key in device-only SecureStore. Legacy plaintext migrates before restoration; failures do not fall back to plaintext. Record identity is authenticated as additional data. Storage operations serialize refresh/logout, cap size and purge unusable records. The exact authentication callback scheme/host/path is checked. OS APIs implement the cryptography; the source declares no non-exempt encryption.
+
+Still-image uploads use the system picker without asking for broad photo-library access. Camera/microphone and broad Android storage/media permissions are blocked; gallery batches are limited to ten. Playfair's full SIL Open Font License is bundled and available offline from Account. No new runtime package, worker or background poller was added.
+
+Native typecheck/lint, all 60 tests in 12 suites, online SDK56 compatibility and architecture checks (386 modules) passed. Both final Hermes exports use the verified Wedding Market HTTPS endpoints. Actual EAS archives each contain 103 files / 1,095,642 bytes, fingerprint `1981b53fdde9e0891ffd8e348e823a19e95bf4899119bf823797c0d17f52d54f`; both match source and exclude signing/server/reviewer credentials. See the updated October 26 notification archive reports.
+
+The five high npm package findings remain open in the build-tool dependency tree (two underlying node-forge/Zod advisories). Final Android/iOS source maps contain 811/812 modules respectively and no node-forge, Zod or Expo code-signing-certificate module. No expo-updates runtime is installed. This bounds runtime JavaScript exposure; it does not make the tooling audit clean. Build configuration is trusted repository input; signing inputs came directly from Apple with independent OpenSSL/Node certificate/key checks. Do not import untrusted configuration/certificates or apply an incompatible Zod major override/SDK downgrade. Revisit upstream patches before subsequent builds.
+
+## Remaining evidence
+
+Signed AAB/IPA identity, SDK/API/16KB/permission/privacy-manifest inspection; actual Android/iPhone/iPad acceptance and push delivery in foreground/background/terminated states; native EN/ES screenshots; isolated production-provider deletion/moderation/email drill and actual backup-retention policy; review credentials/contact and store privacy/data-safety/audience/rating/trader/release controls. No Android device was attached at the last ADB check. Source exports and provider authentication are not device acceptance. Root retention installation remains owner-only and unconfirmed.

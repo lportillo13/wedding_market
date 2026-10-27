@@ -1,5 +1,7 @@
 # Message and quote notifications
 
+**October 27 update:** [signed release preparation](../mobile-launch-2026-10-27/README.md) supersedes the earlier missing Firebase file/FCM/APNs/signing credentials and plaintext-session status below. Both store drafts exist; credentials are assigned to Wedding Market EAS. Current native source has encrypted session storage, least-privilege image selection and 60 passing tests. Signed artifact/device/store acceptance remains separate.
+
 This change prepares opt-in native alerts for new messages, new/revised quotes, wedding requests and accepted quotes. It reuses Wedding Market's existing private inbox and notification events. It does not establish phone delivery or store availability until the remaining credential and installed-build checks below are completed.
 
 Backend release **`0052234b649f57f720480f56990f817e66916ae6`** is deployed through the fixed gateway. The [exact receipt](deployment-success.json) confirms success and rollback `/var/www/wedding-market.before-20261027-022008`; [public checks](public-release-checks.json) all pass. The [source readiness audit](readiness.json) records the same commit with a clean native source tree and keeps submission readiness false. Subsequent documentation-only commits do not change the live application revision.

@@ -1,6 +1,6 @@
 import "react-native-url-polyfill/auto";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { nativeSessionStorage } from "../features/auth/nativeSessionStorage";
 import { createClient } from "@supabase/supabase-js";
 import { mobileConfig } from "./config";
 
@@ -8,7 +8,7 @@ export const supabase =
   mobileConfig.supabaseUrl && mobileConfig.supabaseAnonKey
     ? createClient(mobileConfig.supabaseUrl, mobileConfig.supabaseAnonKey, {
         auth: {
-          storage: AsyncStorage,
+          storage: nativeSessionStorage,
           autoRefreshToken: true,
           persistSession: true,
           detectSessionInUrl: false,

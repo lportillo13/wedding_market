@@ -165,14 +165,13 @@ export function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
     setUploadStatus(language === "en" ? "Preparing upload..." : "Preparando carga...");
     setMessage("");
     try {
-      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!permission.granted) throw new Error("Photo library permission is required.");
       setUploadProgress(12);
       setUploadStatus(language === "en" ? "Opening photo library..." : "Abriendo galería...");
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: ['images'],
         allowsEditing: !isGalleryUpload,
         allowsMultipleSelection: isGalleryUpload,
+        selectionLimit: isGalleryUpload ? 10 : 1,
         aspect,
         quality: 0.88,
       });
@@ -182,6 +181,7 @@ export function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
         return;
       }
       const total = result.assets.length;
+      if (total > 10) throw new Error(language === 'es' ? 'Selecciona hasta 10 fotos a la vez.' : 'Select up to 10 photos at a time.');
       setUploadProgress(18);
       for (const [index, asset] of result.assets.entries()) {
         setUploadStatus(language === "en" ? `Uploading ${index + 1} of ${total}...` : `Subiendo ${index + 1} de ${total}...`);
@@ -214,11 +214,9 @@ export function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
     setUploadStatus(language === "en" ? "Preparing team photo..." : "Preparando foto del equipo...");
     setMessage("");
     try {
-      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!permission.granted) throw new Error("Photo library permission is required.");
       setUploadProgress(20);
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        mediaTypes: ['images'],
         allowsEditing: true,
         allowsMultipleSelection: false,
         aspect: [1, 1],

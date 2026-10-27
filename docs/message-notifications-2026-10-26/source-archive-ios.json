@@ -1,8 +1,8 @@
 {
-  "checkedAt": "2026-10-27T02:16:48.168Z",
+  "checkedAt": "2026-10-27T05:05:51.406Z",
   "passed": true,
-  "files": 99,
-  "bytes": 1084141,
+  "files": 103,
+  "bytes": 1095642,
   "budgets": {
     "maxFiles": 1000,
     "maxBytes": 10485760
@@ -11,7 +11,7 @@
   "missing": [],
   "mismatched": [],
   "sensitive": [],
-  "fingerprint": "2a58e13929c6dd77339a3fd555638ed9135183d184e1fdf86d69b4951681839b",
+  "fingerprint": "1981b53fdde9e0891ffd8e348e823a19e95bf4899119bf823797c0d17f52d54f",
   "hashes": [
     {
       "file": "mobile/App.tsx",
@@ -25,8 +25,8 @@
     },
     {
       "file": "mobile/app.json",
-      "sha256": "e073356bbf09542e7fde0d5c86a437659781094e251618433702d02adc8f6ccf",
-      "bytes": 2036
+      "sha256": "75a0943c4df3fddd2792bda18b7f8b9141bda94667bfee321adcf9e08bbd1b3a",
+      "bytes": 2342
     },
     {
       "file": "mobile/assets/brand/adaptive-foreground.png",
@@ -70,8 +70,8 @@
     },
     {
       "file": "mobile/eas.json",
-      "sha256": "dd345cf1188a1451741e422d67a25fc06f7d571e0c87580ccf6f95598520ea51",
-      "bytes": 811
+      "sha256": "312d3c8aa9b80d6c42c4c9fc472cd2187d6f4eece4264d356963f00113991dcd",
+      "bytes": 835
     },
     {
       "file": "mobile/metro.config.js",
@@ -95,8 +95,8 @@
     },
     {
       "file": "mobile/src/application/ScreenContent.tsx",
-      "sha256": "8e1b44d8ec7e05f756a37f63a412edad02ad5047508b63437ac9cefeb3128fc5",
-      "bytes": 10551
+      "sha256": "4e8da7d0ec188b4846fa58e802bf4578666e02b33ed25da169b1a6f7efd74ec9",
+      "bytes": 10674
     },
     {
       "file": "mobile/src/application/navigation.ts",
@@ -119,6 +119,11 @@
       "bytes": 3347
     },
     {
+      "file": "mobile/src/content/font-license.ts",
+      "sha256": "fbc83ad768b83643f68bcd9cf1ec5c03e49125e3a16f896db9e873de0094f288",
+      "bytes": 4672
+    },
+    {
       "file": "mobile/src/features/account/AccountProfileScreen.tsx",
       "sha256": "b955da4ad76c46b876db8ed60c431e8f8a9d7f0001e85f74fc8b7f71af2ef48f",
       "bytes": 12187
@@ -127,6 +132,11 @@
       "file": "mobile/src/features/account/CommunityConsent.tsx",
       "sha256": "1225424dd3fbf4a2fa0a16f8ee9069e35e33898ed0cf9a694d090a1d37c5bcaa",
       "bytes": 1916
+    },
+    {
+      "file": "mobile/src/features/account/FontLicenseNotice.tsx",
+      "sha256": "e6fdf1b23b0926b393d9f3debb047f96b049067d1129e64c6307887ba992f7c4",
+      "bytes": 1271
     },
     {
       "file": "mobile/src/features/account/deletion.ts",
@@ -142,6 +152,16 @@
       "file": "mobile/src/features/auth/AuthScreen.tsx",
       "sha256": "c151540b16ee86b586a40d978c552da8717f9c0a6570e7e065e99be034605526",
       "bytes": 32988
+    },
+    {
+      "file": "mobile/src/features/auth/nativeSessionStorage.ts",
+      "sha256": "a9a6f4600e57913a87230c72c3f2d76a2d4c8b24b3d9ed2ab3fafc474d1c42fb",
+      "bytes": 1540
+    },
+    {
+      "file": "mobile/src/features/auth/sessionStorage.ts",
+      "sha256": "0d5d67727c0ae43672740242dd1be66232dafda2e24f37038bf1ce25d1387b00",
+      "bytes": 3569
     },
     {
       "file": "mobile/src/features/home/VendorLogoCarousel.tsx",
@@ -205,8 +225,8 @@
     },
     {
       "file": "mobile/src/features/vendors/screens/VendorWorkspaceScreen.tsx",
-      "sha256": "117a5ed57d790f2d07dfe1d9d8d682faa8bb3159c13f0c38a9939135f410fb22",
-      "bytes": 33675
+      "sha256": "a99953be60265f901c329724b776ae53cae01bd5b20d52ee8803af85f88a3c92",
+      "bytes": 33469
     },
     {
       "file": "mobile/src/i18n/copy.ts",
@@ -235,8 +255,8 @@
     },
     {
       "file": "mobile/src/lib/authUtils.ts",
-      "sha256": "d2cdc5344c4a10c116212f585c77a577be386f3610baa403f79ce0a6836ad3e3",
-      "bytes": 989
+      "sha256": "8390fc556a70d6505a4780301f32821af86e014fb522395c6f7658cfe5cd73d5",
+      "bytes": 1175
     },
     {
       "file": "mobile/src/lib/calendarDate.ts",
@@ -280,8 +300,8 @@
     },
     {
       "file": "mobile/src/lib/supabase.ts",
-      "sha256": "6998664465f7f4d594d452c7bd98077e454f17eab3f8e55864a5c1de653c4348",
-      "bytes": 552
+      "sha256": "d764369864ec7a33c6cbaa8bf5f58f9e3b82f977e0439d96994de9e3ef966bed",
+      "bytes": 568
     },
     {
       "file": "mobile/src/lib/urls.ts",

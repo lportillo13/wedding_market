@@ -1,0 +1,9 @@
+{
+  "id": "GHLM4LL3QN",
+  "subject": "UID=Y9SATNJPFF\nCN=Apple Distribution: PORTILLO'S DESIGN CR LLC (Y9SATNJPFF)\nOU=Y9SATNJPFF\nO=PORTILLO'S DESIGN CR LLC\nC=US",
+  "issuer": "CN=Apple Worldwide Developer Relations Certification Authority\nOU=G3\nO=Apple Inc.\nC=US",
+  "validTo": "Oct 27 04:33:13 2027 GMT",
+  "serial": "7D57F6DF0B893E20C555C58160B37022",
+  "fingerprint256": "76:98:7C:7E:DF:FC:4D:54:06:FE:BF:98:8D:18:1E:BB:1A:AC:6D:58:7A:F6:4C:86:B1:99:6A:57:8B:F5:84:94",
+  "privateKeyMatches": true
+}

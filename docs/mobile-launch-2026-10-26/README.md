@@ -1,5 +1,7 @@
 # Wedding Market launch preparation
 
+**Current update:** [October 27 signed release preparation](../mobile-launch-2026-10-27/README.md) records completed app-specific credentials/store drafts and native session/permission hardening. Historical counts and missing-credential statements below are superseded there; public store release is still unverified.
+
 Message/quote push preparation subsequently advanced: [current notification handoff](../message-notifications-2026-10-26/README.md) supersedes the earlier native test/archive counts and push configuration inventory below. Credential setup and installed-device acceptance remain open.
 
 October 26, 2026. The owner approved the refined outlined WM identity, PORTILLO'S DESIGN CR LLC (Florida, United States) as publisher, and free couple/vendor accounts with service contracts/payments directly between couples and vendors. Sponsored placements remain off. `hello@thewedmarket.com` receives support/privacy/deletion/abuse mail through free Cloudflare routing; the owner confirmed delivery.

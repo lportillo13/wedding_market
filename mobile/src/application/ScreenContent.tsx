@@ -1,5 +1,6 @@
 import { categories, categoryLabel, heroImageUrl } from "../content/catalog";
 import { AccountProfileScreen } from "../features/account/AccountProfileScreen";
+import { FontLicenseNotice } from "../features/account/FontLicenseNotice";
 import { AdminDashboardScreen } from "../features/admin/AdminDashboardScreen";
 import { VendorLogoCarousel } from "../features/home/VendorLogoCarousel";
 import { InboxScreen } from "../features/inbox/InboxScreen";
@@ -230,6 +231,7 @@ export function ScreenContent({
         onProfileUpdated={onProfileUpdated}
         onLanguageUpdated={onLanguageUpdated}
       />}
+      <FontLicenseNotice language={language} />
       </View>
     );
   }

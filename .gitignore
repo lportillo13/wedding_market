@@ -12,6 +12,15 @@ pnpm-debug.log*
 .pnpm-store/
 .cache/
 
+# Native signing and local store review credentials
+credentials.json
+*.p8
+*.p12
+*.jks
+*.keystore
+*.key
+*service-account*.json
+
 # Next.js
 .next/
 out/
