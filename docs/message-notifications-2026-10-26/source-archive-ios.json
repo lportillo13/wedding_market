@@ -1,8 +1,8 @@
 {
-  "checkedAt": "2026-10-27T05:05:51.406Z",
+  "checkedAt": "2026-10-27T05:14:16.568Z",
   "passed": true,
   "files": 103,
-  "bytes": 1095642,
+  "bytes": 1097729,
   "budgets": {
     "maxFiles": 1000,
     "maxBytes": 10485760
@@ -11,7 +11,7 @@
   "missing": [],
   "mismatched": [],
   "sensitive": [],
-  "fingerprint": "1981b53fdde9e0891ffd8e348e823a19e95bf4899119bf823797c0d17f52d54f",
+  "fingerprint": "d4d5e8f71732c207463e38549ba5107ced4bd52c164e68bfd7ba5ffc43aff8b2",
   "hashes": [
     {
       "file": "mobile/App.tsx",
@@ -80,13 +80,13 @@
     },
     {
       "file": "mobile/package-lock.json",
-      "sha256": "15803c18b82293f22cb5f7333bf0f1ebc9db0128a9e031afbc6d7f028b292cd5",
-      "bytes": 489701
+      "sha256": "9f387eb0cadb142f322e4950b454845ef6a37a54e76fbf951bb6d9e6f3e60b31",
+      "bytes": 491744
     },
     {
       "file": "mobile/package.json",
-      "sha256": "2e50533ccdf10df9bbabb74f12cb75c4d85d9a2397d394846598b00bcce2782d",
-      "bytes": 2702
+      "sha256": "4015e9a6bb9a4016a4edd108055b00a006fc7e43e9f1a15777c40976fec4b28d",
+      "bytes": 2746
     },
     {
       "file": "mobile/src/application/App.tsx",

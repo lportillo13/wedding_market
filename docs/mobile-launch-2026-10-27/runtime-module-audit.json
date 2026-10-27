@@ -1,12 +1,12 @@
 [
   {
     "platform": "android",
-    "modules": 811,
+    "modules": 826,
     "unexpected": []
   },
   {
     "platform": "ios",
-    "modules": 812,
+    "modules": 826,
     "unexpected": []
   }
 ]

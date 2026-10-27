@@ -1,0 +1,20 @@
+[
+  {
+    "id": "389d1d17-13a9-466c-98c4-b3f09788a658",
+    "platform": "ANDROID",
+    "status": "NEW",
+    "appVersion": "1.0.0",
+    "appBuildVersion": "2",
+    "gitCommitHash": "ec3d1062db8e9d5fab94de1bc7fd3fb3832513a2",
+    "startedAt": "2026-10-27T05:07:33.343Z"
+  },
+  {
+    "id": "acf3468c-e265-4bfe-b76f-a6b254d8449a",
+    "platform": "IOS",
+    "status": "NEW",
+    "appVersion": "1.0.0",
+    "appBuildVersion": "1",
+    "gitCommitHash": "ec3d1062db8e9d5fab94de1bc7fd3fb3832513a2",
+    "startedAt": "2026-10-27T05:07:45.663Z"
+  }
+]
