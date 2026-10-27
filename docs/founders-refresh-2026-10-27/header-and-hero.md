@@ -11,6 +11,12 @@ The hero now starts at the top of the page and fills one viewport, using a 100vh
 - Local guest browser checks cover 1440×900, 390×844, 320×740 and 390×640. Hero heights match their 900/844/740/640px viewports, checked pages have no horizontal overflow, and the arrow remains inside the hero below its content.
 - Visible header language/quote/login controls measure 44px high; quote/login padding is 16px on both sides. The closed mobile dialog's hidden CTA is excluded from these visible-control measurements.
 - EN/ES switching, mobile menu open/close and the scroll action were exercised. The phone arrow lands at scrollY844 with the next section at top0 and keyboard focus on benefits. No account, newsletter or consent write was performed.
-- TypeScript, ESLint, all90 root tests and the production build passed. The live result is recorded after deployment.
+- TypeScript, ESLint, all 90 root tests and the production build passed.
 
 [Guest desktop view](header-hero-guest-desktop.png) and [local measurements](header-hero-local-checks.json) document the inspected implementation. No temporary route, database change or native source/release is included.
+
+## Verified live release
+
+Website commit **41ddaa22faf424a6dc039997602bc22de5f1bae2** is live with its successful [exact gateway receipt](header-hero-deployment-success.json). Rollback is `/var/www/wedding-market.before-20261027-223941`. Existing health and anonymous authorization probes pass. [Public EN/ES checks](header-hero-public-checks.json) confirm the scroll target, served header/viewport styles, preserved footer/support identity and compact onboarding footer.
+
+[Live browser measurements](header-hero-live-checks.json) verify a 900px desktop hero in a 900px viewport, a 844px phone hero in a 844px viewport, smaller 12.48px navigation, aligned authenticated controls with 44px heights/7px radii, and no horizontal overflow at 1425/375px content widths. The live arrow reaches scrollY900, target top0 and focus on benefits. The 48px phone arrow is fully visible at y780–828 within the 844px viewport. See the [public-only live phone screenshot](live-header-hero-phone.png). Video playback was restored after the capture. No consent, subscription or account write occurred during verification; the app release stays held.

@@ -1,0 +1,50 @@
+{
+  "checkedAt": "2026-10-27T22:44:05.066Z",
+  "releaseCommit": "41ddaa22faf424a6dc039997602bc22de5f1bae2",
+  "desktop": {
+    "controls": [
+      {
+        "height": 44,
+        "radius": "7px"
+      },
+      {
+        "height": 44,
+        "radius": "7px"
+      },
+      {
+        "height": 44,
+        "radius": "7px"
+      }
+    ],
+    "heroHeight": 900,
+    "heroTop": 0,
+    "navFont": "12.48px",
+    "scroll": 1425,
+    "viewport": 900,
+    "width": 1425
+  },
+  "phone": {
+    "arrow": {
+      "bottom": 828,
+      "height": 48,
+      "left": 163.5,
+      "right": 211.5,
+      "top": 780,
+      "width": 48,
+      "x": 163.5,
+      "y": 780
+    },
+    "heroHeight": 844,
+    "heroTop": 0,
+    "scroll": 375,
+    "scrollY": 0,
+    "viewport": 844,
+    "width": 375
+  },
+  "arrow": {
+    "focus": "benefits",
+    "scrollY": 900,
+    "targetTop": 0
+  },
+  "passed": true
+}
