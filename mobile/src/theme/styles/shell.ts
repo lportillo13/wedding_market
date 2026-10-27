@@ -18,7 +18,7 @@ export const shellStyles = StyleSheet.create({
         zIndex: 20,
     },
     headerOverlay: {
-        backgroundColor: "transparent",
+        backgroundColor: colors.ink,
         left: 0,
         position: "absolute",
         right: 0,
