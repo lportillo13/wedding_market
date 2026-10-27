@@ -1,9 +1,16 @@
 {
-  "checkedAt": "2026-10-27T14:59:56.481Z",
+  "checkedAt": "2026-10-27T15:09:30.665Z",
   "submissions": [
     {
       "id": "2b204927-0277-40ed-a631-3050d302194f",
-      "status": "IN_QUEUE",
+      "submittedBuild": {
+        "id": "c992ae61-4bbb-430d-94ce-d886901411ef",
+        "version": "1.0.0",
+        "buildNumber": "5",
+        "source": "803b7a67b7b0e928e6f72a10e36a3f1219732e9a"
+      },
+      "status": "FINISHED",
+      "completedAt": "2026-10-27T15:07:19.794Z",
       "createdAt": "2026-10-27T14:31:53.195Z",
       "platform": "IOS"
     },

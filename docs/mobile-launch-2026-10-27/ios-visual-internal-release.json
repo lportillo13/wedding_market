@@ -1,0 +1,31 @@
+{
+  "checkedAt": "2026-10-27T15:36:10.8862760Z",
+  "platform": "IOS",
+  "appVersion": "1.0.0",
+  "buildNumber": 5,
+  "source": "803b7a67b7b0e928e6f72a10e36a3f1219732e9a",
+  "easBuildId": "c992ae61-4bbb-430d-94ce-d886901411ef",
+  "submissionId": "2b204927-0277-40ed-a631-3050d302194f",
+  "uploadCompletedAt": "2026-10-27T15:07:19.794Z",
+  "appStoreBuildId": "79b415b7-b6bc-495f-ada7-61265797e03f",
+  "appleProcessingComplete": true,
+  "testFlightStatus": "Testing",
+  "group": "Wedding Market Internal",
+  "groupId": "7d156831-4855-4b71-a2b0-5c3e5f47d5fe",
+  "existingTesterCount": 1,
+  "groupBuildNumbers": [
+    5,
+    4,
+    2
+  ],
+  "bilingualTestInstructionsSaved": true,
+  "selectedStoreBuild": 5,
+  "selectedStoreBuildReadBackAfterReload": true,
+  "publicReleaseControl": "Manual",
+  "publicAppReviewSubmitted": false,
+  "publicReleaseActive": false,
+  "newExternalTesterOrCompanyUserAdded": false,
+  "physicalDeviceAcceptanceEstablished": false,
+  "ownerDecision": "Keep private testing until real vendors join",
+  "evidence": ".cache/notifications-2026-10-26/apple-build5-testing.png"
+}

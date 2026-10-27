@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-27T14:56:00Z",
+  "checkedAt": "2026-10-27T15:36:10.9193623Z",
   "ownerDecision": "Keep private testing until real vendors join",
   "nativeSource": "803b7a67b7b0e928e6f72a10e36a3f1219732e9a",
   "liveWebBackendSource": "0052234b649f57f720480f56990f817e66916ae6",
@@ -11,13 +11,28 @@
     "productionStatus": "Inactive",
     "listingStatus": "Ready to send for review",
     "listingSubmittedForReview": false,
-    "listingLocales": ["en-US", "es-419"],
+    "listingLocales": [
+      "en-US",
+      "es-419"
+    ],
     "screenshotsPerLocale": 2,
+    "localizedScreenshotReadbackVerified": true,
     "screenshots": "Actual signed Android 6 captures; exact RGB pixels preserved",
-    "aiAssetLabels": ["icon-512.png", "feature-graphic-1024x500.png"],
+    "aiAssetLabels": [
+      "icon-512.png",
+      "feature-graphic-1024x500.png"
+    ],
     "aiAssetLabelsSpecificallyApproved": true,
     "screenshotAiLabels": false,
-    "savedDisclosures": ["Private access for both reviewer roles", "Privacy URL", "No ads", "No Advertising ID", "IARC content rating", "Adult 18+ target audience", "15-type data safety"],
+    "savedDisclosures": [
+      "Private access for both reviewer roles",
+      "Privacy URL",
+      "No ads",
+      "No Advertising ID",
+      "IARC content rating",
+      "Adult 18+ target audience",
+      "15-type data safety"
+    ],
     "dataSharingScope": "Google service-provider and user-initiated sharing exceptions used; vendors and processors can receive data for the disclosed service",
     "proof": ".cache/notifications-2026-10-26/play-listing-saved.png"
   },
@@ -37,6 +52,14 @@
     "publicReleaseActive": false,
     "testFlightGroup": "Wedding Market Internal",
     "internalTesterCount": 1,
+    "testFlightBuildNumber": 5,
+    "testFlightBuildStatus": "Testing",
+    "testNotesLanguages": [
+      "en",
+      "es"
+    ],
+    "selectedStoreBuild": 5,
+    "selectedStoreBuildReadBackAfterReload": true,
     "nativeIphoneIpadScreenshotsComplete": false
   },
   "publicDirectoryVendors": 0,

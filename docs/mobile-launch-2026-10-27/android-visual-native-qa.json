@@ -1,0 +1,29 @@
+{
+  "source": "803b7a67b7b0e928e6f72a10e36a3f1219732e9a",
+  "version": "1.0.0",
+  "versionCode": 6,
+  "installedFromExactSignedReleaseBundle": true,
+  "environment": {
+    "device": "Existing Medium_Phone_API_36 Android emulator",
+    "readOnlyAvd": true,
+    "cpuCores": 2,
+    "memoryMB": 2048,
+    "captureResolution": [1080, 1920],
+    "snapshotSaving": false,
+    "stoppedAfterCapture": true
+  },
+  "visualChecks": {
+    "englishHomeAndCategories": true,
+    "spanishHomeAndCategories": true,
+    "opaqueHeaderRemainsReadableAfterScrolling": true,
+    "noPublicFictionalVendorInStoreCaptures": true,
+    "actualCapturesUsedWithoutInventedAppContent": true
+  },
+  "captureEvidence": "android-store-captures.json",
+  "notEstablishedByThisCheck": [
+    "Physical-device performance",
+    "Installed native account/session lifecycle",
+    "FCM/APNs delivery and notification tap routing",
+    "iPhone/iPad visual acceptance"
+  ]
+}
