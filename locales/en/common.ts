@@ -1074,9 +1074,9 @@ const common = {
   "home": {
     "hero": {
       "badge": "All-in-one wedding marketplace",
-      "title": "Plan your dream wedding with less stress",
-      "description": "Discover trusted professionals, compare quotes instantly and book your favourites without leaving the platform.",
-      "primaryCta": "Get personalised quotes",
+      "title": "Your wedding.\nYour way.",
+      "description": "Discover wedding professionals in Costa Rica. Save your favourites and bring your quotes and conversations together.",
+      "primaryCta": "Start planning",
       "secondaryCta": "Browse vendors"
     },
     "highlights": {

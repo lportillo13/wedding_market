@@ -47,8 +47,8 @@
   --wm-radius-surface: 1.1rem;
 
   /* ── Fonts ── */
-  --wm-font-display: "Playfair Display", Georgia, serif;
-  --wm-font-body: "Google Sans", var(--font-geist-sans), "Inter", Arial, sans-serif;
+  --wm-font-display: "GT Super", Georgia, serif;
+  --wm-font-body: "Acumin Pro", Arial, sans-serif;
 }
 
 @theme inline {

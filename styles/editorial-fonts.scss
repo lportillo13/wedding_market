@@ -1,0 +1,51 @@
+@font-face { font-family: "GT Super"; src: url("/fonts/editorial/GT-Super-Display-Light.woff2") format("woff2"); font-style: normal; font-weight: 300; font-display: swap; }
+@font-face { font-family: "GT Super"; src: url("/fonts/editorial/GT-Super-Display-Light-Italic.woff2") format("woff2"); font-style: italic; font-weight: 300; font-display: swap; }
+@font-face { font-family: "GT Super"; src: url("/fonts/editorial/GT-Super-Display-Regular.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face { font-family: "GT Super"; src: url("/fonts/editorial/GT-Super-Display-Regular-Italic.woff2") format("woff2"); font-style: italic; font-weight: 400; font-display: swap; }
+@font-face { font-family: "GT Super"; src: url("/fonts/editorial/GT-Super-Display-Medium.woff2") format("woff2"); font-style: normal; font-weight: 500 600; font-display: swap; }
+@font-face { font-family: "GT Super"; src: url("/fonts/editorial/GT-Super-Display-Bold.woff2") format("woff2"); font-style: normal; font-weight: 700 900; font-display: swap; }
+@font-face { font-family: "Acumin Pro"; src: url("/fonts/editorial/Acumin-Pro-Regular.woff2") format("woff2"); font-style: normal; font-weight: 100 500; font-display: swap; }
+@font-face { font-family: "Acumin Pro"; src: url("/fonts/editorial/Acumin-Pro-Italic.woff2") format("woff2"); font-style: italic; font-weight: 100 500; font-display: swap; }
+@font-face { font-family: "Acumin Pro"; src: url("/fonts/editorial/Acumin-Pro-Bold.woff2") format("woff2"); font-style: normal; font-weight: 600 900; font-display: swap; }
+@font-face { font-family: "Acumin Pro"; src: url("/fonts/editorial/Acumin-Pro-Bold-Italic.woff2") format("woff2"); font-style: italic; font-weight: 600 900; font-display: swap; }
+@font-face { font-family: "Lucia BT"; src: url("/fonts/editorial/Lucia-BT.woff2") format("woff2"); font-style: normal; font-weight: 400; font-display: swap; }
+
+:root {
+  --wm-font-display: "GT Super", Georgia, serif;
+  --wm-font-body: "Acumin Pro", Arial, sans-serif;
+  --wm-font-script: "Lucia BT", cursive;
+  --bs-body-font-family: var(--wm-font-body);
+}
+body, button, input, select, textarea { font-family: var(--wm-font-body); }
+h1, h2, h3, h4, h5, h6, .display-1, .display-2, .display-3, .display-4, .wm-section-title { font-family: var(--wm-font-display); font-weight: 300; }
+.btn, .wm-site-header__cta, .wm-vendors-search__btn, .wm-auth-btn { font-weight: 400; }
+.wm-site-header__wordmark, .wm-site-header__desktop-nav .vendors-category-link,
+.wm-mobile-navigation__primary, .wm-mobile-navigation__categories a,
+.wm-vendor-page.wm-profile-editorial { --profile-serif: var(--wm-font-display); }
+.wm-site-header__wordmark, .wm-site-header__desktop-nav .vendors-category-link,
+.wm-mobile-navigation__primary, .wm-mobile-navigation__categories a { font-family: var(--wm-font-display); }
+.wm-brand-wordmark--text { font-family: var(--wm-font-display); font-weight: 300; font-size: 1.25rem; line-height: 1.3; letter-spacing: .065em; text-transform: uppercase; padding-inline: .05em; }
+.wm-founders-hero__content h1, .wm-editorial-section__heading, .wm-home-premium-section-head h2 { font-weight: 300; letter-spacing: -.025em; }
+.wm-home-magazine__copy h2, .wm-home-premium-process__headline h2 { font-weight: 300; letter-spacing: -.025em; }
+.wm-discovery__tabs button { letter-spacing: -.015em; }
+.wm-discovery__tabs button, .wm-discovery__panel h3,
+.wm-home-premium-category__copy h3, .wm-home-magazine__copy h2,
+.wm-site-footer__newsletter-heading, .wm-vendors-hero__title,
+.wm-vendor-card__name, .wm-blog-title, .wm-blog-featured-body h2,
+.wm-blog-card-body h3, .wm-vendor-onboarding__intro h1,
+.wm-vendor-onboarding__form .wm-onboarding-card__title,
+.wm-auth-card__title, .wm-about-page :is(h1, h2, h3),
+.wm-vendor-page.wm-profile-editorial :is(h1, h2, h3, h4) { font-weight: 300; }
+.wm-discovery__tabs button[aria-selected="true"] { font-style: normal; }
+.wm-editorial-section__heading em, .wm-home-magazine__copy h2 em,
+.wm-founders-hero__content h1 em { font-weight: 300; }
+.wm-editorial-section__heading em { font-family: var(--wm-font-script); font-size: .95em; font-style: normal; letter-spacing: 0; line-height: 1.3; }
+.wm-site-header__brand .wm-brand-wordmark--text { font-size: 1.25rem; }
+.wm-auth-card__brand .wm-brand-wordmark--text { font-size: 1.8rem; }
+@media (max-width: 767.98px) {
+  .wm-brand-wordmark--text, .wm-site-header__brand .wm-brand-wordmark--text { font-size: 1.05rem; }
+  .wm-founders-hero__content h1 { letter-spacing: -.035em; }
+}
+@media (max-width: 359.98px) {
+  .wm-brand-wordmark--text, .wm-site-header__brand .wm-brand-wordmark--text { font-size: .88rem; }
+}

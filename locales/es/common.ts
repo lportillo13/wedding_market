@@ -1074,9 +1074,9 @@ const common = {
   "home": {
     "hero": {
       "badge": "Mercado de bodas todo en uno",
-      "title": "Planea la boda de tus sueños con menos estrés",
-      "description": "Descubre profesionales de confianza, compara cotizaciones al instante y reserva a tus favoritos sin salir de la plataforma.",
-      "primaryCta": "Obtén cotizaciones personalizadas",
+      "title": "Tu boda.\nA tu manera.",
+      "description": "Descubre profesionales de bodas en Costa Rica. Guarda tus favoritos y reúne tus cotizaciones y conversaciones en un solo lugar.",
+      "primaryCta": "Empieza a planear",
       "secondaryCta": "Explora proveedores"
     },
     "highlights": {

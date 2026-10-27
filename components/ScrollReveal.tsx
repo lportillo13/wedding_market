@@ -36,6 +36,17 @@ export default function ScrollReveal() {
       observer?.unobserve(element);
     };
 
+    // Keyboard users should never focus an element that is still visually hidden.
+    const onFocus = (event: FocusEvent) => {
+      if (!(event.target instanceof Element)) return;
+      let pending = event.target.closest<HTMLElement>(`[${REVEAL_ATTRIBUTE}="pending"]`);
+      while (pending) {
+        show(pending);
+        pending = pending.parentElement?.closest<HTMLElement>(`[${REVEAL_ATTRIBUTE}="pending"]`) ?? null;
+      }
+    };
+    document.addEventListener("focusin", onFocus);
+
     const observeNewTargets = () => {
       getRevealTargets().forEach((element) => {
         if (element.getAttribute(REVEAL_ATTRIBUTE) === "visible") return;
@@ -93,6 +104,7 @@ export default function ScrollReveal() {
 
     return () => {
       reducedMotionQuery.removeEventListener("change", handleReducedMotionChange);
+      document.removeEventListener("focusin", onFocus);
       observer?.disconnect();
       mutationObserver?.disconnect();
     };

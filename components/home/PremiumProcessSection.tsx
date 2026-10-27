@@ -13,7 +13,7 @@ const PROCESS_IMAGES = [
 
 const PROCESS_COPY = {
   en: {
-    eyebrow: "Member-style workflow",
+    eyebrow: "A little less effort. A lot more clarity.",
     panels: [
       {
         tab: "Shortlist",
@@ -39,7 +39,7 @@ const PROCESS_COPY = {
     ],
   },
   es: {
-    eyebrow: "Flujo tipo membresía",
+    eyebrow: "Menos esfuerzo. Más claridad.",
     panels: [
       {
         tab: "Guardar",
@@ -91,7 +91,6 @@ export default function PremiumProcessSection({ plan }: PremiumProcessSectionPro
                 className={`wm-home-premium-process__tab${index === activeIndex ? " is-active" : ""}`}
                 onClick={() => setActiveIndex(index)}
                 onFocus={() => setActiveIndex(index)}
-                onMouseEnter={() => setActiveIndex(index)}
                 aria-pressed={index === activeIndex}
               >
                 <span>{String(index + 1).padStart(2, "0")}</span>
@@ -100,7 +99,7 @@ export default function PremiumProcessSection({ plan }: PremiumProcessSectionPro
             ))}
           </div>
 
-          <div className="wm-home-premium-process__content">
+          <div className="wm-home-premium-process__content" data-reveal-group>
             <div className="wm-home-premium-process__headline">
               <p className="wm-home-premium-eyebrow">{copy.eyebrow}</p>
               <h2>
@@ -109,8 +108,7 @@ export default function PremiumProcessSection({ plan }: PremiumProcessSectionPro
               </h2>
             </div>
 
-            <div className="wm-home-premium-process__details">
-              <p className="wm-home-premium-eyebrow">{copy.eyebrow}</p>
+            <div className="wm-home-premium-process__details" key={activeIndex}>
               <h3>{plan.heading}</h3>
               <p>{activePanel.summary}</p>
               <ol className="wm-home-premium-process__steps">

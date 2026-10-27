@@ -11,8 +11,8 @@ const CATEGORY_IMAGES: Record<string, string> = {
 };
 
 const CATEGORY_EYEBROW = {
-  en: "Curated categories",
-  es: "Categorías curadas",
+  en: "Find your people",
+  es: "Encuentra a tu equipo",
 } as const;
 
 type CategoriesSectionProps = {
@@ -24,7 +24,7 @@ export default function CategoriesSection({ categories, language }: CategoriesSe
   return (
     <section className="wm-home-premium-categories" id="partnerships">
       <div className="container">
-        <div className="wm-home-premium-section-head wm-home-premium-section-head--split">
+        <div className="wm-home-premium-section-head wm-home-premium-section-head--split" data-reveal-group>
           <div>
             <p className="wm-home-premium-eyebrow">{CATEGORY_EYEBROW[language]}</p>
             <h2>{categories.heading}</h2>
@@ -35,7 +35,7 @@ export default function CategoriesSection({ categories, language }: CategoriesSe
           </Link>
         </div>
 
-        <div className="wm-home-premium-category-grid">
+        <div className="wm-home-premium-category-grid" data-reveal-group>
           {categories.items.map((category, index) => (
             <Link
               key={category.slug}
@@ -44,10 +44,10 @@ export default function CategoriesSection({ categories, language }: CategoriesSe
             >
               <span className="wm-home-premium-category__image">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={CATEGORY_IMAGES[category.slug] ?? CATEGORY_IMAGES.venues} alt={category.label} />
+                <img src={CATEGORY_IMAGES[category.slug] ?? CATEGORY_IMAGES.venues} alt="" loading="lazy" />
               </span>
               <span className="wm-home-premium-category__copy">
-                {index === 0 ? <span>{categories.spotlightLabel}</span> : null}
+                <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
                 <h3>{category.label}</h3>
                 <strong>{categories.seeVendors}</strong>
               </span>

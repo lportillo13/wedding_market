@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { HomepageContent } from "@/lib/content/siteContent";
 import { resolveMediaUrl } from "@/lib/media-url";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const HERO_YOUTUBE_EMBED_URL =
   "https://www.youtube-nocookie.com/embed/JgzkqjnsIvM?autoplay=1&mute=1&controls=0&playsinline=1&loop=1&playlist=JgzkqjnsIvM&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1&fs=0";
@@ -67,7 +68,22 @@ function pickCarouselLogos(logos: VendorLogoItem[], preferredVendorId: string) {
 }
 
 export default function FoundersHeroSection({ hero }: FoundersHeroSectionProps) {
+  const { language } = useLanguage();
   const [vendorLogos, setVendorLogos] = useState<VendorLogoItem[]>([]);
+  const [videoPlaying, setVideoPlaying] = useState(false);
+
+  useEffect(() => {
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const frame = requestAnimationFrame(() => setVideoPlaying(!motion.matches));
+    const onMotionChange = (event: MediaQueryListEvent) => {
+      if (event.matches) setVideoPlaying(false);
+    };
+    motion.addEventListener("change", onMotionChange);
+    return () => {
+      cancelAnimationFrame(frame);
+      motion.removeEventListener("change", onMotionChange);
+    };
+  }, []);
 
   useEffect(() => {
     const mapVendorLogos = (items: Array<{
@@ -115,30 +131,32 @@ export default function FoundersHeroSection({ hero }: FoundersHeroSectionProps) 
   }, []);
 
   return (
-    <section className="wm-founders-hero" aria-labelledby="wm-founders-hero-title">
-      <iframe
+    <section className="wm-founders-hero" aria-labelledby="wm-founders-hero-title" data-home-hero>
+      <div className="wm-founders-hero__poster" style={{ backgroundImage: `url(${hero.imageUrl})` }} aria-hidden="true" />
+      {videoPlaying && <iframe
         className="wm-founders-hero__video"
         src={HERO_YOUTUBE_EMBED_URL}
         title="Muted wedding hero background video"
         allow="autoplay; encrypted-media"
         aria-hidden="true"
         tabIndex={-1}
-      />
+      />}
 
       <div className="wm-founders-hero__content">
+        <p className="wm-founders-hero__eyebrow">{language === "es" ? "Celebra en Costa Rica" : "Celebrate in Costa Rica"}</p>
         <h1 id="wm-founders-hero-title">
-          {hero.title || (
+          {hero.title ? hero.title.split("\n").map((line, index) => index === 0 ? <span key={index}>{line}</span> : <em key={index}>{line}</em>) : (
             <>
               Where love
               <em>meets perfection</em>
             </>
           )}
         </h1>
-        <p>
+        <p className="wm-founders-hero__description">
           {hero.description ??
-            "Discover the finest wedding vendors — curated, trusted, and ready to make your day unforgettable."}
+            "Discover wedding professionals and bring your quotes and conversations together."}
         </p>
-        <Link href={hero.primaryCtaHref ?? "/vendors"} className="wm-founders-hero__cta">
+        <div className="wm-founders-hero__links"><Link href={hero.primaryCtaHref ?? "/vendors"} className="wm-founders-hero__cta">
           <span>{hero.primaryCtaLabel ?? "Explore Vendors"}</span>
           <span className="wm-founders-hero__cta-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" focusable="false">
@@ -147,6 +165,7 @@ export default function FoundersHeroSection({ hero }: FoundersHeroSectionProps) 
             </svg>
           </span>
         </Link>
+        <Link href={hero.secondaryCtaHref ?? "/vendors"} className="wm-founders-hero__secondary">{hero.secondaryCtaLabel}</Link></div>
       </div>
 
       {vendorLogos.length > 0 && (
@@ -176,7 +195,11 @@ export default function FoundersHeroSection({ hero }: FoundersHeroSectionProps) 
         </div>
       )}
 
-      <a href="#about" className="wm-founders-hero__scroll-cue" aria-label="Scroll to next section">
+      <button type="button" className="wm-founders-hero__motion" onClick={() => setVideoPlaying((playing) => !playing)} aria-label={language === "es" ? videoPlaying ? "Pausar video de fondo" : "Reproducir video de fondo" : videoPlaying ? "Pause background video" : "Play background video"}>
+        <span aria-hidden="true">{videoPlaying ? "Ⅱ" : "▷"}</span>
+        {language === "es" ? videoPlaying ? "Pausar video" : "Ver video" : videoPlaying ? "Pause video" : "Play video"}
+      </button>
+      <a href="#benefits" className="wm-founders-hero__scroll-cue" aria-label={language === "es" ? "Explorar Wedding Market" : "Explore Wedding Market"}>
         <svg
           viewBox="0 0 24 24"
           fill="none"

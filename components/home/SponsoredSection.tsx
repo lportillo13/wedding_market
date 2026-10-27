@@ -1,5 +1,6 @@
 import ContextualSponsoredUnits from "@/components/ads/ContextualSponsoredUnits";
 import type { HomepageContent } from "@/lib/content/siteContent";
+import { VENDOR_ADS_PUBLICLY_VISIBLE } from "@/lib/content/vendorAds";
 
 type SponsoredSectionProps = {
   hero: HomepageContent["hero"];
@@ -7,6 +8,7 @@ type SponsoredSectionProps = {
 };
 
 export default function SponsoredSection({ hero, categories }: SponsoredSectionProps) {
+  if (!VENDOR_ADS_PUBLICLY_VISIBLE) return null;
   const keywords = categories.items.flatMap((item) => [item.slug, item.label]);
 
   return (

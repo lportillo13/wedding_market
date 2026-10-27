@@ -215,12 +215,27 @@ function normalizeHomepageContent(rawValue: unknown, language: SupportedLanguage
     return fallback;
   }
 
+  // Upgrade the original seeded copy without replacing owner-written content.
+  const originalHero = language === "es" ? {
+    title: "Planea la boda de tus sueños con menos estrés",
+    description: "Descubre profesionales de confianza, compara cotizaciones al instante y reserva a tus favoritos sin salir de la plataforma.",
+    primaryCtaLabel: "Obtén cotizaciones personalizadas",
+  } : {
+    title: "Plan your dream wedding with less stress",
+    description: "Discover trusted professionals, compare quotes instantly and book your favourites without leaving the platform.",
+    primaryCtaLabel: "Get personalised quotes",
+  };
+  const heroCopy = (key: keyof typeof originalHero) => {
+    const candidate = readString(value.hero?.[key], fallback.hero[key]);
+    return candidate === originalHero[key] ? fallback.hero[key] : candidate;
+  };
+
   return {
     hero: {
       badge: readString(value.hero?.badge, fallback.hero.badge),
-      title: readString(value.hero?.title, fallback.hero.title),
-      description: readString(value.hero?.description, fallback.hero.description),
-      primaryCtaLabel: readString(value.hero?.primaryCtaLabel, fallback.hero.primaryCtaLabel),
+      title: heroCopy("title"),
+      description: heroCopy("description"),
+      primaryCtaLabel: heroCopy("primaryCtaLabel"),
       primaryCtaHref: readString(value.hero?.primaryCtaHref, fallback.hero.primaryCtaHref),
       secondaryCtaLabel: readString(value.hero?.secondaryCtaLabel, fallback.hero.secondaryCtaLabel),
       secondaryCtaHref: readString(value.hero?.secondaryCtaHref, fallback.hero.secondaryCtaHref),

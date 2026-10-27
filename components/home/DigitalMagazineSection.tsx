@@ -39,10 +39,9 @@ export default function DigitalMagazineSection() {
   return (
     <section className="wm-home-magazine" aria-labelledby="wm-home-magazine-title">
       <div className="container">
-        <div className="wm-home-magazine__layout">
+        <div className="wm-home-magazine__layout" data-reveal-group>
           <div className="wm-home-magazine__copy">
             <p className="wm-home-magazine__eyebrow">{copy.eyebrow}</p>
-            <p className="wm-home-magazine__issue">{copy.issue}</p>
             <h2 id="wm-home-magazine-title">
               {copy.title}
               <em>{copy.titleAccent}</em>
@@ -67,11 +66,7 @@ export default function DigitalMagazineSection() {
 
           <Link href="/blog" className="wm-home-magazine__media" aria-label={copy.imageCta}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/magazine/digital-magazine-editorial.webp" alt={copy.imageAlt} />
-            <span className="wm-home-magazine__cover-mark" aria-hidden="true">
-              <span>{copy.coverLabel}</span>
-              <strong>{copy.coverIssue}</strong>
-            </span>
+            <img src="/magazine/digital-magazine-editorial.webp" alt={copy.imageAlt} loading="lazy" />
             <span className="wm-home-magazine__media-arrow" aria-hidden="true">
               ↗
             </span>

@@ -8,6 +8,8 @@ import "./globals.css";
 import "../styles/vendor-public-profile.scss";
 import "../styles/account-inbox.scss";
 import "../styles/editorial-ui.scss";
+import "../styles/founders-inspired.scss";
+import "../styles/editorial-fonts.scss";
 import NavBarContainer from "@/components/NavBarContainer";
 import AuthStateSync from "@/components/AuthStateSync";
 import PwaServiceWorkerRegistration from "@/components/PwaServiceWorkerRegistration";
@@ -123,13 +125,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={resolvedLanguage} data-bs-theme="light">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
-          rel="stylesheet"
-        />
+        <link rel="preload" href="/fonts/editorial/Acumin-Pro-Regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/editorial/GT-Super-Display-Light.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/editorial/Lucia-BT.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthStateSync />
