@@ -1,4 +1,8 @@
-import brandMark from '../../assets/brand/mark.png';
+import { BrandWordmark } from "../ui/BrandWordmark";
+import { PlayfairDisplay_400Regular } from "@expo-google-fonts/playfair-display/400Regular";
+import { PlayfairDisplay_500Medium } from "@expo-google-fonts/playfair-display/500Medium";
+import { PlayfairDisplay_700Bold } from "@expo-google-fonts/playfair-display/700Bold";
+import { PlayfairDisplay_900Black } from "@expo-google-fonts/playfair-display/900Black";
 import { CommunityConsent } from "../features/account/CommunityConsent";
 import { COMMUNITY_TERMS_VERSION } from "../../../shared/safety/copy";
 import { confirmAccountDeletion } from "../features/account/deletion";
@@ -19,10 +23,6 @@ import { colors } from "../theme/tokens";
 import { roleTabs, tabIcons, tabLabel } from "./navigation";
 import { ScreenContent } from "./ScreenContent";
 import { type IconName, type TabKey } from "./types";
-import { PlayfairDisplay_400Regular } from "@expo-google-fonts/playfair-display/400Regular";
-import { PlayfairDisplay_500Medium } from "@expo-google-fonts/playfair-display/500Medium";
-import { PlayfairDisplay_700Bold } from "@expo-google-fonts/playfair-display/700Bold";
-import { PlayfairDisplay_900Black } from "@expo-google-fonts/playfair-display/900Black";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useFonts } from "expo-font";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
@@ -299,12 +299,7 @@ export default function App() {
       <ExpoStatusBar style="dark" />
       {!isDetailOpen ? <View style={[styles.header, isHomeOpen && styles.headerOverlay]}>
         <View style={styles.headerBrandRow}>
-          <View style={styles.logoMark}>
-            <Image source={brandMark} style={{width:34,height:34,tintColor:colors.paper}} accessibilityIgnoresInvertColors />
-          </View>
-          <View>
-            <Text style={[styles.brand, isHomeOpen && styles.headerOverlayText]}>The Wedding Market</Text>
-          </View>
+          <BrandWordmark light={isHomeOpen} />
         </View>
         <View style={styles.headerActions}>
           <TouchableOpacity

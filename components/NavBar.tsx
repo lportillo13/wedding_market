@@ -3,7 +3,6 @@
 import type { ReactNode } from "react";
 import type { HeaderUser } from "@/lib/header-account";
 import Link from "next/link";
-import Image from "next/image";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { getShortlistCount } from "@/lib/shortlist";
@@ -116,10 +115,7 @@ export default function NavBar({
     setMenuOpen(true);
   }
   const brand = (
-    <>
-      <span className="wm-site-header__wordmark"><Image src="/brand/wm-mark.svg" width={28} height={24} alt="" style={{objectFit:"contain",marginRight:8,verticalAlign:"middle"}} />{dictionary.nav.brand}</span>
-      <span className="wm-site-header__tagline">{labels.tagline}</span>
-    </>
+    <span className="wm-brand-wordmark wm-brand-wordmark--text">Wedding Market</span>
   );
   return (
     <header

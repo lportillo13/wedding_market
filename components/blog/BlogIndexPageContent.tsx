@@ -80,29 +80,10 @@ export default function BlogIndexPageContent({ posts }: Props) {
       <section className="wm-blog-hero">
         <div className="container">
           <div className="row align-items-end g-4">
-            <div className="col-lg-7">
+            <div className="col-lg-9">
               <span className="wm-blog-kicker">{content.kicker}</span>
               <h1 className="wm-blog-title">{content.title}</h1>
               <p className="wm-blog-subtitle">{content.subtitle}</p>
-            </div>
-            <div className="col-lg-5">
-              <div className="wm-blog-stats-card">
-                <p className="wm-blog-stats-label">{content.statsLabel}</p>
-                <div className="wm-blog-stats-grid">
-                  <div>
-                    <strong>{posts.length}</strong>
-                    <span>{content.statsStoriesLabel}</span>
-                  </div>
-                  <div>
-                    <strong>5</strong>
-                    <span>{content.statsSampleLabel}</span>
-                  </div>
-                  <div>
-                    <strong>{content.statsIdeasValue}</strong>
-                    <span>{content.statsIdeasLabel}</span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

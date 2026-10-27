@@ -7,6 +7,7 @@ import { supabase } from "../../lib/supabase";
 import { styles } from "../../theme/styles";
 import { colors } from "../../theme/tokens";
 import { FieldLabel, NativeSelect } from "../../ui/forms";
+import { QuoteDateCalendar } from '../../ui/calendars';
 import { openPublicWebPath } from "../../ui/links";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEffect, useState } from "react";
@@ -232,12 +233,7 @@ export function AccountProfileScreen({
       <View style={styles.formSection}>
         <Text style={styles.sectionTitle}>{copy[form.language].weddingPreferences}</Text>
         <FieldLabel text={form.language === "en" ? "Tentative wedding date" : "Fecha tentativa de boda"} />
-        <TextInput
-          onChangeText={(value) => updateField("tentative_wedding_date", value)}
-          placeholder="YYYY-MM-DD"
-          style={styles.input}
-          value={form.tentative_wedding_date}
-        />
+        <QuoteDateCalendar language={form.language} value={form.tentative_wedding_date} onChange={(value) => updateField('tentative_wedding_date', value)} />
 
         <FieldLabel text={form.language === "en" ? "Guest count" : "Cantidad de invitados"} />
         <TextInput
@@ -259,6 +255,7 @@ export function AccountProfileScreen({
 
         <NativeSelect
           label={copy[form.language].weddingTheme}
+          language={form.language}
           value={form.wedding_theme}
           options={themeOptions(form.language)}
           onChange={(value) => updateField("wedding_theme", value)}

@@ -2,6 +2,7 @@
 
 import { useActionState, useCallback, useEffect, useMemo, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import PasswordInput from '@/components/PasswordInput';
 import { buildCountryOptions } from '@/lib/countries';
 import { signUp, type SignUpState } from './actions';
 
@@ -66,59 +67,8 @@ function formatDateValue(year: number, month: number, day: number) {
   return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 
-function TypewriterCopy({
-  body,
-  step,
-  title,
-  titleId,
-  onComplete,
-}: {
-  body: string;
-  step: number;
-  title: string;
-  titleId?: string;
-  onComplete: (step: number) => void;
-}) {
-  const [typedTitle, setTypedTitle] = useState('');
-  const [typedBody, setTypedBody] = useState('');
-
-  useEffect(() => {
-    let titleIndex = 0;
-    let bodyIndex = 0;
-    let isTypingBody = false;
-
-    const timer = window.setInterval(() => {
-      if (!isTypingBody) {
-        titleIndex += 1;
-        setTypedTitle(title.slice(0, titleIndex));
-
-        if (titleIndex >= title.length) {
-          isTypingBody = true;
-        }
-
-        return;
-      }
-
-      bodyIndex += 1;
-      setTypedBody(body.slice(0, bodyIndex));
-
-      if (bodyIndex >= body.length) {
-        window.clearInterval(timer);
-        onComplete(step);
-      }
-    }, isTypingBody ? 12 : 22);
-
-    return () => window.clearInterval(timer);
-  }, [body, onComplete, step, title]);
-
-  return (
-    <>
-      <h2 id={titleId} className="wm-signup-step-title">
-        {typedTitle}
-      </h2>
-      <p className="wm-signup-step-body">{typedBody}</p>
-    </>
-  );
+function SignupStepCopy({ body, title, titleId }: { body: string; title: string; titleId?: string }) {
+  return <><h2 id={titleId} className="wm-signup-step-title">{title}</h2><p className="wm-signup-step-body">{body}</p></>;
 }
 
 export default function SignUpForm({
@@ -137,7 +87,6 @@ export default function SignUpForm({
   const [isModalOpen, setIsModalOpen] = useState(openModalOnLoad);
   const [step, setStep] = useState(0);
   const [stepDirection, setStepDirection] = useState<'forward' | 'back'>('forward');
-  const [completedCopyStep, setCompletedCopyStep] = useState<number | null>(null);
   const [dialog, setDialog] = useState<SignupDialog>(null);
   const [dismissedActionMessage, setDismissedActionMessage] = useState<string | null>(null);
   const [datePickerMonth, setDatePickerMonth] = useState(() => {
@@ -212,7 +161,6 @@ export default function SignUpForm({
   function openSignupModal() {
     setStep(0);
     setStepDirection('forward');
-    setCompletedCopyStep(null);
     setDialog(null);
     setDismissedActionMessage(null);
     setIsModalOpen(true);
@@ -275,7 +223,6 @@ export default function SignUpForm({
       if (error) {
         showMessage(error);
         setStepDirection(index > step ? 'forward' : 'back');
-        setCompletedCopyStep(null);
         setStep(index);
         return false;
       }
@@ -290,7 +237,6 @@ export default function SignUpForm({
     if (boundedStep === step) return;
     setDialog(null);
     setStepDirection(boundedStep > step ? 'forward' : 'back');
-    setCompletedCopyStep(null);
     setStep(boundedStep);
   }
 
@@ -321,11 +267,6 @@ export default function SignUpForm({
   const actionMessage = state.ok ? undefined : state.message;
   const visibleDialog =
     dialog ?? (actionMessage && dismissedActionMessage !== actionMessage ? { kind: 'message' as const, message: actionMessage } : null);
-  const isStepCopyComplete = completedCopyStep === step;
-  const fieldsVisible = isStepCopyComplete;
-  const handleCopyComplete = useCallback((completedStep: number) => {
-    setCompletedCopyStep(completedStep);
-  }, []);
   const dismissDialog = useCallback(() => {
     if (dialog) {
       setDialog(null);
@@ -366,7 +307,7 @@ export default function SignUpForm({
           >
             <header className="wm-signup-modal__header">
               <div className="wm-signup-modal__logo" aria-hidden="true">
-                TWM
+                Wedding Market
               </div>
               <button
                 type="button"
@@ -386,13 +327,11 @@ export default function SignUpForm({
               <div className="wm-onboarding-panels" data-direction={stepDirection}>
                 <section hidden={step !== 0} className="wm-onboarding-panel wm-signup-step-card">
                   {step === 0 ? (
-                    <TypewriterCopy
+                    <SignupStepCopy
                       key={`copy-${step}-${language}`}
                       body={copy.body}
-                      step={step}
                       title={copy.title}
                       titleId="wm-signup-modal-title"
-                      onComplete={handleCopyComplete}
                     />
                   ) : null}
                 </section>
@@ -400,15 +339,13 @@ export default function SignUpForm({
                 <section hidden={step !== 1} className="wm-onboarding-panel wm-signup-step-card">
                   <p className="wm-signup-kicker">{modal.stepOf} 1 / 5</p>
                   {step === 1 ? (
-                    <TypewriterCopy
+                    <SignupStepCopy
                       key={`copy-${step}-${language}`}
                       body={copy.body}
-                      step={step}
                       title={copy.title}
-                      onComplete={handleCopyComplete}
                     />
                   ) : null}
-                  {step === 1 && fieldsVisible ? (
+                  {step === 1 ? (
                     <div className="wm-signup-field-stack wm-signup-fields">
                       <label className="form-label" htmlFor="signup-full-name">
                         {labels.fields.fullNameLabel}
@@ -453,15 +390,13 @@ export default function SignUpForm({
                 <section hidden={step !== 2} className="wm-onboarding-panel wm-signup-step-card">
                   <p className="wm-signup-kicker">{modal.stepOf} 2 / 5</p>
                   {step === 2 ? (
-                    <TypewriterCopy
+                    <SignupStepCopy
                       key={`copy-${step}-${language}`}
                       body={copy.body}
-                      step={step}
                       title={copy.title}
-                      onComplete={handleCopyComplete}
                     />
                   ) : null}
-                  {step === 2 && fieldsVisible ? (
+                  {step === 2 ? (
                     <div className="wm-signup-fields">
                       <label className="form-label">{modal.chooseWeddingStyle}</label>
                       <div className="wm-signup-style-grid" role="radiogroup" aria-label={modal.chooseWeddingStyle}>
@@ -492,15 +427,13 @@ export default function SignUpForm({
                 <section hidden={step !== 3} className="wm-onboarding-panel wm-signup-step-card">
                   <p className="wm-signup-kicker">{modal.stepOf} 3 / 5</p>
                   {step === 3 ? (
-                    <TypewriterCopy
+                    <SignupStepCopy
                       key={`copy-${step}-${language}`}
                       body={copy.body}
-                      step={step}
                       title={copy.title}
-                      onComplete={handleCopyComplete}
                     />
                   ) : null}
-                  {step === 3 && fieldsVisible ? (
+                  {step === 3 ? (
                     <div className="wm-signup-fields">
                       <label className="form-label">{modal.weddingDate}</label>
                       <div className="wm-signup-calendar">
@@ -552,15 +485,13 @@ export default function SignUpForm({
                 <section hidden={step !== 4} className="wm-onboarding-panel wm-signup-step-card">
                   <p className="wm-signup-kicker">{modal.stepOf} 4 / 5</p>
                   {step === 4 ? (
-                    <TypewriterCopy
+                    <SignupStepCopy
                       key={`copy-${step}-${language}`}
                       body={copy.body}
-                      step={step}
                       title={copy.title}
-                      onComplete={handleCopyComplete}
                     />
                   ) : null}
-                  {step === 4 && fieldsVisible ? (
+                  {step === 4 ? (
                     <div className="wm-signup-fields">
                       <label className="form-label" htmlFor="signup-country">
                         {modal.contactCountryLabel}
@@ -587,15 +518,13 @@ export default function SignUpForm({
                 <section hidden={step !== 5} className="wm-onboarding-panel wm-signup-step-card">
                   <p className="wm-signup-kicker">{modal.stepOf} 5 / 5</p>
                   {step === 5 ? (
-                    <TypewriterCopy
+                    <SignupStepCopy
                       key={`copy-${step}-${language}`}
                       body={copy.body}
-                      step={step}
                       title={copy.title}
-                      onComplete={handleCopyComplete}
                     />
                   ) : null}
-                  {step === 5 && fieldsVisible ? (
+                  {step === 5 ? (
                     <div className="wm-signup-field-stack wm-signup-fields">
                       <label className="form-label" htmlFor="signup-guests">
                         {modal.guestCountOptional}
@@ -637,17 +566,16 @@ export default function SignUpForm({
                       <label className="form-label" htmlFor="signup-password">
                         {labels.passwordLabel}
                       </label>
-                      <input
+                      <PasswordInput
                         id="signup-password"
                         className="form-control"
-                        type="password"
                         name="password"
                         value={form.password}
                         onChange={(event) => updateField('password', event.target.value)}
                         autoComplete="new-password"
                         minLength={8}
                       />
-                      <div className="form-text">{labels.passwordHelp}</div>
+                      <div className="form-text">{language === "es" ? "Al menos 8 caracteres." : "At least 8 characters."}</div>
                     </div>
                   ) : null}
                 </section>
@@ -675,12 +603,12 @@ export default function SignUpForm({
                   type="button"
                   className={`btn btn-primary${step === 0 ? ' wm-signup-next--full' : ''}`}
                   onClick={goNext}
-                  disabled={pending || !isStepCopyComplete}
+                  disabled={pending}
                 >
                   {step === 0 ? modal.startPlanning : labels.actions.next}
                 </button>
               ) : (
-                <button className="btn btn-primary" disabled={pending || !isStepCopyComplete}>
+                <button className="btn btn-primary" disabled={pending}>
                   {pending ? labels.submitting : labels.submit}
                 </button>
               )}

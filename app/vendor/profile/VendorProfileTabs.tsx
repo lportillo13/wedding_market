@@ -486,6 +486,12 @@ export default function VendorProfileTabs({
         ) : null}
       </div>
       <div className="wm-profile-workspace__body">
+        <div className="wm-profile-mobile-section">
+          <label htmlFor="profile-section">{es ? 'Sección del perfil' : 'Profile section'}</label>
+          <select className="form-select" id="profile-section" value={activeTab} onChange={event => chooseTab(event.target.value as TabId)}>
+            {ids.map(id => <option key={id} value={id}>{sectionLabel(id)}{dirty[id] ? ' •' : ''}</option>)}
+          </select>
+        </div>
         <aside className="wm-profile-sidebar">
           <div
             role="tablist"

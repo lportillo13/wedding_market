@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import PasswordInput from '@/components/PasswordInput';
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabaseBrowser } from "@/lib/supabase/client";
@@ -29,7 +30,7 @@ export default function LoginClient({
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
-  const { dictionary } = useLanguage();
+  const { dictionary, language } = useLanguage();
   const labels = dictionary.login;
 
   async function onEmailPassword(event: React.FormEvent) {
@@ -62,7 +63,7 @@ export default function LoginClient({
       <div className="wm-auth-card">
         <div className="wm-auth-card__header">
           <Link href="/" className="wm-auth-card__brand">Wedding Market</Link>
-          <p className="wm-auth-card__eyebrow">Welcome back</p>
+          <p className="wm-auth-card__eyebrow">{language === 'es' ? 'Te damos la bienvenida' : 'Welcome back'}</p>
           <h1 className="wm-auth-card__title">{labels.title}</h1>
         </div>
 
@@ -84,9 +85,8 @@ export default function LoginClient({
             </div>
             <div className="wm-auth-form-group">
               <label htmlFor="login-password">{labels.passwordLabel}</label>
-              <input
+              <PasswordInput
                 id="login-password"
-                type="password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 required
@@ -101,7 +101,7 @@ export default function LoginClient({
             </button>
           </form>
 
-          <div className="wm-auth-divider">or</div>
+          <div className="wm-auth-divider">{language === 'es' ? 'o' : 'or'}</div>
 
           <button className="wm-auth-btn wm-auth-btn--ghost" type="button" onClick={onGoogle}>
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">

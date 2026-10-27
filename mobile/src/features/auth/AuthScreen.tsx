@@ -1,4 +1,5 @@
-import brandMark from '../../../assets/brand/mark.png';
+import { PasswordField } from "../../ui/PasswordField";
+import { BrandWordmark } from "../../ui/BrandWordmark";
 import { themeOptions, weddingStyleCards } from "../../content/catalog";
 import { countryOptions } from "../../content/countries";
 import { copy } from "../../i18n/copy";
@@ -33,9 +34,6 @@ export function AuthScreen({
   const stepOpacity = useRef(new Animated.Value(1)).current;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [typedTitle, setTypedTitle] = useState("");
-  const [typedBody, setTypedBody] = useState("");
-  const [isStepCopyComplete, setIsStepCopyComplete] = useState(false);
   const [signupForm, setSignupForm] = useState({
     fullName: "",
     phone: "",
@@ -99,39 +97,6 @@ export function AuthScreen({
 
     return { title: labels.budgetStepTitle, body: labels.budgetStepBody };
   }
-
-  useEffect(() => {
-    if (!isSignupModalOpen) return undefined;
-
-    const { title: nextTitle, body: nextBody } = signupCopyForStep();
-    let titleIndex = 0;
-    let bodyIndex = 0;
-    let isTypingBody = false;
-
-    setTypedTitle("");
-    setTypedBody("");
-    setIsStepCopyComplete(false);
-
-    const timer = setInterval(() => {
-      if (!isTypingBody) {
-        titleIndex += 1;
-        setTypedTitle(nextTitle.slice(0, titleIndex));
-        if (titleIndex >= nextTitle.length) {
-          isTypingBody = true;
-        }
-        return;
-      }
-
-      bodyIndex += 1;
-      setTypedBody(nextBody.slice(0, bodyIndex));
-      if (bodyIndex >= nextBody.length) {
-        clearInterval(timer);
-        setIsStepCopyComplete(true);
-      }
-    }, isTypingBody ? 12 : 22);
-
-    return () => clearInterval(timer);
-  }, [isSignupModalOpen, signupStep, language]);
 
   function updateSignupField(key: keyof typeof signupForm, value: string) {
     setSignupForm((current) => ({ ...current, [key]: value }));
@@ -342,14 +307,14 @@ export function AuthScreen({
     return (
       <>
         {kicker ? <Text style={styles.signupKicker}>{kicker}</Text> : null}
-        <Text style={styles.signupStepTitle}>{isSignupModalOpen ? typedTitle : title}</Text>
-        <Text style={styles.signupStepBody}>{isSignupModalOpen ? typedBody : body}</Text>
+        <Text style={styles.signupStepTitle}>{title}</Text>
+        <Text style={styles.signupStepBody}>{body}</Text>
       </>
     );
   }
 
   function renderSignupStep() {
-    const fieldsVisible = !isSignupModalOpen || isStepCopyComplete;
+    const fieldsVisible = true;
 
     if (signupStep === 0) {
       return (
@@ -533,7 +498,7 @@ export function AuthScreen({
             <Text style={styles.signupStepTitleSmall}>{labels.accountStepTitle}</Text>
             <Text style={styles.signupStepBody}>{labels.accountStepBody}</Text>
             <FieldLabel centered text={labels.password} />
-            <TextInput
+            <PasswordField language={language}
               autoCapitalize="none"
               onChangeText={setPassword}
               placeholder={labels.password}
@@ -553,12 +518,7 @@ export function AuthScreen({
       <ExpoStatusBar style="dark" />
       <ScrollView contentContainerStyle={styles.authScroll} keyboardShouldPersistTaps="handled">
         <View style={styles.authShell}>
-          <View style={[styles.authLogo, mode === "signup" && !isForgotPassword && styles.signupAuthLogo]}>
-            <Ionicons name="sparkles-outline" size={22} color={colors.gold} />
-          </View>
-          <Text style={[styles.brand, mode === "signup" && !isForgotPassword && styles.signupAuthCenteredText]}>
-            The Wedding Market
-          </Text>
+          <View style={{ alignItems: "center", marginBottom: 28 }}><BrandWordmark /></View>
           <Text style={[styles.authTitle, mode === "signup" && !isForgotPassword && styles.signupAuthCenteredText]}>
             {isForgotPassword
               ? labels.passwordResetTitle
@@ -656,7 +616,7 @@ export function AuthScreen({
                 />
 
                 <FieldLabel text={labels.password} />
-                <TextInput
+                <PasswordField language={language}
                   autoCapitalize="none"
                   onChangeText={setPassword}
                   placeholder={labels.password}
@@ -724,7 +684,7 @@ export function AuthScreen({
           <ExpoStatusBar style="dark" />
           <View style={styles.signupModalHeader}>
             <View style={styles.signupModalLogo}>
-              <Image source={brandMark} style={{width:46,height:40,tintColor:colors.ink}} />
+              <BrandWordmark />
             </View>
             <TouchableOpacity onPress={requestCloseSignupModal} style={styles.signupModalCloseButton}>
               <Ionicons name="close" size={22} color={colors.ink} />
@@ -769,13 +729,13 @@ export function AuthScreen({
               </TouchableOpacity>
             ) : null}
             <TouchableOpacity
-              disabled={isSubmitting || !isStepCopyComplete}
+              disabled={isSubmitting}
               onPress={signupStep === signupStepCount - 1 ? submitSignup : handleNextSignupStep}
               style={[
                 styles.primaryButton,
                 styles.signupNextButton,
                 signupStep === 0 && styles.signupNextButtonFull,
-                (isSubmitting || !isStepCopyComplete) && styles.primaryButtonDisabled,
+                (isSubmitting) && styles.primaryButtonDisabled,
               ]}
             >
               <Text style={styles.primaryButtonText}>
@@ -866,13 +826,13 @@ export function PasswordRecoveryModal({
           <View style={styles.authLogo}>
             <Ionicons name="key-outline" size={22} color={colors.gold} />
           </View>
-          <Text style={styles.brand}>The Wedding Market</Text>
+          <BrandWordmark />
           <Text style={styles.authTitle}>{labels.chooseNewPassword}</Text>
           <Text style={styles.body}>{labels.chooseNewPasswordIntro}</Text>
 
           <View style={styles.form}>
             <FieldLabel text={labels.newPassword} />
-            <TextInput
+            <PasswordField language={language}
               autoCapitalize="none"
               autoComplete="new-password"
               onChangeText={setPassword}
@@ -883,7 +843,7 @@ export function PasswordRecoveryModal({
             />
 
             <FieldLabel text={labels.confirmNewPassword} />
-            <TextInput
+            <PasswordField language={language}
               autoCapitalize="none"
               autoComplete="new-password"
               onChangeText={setConfirmation}

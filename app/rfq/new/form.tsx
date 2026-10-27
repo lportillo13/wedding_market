@@ -56,7 +56,7 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
   );
 
   return (
-    <main className="container py-4" style={{ maxWidth: 920 }}>
+    <main className="container py-4 wm-request-page" style={{ maxWidth: 820 }}>
       <h1 className="mb-3">{labels.title}</h1>
 
       {ids.length === 0 ? (
@@ -91,6 +91,7 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
                     <button
                       type="button"
                       className="btn btn-sm btn-outline-light"
+                      aria-label={`${language === 'es' ? 'Quitar' : 'Remove'} ${vendorName}`}
                       onClick={() => {
                         removeFromShortlist(id);
                         setIds((current) => current.filter((value) => value !== id));
@@ -115,10 +116,11 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
             guestCount={adGuestCount}
           />
 
-          <form action={action} onReset={event => event.preventDefault()} className="border rounded p-3 bg-body">
+          <form action={action} onReset={event => event.preventDefault()} className="wm-editorial-form" aria-busy={pending}>
             <input type="hidden" name="vendor_ids_json" value={vendorIdsJson} />
             <p className="small text-muted">{language === "es" ? "* Campos requeridos" : "* Required fields"}</p>
 
+            <fieldset><legend>{language === 'es' ? 'Tu boda' : 'Your wedding'}</legend>
             <div className="row">
               <div className="col-md-6 mb-3">
                 <label className="form-label" htmlFor="rfq-event-date">
@@ -144,6 +146,25 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
               </div>
             </div>
 
+            </fieldset>
+            <fieldset><legend>{language === 'es' ? 'Tu mensaje' : 'Your message'}</legend>
+            <div className="mb-3">
+              <label className="form-label" htmlFor="rfq-notes">
+                {labels.notesLabel} *
+              </label>
+              <textarea
+                id="rfq-notes"
+                className="form-control"
+                name="notes"
+                rows={4}
+                maxLength={2000}
+                required
+                onChange={(event) => setAdNotes(event.target.value)}
+              />
+            </div>
+
+            </fieldset>
+            <details className="wm-editorial-details"><summary>{language === 'es' ? 'Más detalles · opcionales' : 'More details · optional'}</summary>
             <div className="row">
               <div className="col-md-6 mb-3">
                 <label className="form-label" htmlFor="rfq-city">
@@ -203,20 +224,7 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
               </select>
             </div>
 
-            <div className="mb-3">
-              <label className="form-label" htmlFor="rfq-notes">
-                {labels.notesLabel} *
-              </label>
-              <textarea
-                id="rfq-notes"
-                className="form-control"
-                name="notes"
-                rows={4}
-                maxLength={2000}
-                required
-                onChange={(event) => setAdNotes(event.target.value)}
-              />
-            </div>
+            </details>
 
             {!state.ok && state.message && <div className="alert alert-danger">{state.message}</div>}
 
@@ -229,6 +237,7 @@ export default function NewRfqForm({ prefill }: { prefill: RfqPrefill }) {
                 type="button"
                 className="btn btn-outline-secondary"
                 onClick={() => {
+                  if (!window.confirm(language === 'es' ? '¿Quitar todos los proveedores de esta solicitud?' : 'Remove all vendors from this request?')) return;
                   clearShortlist();
                   setIds([]);
                 }}

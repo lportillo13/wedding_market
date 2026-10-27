@@ -1,0 +1,71 @@
+{
+  "checkedAt": "2026-10-27T20:06:14.632Z",
+  "environment": "local production build; guest; no signup submitted",
+  "checks": [
+    {
+      "overflow": false,
+      "path": "/signup/vendor",
+      "scrollWidth": 305,
+      "title": "Un espacio para tu negocio de bodas.",
+      "width": 320
+    },
+    {
+      "overflow": false,
+      "path": "/vendors",
+      "scrollWidth": 305,
+      "title": "Proveedores",
+      "width": 320
+    },
+    {
+      "overflow": false,
+      "path": "/login",
+      "scrollWidth": 305,
+      "title": "Iniciar sesión",
+      "width": 320
+    },
+    {
+      "overflow": false,
+      "path": "/",
+      "scrollWidth": 305,
+      "title": "Planea la boda de tus sueños con menos estrés",
+      "width": 320
+    },
+    {
+      "overflow": false,
+      "path": "/about",
+      "scrollWidth": 305,
+      "title": "Planeamos contigo",
+      "width": 320
+    },
+    {
+      "overflow": false,
+      "path": "/blog",
+      "scrollWidth": 305,
+      "title": "Historias de bodas, ideas de planeacion e inspiracion de diseno.",
+      "width": 320
+    },
+    {
+      "inputWidth": 0,
+      "overflow": false,
+      "path": "/login",
+      "width": 320
+    },
+    {
+      "overflow": false,
+      "path": "/blog",
+      "statsPanels": 0,
+      "width": 320
+    }
+  ],
+  "behavior": {
+    "vendorStagesExercised": 6,
+    "passwordVisibility": true,
+    "photoSelectionAndBackNavigation": true,
+    "englishSpanishNavigation": true,
+    "coupleSignupHasNoTypewriterWait": true
+  },
+  "limits": [
+    "Local category data unavailable; verify directory and signed-in views live",
+    "No native device visual acceptance in this batch"
+  ]
+}

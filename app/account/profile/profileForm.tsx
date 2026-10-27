@@ -62,7 +62,7 @@ export default function ProfileForm({ initial }: { initial: ProfileFormInitial }
   );
 
   return (
-    <form action={formAction} className="border rounded p-3 bg-body">
+    <form action={formAction} className="wm-editorial-form" aria-busy={pending}>
       <div className="row">
         <div className="col-md-6 mb-3">
           <label className="form-label" htmlFor="profile-name">

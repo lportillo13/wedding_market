@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useMemo } from "react";
 import SponsoredVendorsSection from "@/components/ads/SponsoredVendorsSection";
 import VendorAdsBanner from "@/components/ads/VendorAdsBanner";
@@ -139,7 +140,7 @@ export default function VendorsPageContent({
               <div className="wm-vendors-search__field">
                 <svg className="wm-vendors-search__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <span className="wm-vendors-search__label">{labels.searchForm.queryPlaceholder.split(" ")[0]}</span>
+                  <span className="wm-vendors-search__label">{language === 'es' ? 'Nombre o palabra clave' : 'Name or keyword'}</span>
                   <AutocompleteInput
                     className="wm-vendors-search__input"
                     name="q"
@@ -154,7 +155,7 @@ export default function VendorsPageContent({
               <div className="wm-vendors-search__field">
                 <svg className="wm-vendors-search__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <span className="wm-vendors-search__label">{labels.searchForm.categoryPlaceholder.split(" ")[0]}</span>
+                  <span className="wm-vendors-search__label">{language === 'es' ? 'Tipo de servicio' : 'Service category'}</span>
                   <select
                     className="wm-vendors-search__input wm-vendors-search__select"
                     name="category"
@@ -175,13 +176,14 @@ export default function VendorsPageContent({
               </button>
             </div>
           </form>
+          {(searchParams.q || searchParams.category) && <Link className="wm-search-reset" href="/vendors">{language === 'es' ? 'Limpiar búsqueda y filtros' : 'Clear search and filters'}</Link>}
         </div>
       </section>
 
       {/* ── Content ── */}
       <div className="wm-vendors-content">
         <div className="container">
-          <div style={{ marginBottom: "2rem" }}>
+          {VENDOR_ADS_PUBLICLY_VISIBLE && <><div style={{ marginBottom: "2rem" }}>
             <VendorAdsBanner banner={adsConfig.directoryBanner} language={language} variant="directory" />
           </div>
 
@@ -193,11 +195,15 @@ export default function VendorsPageContent({
             />
           </div>
 
+          </>}
+
           {error ? (
             <div role="alert" className="alert alert-warning">{language === "es" ? "No pudimos cargar los proveedores. Inténtalo de nuevo en unos minutos." : "We could not load vendors. Please try again shortly."}</div>
           ) : items.length === 0 ? (
             <div className="wm-vendors-empty">
+              <h2>{language === 'es' ? 'Cada gran boda empieza con una conexión.' : 'Every great wedding starts with a connection.'}</h2>
               <p>{labels.empty}</p>
+              {(searchParams.q || searchParams.category) ? <Link href="/vendors" className="btn btn-outline-secondary">{language === 'es' ? 'Ver todos los servicios' : 'See all services'}</Link> : <Link href="/signup/vendor" className="btn btn-outline-secondary">{language === 'es' ? '¿Ofreces servicios para bodas? Únete' : 'A wedding professional? Join us'}</Link>}
             </div>
           ) : (
             <div className="wm-vendor-grid">
@@ -271,7 +277,7 @@ export default function VendorsPageContent({
             </div>
           )}
 
-          <nav className="wm-vendors-pagination" aria-label="Page navigation">
+          {totalPages > 1 && <nav className="wm-vendors-pagination" aria-label={language === 'es' ? 'Páginas de resultados' : 'Results pages'}>
             <a
               className={`wm-vendors-pagination__btn${page <= 1 ? " wm-vendors-pagination__btn--disabled" : ""}`}
               href={buildPageHref(searchParams, Math.max(1, page - 1))}
@@ -287,7 +293,7 @@ export default function VendorsPageContent({
             >
               {labels.pagination.next} →
             </a>
-          </nav>
+          </nav>}
         </div>
       </div>
     </main>

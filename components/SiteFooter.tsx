@@ -31,7 +31,7 @@ export default function SiteFooter({ vendorCategories }: SiteFooterProps) {
   if (pathname.startsWith("/private-control-room-hub")) {
     return null;
   }
-  if (isHeaderLinkCurrent(pathname, "/account") || isHeaderLinkCurrent(pathname, "/vendor/inbox")) {
+  if (isHeaderLinkCurrent(pathname, "/account") || isHeaderLinkCurrent(pathname, "/vendor") || isHeaderLinkCurrent(pathname, "/signup") || isHeaderLinkCurrent(pathname, "/login") || isHeaderLinkCurrent(pathname, "/rfq")) {
     return <WorkspaceFooter />;
   }
 

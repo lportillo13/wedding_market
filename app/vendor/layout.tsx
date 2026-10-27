@@ -11,7 +11,7 @@ export default async function VendorLayout({ children }: { children: ReactNode }
   }
 
   return (
-    <div className="container py-4">
+    <div className="container py-4 wm-vendor-workspace">
       <VendorDashboardHeader />
       {children}
     </div>

@@ -1,3 +1,4 @@
+import { SectionPicker } from "../../../ui/SectionPicker";
 import * as ImagePicker from "expo-image-picker";
 import { profilePricingDrafts } from "../../../../../shared/vendors/pricing";
 import { vendorPricingLabels } from "../../../../../shared/vendors/pricing-labels";
@@ -311,21 +312,10 @@ export function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
         <Text style={styles.body}>{language === "es" ? "Puedes cambiar de sección sin perder tu borrador. Guarda antes de salir de este espacio." : "Switch sections without losing your draft. Save before leaving this workspace."}</Text>
         <View style={styles.detailChips}>{essentials.map((step) => <TouchableOpacity disabled={isSaving} key={step.id} style={styles.detailChip} onPress={() => setActiveTab(step.id)}><Text style={styles.detailChipText}>{step.complete ? "✓ " : "+ "}{copy[language][step.id]}</Text></TouchableOpacity>)}</View>
       </View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.editorTabs}>
-        {vendorEditorTabs.map((tab) => (
-          <TouchableOpacity
-            key={tab.key}
-            disabled={isSaving}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: activeTab === tab.key, disabled: isSaving }}
-            onPress={() => setActiveTab(tab.key)}
-            style={[styles.editorTab, activeTab === tab.key && styles.editorTabActive]}
-          >
-            <Ionicons name={tab.icon} size={15} color={activeTab === tab.key ? colors.paper : colors.tealDark} />
-            <Text style={[styles.editorTabText, activeTab === tab.key && styles.editorTabTextActive]}>{copy[language][tab.key]}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      <SectionPicker value={activeTab} disabled={isSaving} onChange={setActiveTab}
+        label={language === 'es' ? 'Sección del perfil' : 'Profile section'}
+        closeLabel={language === 'es' ? 'Cerrar' : 'Close'}
+        options={vendorEditorTabs.map(tab => ({ key: tab.key, label: copy[language][tab.key] }))} />
 
       {message ? (
         <View style={message === labels.saved ? styles.successBanner : styles.errorBanner}>

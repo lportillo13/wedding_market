@@ -1,9 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { type ChangeEvent, useActionState, useEffect, useMemo, useRef, useState } from 'react';
+import PasswordInput from '@/components/PasswordInput';
+import { type ChangeEvent, type FormEvent, useActionState, useEffect, useMemo, useRef, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { buildCountryOptions } from '@/lib/countries';
+import { vendorOnboardingCopy } from './presentation';
 import { createVendor, type VendorSignUpState } from './actions';
 
 type CategoryOption = {
@@ -96,6 +98,10 @@ export default function VendorSignUpForm({
   const signupLabels = dictionary.signup.form;
   const dashboard = dictionary.vendorDashboard;
   const [step, setStep] = useState(0);
+  const [furthestStep, setFurthestStep] = useState(0);
+  const formRef = useRef<HTMLFormElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const copy = vendorOnboardingCopy[language];
   const [localError, setLocalError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [uploadPreviews, setUploadPreviews] = useState<{
@@ -143,11 +149,21 @@ export default function VendorSignUpForm({
   });
 
   const steps = [
-    labels.steps.brand,
-    labels.steps.coverage,
-    labels.steps.contact,
-    labels.steps.pricing,
+    ...(requiresAccount ? [{ id: 'account', ...copy.account }] : []),
+    { id: 'brand', ...copy.brand }, { id: 'media', ...copy.media },
+    { id: 'coverage', ...copy.coverage }, { id: 'contact', ...copy.contact },
+    { id: 'pricing', ...copy.pricing },
   ];
+  const activeStep = steps[step].id;
+  function changeStep(next: number) {
+    setLocalError(null);
+    setStep(next);
+    setFurthestStep(current => Math.max(current, next));
+    requestAnimationFrame(() => {
+      headingRef.current?.focus({ preventScroll: true });
+      headingRef.current?.scrollIntoView({ block: 'start', behavior: 'instant' });
+    });
+  }
   const progress = ((step + 1) / steps.length) * 100;
   const countryOptions = useMemo(() => buildCountryOptions(form.country), [form.country]);
 
@@ -259,52 +275,65 @@ export default function VendorSignUpForm({
     });
   }
 
+  function stepError(stepId: string) {
+    let error: string | null = null;
+    if (stepId === 'brand' && localizedCategories.length > 0 && !form.categories.length) return labels.validation.categoriesRequired;
+    if (stepId === 'brand' && form.categories.length > 12) return language === 'es' ? 'Selecciona hasta 12 servicios.' : 'Choose up to 12 services.';
+    if (stepId === 'media' && !logoInputRef.current?.files?.[0]) return labels.validation.logoRequired;
+    if (stepId === 'media' && !heroInputRef.current?.files?.[0]) return labels.validation.heroRequired;
+    if (stepId === 'contact' && !form.phone.trim() && !form.website_url.trim()) return labels.validation.contactRequired;
+    if (stepId === 'contact' && !form.languages.length && !form.other_languages.trim()) error = labels.validation.languagesRequired;
+    return error;
+  }
+
   function validateCurrentStep() {
-    if (step === 0) {
-      if (requiresAccount) {
-        if (!form.owner_name.trim()) return labels.validation.ownerNameRequired;
-        if (!form.email.trim()) return labels.validation.emailRequired;
-        if (!form.password.trim()) return labels.validation.passwordRequired;
-        if (form.password.length < 8) return labels.validation.passwordTooShort;
+    const panel = formRef.current?.querySelector<HTMLElement>(`[data-step="${activeStep}"]`);
+    const invalid = Array.from(panel?.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('input, select, textarea') ?? []).find(input => !input.checkValidity());
+    if (invalid) {
+      let parent = invalid.parentElement;
+      while (parent && parent !== panel) {
+        if (parent instanceof HTMLDetailsElement) parent.open = true;
+        parent = parent.parentElement;
       }
-      if (!form.business_name.trim()) return labels.validation.businessNameRequired;
-      if (!form.tagline.trim()) return labels.validation.taglineRequired;
-      if (!logoInputRef.current?.files?.[0]) return labels.validation.logoRequired;
-      if (!heroInputRef.current?.files?.[0]) return labels.validation.heroRequired;
-      if (localizedCategories.length > 0 && !form.categories.length) {
-        return labels.validation.categoriesRequired;
-      }
-      return null;
+      invalid.reportValidity();
+      return false;
     }
-
-    if (step === 1) {
-      if (!form.country.trim()) return labels.validation.countryRequired;
-      return null;
-    }
-
-    if (step === 2) {
-      if (!form.phone.trim() && !form.website_url.trim()) return labels.validation.contactRequired;
-      if (!form.languages.length && !form.other_languages.trim()) return labels.validation.languagesRequired;
-      return null;
-    }
-
-    if (step === 3) {
-      if (!form.starting_price.trim()) return labels.validation.startingPriceRequired;
-      return null;
-    }
-
-    return null;
+    const error = stepError(activeStep);
+    setLocalError(error);
+    return !error;
   }
 
   function goNext() {
-    const error = validateCurrentStep();
-    if (error) {
-      setLocalError(error);
+    if (validateCurrentStep()) changeStep(Math.min(step + 1, steps.length - 1));
+  }
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    if (pending) { event.preventDefault(); return; }
+    if (step < steps.length - 1) { event.preventDefault(); goNext(); return; }
+    if (!validateCurrentStep()) { event.preventDefault(); return; }
+    const incomplete = steps.findIndex(item => stepError(item.id));
+    if (incomplete >= 0) {
+      event.preventDefault();
+      changeStep(incomplete);
+      setLocalError(stepError(steps[incomplete].id));
       return;
     }
-
-    setLocalError(null);
-    setStep((current) => Math.min(current + 1, steps.length - 1));
+    // Keep previous panels mounted so text and selected files survive navigation.
+    const invalid = Array.from(event.currentTarget.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('input, select, textarea')).find(input => !input.checkValidity());
+    if (invalid) {
+      event.preventDefault();
+      const id = invalid.closest<HTMLElement>('[data-step]')?.dataset.step;
+      const index = steps.findIndex(item => item.id === id);
+      if (index >= 0) changeStep(index);
+      requestAnimationFrame(() => {
+        let parent = invalid.parentElement;
+        while (parent && parent !== formRef.current) {
+          if (parent instanceof HTMLDetailsElement) parent.open = true;
+          parent = parent.parentElement;
+        }
+        invalid.reportValidity();
+      });
+    }
   }
 
   const selectedCategoryLabels =
@@ -329,13 +358,13 @@ export default function VendorSignUpForm({
   const actionMessage = state.ok ? undefined : state.message;
 
   return (
-    <form action={action} className="wm-onboarding-card" encType="multipart/form-data">
+    <form ref={formRef} action={action} onSubmit={handleSubmit} noValidate className="wm-onboarding-card wm-vendor-onboarding__form" aria-busy={pending}>
       <div className="wm-onboarding-card__header">
         <div>
           <p className="wm-onboarding-card__eyebrow">
             {labels.progressLabel} {step + 1} / {steps.length}
           </p>
-          <h2 className="wm-onboarding-card__title">{steps[step].title}</h2>
+          <h2 ref={headingRef} tabIndex={-1} className="wm-onboarding-card__title">{steps[step].title}</h2>
           <p className="wm-onboarding-card__description">{steps[step].description}</p>
         </div>
         <div className="wm-onboarding-meter" aria-hidden="true">
@@ -343,38 +372,30 @@ export default function VendorSignUpForm({
         </div>
       </div>
 
-      <div className="wm-onboarding-stepper" aria-label={labels.progressLabel}>
+      <nav className="wm-onboarding-stepper" aria-label={labels.progressLabel}>
         {steps.map((item, index) => (
           <button
             key={item.title}
             type="button"
             className={`wm-onboarding-stepper__item${index === step ? ' is-active' : ''}${index < step ? ' is-complete' : ''}`}
-            onClick={() => {
-              if (index <= step) {
-                setLocalError(null);
-                setStep(index);
-              }
-            }}
+            disabled={pending || index > furthestStep}
+            aria-current={index === step ? 'step' : undefined}
+            onClick={() => changeStep(index)}
           >
             <span className="wm-onboarding-stepper__index">{index + 1}</span>
             <span>{item.shortLabel}</span>
           </button>
         ))}
-      </div>
+      </nav>
+      <p className="wm-vendor-onboarding__required">{copy.required}</p>
 
-      <section hidden={step !== 0} className="wm-onboarding-panel">
-        <div className="row g-3">
+      <section hidden={activeStep !== 'account'} data-step="account" className="wm-onboarding-panel">
+        <div className="row g-4">
           {requiresAccount ? (
             <>
               <div className="col-12">
-                <div className="wm-onboarding-question">
-                  <span>{labels.accountPrompt.title}</span>
-                  <strong>{labels.accountPrompt.subtitle}</strong>
-                </div>
-              </div>
-              <div className="col-12">
                 <label className="form-label" htmlFor="vendor-owner-name">
-                  {labels.fields.ownerNameLabel}
+                  {labels.fields.ownerNameLabel} <span aria-hidden="true">*</span>
                 </label>
                 <input
                   id="vendor-owner-name"
@@ -388,7 +409,7 @@ export default function VendorSignUpForm({
               </div>
               <div className="col-12 col-md-6">
                 <label className="form-label" htmlFor="vendor-owner-email">
-                  {signupLabels.emailLabel}
+                  {signupLabels.emailLabel} <span aria-hidden="true">*</span>
                 </label>
                 <input
                   id="vendor-owner-email"
@@ -403,12 +424,11 @@ export default function VendorSignUpForm({
               </div>
               <div className="col-12 col-md-6">
                 <label className="form-label" htmlFor="vendor-owner-password">
-                  {signupLabels.passwordLabel}
+                  {signupLabels.passwordLabel} <span aria-hidden="true">*</span>
                 </label>
-                <input
+                <PasswordInput
                   id="vendor-owner-password"
                   className="form-control"
-                  type="password"
                   name="password"
                   value={form.password}
                   onChange={(event) => updateField('password', event.target.value)}
@@ -416,17 +436,23 @@ export default function VendorSignUpForm({
                   minLength={8}
                   required={requiresAccount}
                 />
-                <div className="form-text">{signupLabels.passwordHelp}</div>
+                <div className="form-text">{language === 'es' ? 'Al menos 8 caracteres.' : 'At least 8 characters.'}</div>
               </div>
             </>
           ) : null}
+        </div>
+      </section>
+      <section hidden={activeStep !== 'brand'} data-step="brand" className="wm-onboarding-panel">
+        <div className="row g-4">
           <div className="col-12">
             <label className="form-label" htmlFor="vendor-business-name">
-              {labels.businessNameLabel}
+              {labels.businessNameLabel} <span aria-hidden="true">*</span>
             </label>
             <input
               id="vendor-business-name"
               className="form-control form-control-lg"
+              minLength={2}
+              maxLength={120}
               name="business_name"
               value={form.business_name}
               onChange={(event) => updateField('business_name', event.target.value)}
@@ -435,12 +461,14 @@ export default function VendorSignUpForm({
           </div>
           <div className="col-12">
             <label className="form-label" htmlFor="vendor-tagline">
-              {labels.fields.taglineLabel}
+              {labels.fields.taglineLabel} <span aria-hidden="true">*</span>
             </label>
             <textarea
               id="vendor-tagline"
               className="form-control"
               name="tagline"
+              minLength={12}
+              maxLength={320}
               rows={3}
               value={form.tagline}
               onChange={(event) => updateField('tagline', event.target.value)}
@@ -451,12 +479,42 @@ export default function VendorSignUpForm({
         </div>
 
         <div className="wm-onboarding-fieldset mt-4">
-          <div className="wm-onboarding-question">
-            <span>{labels.fields.mediaPromptLabel}</span>
-            <strong>{labels.fields.mediaPromptTitle}</strong>
-          </div>
-          <p className="wm-onboarding-fieldset__hint">{labels.hints.media}</p>
+          <label className="form-label" htmlFor="vendor-category-search">
+            {labels.fields.categorySearchLabel}
+          </label>
+          <input
+            id="vendor-category-search"
+            className="form-control"
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            placeholder={labels.fields.categorySearchPlaceholder}
+          />
+          <p className="wm-onboarding-fieldset__hint">{labels.hints.categories}</p>
 
+          <div className="wm-onboarding-selected mt-3">
+            <strong>{dashboard.categories.selectedServices}</strong>
+            <span>{selectedCategoryLabels}</span>
+          </div>
+
+          <div className="wm-onboarding-chip-grid wm-vendor-onboarding__services mt-3">
+            {visibleCategories.length === 0 && <p>{copy.noMatches}</p>}
+            {visibleCategories.map((item) => (
+              <button
+                key={item.key}
+                type="button"
+                className={`wm-onboarding-chip${form.categories.includes(item.key) ? ' is-active' : ''}`}
+                aria-pressed={form.categories.includes(item.key)}
+                onClick={() => toggleArrayValue('categories', item.key)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+      </section>
+      <section hidden={activeStep !== 'media'} data-step="media" className="wm-onboarding-panel">
+        <div className="wm-onboarding-fieldset">
           <div className="wm-onboarding-upload-grid">
             <div className="wm-onboarding-upload-field">
               <label className="wm-onboarding-upload-card" htmlFor="vendor-logo-file">
@@ -475,7 +533,7 @@ export default function VendorSignUpForm({
                 </span>
                 <span className="wm-onboarding-upload-card__body">
                   <span className="wm-onboarding-upload-card__eyebrow">{labels.fields.logoLabel}</span>
-                  <strong className="wm-onboarding-upload-card__title">{labels.fields.logoTitle}</strong>
+                  <strong className="wm-onboarding-upload-card__title">{labels.fields.logoTitle} <span aria-hidden="true">*</span></strong>
                   <span className="wm-onboarding-upload-card__copy">{labels.fields.logoHelp}</span>
                   <span className="wm-onboarding-upload-card__meta">
                     {uploadPreviews.logo?.name ?? labels.fields.logoEmpty}
@@ -514,7 +572,7 @@ export default function VendorSignUpForm({
                 </span>
                 <span className="wm-onboarding-upload-card__body">
                   <span className="wm-onboarding-upload-card__eyebrow">{labels.fields.heroLabel}</span>
-                  <strong className="wm-onboarding-upload-card__title">{labels.fields.heroTitle}</strong>
+                  <strong className="wm-onboarding-upload-card__title">{labels.fields.heroTitle} <span aria-hidden="true">*</span></strong>
                   <span className="wm-onboarding-upload-card__copy">{labels.fields.heroHelp}</span>
                   <span className="wm-onboarding-upload-card__meta">
                     {uploadPreviews.hero?.name ?? labels.fields.heroEmpty}
@@ -538,41 +596,11 @@ export default function VendorSignUpForm({
           </div>
         </div>
 
-        <div className="wm-onboarding-fieldset mt-4">
-          <label className="form-label" htmlFor="vendor-category-search">
-            {labels.fields.categorySearchLabel}
-          </label>
-          <input
-            id="vendor-category-search"
-            className="form-control"
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            placeholder={labels.fields.categorySearchPlaceholder}
-          />
-          <p className="wm-onboarding-fieldset__hint">{labels.hints.categories}</p>
 
-          <div className="wm-onboarding-selected mt-3">
-            <strong>{dashboard.categories.selectedServices}</strong>
-            <span>{selectedCategoryLabels}</span>
-          </div>
-
-          <div className="wm-onboarding-chip-grid mt-3">
-            {visibleCategories.map((item) => (
-              <button
-                key={item.key}
-                type="button"
-                className={`wm-onboarding-chip${form.categories.includes(item.key) ? ' is-active' : ''}`}
-                onClick={() => toggleArrayValue('categories', item.key)}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-        </div>
       </section>
 
-      <section hidden={step !== 1} className="wm-onboarding-panel">
-        <div className="row g-3">
+      <section hidden={activeStep !== 'coverage'} data-step="coverage" className="wm-onboarding-panel">
+        <div className="row g-4">
           <div className="col-12 col-md-6">
             <label className="form-label" htmlFor="vendor-city">
               {labels.cityLabel}
@@ -599,7 +627,7 @@ export default function VendorSignUpForm({
           </div>
           <div className="col-12">
             <label className="form-label" htmlFor="vendor-country">
-              {labels.countryLabel}
+              {labels.countryLabel} <span aria-hidden="true">*</span>
             </label>
             <select
               id="vendor-country"
@@ -632,6 +660,7 @@ export default function VendorSignUpForm({
           </div>
         </div>
 
+        <details className="wm-editorial-details"><summary>{copy.optional}</summary>
         <div className="wm-onboarding-fieldset mt-4">
           <label className="form-label" htmlFor="vendor-radius">
             {dashboard.location.form.radiusLabel}
@@ -661,6 +690,7 @@ export default function VendorSignUpForm({
                 key={value}
                 type="button"
                 className={`wm-onboarding-chip${form.event_types.includes(value) ? ' is-active' : ''}`}
+                aria-pressed={form.event_types.includes(value)}
                 onClick={() => toggleArrayValue('event_types', value)}
               >
                 {eventTypeLabels[value]}
@@ -668,10 +698,11 @@ export default function VendorSignUpForm({
             ))}
           </div>
         </div>
+        </details>
       </section>
 
-      <section hidden={step !== 2} className="wm-onboarding-panel">
-        <div className="row g-3">
+      <section hidden={activeStep !== 'contact'} data-step="contact" className="wm-onboarding-panel">
+        <div className="row g-4">
           <div className="col-12 col-md-6">
             <label className="form-label" htmlFor="vendor-phone">
               {dashboard.profileContact.phoneLabel}
@@ -679,6 +710,7 @@ export default function VendorSignUpForm({
             <input
               id="vendor-phone"
               className="form-control"
+              type="tel"
               name="phone"
               value={form.phone}
               onChange={(event) => updateField('phone', event.target.value)}
@@ -698,6 +730,22 @@ export default function VendorSignUpForm({
               placeholder="yourstudio.com"
             />
           </div>
+          <div className="col-12 col-md-6">
+            <label className="form-label" htmlFor="vendor-other-languages">
+              {labels.fields.otherLanguagesLabel}
+            </label>
+            <input
+              id="vendor-other-languages"
+              className="form-control"
+              name="other_languages"
+              value={form.other_languages}
+              onChange={(event) => updateField('other_languages', event.target.value)}
+              placeholder={labels.fields.otherLanguagesPlaceholder}
+            />
+          </div>
+        </div>
+
+        <details className="wm-editorial-details"><summary>{copy.optional}</summary><div className="row g-4">
           <div className="col-12">
             <label className="form-label" htmlFor="vendor-address">
               {dashboard.profileContact.addressLabel}
@@ -723,21 +771,7 @@ export default function VendorSignUpForm({
               placeholder={labels.fields.instagramPlaceholder}
             />
           </div>
-          <div className="col-12 col-md-6">
-            <label className="form-label" htmlFor="vendor-other-languages">
-              {labels.fields.otherLanguagesLabel}
-            </label>
-            <input
-              id="vendor-other-languages"
-              className="form-control"
-              name="other_languages"
-              value={form.other_languages}
-              onChange={(event) => updateField('other_languages', event.target.value)}
-              placeholder={labels.fields.otherLanguagesPlaceholder}
-            />
-          </div>
-        </div>
-
+        </div></details>
         <div className="wm-onboarding-fieldset mt-4">
           <label className="form-label">{dashboard.profileContact.languagesLabel}</label>
           <p className="wm-onboarding-fieldset__hint">{labels.hints.languages}</p>
@@ -747,6 +781,7 @@ export default function VendorSignUpForm({
                 key={value}
                 type="button"
                 className={`wm-onboarding-chip${form.languages.includes(value) ? ' is-active' : ''}`}
+                aria-pressed={form.languages.includes(value)}
                 onClick={() => toggleArrayValue('languages', value)}
               >
                 {languageLabels[value]}
@@ -756,8 +791,8 @@ export default function VendorSignUpForm({
         </div>
       </section>
 
-      <section hidden={step !== 3} className="wm-onboarding-panel">
-        <div className="row g-3">
+      <section hidden={activeStep !== 'pricing'} data-step="pricing" className="wm-onboarding-panel">
+        <div className="row g-4">
           <div className="col-12 col-md-4">
             <label className="form-label" htmlFor="vendor-years">
               {dashboard.profileContact.yearsInBusinessLabel}
@@ -774,13 +809,14 @@ export default function VendorSignUpForm({
           </div>
           <div className="col-12 col-md-4">
             <label className="form-label" htmlFor="vendor-starting-price">
-              {dashboard.profileContact.startingPriceLabel}
+              {dashboard.profileContact.startingPriceLabel} <span aria-hidden="true">*</span>
             </label>
             <input
               id="vendor-starting-price"
               className="form-control"
               type="number"
               min={0}
+              step="0.01"
               name="starting_price"
               value={form.starting_price}
               onChange={(event) => updateField('starting_price', event.target.value)}
@@ -800,6 +836,9 @@ export default function VendorSignUpForm({
               maxLength={3}
             />
           </div>
+        </div>
+        <details className="wm-editorial-details"><summary>{copy.optional}</summary>
+        <div className="row g-4">
           <div className="col-12 col-md-6">
             <label className="form-label" htmlFor="vendor-typical-spend">
               {dashboard.profilePricing.typicalSpendLabel}
@@ -809,6 +848,7 @@ export default function VendorSignUpForm({
               className="form-control"
               type="number"
               min={0}
+              step="0.01"
               name="typical_spend"
               value={form.typical_spend}
               onChange={(event) => updateField('typical_spend', event.target.value)}
@@ -822,6 +862,7 @@ export default function VendorSignUpForm({
                   key={value}
                   type="button"
                   className={`wm-onboarding-chip${form.team_size_range === value ? ' is-active' : ''}`}
+                  aria-pressed={form.team_size_range === value}
                   onClick={() => updateField('team_size_range', value)}
                 >
                   {teamSizeLabels[value]}
@@ -853,6 +894,7 @@ export default function VendorSignUpForm({
                 key={value}
                 type="button"
                 className={`wm-onboarding-chip${form.peak_seasons.includes(value) ? ' is-active' : ''}`}
+                aria-pressed={form.peak_seasons.includes(value)}
                 onClick={() => toggleArrayValue('peak_seasons', value)}
               >
                 {seasonLabels[value]}
@@ -861,7 +903,8 @@ export default function VendorSignUpForm({
           </div>
         </div>
 
-        <div className="wm-onboarding-summary mt-4">
+        </details>
+        <details className="wm-editorial-details"><summary>{copy.review}</summary><dl className="wm-onboarding-summary mt-4">
           <SummaryRow label={labels.summary.businessLabel} value={form.business_name || labels.summary.pending} />
           <SummaryRow label={labels.summary.logoLabel} value={selectedLogo} />
           <SummaryRow label={labels.summary.heroLabel} value={selectedHero} />
@@ -880,7 +923,7 @@ export default function VendorSignUpForm({
                 .join(' - ') || labels.summary.pending
             }
           />
-        </div>
+        </dl></details>
 
         <div className="wm-onboarding-note">
           <strong>{labels.finishCard.title}</strong>
@@ -904,7 +947,7 @@ export default function VendorSignUpForm({
       <input type="hidden" name="account_language" value={language} />
 
       {(localError || actionMessage) && (
-        <div className="alert alert-danger mt-3">{localError ?? actionMessage}</div>
+        <div role="alert" className="alert alert-danger mt-3">{localError ?? actionMessage}</div>
       )}
 
       <div className="wm-onboarding-actions">
@@ -912,20 +955,20 @@ export default function VendorSignUpForm({
           type="button"
           className="btn btn-outline-secondary"
           onClick={() => {
-            setLocalError(null);
-            setStep((current) => Math.max(current - 1, 0));
+            changeStep(Math.max(step - 1, 0));
           }}
-          disabled={step === 0 || pending}
+          hidden={step === 0}
+          disabled={pending}
         >
           {labels.actions.back}
         </button>
 
         {step < steps.length - 1 ? (
-          <button type="button" className="btn btn-primary" onClick={goNext}>
+          <button type="button" className="btn btn-primary" disabled={pending} onClick={goNext}>
             {labels.actions.next}
           </button>
         ) : (
-          <button className="btn btn-primary" disabled={pending}>
+          <button type="submit" className="btn btn-primary" disabled={pending}>
             {pending ? labels.submitting : labels.submit}
           </button>
         )}

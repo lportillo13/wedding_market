@@ -99,9 +99,9 @@ export const authStyles = StyleSheet.create({
     signupStepTitle: {
         color: colors.ink,
         fontFamily: fontFamilies.displayMedium,
-        fontSize: 24,
+        fontSize: 28,
         fontWeight: "500",
-        lineHeight: 31,
+        lineHeight: 35,
         textAlign: "center",
     },
     signupStepTitleSmall: {
@@ -115,8 +115,8 @@ export const authStyles = StyleSheet.create({
     },
     signupStepBody: {
         color: colors.muted,
-        fontSize: 13,
-        lineHeight: 20,
+        fontSize: 15,
+        lineHeight: 23,
         textAlign: "center",
     },
     signupCenteredInput: {

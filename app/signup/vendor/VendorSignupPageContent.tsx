@@ -2,6 +2,8 @@
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import VendorSignUpForm from './VendorSignUpForm';
+import Link from 'next/link';
+import { vendorOnboardingCopy } from './presentation';
 
 type CategoryOption = {
   key: string;
@@ -15,44 +17,21 @@ export default function VendorSignupPageContent({
   categories: CategoryOption[];
   requiresAccount: boolean;
 }) {
-  const { dictionary } = useLanguage();
-  const page = dictionary.signup.vendor.formPage;
+  const { language } = useLanguage();
+  const page = vendorOnboardingCopy[language];
 
   return (
-    <main className="container py-5 wm-onboarding-page">
-      <section className="wm-onboarding-hero">
-        <div className="wm-onboarding-hero__copy">
-          <p className="wm-onboarding-hero__eyebrow">{page.eyebrow}</p>
-          <h1 className="wm-page-title mb-3">{page.title}</h1>
-          <p className="text-secondary mb-0">{page.description}</p>
-        </div>
-        <div className="wm-onboarding-hero__highlights">
-          {Object.values(page.highlights).map((item) => (
-            <article key={item.title} className="wm-onboarding-highlight">
-              <strong>{item.title}</strong>
-              <span>{item.description}</span>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="wm-onboarding-layout">
-        <aside className="wm-onboarding-aside">
-          <div className="wm-onboarding-aside__card">
-            <p className="wm-onboarding-aside__eyebrow">{page.sidebar.eyebrow}</p>
-            <h2 className="wm-card-title">{page.sidebar.title}</h2>
-            <ul className="wm-onboarding-aside__list">
-              {Object.values(page.sidebar.points).map((point) => (
-                <li key={point}>{point}</li>
-              ))}
-            </ul>
-          </div>
-        </aside>
-
-        <div className="wm-onboarding-main">
+    <main className="wm-vendor-onboarding">
+      <div className="container wm-vendor-onboarding__layout">
+        <header className="wm-vendor-onboarding__intro">
+          <p className="wm-editorial-eyebrow">{page.eyebrow}</p>
+          <h1>{page.title}</h1>
+          <p>{page.description}</p>
+          <div className="wm-vendor-onboarding__promise"><span>{page.free}</span><p>{page.private}</p></div>
+          {requiresAccount && <p className="wm-vendor-onboarding__login">{page.signIn} <Link href="/login?next=%2Fsignup%2Fvendor">{page.signInAction}</Link></p>}
+        </header>
           <VendorSignUpForm categories={categories} requiresAccount={requiresAccount} />
-        </div>
-      </section>
+      </div>
     </main>
   );
 }

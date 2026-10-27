@@ -1,4 +1,5 @@
 import { copy } from "../i18n/copy";
+import { SectionPicker } from './SectionPicker';
 import { styles } from "../theme/styles";
 import { colors } from "../theme/tokens";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -16,13 +17,16 @@ export function NativeSelect({
   options,
   onChange,
   helper,
+  language = 'en',
 }: {
   label: string;
   value: string;
   options: { value: string; label: string }[];
   onChange: (value: string) => void;
   helper?: string;
+  language?: 'en' | 'es';
 }) {
+  if (options.length > 4) return <SectionPicker value={value} onChange={onChange} label={label} closeLabel={language === 'es' ? 'Cerrar' : 'Close'} options={options.map(option => ({ key: option.value, label: option.label }))} />;
   return (
     <View style={styles.nativeSelectBlock}>
       <View style={styles.nativeSelectHeader}>
@@ -35,6 +39,8 @@ export function NativeSelect({
           return (
             <TouchableOpacity
               key={option.value || "empty"}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: isActive }}
               onPress={() => onChange(option.value)}
               style={[styles.nativeSelectPill, isActive && styles.nativeSelectPillActive]}
             >

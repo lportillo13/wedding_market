@@ -1,0 +1,28 @@
+export const vendorOnboardingCopy = {
+  en: {
+    eyebrow: 'For wedding professionals', title: 'A home for your wedding business.',
+    description: 'Create your profile and connect with couples in Costa Rica. One small step at a time.',
+    free: 'Free to join', private: 'Review your profile before publishing.',
+    signIn: 'Already have an account?', signInAction: 'Sign in', required: '* Required fields',
+    optional: 'More details · optional', review: 'Review your information', noMatches: 'No matching services. Try another search.',
+    account: { shortLabel: 'Account', title: 'First, a place to call yours.', description: 'Your name, email, and a secure password. Business details come next.' },
+    brand: { shortLabel: 'Business', title: 'Tell us about your business.', description: 'A name, a short introduction, and the services you offer.' },
+    media: { shortLabel: 'Photos', title: 'Let your work make an impression.', description: 'Add your logo and one beautiful cover photo. You can build your full gallery later.' },
+    coverage: { shortLabel: 'Location', title: 'Where do you work?', description: 'Help couples find you and understand the area you serve.' },
+    contact: { shortLabel: 'Contact', title: 'Keep the conversation easy.', description: 'Add a phone number or website, and the languages you work in.' },
+    pricing: { shortLabel: 'Finish', title: 'A few finishing touches.', description: 'Set your starting price and check your details before creating your profile.' },
+  },
+  es: {
+    eyebrow: 'Para profesionales de bodas', title: 'Un espacio para tu negocio de bodas.',
+    description: 'Crea tu perfil y conecta con parejas en Costa Rica. Un paso a la vez.',
+    free: 'Registro gratuito', private: 'Revisa tu perfil antes de publicarlo.',
+    signIn: '¿Ya tienes una cuenta?', signInAction: 'Inicia sesión', required: '* Campos obligatorios',
+    optional: 'Más detalles · opcionales', review: 'Revisa tu información', noMatches: 'No encontramos ese servicio. Prueba otra búsqueda.',
+    account: { shortLabel: 'Cuenta', title: 'Primero, un espacio para ti.', description: 'Tu nombre, correo y una contraseña segura. Después, tu negocio.' },
+    brand: { shortLabel: 'Negocio', title: 'Cuéntanos sobre tu negocio.', description: 'Un nombre, una breve presentación y los servicios que ofreces.' },
+    media: { shortLabel: 'Fotos', title: 'Deja que tu trabajo hable por ti.', description: 'Añade tu logo y una foto de portada. Podrás completar tu galería después.' },
+    coverage: { shortLabel: 'Ubicación', title: '¿Dónde trabajas?', description: 'Ayuda a las parejas a encontrarte y conocer tu zona de servicio.' },
+    contact: { shortLabel: 'Contacto', title: 'Conectar empieza aquí.', description: 'Añade un teléfono o sitio web y los idiomas en los que trabajas.' },
+    pricing: { shortLabel: 'Finalizar', title: 'Los últimos detalles.', description: 'Indica tu precio inicial y revisa la información antes de crear tu perfil.' },
+  },
+};

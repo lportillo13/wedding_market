@@ -190,6 +190,7 @@ export function RequestQuoteModal({
             <TextInput style={styles.input} value={form.city} onChangeText={(value) => updateField("city", value)} />
             <NativeSelect
               label={`${labels.weddingTheme} (${labels.optional})`}
+              language={language}
               value={form.theme}
               options={themeOptions(language)}
               onChange={(value) => updateField("theme", value)}

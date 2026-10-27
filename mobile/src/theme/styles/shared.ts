@@ -120,7 +120,7 @@ export const sharedStyles = StyleSheet.create({
         textShadowRadius: 4,
     },
     form: {
-        gap: 10,
+        gap: 16,
         marginTop: 24,
     },
     label: {
@@ -132,11 +132,11 @@ export const sharedStyles = StyleSheet.create({
     input: {
         backgroundColor: colors.paper,
         borderColor: colors.line,
-        borderRadius: 18,
+        borderRadius: 10,
         borderWidth: 1,
         color: colors.ink,
         fontSize: 16,
-        minHeight: 48,
+        minHeight: 52,
         paddingHorizontal: 12,
     },
     textArea: {
@@ -148,7 +148,7 @@ export const sharedStyles = StyleSheet.create({
         alignItems: "center",
         flexDirection: "row",
         gap: 8,
-        minHeight: 38,
+        minHeight: 44,
     },
     checkboxText: {
         color: colors.ink,
@@ -216,7 +216,7 @@ export const sharedStyles = StyleSheet.create({
         borderWidth: 1,
         backgroundColor: colors.paper,
         justifyContent: "center",
-        minHeight: 38,
+        minHeight: 44,
         minWidth: 38,
         paddingHorizontal: 10,
         paddingVertical: 8,
