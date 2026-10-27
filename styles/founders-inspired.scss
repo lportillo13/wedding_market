@@ -75,7 +75,7 @@
   > :nth-child(4) { animation-delay: 340ms; }
   h1 { font-size: clamp(4rem, 7vw, 7rem); line-height: 1.05; letter-spacing: -.055em; font-weight: 400; color: #fffdf8; text-wrap: balance; }
   h1 > span, h1 em { display: block; color: inherit; }
-  p.wm-founders-hero__eyebrow { color: #fffdf8cc; font: 400 .72rem/1.5 var(--wm-font-body); letter-spacing: .17em; text-transform: uppercase; margin: 0 0 1.4rem; }
+  p.wm-founders-hero__eyebrow { color: #fffdf8cc; font: 400 .72rem/1.5 var(--wm-font-body); letter-spacing: .17em; text-transform: uppercase; margin: 0 auto 1.4rem; }
   p.wm-founders-hero__description { max-width: 580px; margin: 1.75rem auto 0; font-size: 1.12rem; line-height: 1.65; color: #fffdf8e8; letter-spacing: 0; }
 }
 .wm-founders-hero__links { display: flex; justify-content: center; align-items: center; gap: 1.75rem; flex-wrap: wrap; margin-top: 2rem; }
