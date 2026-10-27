@@ -27,7 +27,7 @@
       "config": "store-captures.yml",
       "ios": {
         "simulator": true,
-        "image": "latest"
+        "image": "sdk-57"
       }
     },
     "production": {

@@ -96,6 +96,15 @@ async function main() {
       }
       provenance.devices.push({kind, name: device.name, runtime: device.runtime, spanishPreferenceSurvivedColdStart: true});
       save();
+    } catch (error) {
+      provenance.failedDevice = {kind, name: device.name, runtime: device.runtime};
+      try { run('xcrun', ['simctl', 'io', device.udid, 'screenshot', path.join(output, `${kind}-failure.png`)], 30000); } catch {}
+      try {
+        const hierarchy = run(path.join(process.env.HOME, '.maestro/bin/maestro'), ['--device', device.udid, 'hierarchy'], 30000);
+        fs.writeFileSync(path.join(output, `${kind}-hierarchy.json`), hierarchy);
+      } catch {}
+      save();
+      throw error;
     } finally {
       if (booted) run('xcrun', ['simctl', 'shutdown', device.udid]);
     }

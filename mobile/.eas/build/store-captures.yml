@@ -12,5 +12,6 @@ build:
         inputs:
           type: build-artifact
           path: |
-            native-store-screenshots/*.png
-            native-store-screenshots/provenance.json
+            mobile/native-store-screenshots/*.png
+            mobile/native-store-screenshots/*-hierarchy.json
+            mobile/native-store-screenshots/provenance.json
