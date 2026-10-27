@@ -12,7 +12,11 @@ from urllib.parse import unquote, urlparse
 def main():
     if os.geteuid() != 0 or not os.isatty(0):
         raise ValueError('Use the owner interactive root terminal.')
-    parsed = urlparse(getpass.getpass('Wedding Market PostgreSQL URI (hidden; not saved): ').strip())
+    uri = getpass.getpass('Wedding Market PostgreSQL URI (hidden; not saved): ').strip()
+    if re.search(r'YOUR[-_ ]?PASSWORD|DATABASE[-_ ]?PASSWORD', uri, re.I):
+        print(json.dumps({'connected': False, 'reason': 'password-placeholder-not-replaced', 'credentialsPrinted': False}))
+        return 2
+    parsed = urlparse(uri)
     project = 'aousexbvujjnvbudpsmz'
     user, host = unquote(parsed.username or ''), parsed.hostname or ''
     direct = host == 'db.' + project + '.supabase.co' and user == 'postgres'
