@@ -1,0 +1,107 @@
+{
+  "checkedAt": "2026-10-27T20:16:23.485Z",
+  "releaseCommit": "519a06c36c228d45c61d5300b157341205e920ce",
+  "passed": true,
+  "checks": [
+    {
+      "path": "/signup/vendor?lang=en",
+      "status": 200,
+      "passed": true,
+      "brandIsFixed": true,
+      "newStages": true,
+      "realCategoryChoices": true,
+      "compactFooter": true,
+      "styles": [
+        {
+          "path": "/_next/static/css/e2e7088ba4bf471d.css",
+          "status": 200,
+          "editorial": false
+        },
+        {
+          "path": "/_next/static/css/acef5865b7f07933.css",
+          "status": 200,
+          "editorial": false
+        },
+        {
+          "path": "/_next/static/css/8288e67655b187e5.css",
+          "status": 200,
+          "editorial": true
+        }
+      ]
+    },
+    {
+      "path": "/signup/vendor?lang=es",
+      "status": 200,
+      "passed": true,
+      "brandIsFixed": true,
+      "newStages": true,
+      "realCategoryChoices": true,
+      "compactFooter": true,
+      "styles": [
+        {
+          "path": "/_next/static/css/e2e7088ba4bf471d.css",
+          "status": 200,
+          "editorial": false
+        },
+        {
+          "path": "/_next/static/css/acef5865b7f07933.css",
+          "status": 200,
+          "editorial": false
+        },
+        {
+          "path": "/_next/static/css/8288e67655b187e5.css",
+          "status": 200,
+          "editorial": true
+        }
+      ]
+    },
+    {
+      "path": "/login?lang=es",
+      "status": 200,
+      "passed": true,
+      "brandIsFixed": true
+    },
+    {
+      "path": "/vendors?lang=en",
+      "status": 200,
+      "passed": true,
+      "brandIsFixed": true
+    },
+    {
+      "path": "/blog?lang=es",
+      "status": 200,
+      "passed": true,
+      "brandIsFixed": true,
+      "noDemoStats": true
+    },
+    {
+      "path": "/support",
+      "status": 200,
+      "passed": true,
+      "brandIsFixed": true
+    },
+    {
+      "path": "/api/health",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/api/uploads",
+      "method": "POST",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/mobile/quotes",
+      "method": "POST",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/mobile/push-token",
+      "method": "POST",
+      "status": 401,
+      "passed": true
+    }
+  ]
+}
