@@ -1,0 +1,28 @@
+{
+  "checkedAt": "2026-10-27T22:11:00.566Z",
+  "releaseCommit": "30ca90e3c837722ee3c7edea41de9f10495e5068",
+  "before": {
+    "height": 680,
+    "linkGap": "5.6px",
+    "linkHeight": 36,
+    "sectionPadding": "48px",
+    "width": 1265
+  },
+  "desktop": {
+    "height": 532.390625,
+    "linkGap": "0px",
+    "linkHeight": 28,
+    "scroll": 1265,
+    "sectionPadding": "24px",
+    "width": 1265
+  },
+  "phone": {
+    "height": 1044.359375,
+    "linkGap": "0px",
+    "linkHeight": 44,
+    "scroll": 375,
+    "sectionPadding": "20px",
+    "width": 375
+  },
+  "passed": true
+}
