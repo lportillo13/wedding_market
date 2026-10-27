@@ -1,31 +1,29 @@
 {
-  "checkedAt": "2026-10-27T05:09:29.950Z",
+  "checkedAt": "2026-10-27T05:24:32.776Z",
   "builds": [
     {
-      "id": "389d1d17-13a9-466c-98c4-b3f09788a658",
+      "id": "84c7d2e3-7c59-4515-8e6a-c97e9dfa7d26",
       "platform": "ANDROID",
-      "status": "IN_PROGRESS",
+      "status": "FINISHED",
       "appVersion": "1.0.0",
-      "appBuildVersion": "2",
-      "gitCommitHash": "ec3d1062db8e9d5fab94de1bc7fd3fb3832513a2",
+      "appBuildVersion": "3",
+      "gitCommitHash": "cb214828b8b0776e39902795746ca3a0455b6552",
+      "completedAt": "2026-10-27T05:22:21.200Z",
       "error": null,
-      "artifactAvailable": false,
+      "artifactAvailable": true,
       "logsAvailable": 1
     },
     {
-      "id": "acf3468c-e265-4bfe-b76f-a6b254d8449a",
+      "id": "bad1c055-7d17-4ea6-8166-5cdd3db1c9a4",
       "platform": "IOS",
-      "status": "ERRORED",
+      "status": "FINISHED",
       "appVersion": "1.0.0",
-      "appBuildVersion": "1",
-      "gitCommitHash": "ec3d1062db8e9d5fab94de1bc7fd3fb3832513a2",
-      "completedAt": "2026-10-27T05:08:40.841Z",
-      "error": {
-        "errorCode": "UNKNOWN_ERROR",
-        "message": "Unknown error. See logs of the Prepare credentials build phase for more information."
-      },
-      "artifactAvailable": false,
-      "logsAvailable": 1
+      "appBuildVersion": "2",
+      "gitCommitHash": "cb214828b8b0776e39902795746ca3a0455b6552",
+      "completedAt": "2026-10-27T05:18:48.918Z",
+      "error": null,
+      "artifactAvailable": true,
+      "logsAvailable": 2
     }
   ]
 }
