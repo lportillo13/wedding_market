@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-27T20:07:44.434Z",
+  "parentSubmissionId": "794d50de-42b8-4030-a59f-7835a440913c",
+  "parentStatus": "ERRORED",
+  "parentErrorCode": "UNKNOWN_ERROR",
+  "parentLogFileCount": 0,
+  "id": "9869a622-bea1-4cc7-9687-0b81e0b5b541",
+  "initialStatus": "IN_QUEUE",
+  "status": "CANCELED",
+  "completedAt": "2026-10-27T20:10:04.181Z",
+  "cancellationReason": "Apple already processed and validated the correct build; redundant retry stopped",
+  "buildId": "5e15cf41-2b7a-474b-bf73-fb36777b363f",
+  "buildNumber": 7,
+  "newBuildCreated": false,
+  "existingFrozenSubmissionRetried": true,
+  "concurrentDuplicateUploadStarted": false,
+  "newCredentialsCreated": false,
+  "scope": "Binary-upload retry only; see apple-review-submission.json for the completed App Review submission"
+}

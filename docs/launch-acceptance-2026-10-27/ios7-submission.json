@@ -1,19 +1,21 @@
 {
-  "checkedAt": "2026-10-27T19:31:45.890Z",
+  "checkedAt": "2026-10-27T20:26:43.866Z",
   "submissions": [
     {
-      "id": "794d50de-42b8-4030-a59f-7835a440913c",
-      "status": "IN_QUEUE",
-      "createdAt": "2026-10-27T19:17:20.078Z",
+      "id": "9869a622-bea1-4cc7-9687-0b81e0b5b541",
+      "status": "CANCELED",
+      "createdAt": "2026-10-27T20:07:43.210Z",
+      "completedAt": "2026-10-27T20:10:04.181Z",
       "platform": "IOS"
     },
     {
-      "id": "f0aa5063-0939-4088-8fb8-00be08871648",
-      "status": "CANCELED",
-      "createdAt": "2026-10-27T17:45:21.427Z",
-      "completedAt": "2026-10-27T18:40:40.615Z",
+      "id": "794d50de-42b8-4030-a59f-7835a440913c",
+      "status": "ERRORED",
+      "createdAt": "2026-10-27T19:17:20.078Z",
+      "completedAt": "2026-10-27T20:04:01.539Z",
       "platform": "IOS"
     }
   ],
-  "publicReviewSubmitted": false
+  "scope": "Historical EAS binary-upload status; App Review is recorded separately",
+  "appReviewReceipt": "apple-review-submission.json"
 }
