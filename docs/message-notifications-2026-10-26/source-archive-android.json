@@ -1,0 +1,512 @@
+{
+  "checkedAt": "2026-10-27T02:16:47.785Z",
+  "passed": true,
+  "files": 99,
+  "bytes": 1084141,
+  "budgets": {
+    "maxFiles": 1000,
+    "maxBytes": 10485760
+  },
+  "extra": [],
+  "missing": [],
+  "mismatched": [],
+  "sensitive": [],
+  "fingerprint": "2a58e13929c6dd77339a3fd555638ed9135183d184e1fdf86d69b4951681839b",
+  "hashes": [
+    {
+      "file": "mobile/App.tsx",
+      "sha256": "0e5d080eb8cbce2ffdcd9a9213358c5003edb2d8db945bc20cdb86cf798de723",
+      "bytes": 120
+    },
+    {
+      "file": "mobile/app.config.js",
+      "sha256": "5936a2345b65cefaf81662fa390c0458e7c2b8a4dc1b3f171ab2f00ef1e004c5",
+      "bytes": 1950
+    },
+    {
+      "file": "mobile/app.json",
+      "sha256": "e073356bbf09542e7fde0d5c86a437659781094e251618433702d02adc8f6ccf",
+      "bytes": 2036
+    },
+    {
+      "file": "mobile/assets/brand/adaptive-foreground.png",
+      "sha256": "367a814da11a0f15b9441be0104aae8bfd892b794fb6c6d560bfeb3a7da25ffe",
+      "bytes": 25002
+    },
+    {
+      "file": "mobile/assets/brand/adaptive-monochrome.png",
+      "sha256": "b8f453d8c9f7dfb7a126f826f7258e2d2f8d033eab01d4030fa3abfd9706a6b5",
+      "bytes": 18838
+    },
+    {
+      "file": "mobile/assets/brand/app-icon.png",
+      "sha256": "06380e31c576ae5f2dd120d13dd0e78b385982d9fe18a69e7e75858610fde228",
+      "bytes": 42503
+    },
+    {
+      "file": "mobile/assets/brand/mark.png",
+      "sha256": "dea6e7b4e67db6a7f6e8e1850b4cda239d322beff6b725d065f82e29960ec060",
+      "bytes": 6115
+    },
+    {
+      "file": "mobile/assets/brand/notification.png",
+      "sha256": "dba05c3b66c445a35437b68aeeca646beb5e7d2992a6d5fbf585826bd938ec16",
+      "bytes": 1640
+    },
+    {
+      "file": "mobile/assets/brand/splash.png",
+      "sha256": "c704f987f1324d0f3b28909808b4b02dd94c9079e25d09dc4cc7ac5877618459",
+      "bytes": 15668
+    },
+    {
+      "file": "mobile/assets/icon-192.png",
+      "sha256": "c7f9906bc5edca48583a21ae5a0771a55a3b07497541a761de438e778ab4565e",
+      "bytes": 2962
+    },
+    {
+      "file": "mobile/assets/icon-512.png",
+      "sha256": "51310b8ba33d4886d6e37e5ba6e69ca317144cbbf4467fdddc3317b8f3b44584",
+      "bytes": 9494
+    },
+    {
+      "file": "mobile/eas.json",
+      "sha256": "dd345cf1188a1451741e422d67a25fc06f7d571e0c87580ccf6f95598520ea51",
+      "bytes": 811
+    },
+    {
+      "file": "mobile/metro.config.js",
+      "sha256": "1c169292943d8fea39073496ca3011e38e6cdf051497c51e65ae45180fbab396",
+      "bytes": 551
+    },
+    {
+      "file": "mobile/package-lock.json",
+      "sha256": "15803c18b82293f22cb5f7333bf0f1ebc9db0128a9e031afbc6d7f028b292cd5",
+      "bytes": 489701
+    },
+    {
+      "file": "mobile/package.json",
+      "sha256": "2e50533ccdf10df9bbabb74f12cb75c4d85d9a2397d394846598b00bcce2782d",
+      "bytes": 2702
+    },
+    {
+      "file": "mobile/src/application/App.tsx",
+      "sha256": "40f33134170bd00c1c3884bb00f6ba6f805e4a1c57da4ce76ace35624d8ded22",
+      "bytes": 22493
+    },
+    {
+      "file": "mobile/src/application/ScreenContent.tsx",
+      "sha256": "8e1b44d8ec7e05f756a37f63a412edad02ad5047508b63437ac9cefeb3128fc5",
+      "bytes": 10551
+    },
+    {
+      "file": "mobile/src/application/navigation.ts",
+      "sha256": "ae0fa0c3033adbcc05c55c2b06fb86468a6df7f2cdf6608aba984e366a90c39f",
+      "bytes": 1644
+    },
+    {
+      "file": "mobile/src/application/types.ts",
+      "sha256": "7e7e6051f95645f81834c897809526fd3f92a75695bf52da78f1cee6c1839bdd",
+      "bytes": 483
+    },
+    {
+      "file": "mobile/src/content/catalog.ts",
+      "sha256": "01fdb9bae7752082757fbe08c9c8e9539312ec621e665eb9d239704da015ca98",
+      "bytes": 4312
+    },
+    {
+      "file": "mobile/src/content/countries.ts",
+      "sha256": "6ad17d90cde68f85280932cb011017116860c1e409d8752958c29594db051049",
+      "bytes": 3347
+    },
+    {
+      "file": "mobile/src/features/account/AccountProfileScreen.tsx",
+      "sha256": "b955da4ad76c46b876db8ed60c431e8f8a9d7f0001e85f74fc8b7f71af2ef48f",
+      "bytes": 12187
+    },
+    {
+      "file": "mobile/src/features/account/CommunityConsent.tsx",
+      "sha256": "1225424dd3fbf4a2fa0a16f8ee9069e35e33898ed0cf9a694d090a1d37c5bcaa",
+      "bytes": 1916
+    },
+    {
+      "file": "mobile/src/features/account/deletion.ts",
+      "sha256": "97d9f7d1bead1009d98d6b877389177308eec105de3b6a6d7ca79293f2615ba1",
+      "bytes": 1234
+    },
+    {
+      "file": "mobile/src/features/admin/AdminDashboardScreen.tsx",
+      "sha256": "ac71dfa0edf915dd55ba86e5a8f0dfab335a40da2d75220bfe41b4a117f0dd3b",
+      "bytes": 3559
+    },
+    {
+      "file": "mobile/src/features/auth/AuthScreen.tsx",
+      "sha256": "c151540b16ee86b586a40d978c552da8717f9c0a6570e7e065e99be034605526",
+      "bytes": 32988
+    },
+    {
+      "file": "mobile/src/features/home/VendorLogoCarousel.tsx",
+      "sha256": "14d21aa43c4cbd4c6ea8c250194cac144478aa3402c2a1d43c8ce2fef9382eca",
+      "bytes": 2585
+    },
+    {
+      "file": "mobile/src/features/inbox/ContentSafety.tsx",
+      "sha256": "4690ce0c01c7bb3035d240319d5046ec0f23a4dfd4c0a00b514932aa2a8a93be",
+      "bytes": 3164
+    },
+    {
+      "file": "mobile/src/features/inbox/InboxScreen.tsx",
+      "sha256": "13d2e33a46ec4e84d616dc7d8845f75518fddece14e27c6831e885a83c0eff15",
+      "bytes": 26180
+    },
+    {
+      "file": "mobile/src/features/inquiries/RequestQuoteModal.tsx",
+      "sha256": "1ce76a3142347257f461ed8e8d840de4c7f9aa74b3c45293b159b862b16ac3d0",
+      "bytes": 10230
+    },
+    {
+      "file": "mobile/src/features/notifications/NotificationSettings.tsx",
+      "sha256": "78e05a9bca576622eafc9848bd1a71bd2a9a8e755de9543bd43775ac88d8bba3",
+      "bytes": 2622
+    },
+    {
+      "file": "mobile/src/features/notifications/controller.ts",
+      "sha256": "409a80e09e8fe750e53a852ccc132ae592973dc4c1390458469c2066ee857e47",
+      "bytes": 8937
+    },
+    {
+      "file": "mobile/src/features/notifications/native.ts",
+      "sha256": "5113be072969e02226a7e4073b5503b9f77015938205871852f6fd31d379e1c0",
+      "bytes": 8768
+    },
+    {
+      "file": "mobile/src/features/shortlist/FavoritesScreen.tsx",
+      "sha256": "648eaaef0a030f1a2b2515ff045a12d3107df2dd17015b35a0acf8a41953fe57",
+      "bytes": 3596
+    },
+    {
+      "file": "mobile/src/features/vendors/components/VendorCard.tsx",
+      "sha256": "41602c72353ee57021e8585b5baa751f436b9b32fc221b59557664b3ec4da53e",
+      "bytes": 3374
+    },
+    {
+      "file": "mobile/src/features/vendors/screens/VendorDetailScreen.tsx",
+      "sha256": "188d04e4fcc5519957ae0dda390b7435c60b4914cc222f1faab083022883e72c",
+      "bytes": 22509
+    },
+    {
+      "file": "mobile/src/features/vendors/screens/VendorPublicProfileScreen.tsx",
+      "sha256": "b6c1bf7aac8ae44162a39beb9d400f9255788434a219d6c10ac38d3097b46b5e",
+      "bytes": 3341
+    },
+    {
+      "file": "mobile/src/features/vendors/screens/VendorSearchScreen.tsx",
+      "sha256": "7fe0b4089638fe50349342f27dc8aef3c247430b4ed608bb4f88dc7d70008d06",
+      "bytes": 16029
+    },
+    {
+      "file": "mobile/src/features/vendors/screens/VendorWorkspaceScreen.tsx",
+      "sha256": "117a5ed57d790f2d07dfe1d9d8d682faa8bb3159c13f0c38a9939135f410fb22",
+      "bytes": 33675
+    },
+    {
+      "file": "mobile/src/i18n/copy.ts",
+      "sha256": "884df373c030ee4c1bd8565cb8e012477236870c2b78639c69779aad4339ec3c",
+      "bytes": 87
+    },
+    {
+      "file": "mobile/src/i18n/en.ts",
+      "sha256": "3e896020618ec165609284efdfe25a958f13bae2a3ed9da79ccd81acfca67467",
+      "bytes": 14571
+    },
+    {
+      "file": "mobile/src/i18n/es.ts",
+      "sha256": "a579db8b77e32456d68dd4652e0f6f3f7ee335d5d473cb982006a81698308495",
+      "bytes": 15822
+    },
+    {
+      "file": "mobile/src/lib/api.ts",
+      "sha256": "da52866537d614efa6e20ea96f10cc28ba8aefb792a6069a20cf246362f4b142",
+      "bytes": 4140
+    },
+    {
+      "file": "mobile/src/lib/auth.ts",
+      "sha256": "eb47b91e782aa8082eaa467d29920f3f0db98d39c6df89814e7faac8ee7ba853",
+      "bytes": 17683
+    },
+    {
+      "file": "mobile/src/lib/authUtils.ts",
+      "sha256": "d2cdc5344c4a10c116212f585c77a577be386f3610baa403f79ce0a6836ad3e3",
+      "bytes": 989
+    },
+    {
+      "file": "mobile/src/lib/calendarDate.ts",
+      "sha256": "6731c982a1890883c3be38ce47eb33d7aa46722c7b116c12276f8c095d8b38ea",
+      "bytes": 287
+    },
+    {
+      "file": "mobile/src/lib/config.ts",
+      "sha256": "a2074819a2fdcedc53aa9e5ca76d272807f1f610d418094a9d9883c636dae34c",
+      "bytes": 2727
+    },
+    {
+      "file": "mobile/src/lib/http.ts",
+      "sha256": "c2ff4dafcc4d97d6cfd6b644e67c02a0797af5058c37b9f8ea112693137c7ba0",
+      "bytes": 1677
+    },
+    {
+      "file": "mobile/src/lib/languagePreference.ts",
+      "sha256": "bea0710a7f5099652c4f0146e002b23a16e805c38d016753c6a21827e166a3ba",
+      "bytes": 1402
+    },
+    {
+      "file": "mobile/src/lib/quoteUtils.ts",
+      "sha256": "e7a26463fe4a8f202c9961d7fe4bccfb30768ded0ed26e716c813df88bd84fb9",
+      "bytes": 1816
+    },
+    {
+      "file": "mobile/src/lib/rfqs.ts",
+      "sha256": "3bfc28b1222a6398ea7faf39b91741a2c63b8d473b695ecfd554055f310de9a6",
+      "bytes": 22406
+    },
+    {
+      "file": "mobile/src/lib/search.ts",
+      "sha256": "161c4ceecdef986cd318acee3c3db62c2fce29b70d92f82d1e24233503efdd16",
+      "bytes": 250
+    },
+    {
+      "file": "mobile/src/lib/shortlist.ts",
+      "sha256": "9a65e4da0255cf8d66e16b64e3f06a2e8e2c03b70e05370b0b9b5c020a6bfae2",
+      "bytes": 801
+    },
+    {
+      "file": "mobile/src/lib/supabase.ts",
+      "sha256": "6998664465f7f4d594d452c7bd98077e454f17eab3f8e55864a5c1de653c4348",
+      "bytes": 552
+    },
+    {
+      "file": "mobile/src/lib/urls.ts",
+      "sha256": "71512c45022624de2a4dd56b4a419f3dd02fec8d62a34f7c25ecdfc8218f26ea",
+      "bytes": 1376
+    },
+    {
+      "file": "mobile/src/lib/vendorProfile.ts",
+      "sha256": "235a701fc4d8059ebc530b9ee03db20357440a2f9135240d5fc2c5c61717484c",
+      "bytes": 12070
+    },
+    {
+      "file": "mobile/src/theme/styles.ts",
+      "sha256": "c572c884db0f2ef93007dc8f04781a2ea9873da484a8301826513a3f17554d0a",
+      "bytes": 828
+    },
+    {
+      "file": "mobile/src/theme/styles/account.ts",
+      "sha256": "b6138e5ee2272d67efd956919baa3e6fd37a347027b0fee47b1f681357b4a4f2",
+      "bytes": 818
+    },
+    {
+      "file": "mobile/src/theme/styles/admin.ts",
+      "sha256": "2350cfff95610ddd13f7431dbf3ba5c6e6d29f2a35ed7033d49f3dc3502f29e4",
+      "bytes": 713
+    },
+    {
+      "file": "mobile/src/theme/styles/auth.ts",
+      "sha256": "3e1f063e8a8499027fb73b4d9893da7c9521f22e0c26f92a06c303aa44a3f52d",
+      "bytes": 7173
+    },
+    {
+      "file": "mobile/src/theme/styles/home.ts",
+      "sha256": "7889898871ce0f2f47b7e2f3b33b6fe0ac8f256b531778367075d45ab65ca3f4",
+      "bytes": 979
+    },
+    {
+      "file": "mobile/src/theme/styles/inbox.ts",
+      "sha256": "d9176e8130b2f4c7f189dc277af3e1cd68a49ca5422d76504efecc4350b8c5ca",
+      "bytes": 4079
+    },
+    {
+      "file": "mobile/src/theme/styles/inquiries.ts",
+      "sha256": "aece1dc29319dea0b6657abe91af12a12deb06748a393541e87fc7a3ba3571ec",
+      "bytes": 1363
+    },
+    {
+      "file": "mobile/src/theme/styles/shared.ts",
+      "sha256": "1525c628f41a7dbcd998de0af4f891d2184ca182a2af97c77404661b3a4916c4",
+      "bytes": 10053
+    },
+    {
+      "file": "mobile/src/theme/styles/shell.ts",
+      "sha256": "099141d358b42ada1d861d3e53313711a05533b859461fd5c395f2025940b599",
+      "bytes": 10371
+    },
+    {
+      "file": "mobile/src/theme/styles/shortlist.ts",
+      "sha256": "420c51c389f5aeafa770fcfb054e7184dc80cab89fe0b2ac632d0fc1b09b437d",
+      "bytes": 451
+    },
+    {
+      "file": "mobile/src/theme/styles/ui.ts",
+      "sha256": "d438ea32cae759706b47ef4ec60a1e360aa7e05eb31a076a4c8964291c016fde",
+      "bytes": 6425
+    },
+    {
+      "file": "mobile/src/theme/styles/vendor-editor.ts",
+      "sha256": "cae0bdbc53b97b42b635712609996cad4b8e8d29339cc0644de3a1acc3950b4a",
+      "bytes": 5294
+    },
+    {
+      "file": "mobile/src/theme/styles/vendor-profile.ts",
+      "sha256": "6d1d05556d78582d95b8dc03c1081c4ca3749732840dbb84e17ddfe2598be69e",
+      "bytes": 19935
+    },
+    {
+      "file": "mobile/src/theme/styles/vendors.ts",
+      "sha256": "769990fd6c3c9ce68df331286eda4b674640cec59f1ae27e984d96706c7f7688",
+      "bytes": 190
+    },
+    {
+      "file": "mobile/src/theme/tokens.ts",
+      "sha256": "59623ea4a4db2c2b4436e6968a8b21f24286b0d973f32e7600422b055bd236f8",
+      "bytes": 590
+    },
+    {
+      "file": "mobile/src/types/assets.d.ts",
+      "sha256": "db8e18c06d1101410ccc0c74e6c91bf1b68ca32a5d5806b746a18803d53b53ed",
+      "bytes": 116
+    },
+    {
+      "file": "mobile/src/ui/ProtectedScreen.tsx",
+      "sha256": "a1104b38781be698b6f7758dd242d5cf22a32a5554e01d24acdafc0eea3e55fe",
+      "bytes": 432
+    },
+    {
+      "file": "mobile/src/ui/calendars.tsx",
+      "sha256": "1f49c24cfdb3bf07dc68115269aeaebd483953f34028f4cbe3767accf24475ba",
+      "bytes": 12352
+    },
+    {
+      "file": "mobile/src/ui/format.ts",
+      "sha256": "ad00b648afbe6b5dd3d797bb8004c86836bdb9da39bb2d052c41767e8a2af957",
+      "bytes": 1046
+    },
+    {
+      "file": "mobile/src/ui/forms.tsx",
+      "sha256": "bf73c3112bca9eb30fa5d8db47a05808ed0dda07a75d6c1a844adf131f5d660d",
+      "bytes": 5430
+    },
+    {
+      "file": "mobile/src/ui/links.ts",
+      "sha256": "413e006b81979286332b6e1a26e4894b02715f6ba61e627895fc0382a2370974",
+      "bytes": 183
+    },
+    {
+      "file": "mobile/src/ui/media.ts",
+      "sha256": "d2deffb915d47df75d2ff9213f4ad8823d305073ed518aa876d63ffcd12dc119",
+      "bytes": 227
+    },
+    {
+      "file": "mobile/tsconfig.json",
+      "sha256": "86491955aafe63035d3c702bae08b7d5a773b38065e4c55c82183b8725165cf8",
+      "bytes": 272
+    },
+    {
+      "file": "shared/README.md",
+      "sha256": "e4de8bcf2da54f4b7a512478f8b1c5fc5ba6903ebfbbc8b0fc2f2a097cd87554",
+      "bytes": 909
+    },
+    {
+      "file": "shared/accounts/deletion.ts",
+      "sha256": "f878570b03d4fdfdac1f5b651239c956770f329a3824d160ef73dd03e4b847a9",
+      "bytes": 1832
+    },
+    {
+      "file": "shared/calendar/date.ts",
+      "sha256": "fd1c0d20cc9395eddae8ccf210c92bcac76d874541adda0fc3034d452f8b728a",
+      "bytes": 734
+    },
+    {
+      "file": "shared/conversations/state.ts",
+      "sha256": "9d295f55991d6e516df3f44eceb5c9abd541669269ed758c9563f61620dc8cbc",
+      "bytes": 800
+    },
+    {
+      "file": "shared/notifications/events.ts",
+      "sha256": "ea2d48e128a4fc7b0db2fd065d3c29a56566c1e78ef1019d8db4413da9aa751a",
+      "bytes": 4308
+    },
+    {
+      "file": "shared/notifications/push.ts",
+      "sha256": "4e4ecbf43ea5bf0a6d82c5d8d17fb8c561db0bd54e47645e4c734ba05457c3ba",
+      "bytes": 4104
+    },
+    {
+      "file": "shared/proposals/format.ts",
+      "sha256": "092bf8ff1fffe8e27ebca64594b7018fc4fc738c4ea769daf129a55984df73c1",
+      "bytes": 591
+    },
+    {
+      "file": "shared/proposals/money.ts",
+      "sha256": "41208747d995c2edbbfb027bbb6741886930709eebfe11add3da2d4143d02912",
+      "bytes": 657
+    },
+    {
+      "file": "shared/resources/deadline.ts",
+      "sha256": "c98394a9bdf5b8a0cf2d5a4a473f02280186889d017390d6fb2faccf1c9caecb",
+      "bytes": 591
+    },
+    {
+      "file": "shared/resources/read-json.ts",
+      "sha256": "8b4ac3cf6026ec548a3a1faab76348d7a0e22bd306eae6ed141d669018f74124",
+      "bytes": 848
+    },
+    {
+      "file": "shared/resources/refresh-gate.ts",
+      "sha256": "9f63e5c9d2fb71dae9e3686aa01a582343b9f02e2433b652e87f8bda85bcca41",
+      "bytes": 533
+    },
+    {
+      "file": "shared/safety/copy.ts",
+      "sha256": "ffa700d489f9deff7aa876a2de407af369243e93b8a96c0fc808f25127338988",
+      "bytes": 1673
+    },
+    {
+      "file": "shared/vendorPricing.ts",
+      "sha256": "e0ae3fd1abcbd0a3888cc36b27706086fad491abe6c1a3be78a2fdffbcb4016f",
+      "bytes": 122
+    },
+    {
+      "file": "shared/vendorPricingLabels.ts",
+      "sha256": "2bce3e3506a6e243e22be82b18691749e9127b3babf360189ae49c13aad761d9",
+      "bytes": 129
+    },
+    {
+      "file": "shared/vendorProfileProgress.ts",
+      "sha256": "e87d937d8e682d73a96deec5514bee3a8600cd075062c14c19e5f6db1cc237d7",
+      "bytes": 131
+    },
+    {
+      "file": "shared/vendorServiceProfile.ts",
+      "sha256": "225ecccafaff473a49c0490b0e9e378abe5bdb8d9dae389f290029f88faf2c2e",
+      "bytes": 130
+    },
+    {
+      "file": "shared/vendors/pricing-labels.ts",
+      "sha256": "1e6adbf66ef909992e0bad1a21ba9adc8eda9218776fe525a5b508d8e20e3101",
+      "bytes": 6452
+    },
+    {
+      "file": "shared/vendors/pricing.ts",
+      "sha256": "9dd7077ecb279996650b105a3ff40bf5af0bda0870bb432b2221ead1629330fd",
+      "bytes": 3519
+    },
+    {
+      "file": "shared/vendors/profile-progress.ts",
+      "sha256": "8e736d350926ea26d12eee6ce5bafbb184a58517e94831a617655c251bce4a01",
+      "bytes": 622
+    },
+    {
+      "file": "shared/vendors/service-profile.ts",
+      "sha256": "82854e5178a3ef0c34a01a5fa869107af54e8baee5d44bc3a40f4b00deae077b",
+      "bytes": 7663
+    }
+  ]
+}

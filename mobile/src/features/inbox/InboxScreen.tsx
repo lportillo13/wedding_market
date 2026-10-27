@@ -4,7 +4,8 @@ import { themeOptions } from "../../content/catalog";
 import { copy } from "../../i18n/copy";
 import { type AppRole } from "../../lib/auth";
 import { createSubmissionId, isQuoteThreadClosed } from "../../lib/quoteUtils";
-import { acceptMobileQuote, loadMobileInbox, loadMobileInboxThread, sendQuoteThreadReply, sendVendorQuote, type MobileInboxThread } from "../../lib/rfqs";
+import { acceptMobileQuote, loadMobileInbox, loadMobileInboxThread, sendQuoteThreadReply, sendVendorQuote, type MobileInboxThread, type MobileThreadAddress } from "../../lib/rfqs";
+import type {NotificationThreadTarget} from '../../../../shared/notifications/push';
 import { styles } from "../../theme/styles";
 import { colors } from "../../theme/tokens";
 import { parseDateValue } from "../../ui/calendars";
@@ -15,7 +16,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Alert, AppState, Linking, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { INBOX_LIST_REFRESH_MS, INBOX_THREAD_REFRESH_MS } from "../../../../shared/resources/refresh-gate";
 
-export function InboxScreen({ role, language }: { role: AppRole; language: "en" | "es" }) {
+export function InboxScreen({ role, language,openRequest=null,onOpenConsumed,revision=0 }: { role: AppRole; language: "en" | "es";openRequest?:NotificationThreadTarget|null;onOpenConsumed?:(id:string)=>void;revision?:number }) {
   const replySubmission = useRef<{id:string;body:string;thread:string} | null>(null);
   const labels = copy[language];
   const [threads, setThreads] = useState<MobileInboxThread[]>([]);
@@ -24,6 +25,10 @@ export function InboxScreen({ role, language }: { role: AppRole; language: "en" 
   const refreshVersion = useRef(0);
   const refreshInFlight = useRef(0);
   const lastRefreshAt = useRef(0);
+  const openVersion=useRef(0);
+  const mounted=useRef(true);
+  const handledOpen=useRef('');
+  useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;openVersion.current++;refreshVersion.current++;};},[]);
   const [inboxPage,setInboxPage] = useState(1);
   const [totalThreads,setTotalThreads] = useState(0);
   useEffect(()=>{selectedThreadRef.current=selectedThread;},[selectedThread]);
@@ -84,16 +89,39 @@ export function InboxScreen({ role, language }: { role: AppRole; language: "en" 
     return () => {mounted = false;clearInterval(timer);subscription.remove();};
   },[refreshInbox,isSending,isSendingQuote,isAcceptingQuote]);
 
-  async function openThread(thread: MobileInboxThread) {
+  const openThread = useCallback(async (thread: MobileThreadAddress) => {
+    const version=++openVersion.current;refreshVersion.current++;
     setIsLoading(true); setMessage("");
     try {
       const detail = await loadMobileInboxThread(role,language,thread);
+      if(!mounted.current||version!==openVersion.current)return;
       setSelectedThread(detail);
+      selectedThreadRef.current=detail;
       if (detail) {setQuoteAmount(typeof detail.latestQuote?.amountCents === "number" ? (detail.latestQuote.amountCents/100).toFixed(2) : ""); setQuoteMessage(detail.latestQuote?.message ?? "");setReplyBody("");}
+      else setMessage(language==='es'?'Esta conversación ya no está disponible.':'This conversation is no longer available.');
     }
-    catch(error) { setMessage(error instanceof Error ? error.message : "Unable to open conversation."); }
-    finally { setIsLoading(false); }
-  }
+    catch(error) { if(mounted.current&&version===openVersion.current)setMessage(error instanceof Error ? error.message : "Unable to open conversation."); }
+    finally { if(mounted.current&&version===openVersion.current)setIsLoading(false); }
+  },[role,language]);
+
+  useEffect(()=>{
+    if(!openRequest||handledOpen.current===openRequest.notificationId||isSending||isSendingQuote||isAcceptingQuote)return;
+    handledOpen.current=openRequest.notificationId;
+    const consume=()=>onOpenConsumed?.(openRequest.notificationId);
+    const current=selectedThreadRef.current;
+    const address={id:`${openRequest.rfqId}__${openRequest.vendorId}`,rfqId:openRequest.rfqId,vendorId:openRequest.vendorId};
+    if(current?.id===address.id){consume();if(!refreshInFlight.current)void refreshInbox(()=>mounted.current,false,true);return;}
+    const hasDraft=Boolean(current&&(replyBody.trim()||quoteMessage!==(current.latestQuote?.message??'')||quoteAmount!==(typeof current.latestQuote?.amountCents==='number'?(current.latestQuote.amountCents/100).toFixed(2):'')));
+    const open=()=>{consume();if(mounted.current)void openThread(address);};
+    if(hasDraft)Alert.alert(language==='es'?'¿Abrir otra conversación?':'Open another conversation?',language==='es'?'Tienes cambios sin enviar en esta conversación.':'You have unsent changes in this conversation.',[
+      {text:language==='es'?'Seguir aquí':'Stay here',style:'cancel',onPress:consume},
+      {text:language==='es'?'Descartar y abrir':'Discard and open',style:'destructive',onPress:open},
+    ],{cancelable:false});else open();
+  },[openRequest,onOpenConsumed,isSending,isSendingQuote,isAcceptingQuote,replyBody,quoteMessage,quoteAmount,language,openThread,refreshInbox]);
+
+  useEffect(()=>{
+    if(revision&&AppState.currentState==='active'&&!refreshInFlight.current&&!isSending&&!isSendingQuote&&!isAcceptingQuote)void refreshInbox(()=>mounted.current,false,true);
+  },[revision,refreshInbox,isSending,isSendingQuote,isAcceptingQuote]);
 
   async function submitReply() {
     if (!selectedThread) return;

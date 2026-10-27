@@ -3,6 +3,9 @@ import { AccountProfileScreen } from "../features/account/AccountProfileScreen";
 import { AdminDashboardScreen } from "../features/admin/AdminDashboardScreen";
 import { VendorLogoCarousel } from "../features/home/VendorLogoCarousel";
 import { InboxScreen } from "../features/inbox/InboxScreen";
+import { NotificationSettings } from "../features/notifications/NotificationSettings";
+import type { useMessageNotifications } from "../features/notifications/native";
+import type { NotificationThreadTarget } from "../../../shared/notifications/push";
 import { FavoritesScreen } from "../features/shortlist/FavoritesScreen";
 import { VendorPublicProfileScreen } from "../features/vendors/screens/VendorPublicProfileScreen";
 import { VendorSearchScreen } from "../features/vendors/screens/VendorSearchScreen";
@@ -34,7 +37,12 @@ export function ScreenContent({
   onRequestQuote,
   onRequestQuoteBatch,
   onToggleSaved,
+  notifications, notificationTarget, onNotificationConsumed, inboxRevision,
 }: {
+  notifications: ReturnType<typeof useMessageNotifications>;
+  notificationTarget: NotificationThreadTarget|null;
+  onNotificationConsumed: (id:string)=>void;
+  inboxRevision:number;
   tab: TabKey;
   role: AppRole;
   language: "en" | "es";
@@ -212,17 +220,17 @@ export function ScreenContent({
   }
 
   if (tab === "profile") {
-    if (role === "vendor") {
-      return <VendorWorkspaceScreen language={language} />;
-    }
-
     return (
+      <View>
+      <NotificationSettings notifications={notifications} />
+      {role==='vendor'?<VendorWorkspaceScreen language={language} />:
       <AccountProfileScreen
         userEmail={userEmail}
         language={language}
         onProfileUpdated={onProfileUpdated}
         onLanguageUpdated={onLanguageUpdated}
-      />
+      />}
+      </View>
     );
   }
 
@@ -240,7 +248,7 @@ export function ScreenContent({
   }
 
   if (tab === "inbox") {
-    return <InboxScreen role={role} language={language} />;
+    return <InboxScreen role={role} language={language} openRequest={notificationTarget} onOpenConsumed={onNotificationConsumed} revision={inboxRevision} />;
   }
 
   const fallbackTab = tab as string;

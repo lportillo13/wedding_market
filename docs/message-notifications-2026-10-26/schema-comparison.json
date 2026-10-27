@@ -1,0 +1,37 @@
+{
+  "checkedAt": "2026-10-27T02:09:31.392Z",
+  "matches": true,
+  "normalization": "CR line endings and PG18 NOT NULL catalog entries only; column nullability is compared explicitly.",
+  "groups": {
+    "columns": {
+      "local": 355,
+      "live": 355,
+      "differences": []
+    },
+    "constraints": {
+      "local": 91,
+      "live": 91,
+      "differences": []
+    },
+    "indexes": {
+      "local": 80,
+      "live": 80,
+      "differences": []
+    },
+    "policies": {
+      "local": 113,
+      "live": 113,
+      "differences": []
+    },
+    "functions": {
+      "local": 55,
+      "live": 55,
+      "differences": []
+    },
+    "views": {
+      "local": 8,
+      "live": 8,
+      "differences": []
+    }
+  }
+}

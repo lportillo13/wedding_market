@@ -267,7 +267,8 @@ export async function loadMobileInbox(role: Role, language: "en" | "es" = "en", 
   });
   return {threads,total:Number(rows[0]?.total_count ?? 0)};
 }
-export async function loadMobileInboxThread(role: Role, language: "en" | "es", thread: MobileInboxThread) {
+export type MobileThreadAddress=Pick<MobileInboxThread,'id'|'rfqId'|'vendorId'|'refreshKey'>;
+export async function loadMobileInboxThread(role: Role, language: "en" | "es", thread: MobileThreadAddress) {
   const detail = (await loadMobileThreadData(role,language,thread)).find(item=>item.id===thread.id) ?? null;
   if (detail) {
     // Reading a thread on the phone also clears the website's unread marker.
@@ -277,7 +278,7 @@ export async function loadMobileInboxThread(role: Role, language: "en" | "es", t
   return detail ? { ...detail, refreshKey: thread.refreshKey } : null;
 }
 
-async function loadMobileThreadData(role: Role, language: "en" | "es", selected: MobileInboxThread): Promise<MobileInboxThread[]> {
+async function loadMobileThreadData(role: Role, language: "en" | "es", selected: MobileThreadAddress): Promise<MobileInboxThread[]> {
   const client = requiredClient();
   const {
     data: { user },

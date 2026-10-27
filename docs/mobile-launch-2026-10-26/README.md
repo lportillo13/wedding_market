@@ -1,5 +1,7 @@
 # Wedding Market launch preparation
 
+Message/quote push preparation subsequently advanced: [current notification handoff](../message-notifications-2026-10-26/README.md) supersedes the earlier native test/archive counts and push configuration inventory below. Credential setup and installed-device acceptance remain open.
+
 October 26, 2026. The owner approved the refined outlined WM identity, PORTILLO'S DESIGN CR LLC (Florida, United States) as publisher, and free couple/vendor accounts with service contracts/payments directly between couples and vendors. Sponsored placements remain off. `hello@thewedmarket.com` receives support/privacy/deletion/abuse mail through free Cloudflare routing; the owner confirmed delivery.
 
 ## Implemented preparation
@@ -32,8 +34,15 @@ Source checks, bundling, signed artifacts, physical acceptance, upload, processi
 5. Test Android, iPhone and supported iPad, both roles/languages: fresh install/upgrade, auth/recovery, permission denial, push in all states, media, slow/offline recovery, accessibility, deletion, report/block and independent bookings. Capture real native EN/ES screenshots with isolated fictional data.
 6. Complete store metadata/privacy/data safety, rating/audience, access, countries/trader and review forms against the final artifact. Confirm manual/managed public release controls before submission.
 
-[Validation](validation.md) records tests and evidence limits. The [launch audit](../../scripts/audit-mobile-launch.mjs) reports source checks separately from manual gates and deliberately never certifies store submission readiness. `npm run launch:audit -- --strict` under `mobile` remains nonzero while required evidence is open. The web/backend release uses the fixed restricted Wedding Market gateway; consult the deployment receipt/public checks once deployed. Root maintenance installation is separately owner-only.
+[Validation](validation.md) records tests and evidence limits. The [launch audit](../../scripts/audit-mobile-launch.mjs) reports source checks separately from manual gates and deliberately never certifies store submission readiness. `npm run launch:audit -- --strict` under `mobile` remains nonzero while required evidence is open. The web/backend release uses the fixed restricted Wedding Market gateway. Verified live revision is `60a491a7f2b3d0b6cf9d16fcfba8c4476d69b31a`; the [exact receipt](deployment-success.json) and [public checks](public-release-checks.json) pass. Root maintenance installation is separately owner-only; the owner plans its dry run, with output/activation still pending.
 
 ## Official requirements
 
 [Apple account deletion](https://developer.apple.com/help/app-review/guideline-reference/5-1-1-account-deletion/), [review guidelines](https://developer.apple.com/app-store/review/guidelines/), [Google account deletion](https://support.google.com/googleplay/android-developer/answer/13327111?hl=en), [Google user data](https://support.google.com/googleplay/android-developer/answer/10144311?hl=en), [Expo source archive inspection](https://docs.expo.dev/eas/cli/#eas-buildinspect), [Android page sizes](https://developer.android.com/guide/practices/page-sizes). Recheck console requirements when creating the signed candidate; historical preparation does not establish current console compliance.
+
+
+## Verified website release
+
+Public privacy, terms, support, deletion, community and cookie pages pass in both languages with the correct identity/email. Artwork/favicon/offline assets match source. The offline document sends no-transform and contains zero scripts; ordinary website pages retain disclosed Cloudflare aggregate performance measurement. Directory/API checks confirm4 unmarked listings and no seeded demos. A hidden demo detail API returns404; Next's streamed page renders the explicit not-found result without profile content. Protected endpoints and private inbox redirects remain protected, and direct-origin access is403.
+
+Phone QA found no horizontal overflow at320/390px. The public-deletion page exposes sign-in and full-account instructions; authenticated lifecycle/provider and real-device acceptance are separately gated. Root retention is not claimed active from the owner's promise to run its dry run.

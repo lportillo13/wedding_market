@@ -6,6 +6,7 @@
 !mobile/package.json
 !mobile/package-lock.json
 !mobile/app.json
+!mobile/app.config.js
 !mobile/eas.json
 !mobile/metro.config.js
 !mobile/tsconfig.json

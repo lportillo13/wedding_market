@@ -31,3 +31,16 @@ Before submission, create approved fictional client/vendor fixtures on the actua
 Use aggregate Supabase Usage/counters for routine checks. Avoid broad repeated Logs Explorer scans. Keep public JSON caches bounded and private sessions isolated. Preserve fixed-size mailbox pages, foreground refresh and existing media admission/time limits. Do not add a polling worker without a concrete measured need.
 
 Reviewed root-only release retention is prepared under `deploy/maintenance`; it preserves active plus verified rollback releases and avoids dirty/in-use/new releases. The audit deployment account cannot install root helpers. After deployment the owner must hash-check/run the installer from the root terminal; it defaults to installation plus dry run. Review eligible paths before enabling `wedding-market-retention.timer`. It is **not installed or active** merely because source exists. Keep Digital Wedding, media, databases, backups and the original checkout outside this cleanup.
+
+
+### Owner retention handoff
+
+The owner plans to run the pinned installer; dry-run output and timer activation are pending verification. From the server root terminal, with the current verified checkout:
+
+```sh
+cd /var/www/wedding-market
+printf '%s  %s\n' '1a0d89e743bce54315079a22bac7a170baf4d9eeab2a3dc2e4b9145ad490e715' 'deploy/maintenance/install-release-retention.sh' | sha256sum -c -
+bash deploy/maintenance/install-release-retention.sh
+```
+
+This installs the reviewed helper/units and prints a dry run; it does not enable automatic deletion. Review eligible old paths and preserve active plus the current receipt's rollback. Only after that review should the owner enable the timer from root. Do not treat the promise to run these commands as execution evidence.

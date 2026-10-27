@@ -31,3 +31,8 @@ The installed deployment helper preserves every clone/build and cannot be replac
 Use Supabase Usage plus aggregate PostgreSQL counters for routine resource questions. Do not leave Logs Explorer polling or repeatedly scan broad log ranges. For an incident, start with a short, service/route/status-filtered window. Preserve security logging. No paid plan, server resize, database pool, background worker or recurring monitor was added.
 
 Evidence is sanitized in the adjacent JSON files. Deployment/public checks will be recorded after release. Root checks: 74 web tests, 28 PostgreSQL checks, native type/lint and 49 tests; production build and architecture checks pass. Signed native device validation remains separate.
+
+
+## Verified follow-up
+
+The resource release `b768471d2c81ba484887676838382cc0ca391b49` has its exact receipt/public checks in this folder. Launch-preparation revision `60a491a7f2b3d0b6cf9d16fcfba8c4476d69b31a` is now live; see the [current handoff](../mobile-launch-2026-10-26/README.md). Its neutral PWA cache replaces personalized HTML/unbounded bundles; the static offline page remains free of edge-injected scripts. Native auth refresh now follows app visibility. There is still no new polling worker, paid plan/mail subscription or server resize. The owner plans the reviewed root-retention dry run; output/activation remain pending, so no automatic cleanup is claimed active.

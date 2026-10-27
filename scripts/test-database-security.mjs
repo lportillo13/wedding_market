@@ -19,7 +19,7 @@ test('live-schema authorization and transaction regressions', async t => {
     INSERT INTO rfq_invites(rfq_id,vendor_id,expires_at) VALUES ('${id(21)}','${id(11)}',now()+interval '1 day'),('${id(22)}','${id(12)}',now()+interval '1 day');
     INSERT INTO quotes(id,rfq_id,vendor_id,amount_cents,message) VALUES ('${id(31)}','${id(21)}','${id(11)}',10000,'Private quote');`);
   let consentReady=false;
-  const as = async (role, user, sql, params = [], aal = user===5 ? 'aal2' : 'aal1', consentFixture=true) => {
+  const as = async (role, user, sql, params = [], aal = user===5 ? 'aal2' : 'aal1', consentFixture=true,sessionUser=user) => {
     // Workflow fixtures represent accounts that accepted the current rules. Dedicated consent checks opt out.
     if(consentReady && consentFixture && role==='authenticated' && user) await db.query("UPDATE profiles SET community_terms_version='2026-10-26',community_terms_accepted_at=now() WHERE id=$1 AND community_terms_version IS NULL",[id(user)]);
     await db.exec('BEGIN');
@@ -27,6 +27,7 @@ test('live-schema authorization and transaction regressions', async t => {
       await db.exec(`SET LOCAL ROLE ${role}`);
       await db.query("SELECT set_config('request.jwt.claim.sub',$1,true),set_config('request.jwt.claim.role',$2,true)", [user ? id(user) : '', role]);
       await db.query("SELECT set_config('request.jwt.claim.aal',$1,true)",[aal]);
+      await db.query("SELECT set_config('request.jwt.claim.session_id',$1,true)",[sessionUser?id(7000+sessionUser):'']);
       const result = await db.query(sql, params);
       await db.exec('COMMIT');
       return result;
@@ -59,6 +60,7 @@ test('live-schema authorization and transaction regressions', async t => {
   await db.exec(await readFile(new URL('../supabase/migrations/202610260009_account_deletion_workflow.sql', import.meta.url), 'utf8'));
   await db.exec(await readFile(new URL('../supabase/migrations/202610260010_content_safety.sql', import.meta.url), 'utf8'));
   await db.exec(await readFile(new URL('../supabase/migrations/202610260011_restricted_account_controls.sql', import.meta.url), 'utf8'));
+  await db.exec(await readFile(new URL('../supabase/migrations/202610260012_message_push_bindings.sql', import.meta.url), 'utf8'));
   await db.exec("UPDATE public.site_settings SET value='true'::jsonb WHERE key='community_rules_enforced'");
   consentReady=true;
   const deny = async (role, user, sql, params) => assert.rejects(as(role, user, sql, params), { code: '42501' });
@@ -410,6 +412,37 @@ test('live-schema authorization and transaction regressions', async t => {
     await deny('authenticated',9101,"UPDATE profiles SET full_name='bypass' WHERE id=$1",[id(9101)]);
     const receipt=(await as('authenticated',9101,'SELECT request_account_deletion() AS receipt',[],'aal1',false)).rows[0].receipt;
     assert.equal(receipt.status,'pending');
+  });
+  await t.test('push devices are private, session-bound, capped and safely rebound between accounts',async()=>{
+    await db.query('INSERT INTO auth.sessions(id,user_id) VALUES ($1,$2),($3,$4)',[id(7001),id(1),id(7002),id(2)]);
+    const token='ExpoPushToken[private_device_token_00001]';
+    const register='SELECT register_message_push_device($1,$2,$3,$4) AS binding';
+    const args=[token,'android',id(8001),'en'];
+    const a=(await as('authenticated',1,register,args)).rows[0].binding;
+    assert.equal((await as('authenticated',1,register,args)).rows[0].binding.bindingId,a.bindingId);
+    await deny('authenticated',1,'SELECT token FROM user_push_tokens');
+    await deny('authenticated',1,'SELECT * FROM active_message_push_bindings($1)',[id(1)]);
+    await deny('anon',null,register,args);
+    await assert.rejects(as('authenticated',1,register,args,'aal1',true,2),{code:'42501'});
+    const b=(await as('authenticated',2,register,args)).rows[0].binding;
+    assert.notEqual(b.bindingId,a.bindingId);
+    assert.equal((await as('service_role',null,'SELECT * FROM active_message_push_bindings($1)',[id(1)])).rows.length,0);
+    await as('authenticated',1,'SELECT unregister_message_push_device($1,$2)',[id(8001),a.bindingId]);
+    assert.equal((await as('service_role',null,'SELECT * FROM active_message_push_bindings($1)',[id(2)])).rows.length,1);
+    for(let n=0;n<12;n++)await as('authenticated',2,register,[`ExpoPushToken[private_token_for_device_${n}]`,'ios',id(8100+n),'es']);
+    const active=(await as('service_role',null,'SELECT * FROM active_message_push_bindings($1)',[id(2)])).rows;
+    assert.equal(active.length,10);assert.ok(active.some(row=>row.token==='ExpoPushToken[private_token_for_device_11]'));
+    await db.query('DELETE FROM auth.sessions WHERE id=$1',[id(7002)]);
+    assert.equal((await as('service_role',null,'SELECT * FROM active_message_push_bindings($1)',[id(2)])).rows.length,0);
+    await deny('authenticated',2,register,args);
+    await db.query('INSERT INTO auth.sessions(id,user_id,not_after) VALUES ($1,$2,now()+interval \'2 hours\')',[id(7002),id(2)]);
+    const renewed=(await as('authenticated',2,register,args)).rows[0].binding;
+    assert.ok(Date.parse(renewed.expiresAt)-Date.now()<3*3600_000);
+    await db.query('UPDATE profiles SET suspended_at=now() WHERE id=$1',[id(2)]);
+    assert.equal((await as('service_role',null,'SELECT * FROM active_message_push_bindings($1)',[id(2)])).rows.length,0);
+    await deny('authenticated',2,register,args);
+    await as('authenticated',2,'SELECT unregister_message_push_device($1,$2)',[id(8001),renewed.bindingId]);
+    await db.query('UPDATE profiles SET suspended_at=NULL WHERE id=$1',[id(2)]);
   });
   await t.test('the live verification script always rolls its fixtures back',async()=>{
     const result=await db.exec(await readFile(new URL('../docs/quote-flow-2026-10-19/live-transaction-check.sql',import.meta.url),'utf8'));

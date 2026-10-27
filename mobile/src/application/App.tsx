@@ -10,7 +10,8 @@ import { type VendorListItem } from "../lib/api";
 import { createSessionFromMobileAuthUrl, restoreMobileAuthState, signOut, type AuthProfile, type AuthState } from "../lib/auth";
 import { getMobileConfigErrors } from "../lib/config";
 import { getDeviceLanguage, loadLanguagePreference, saveLanguagePreference, type AppLanguage } from "../lib/languagePreference";
-import { addNotificationTapListener, registerForPushNotifications, unregisterPushNotifications } from "../lib/pushNotifications";
+import { useMessageNotifications } from "../features/notifications/native";
+import type { NotificationThreadTarget } from "../../../shared/notifications/push";
 import { getShortlist, toggleShortlist } from "../lib/shortlist";
 import { supabase } from "../lib/supabase";
 import { styles } from "../theme/styles";
@@ -50,6 +51,16 @@ export default function App() {
   const [searchCategory, setSearchCategory] = useState("");
   const contentScrollRef = useRef<ScrollView | null>(null);
   const isDetailOpen = Boolean(selectedVendor);
+  const [notificationTarget,setNotificationTarget] = useState<NotificationThreadTarget|null>(null);
+  const [inboxRevision,setInboxRevision] = useState(0);
+  const receiveNotification = useCallback(()=>setInboxRevision(value=>value+1),[]);
+  const openNotification = useCallback((target:NotificationThreadTarget)=>setNotificationTarget(target),[]);
+  const notifications = useMessageNotifications({eligible:Boolean(userEmail)&&!isPasswordRecovery&&(role==='client'||role==='vendor'),language,role,onOpen:openNotification,onActivity:receiveNotification});
+  useEffect(()=>{
+    if(!notificationTarget||quoteVendors.length||isPasswordRecovery)return;
+    setSelectedVendor(null);setIsAccountMenuOpen(false);setActiveTab('inbox');
+  },[notificationTarget,quoteVendors.length,isPasswordRecovery]);
+  useEffect(()=>{setNotificationTarget(null);},[userEmail]);
 
   const visibleActiveTab = tabs.some((tab) => tab.key === activeTab) ? activeTab : tabs[0].key;
   const isHomeOpen = !isDetailOpen && visibleActiveTab === "home";
@@ -173,29 +184,6 @@ export default function App() {
   }, [selectedVendor?.id]);
 
   useEffect(() => {
-    if (!userEmail) {
-      return;
-    }
-
-    void registerForPushNotifications().then((result) => {
-      if (!result.ok && process.env.NODE_ENV !== "production") {
-        console.warn("Push notification registration skipped", result.reason);
-      }
-    });
-  }, [userEmail]);
-
-  useEffect(() => {
-    const subscription = addNotificationTapListener(() => {
-      setSelectedVendor(null);
-      setActiveTab("inbox");
-    });
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
-
-  useEffect(() => {
     if (Platform.OS !== "android") return;
 
     const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
@@ -251,8 +239,10 @@ export default function App() {
   };
 
   const handleSignOut = async () => {
-    await unregisterPushNotifications();
-    await signOut();
+    await notifications.disconnect().catch(()=>{});
+    try { await signOut(); }
+    catch { Alert.alert(language==='es'?'No se pudo cerrar la sesión':'Unable to sign out',language==='es'?'Revisa tu conexión e inténtalo de nuevo.':'Check your connection and try again.');return; }
+    setNotificationTarget(null);
     setUserEmail(null);
     setProfile(null);
     setActiveTab("home");
@@ -383,6 +373,10 @@ export default function App() {
               </TouchableOpacity>
               {userEmail ? (
                 <>
+                  <TouchableOpacity onPress={()=>{setSelectedVendor(null);setActiveTab('profile');setIsAccountMenuOpen(false);contentScrollRef.current?.scrollTo({y:0,animated:true});}} style={styles.accountMenuItem}>
+                    <Ionicons name="notifications-outline" size={18} color={colors.ink} />
+                    <Text style={styles.accountMenuText}>{language==='es'?'Notificaciones':'Notifications'}</Text>
+                  </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
                       setIsAccountMenuOpen(false);
@@ -424,6 +418,11 @@ export default function App() {
           />
         ) : (
           <ScreenContent
+            key={userEmail ?? 'guest'}
+            notifications={notifications}
+            notificationTarget={!quoteVendors.length&&!isPasswordRecovery?notificationTarget:null}
+            onNotificationConsumed={(id)=>setNotificationTarget(value=>value?.notificationId===id?null:value)}
+            inboxRevision={inboxRevision}
             tab={visibleActiveTab}
             role={role}
             language={language}

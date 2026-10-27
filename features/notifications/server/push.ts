@@ -1,82 +1,28 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
-import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import type {SupabaseClient} from '@supabase/supabase-js';
+import {createSupabaseAdminClient} from '@/lib/supabase/admin';
+import {readBoundedJson} from '@/shared/resources/read-json';
+import {deliverMessagePush,type DeliveryBinding,type PushDeliveryResult} from './delivery';
 
-type PushTokenRow = {
-  token: string;
-};
+export type PushNotificationPayload={notificationId:string;recipientId:string;type:string;title:string;body:string|null;data:unknown};
 
-export type PushNotificationPayload = {
-  notificationId: string;
-  recipientId: string;
-  type: string;
-  title: string;
-  body: string | null;
-  data: unknown;
-};
-
-function isExpoPushToken(token: string) {
-  return /^Expo(nent)?PushToken\[[\w-]+\]$/.test(token);
-}
-
-function isMissingPushTokenTableError(message: string | undefined) {
-  return /user_push_tokens|schema cache|does not exist/i.test(message ?? "");
-}
-
-export async function sendMobilePushNotification(
-  client: SupabaseClient,
-  payload: PushNotificationPayload
-) {
-  const deliveryClient=createSupabaseAdminClient() ?? client;
-  const { data: rows, error } = await deliveryClient
-    .from("user_push_tokens")
-    .select("token")
-    .eq("user_id", payload.recipientId)
-    .eq("is_active", true)
-    .order("last_seen_at", { ascending: false })
-    .limit(10)
-    .returns<PushTokenRow[]>()
-    .abortSignal(AbortSignal.timeout(5000));
-
-  if (error) {
-    if (!isMissingPushTokenTableError(error.message)) {
-      console.warn("Failed to load push tokens", error.message);
-    }
-    return;
-  }
-
-  const tokens = [...new Set((rows ?? []).map((row) => row.token).filter(isExpoPushToken))];
-  if (!tokens.length) {
-    return;
-  }
-
-  const messages = tokens.map((token) => ({
-    to: token,
-    sound: "default",
-    title: payload.title,
-    body: payload.body ?? undefined,
-    data: {
-      notificationId: payload.notificationId,
-      type: payload.type,
-      payload: payload.data,
-    },
-  }));
-
-  try {
-    const response = await fetch("https://exp.host/--/api/v2/push/send", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Accept-Encoding": "gzip, deflate",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(messages),
-      signal: AbortSignal.timeout(5000),
-    });
-
-    if (!response.ok) {
-      console.warn("Expo push request failed", response.status);
-    }
-  } catch (error) {
-    console.warn("Expo push request failed", error instanceof Error ? error.message : String(error));
-  }
+export async function sendMobilePushNotification(_client:SupabaseClient,payload:PushNotificationPayload):Promise<PushDeliveryResult>{
+ const delivery=createSupabaseAdminClient();
+ if(!delivery)return {outcome:'unconfigured',attempted:0,accepted:0,retired:0};
+ const result=await deliverMessagePush(payload,{
+  bindings:async recipient=>{
+   const {data,error}=await delivery.rpc('active_message_push_bindings',{p_recipient:recipient}).abortSignal(AbortSignal.timeout(5000));
+   if(error)throw Error('Push binding lookup failed');return (data??[]) as DeliveryBinding[];
+  },
+  send:async messages=>{
+   const accessToken=process.env.EXPO_ACCESS_TOKEN?.trim();
+   const response=await fetch('https://exp.host/--/api/v2/push/send',{method:'POST',headers:{Accept:'application/json','Content-Type':'application/json',...(accessToken?{Authorization:`Bearer ${accessToken}`}:{})},body:JSON.stringify(messages),signal:AbortSignal.timeout(5000)});
+   return {status:response.status,body:await readBoundedJson(response,64*1024,5000)};
+  },
+  retire:async(recipient,binding)=>{
+   const {error}=await delivery.from('user_push_tokens').update({is_active:false,updated_at:new Date().toISOString()}).eq('user_id',recipient).eq('binding_id',binding.binding_id).eq('token',binding.token).abortSignal(AbortSignal.timeout(5000));
+   if(error)throw Error('Unable to retire expired device');
+  },
+ });
+ if(result.outcome==='failed')console.warn('A saved inbox notification could not be accepted by the push provider.');
+ return result;
 }

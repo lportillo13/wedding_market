@@ -17,7 +17,7 @@ async function walk(root,relative='') {
 }
 export async function inspectSourceArchive(root,archive) {
   if((await fs.lstat(archive)).isSymbolicLink())throw Error('Archive root must not be a symlink.');
-  const config=['mobile/App.tsx','mobile/package.json','mobile/package-lock.json','mobile/app.json','mobile/eas.json','mobile/metro.config.js','mobile/tsconfig.json'];
+  const config=['mobile/App.tsx','mobile/package.json','mobile/package-lock.json','mobile/app.json','mobile/app.config.js','mobile/eas.json','mobile/metro.config.js','mobile/tsconfig.json'];
   const expected=[...config,...await walk(root,'mobile/src'),...await walk(root,'mobile/assets'),...await walk(root,'shared')].filter(file=>!forbidden(file)).sort();
   const actual=await walk(archive);
   const extra=actual.filter(file=>!expected.includes(file));const missing=expected.filter(file=>!actual.includes(file));

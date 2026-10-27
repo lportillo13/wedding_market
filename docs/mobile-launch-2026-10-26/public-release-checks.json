@@ -1,6 +1,6 @@
 {
-  "checkedAt": "2026-10-26T22:57:47.860229+00:00",
-  "releaseCommit": "47cc0e273f4fb618d8725c510c87d2acd9710fb6",
+  "checkedAt": "2026-10-26T23:13:26.536233+00:00",
+  "releaseCommit": "60a491a7f2b3d0b6cf9d16fcfba8c4476d69b31a",
   "publicTarget": "https://thewedmarket.com",
   "results": [
     {
@@ -132,7 +132,8 @@
       "contactPresent": true,
       "publisherPresent": true,
       "oldContactAbsent": true,
-      "placeholderLinksAbsent": true
+      "placeholderLinksAbsent": true,
+      "websiteAnalyticsDisclosed": true
     },
     {
       "path": "/privacy?lang=es",
@@ -143,7 +144,8 @@
       "contactPresent": true,
       "publisherPresent": true,
       "oldContactAbsent": true,
-      "placeholderLinksAbsent": true
+      "placeholderLinksAbsent": true,
+      "websiteAnalyticsDisclosed": true
     },
     {
       "path": "/terms?lang=en",
@@ -267,16 +269,17 @@
       "path": "/sw.js",
       "passed": true,
       "status": 200,
-      "sha256": "01c96fd63dbf3dbd93513da98e3f5b41deb46f38472dc33e4ea509b8acd9fba4",
+      "sha256": "01f10e102dbdf4a640464db427d9c180812d676c09783fd7e15166180b5652ef",
       "sourceMatches": true
     },
     {
       "path": "/offline.html",
       "passed": true,
-      "cloudflareAnalyticsScripts": 1,
-      "edgeInstrumentation": "Cloudflare Web Analytics (website only)",
+      "cloudflareAnalyticsScripts": 0,
+      "edgeInstrumentation": "None; offline fallback must be script-free",
+      "noTransformPresent": true,
       "status": 200,
-      "sha256": "fa8082963e1275f9fcc6300aad153bd8e19612320c24a040949600d353512617",
+      "sha256": "fd9058ae7f8dfe5156ce8dac367526577801cc3c1f6ca727b0887d18e02fac10",
       "sourceMatches": true
     },
     {
