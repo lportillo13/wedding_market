@@ -1,0 +1,31 @@
+{
+  "checkedAt": "2026-10-27T13:46:14.150Z",
+  "directoryStatus": 200,
+  "visibleListings": 1,
+  "confirmedLocalSeedsAbsent": true,
+  "hiddenVendorPages": [
+    {
+      "slug": "harbor-house-catering",
+      "apiStatus": 404,
+      "streamedPageStatus": 200,
+      "pageNoindex": true,
+      "pageNotFound": true
+    },
+    {
+      "slug": "luna-lens-photography",
+      "apiStatus": 404,
+      "streamedPageStatus": 200,
+      "pageNoindex": true,
+      "pageNotFound": true
+    },
+    {
+      "slug": "sunset-sounds-dj",
+      "apiStatus": 404,
+      "streamedPageStatus": 200,
+      "pageNoindex": true,
+      "pageNotFound": true
+    }
+  ],
+  "passed": true,
+  "scope": "Public-only bounded directory and three known quarantined seed profiles. Next.js streamed not-found pages have HTTP 200 with noindex and embedded 404; APIs return HTTP 404. No authenticity claim for remaining listing."
+}

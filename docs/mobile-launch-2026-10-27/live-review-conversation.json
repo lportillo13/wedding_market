@@ -1,0 +1,41 @@
+{
+  "checkedAt": "2026-10-27T14:17:51.976Z",
+  "webApiSource": "0052234b649f57f720480f56990f817e66916ae6",
+  "nativeCandidateSource": "41e2c7a7742baaba5983a0474383c1947d737eef",
+  "normalAuthenticatedRls": true,
+  "serviceRoleUsed": false,
+  "fixtureSeed": "Project SQL administrator created one controlled unpublished review thread; normal public inquiry creation is not exercised by that seed.",
+  "checks": {
+    "bothReviewerPasswordsWork": true,
+    "bothRolesReadPrivateThread": true,
+    "vendorStaysUnpublished": true,
+    "messagesAndRetryDeduplication": true,
+    "senderRoleSpoofingRejected": true,
+    "proposalRevisionsVisibleToCouple": true,
+    "messagesSurviveQuoteRevisions": true,
+    "anonymousThreadContentDenied": true,
+    "messageAndQuoteNotificationsPersisted": true,
+    "twoWayBlockEnforcedByServer": true,
+    "reviewThreadRestoredAfterBlockTest": true,
+    "reportRetryDeduplicatedAndPrivate": true
+  },
+  "notificationsByRole": {
+    "client": [
+      "thread_reply",
+      "quote_answered",
+      "quote_answered"
+    ],
+    "vendor": [
+      "thread_reply"
+    ]
+  },
+  "passed": true,
+  "devicePushDeliveryVerified": false,
+  "providerEmailReceiptVerified": false,
+  "mfaModeratorResolutionVerified": false,
+  "limitations": [
+    "HTTP/RLS and persisted notification checks are not native installed-session or APNs/FCM delivery proof.",
+    "No customer conversation or public listing was used.",
+    "One explicitly labeled fictional report remains for the moderator drill; no real allegation was filed."
+  ]
+}

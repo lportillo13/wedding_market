@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-10-27T14:43:59.759Z",
+  "platform": "ANDROID",
+  "versionCode": 6,
+  "appVersion": "1.0.0",
+  "source": "803b7a67b7b0e928e6f72a10e36a3f1219732e9a",
+  "track": "internal",
+  "releaseId": 3,
+  "status": "Active",
+  "availability": "Available to internal testers",
+  "review": "Not reviewed",
+  "deviceDownloadEstimateMB": 16.5,
+  "updateEstimateKB": 515,
+  "validationErrors": 0,
+  "validationWarnings": [
+    "No R8 mapping; obfuscation is disabled"
+  ],
+  "publicProductionActive": false,
+  "ownerDecision": "Keep private testing until real vendors join",
+  "evidence": ".cache/notifications-2026-10-26/play-build6-active.png"
+}

@@ -1,0 +1,8 @@
+{
+  "checkedAt": "2026-10-27T13:56:17.591Z",
+  "scope": "Only the isolated review vendor account sessions",
+  "refreshSessionsRevoked": true,
+  "pastedAuthLinkOpened": false,
+  "rawTokensStored": false,
+  "limitation": "Already-issued access JWTs can remain valid until expiry; account stays unpublished and has no customer content."
+}

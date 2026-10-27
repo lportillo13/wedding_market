@@ -1,6 +1,8 @@
-# App review preparation — October 26, 2026
+# App review preparation — October 27, 2026
 
-Publisher confirmed by the owner: **PORTILLO'S DESIGN CR LLC, Florida, United States**. Support: **hello@thewedmarket.com**; inbound delivery confirmed. Website: https://thewedmarket.com. These answers reflect the owner-confirmed launch model; verify the final binary before entering console declarations. They are specific to Wedding Market, informed by Digital Wedding's 2.1(b) review hold.
+Publisher confirmed by the owner: **PORTILLO'S DESIGN CR LLC, Florida, United States**. Support: **hello@thewedmarket.com**; inbound delivery confirmed. Website: https://thewedmarket.com. These answers reflect the owner-confirmed launch model and are specific to Wedding Market, informed by Digital Wedding's 2.1(b) review hold.
+
+**Current owner decision: keep private testing until real vendors join.** Do not send either app to public review or release it publicly until that instruction is superseded. All public listings were confirmed tests and hidden with their records preserved. The live directory is empty. See [the current launch handoff](../../docs/mobile-launch-2026-10-27/README.md) for exact build, upload, private rollout and disclosure receipts.
 
 ## Business model answers
 
@@ -14,21 +16,25 @@ The relevant starting point for physical services is [Apple guideline 3.1.3(e)](
 
 ## Review accounts and walkthrough
 
-Dedicated client/vendor review accounts are still required on the actual review backend. Keep credentials only in private console access forms and an approved private credential store. No production administrator login is needed. The 152 confirmed seeded vendors were hidden/restricted; do not reuse them as review accounts or make fictional vendors public in the live directory. Use an isolated review environment/fixtures and confirm the binary's configured backend.
+Both dedicated client/vendor review accounts are email-confirmed and normal password sign-in works on the intended backend. Their generated credentials are saved, with specific owner approval, only in Apple/Google's private reviewer fields and protected ignored credential storage. The isolated vendor password was rotated after diagnostic exposure, and both stores were updated; use only the current protected record. No production administrator login is provided. Never print private Notes fields without credential redaction.
 
-1. Browse vendor photos/details and switch English/Spanish.
-2. Sign in as the fictional couple, accept the current posting rules, set date/guests, save a vendor and send an individual inquiry.
-3. Send a group inquiry to two fictional providers; each must see only its own conversation.
-4. As each provider, ask a question before pricing, send/revise a proposal, and reply after acceptance.
-5. Accept each provider independently; confirm contact consent, review eligibility and notifications stay isolated.
-6. Report the selected public listing/conversation, block/unblock the other participant, and verify server denial of new messages/proposals/inquiries while blocked. Blocking does not cancel a separate contract.
-7. Initiate full-account deletion from the app account controls with confirmation. The app records a request/reference and a 30-day deadline; support email is not required. Complete the MFA operator drill, including media/CDN/backup review and confirmation delivery, before claiming end-to-end verification.
-8. Open the bilingual privacy, terms, support and community pages. Confirm the exact labels and behavior from the signed candidate.
+One controlled unpublished vendor and one fictional private inquiry/invitation support a review walkthrough without populating the public directory. The wedding is in San José on November 15, 2027, with 40 guests. A project SQL administrator created this private fixture; it did not exercise the normal public inquiry-creation RPC, which correctly requires a published vendor. Normal authenticated HTTP/RLS checks verify both roles can read only their private thread, two messages, two quote revisions, retry deduplication, sender-role spoofing denial, persisted notifications, two-way blocking and private reports. Installed-device acceptance remains separate.
+
+For the current private build:
+
+1. Browse the neutral home/category screens and switch English/Spanish. The empty public directory is intentional while waiting for real vendors.
+2. Sign in as the isolated couple and open the existing fictional inquiry in the inbox. Verify the message history and both proposal revisions are visible.
+3. Sign out, then sign in as the isolated vendor. Open its private inquiry, ask/reply before and after a proposal revision, and confirm the couple's existing messages remain visible. Keep the vendor unpublished.
+4. Opt in to message/quote notifications on the signed installed app. Check foreground, background and closed-app receipt and tap routing separately for both roles; also check logout and account switching. Persisted database notification rows are not proof of APNs/FCM delivery.
+5. Verify report/block/unblock controls on the controlled private thread. Restore access after the check. A report is private and does not by itself establish wrongdoing.
+6. Open the bilingual privacy, terms, support and community pages and bundled font license. Verify restart/upgrade/logout and session storage on the installed candidate.
+
+Before a later public submission, use approved isolated fixtures to verify public inquiry creation, two independent group vendors' bookings/contact consent/review eligibility and the provider/MFA moderation/deletion drill. Do not publish fictional businesses to create screenshots, purge either store-review login, or use a customer as a deletion test. Full deletion needs a separately approved disposable account, origin media/Auth cleanup, CDN/backup review and actual confirmation receipt. Keep the documented 30-day deadline and retryable status accurate.
 
 ## Release controls and evidence
 
-Version is 1.0.0; permanent identifier is `com.theweddingmarket.app`. Real Android/iOS source archives were inspected (94 files, approximately 1.1 MB each); this is source packaging evidence, not a signed build. Local Hermes exports also do not establish production configuration or physical-device behavior.
+Version is 1.0.0; permanent identifier is `com.theweddingmarket.app`. Current native source is `803b7a67b7b0e928e6f72a10e36a3f1219732e9a`. The actual Android/iOS source archives each match 103 files / 1,099,205 bytes and exclude credentials. Android 6 and iOS 5 signed artifacts passed their platform inspections. All 65 native tests, typecheck/lint, architecture boundaries and production HTTPS exports pass. Android 6 is active in the existing owner-only Play internal track; consult the current handoff for iOS upload/processing/group assignment. These facts do not establish physical-device behavior.
 
-Play needs a signed production AAB; Apple needs a signed device IPA and matching App Store Connect record. Verify signing ownership, push credentials, target SDK/native-library alignment, native privacy/permission manifests, backup/session security, actual production endpoints and EN/ES device screenshots. Record source/artifact hashes and separate upload, processing, submission, approval, release and public-install receipts.
+Signing ownership, configured push credentials, target SDK/native-library alignment, native privacy/permission manifests and actual production endpoints have artifact/configuration evidence. Android EN/es-419 captures are uploaded; iPhone/iPad EN/ES captures and physical notification/session acceptance remain outstanding. Keep upload, processing, private testing, public submission, approval and public install receipts distinct.
 
-Keep Android EAS submission **internal/draft**. Configure managed publishing in Play and manual public release in Apple deliberately. No new signed cloud build, store submission or public app release has been performed in this preparation work.
+Keep Android updates in the existing **internal** track and TestFlight in the existing manual owner-only group. Google listing/data-safety/audience/rating/access/no-ads/no-Advertising-ID fields are saved; the listing is ready to send for review but remains unsubmitted. Apple privacy is published, with manual release/free pricing/content rights and the approved 174-storefront scope excluding mainland China. Do not interpret a saved privacy label or private rollout as a public app release. Both public production releases remain inactive.

@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-10-27T13:55:32.331Z",
+  "source": "41e2c7a7742baaba5983a0474383c1947d737eef",
+  "serviceRoleUsed": false,
+  "authLogic": "Actual mobile auth.ts compiled without replacing its provisioning logic; normal authenticated RLS client injected.",
+  "accounts": [
+    {
+      "role": "client",
+      "signedIn": true,
+      "emailConfirmed": true,
+      "sourceProvisioningPassed": true,
+      "consentRecorded": true,
+      "draftsBeforeConsent": null,
+      "draftsAfterConsent": null,
+      "unpublished": null,
+      "previouslyVerifiedAt": "2026-10-27T13:48:26.090Z"
+    },
+    {
+      "role": "vendor",
+      "signedIn": true,
+      "emailConfirmed": true,
+      "sourceProvisioningPassed": true,
+      "consentRecorded": true,
+      "draftsBeforeConsent": 0,
+      "draftsAfterConsent": 1,
+      "unpublished": true
+    }
+  ],
+  "passed": true
+}

@@ -1,0 +1,62 @@
+{
+  "checkedAt": "2026-10-27T14:44:52.614Z",
+  "source": "803b7a67b7b0e928e6f72a10e36a3f1219732e9a",
+  "androidVersionCode": 6,
+  "installedSignedRelease": true,
+  "preparation": "Only the all-opaque alpha channel was dropped for Google Play 24-bit PNG requirements; every RGB pixel is verified identical. No resizing, cropping, compositing or invented app content.",
+  "captures": [
+    {
+      "language": "en-US",
+      "screen": "home",
+      "width": 1080,
+      "height": 1920,
+      "format": "24-bit RGB PNG",
+      "originalSha256": "e1b0df377da5719046990d2a47f8c498f4f256db8fc2aa28e9ce63c8c03686f8",
+      "sha256": "5ed75665652417a259a9b30b5815d8ee593866d69e1d7593c25dba410b8ddf50",
+      "bytes": 1164376,
+      "original": ".cache/launch-artifacts/screenshots/en-build6-store-home.png",
+      "file": ".cache/launch-artifacts/store/android/en-US/01-home.png",
+      "exactRgbPixelsPreserved": true
+    },
+    {
+      "language": "en-US",
+      "screen": "categories",
+      "width": 1080,
+      "height": 1920,
+      "format": "24-bit RGB PNG",
+      "originalSha256": "44b952dbcd95d722347c4d9ffcb71518649e3dc6127125abd7e3a77929a5d6f5",
+      "sha256": "f6e09e8a5af5bb264aee92f4f6d5ccd670e9b66a434fc199aac1360a24afa8d2",
+      "bytes": 2136778,
+      "original": ".cache/launch-artifacts/screenshots/en-build6-store-categories.png",
+      "file": ".cache/launch-artifacts/store/android/en-US/02-categories.png",
+      "exactRgbPixelsPreserved": true
+    },
+    {
+      "language": "es-419",
+      "screen": "home",
+      "width": 1080,
+      "height": 1920,
+      "format": "24-bit RGB PNG",
+      "originalSha256": "1fe0297c31c9b616287e508ff2af9c913a43cf6e892a1ea4eba0eae443b73c3e",
+      "sha256": "c630f17c6cdd0aee0b5999cd0454a9c7124e7f2d50913fe150abe1414510c897",
+      "bytes": 1164953,
+      "original": ".cache/launch-artifacts/screenshots/es-build6-store-home.png",
+      "file": ".cache/launch-artifacts/store/android/es-419/01-home.png",
+      "exactRgbPixelsPreserved": true
+    },
+    {
+      "language": "es-419",
+      "screen": "categories",
+      "width": 1080,
+      "height": 1920,
+      "format": "24-bit RGB PNG",
+      "originalSha256": "2436bd733e7affcd9d4f10388aa10214047325d3c93dfdb8b6b52358aabf2b55",
+      "sha256": "1d224689120f63171d493034d5e0ff626c91e8a9bcfcb52a7bc2305b3f0387da",
+      "bytes": 2139250,
+      "original": ".cache/launch-artifacts/screenshots/es-build6-store-categories.png",
+      "file": ".cache/launch-artifacts/store/android/es-419/02-categories.png",
+      "exactRgbPixelsPreserved": true
+    }
+  ],
+  "passed": true
+}

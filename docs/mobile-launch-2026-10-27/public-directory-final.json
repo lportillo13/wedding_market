@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-10-27T14:11:50.149Z",
+  "publicDirectoryStatus": 200,
+  "publicVendorCount": 0,
+  "returnedItems": 0,
+  "hiddenProfileApis": [
+    {
+      "slug": "harbor-house-catering",
+      "apiStatus": 404
+    },
+    {
+      "slug": "luna-lens-photography",
+      "apiStatus": 404
+    },
+    {
+      "slug": "sunset-sounds-dj",
+      "apiStatus": 404
+    },
+    {
+      "slug": "blue-sky-photography",
+      "apiStatus": 404
+    }
+  ],
+  "passed": true,
+  "scope": "All four final owner-confirmed test listings hidden; no records deleted. The earlier 152 seeded demos remain quarantined. Real vendor onboarding is required before customer launch."
+}

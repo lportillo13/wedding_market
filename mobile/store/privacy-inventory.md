@@ -1,6 +1,8 @@
-# Privacy engineering inventory — October 26, 2026
+# Privacy engineering inventory — October 27, 2026
 
 Publisher: **PORTILLO'S DESIGN CR LLC, Florida, United States**. Support/privacy/deletion/abuse contact: **hello@thewedmarket.com**. Free Cloudflare forwarding to the owner's verified inbox is active; the owner confirmed actual inbound delivery. No paid Hetzner mailbox was ordered. This inventory informs the store forms; it does not substitute for reviewing the final native artifact and console questions.
+
+Current store state: Apple has published the approved 17-type account-linked privacy label with no tracking; Google has saved the 15-type data-safety answers and no-Advertising-ID declaration. Google sharing answers use its service-provider/user-initiated exceptions, not a claim that vendors/processors never receive data. Signed Android 6/iOS 5 artifact inspection is recorded in [the latest launch handoff](../../docs/mobile-launch-2026-10-27/README.md). Device push/session acceptance, actual provider email receipt and MFA deletion/media/CDN/backup drills remain open. The owner requires private testing until real vendors join; neither public production release is active.
 
 | Data | Purpose and disclosure |
 | --- | --- |

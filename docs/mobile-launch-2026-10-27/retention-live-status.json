@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-10-27T13:46:18.111Z",
+  "readOnly": true,
+  "exitCode": 0,
+  "fields": {
+    "NextElapseUSecRealtime": "",
+    "LoadState": "not-found",
+    "ActiveState": "inactive",
+    "UnitFileState": ""
+  },
+  "installed": false,
+  "automaticCleanupActive": false,
+  "scope": "Exact Wedding Market retention timer only; no root installation, timer enablement or file deletion performed."
+}

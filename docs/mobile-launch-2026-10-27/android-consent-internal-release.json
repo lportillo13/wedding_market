@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-27T13:53:56.698Z",
+  "platform": "ANDROID",
+  "appVersion": "1.0.0",
+  "versionCode": 5,
+  "source": "41e2c7a7742baaba5983a0474383c1947d737eef",
+  "track": "internal",
+  "releaseId": 2,
+  "status": "Active",
+  "availability": "Available to internal testers",
+  "review": "Not reviewed",
+  "deviceDownloadEstimateMB": 16.5,
+  "updateEstimateKB": 605,
+  "validationErrors": 0,
+  "validationWarnings": [
+    "No R8 deobfuscation file; R8 obfuscation is disabled"
+  ],
+  "publicRelease": false,
+  "evidence": ".cache/notifications-2026-10-26/play-build5-active.png"
+}

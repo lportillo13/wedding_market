@@ -1,0 +1,596 @@
+{
+  "passed": true,
+  "scope": "Final signed AAB structural, SDK, permission, key and ELF/ZIP16KB inspection; Google processing and installed-device acceptance remain separate",
+  "checks": {
+    "package": true,
+    "version": true,
+    "api36": true,
+    "backupDisabled": true,
+    "notDebuggable": true,
+    "noUnusedSensitivePermissions": true,
+    "noPrivilegedFiles": true,
+    "native16K": true,
+    "zip16K": true,
+    "jarSignature": true,
+    "matchingUploadKey": true
+  },
+  "permissions": [
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.INTERNET",
+    "android.permission.POST_NOTIFICATIONS",
+    "android.permission.READ_APP_BADGE",
+    "android.permission.VIBRATE",
+    "android.permission.WAKE_LOCK",
+    "com.anddoes.launcher.permission.UPDATE_COUNT",
+    "com.google.android.c2dm.permission.RECEIVE",
+    "com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE",
+    "com.htc.launcher.permission.READ_SETTINGS",
+    "com.htc.launcher.permission.UPDATE_SHORTCUT",
+    "com.huawei.android.launcher.permission.CHANGE_BADGE",
+    "com.huawei.android.launcher.permission.READ_SETTINGS",
+    "com.huawei.android.launcher.permission.WRITE_SETTINGS",
+    "com.majeur.launcher.permission.UPDATE_BADGE",
+    "com.oppo.launcher.permission.READ_SETTINGS",
+    "com.oppo.launcher.permission.WRITE_SETTINGS",
+    "com.sec.android.provider.badge.permission.READ",
+    "com.sec.android.provider.badge.permission.WRITE",
+    "com.sonyericsson.home.permission.BROADCAST_BADGE",
+    "com.sonymobile.home.permission.PROVIDER_INSERT_BADGE",
+    "com.theweddingmarket.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+    "me.everything.badger.permission.BADGE_COUNT_READ",
+    "me.everything.badger.permission.BADGE_COUNT_WRITE"
+  ],
+  "nativeLibraries64Bit": [
+    {
+      "file": "base/lib/arm64-v8a/libappmodules.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/arm64-v8a/libc++_shared.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/arm64-v8a/libdatastore_shared_counter.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/arm64-v8a/libexpo-modules-core.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/arm64-v8a/libfbjni.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/arm64-v8a/libgifimage.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/arm64-v8a/libhermestooling.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/arm64-v8a/libhermesvm.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/arm64-v8a/libimagepipeline.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/arm64-v8a/libjsi.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/arm64-v8a/libnative-filters.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/arm64-v8a/libnative-imagetranscoder.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/arm64-v8a/libreactnative.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/arm64-v8a/libstatic-webp.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/arm64-v8a/libzstd-kmp.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/x86_64/libappmodules.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/x86_64/libc++_shared.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/x86_64/libdatastore_shared_counter.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/x86_64/libexpo-modules-core.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/x86_64/libfbjni.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/x86_64/libgifimage.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/x86_64/libhermestooling.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/x86_64/libhermesvm.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/x86_64/libimagepipeline.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/x86_64/libjsi.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/x86_64/libnative-filters.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/x86_64/libnative-imagetranscoder.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/x86_64/libreactnative.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/x86_64/libstatic-webp.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    },
+    {
+      "file": "base/lib/x86_64/libzstd-kmp.so",
+      "loadSegments": [
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        },
+        {
+          "alignment": 16384,
+          "congruent16K": true
+        }
+      ],
+      "compatible16K": true
+    }
+  ],
+  "forbiddenFiles": [],
+  "privateKeyMarkers": [],
+  "uploadCertificateSha256": "5E:78:E9:0A:C7:AB:99:E8:3F:CF:5C:C6:FF:77:B2:45:99:6B:B5:73:9D:E7:2C:C2:AD:94:88:0C:C0:14:20:2D",
+  "versionCode": 5,
+  "minSdk": "24",
+  "targetSdk": "36",
+  "notificationIconDeclared": true
+}
