@@ -23,7 +23,9 @@ export const nativeSessionStorage = Platform.OS === 'web' ? AsyncStorage : new E
   },
   open: async (value, secret, context) => {
     const key = await AESEncryptionKey.import(secret, 'hex');
-    const opened = await aesDecryptAsync(AESSealedData.fromCombined(value), key, { additionalData: encoder.encode(context) });
+    // Android's native fromCombined bridge accepts Uint8Array, not encoded strings.
+    const combined = Uint8Array.from(atob(value), char => char.charCodeAt(0));
+    const opened = await aesDecryptAsync(AESSealedData.fromCombined(combined), key, { additionalData: encoder.encode(context) });
     return decoder.decode(opened);
   },
 });
