@@ -19,6 +19,17 @@
         "buildType": "apk"
       }
     },
+    "store-captures": {
+      "extends": "production",
+      "distribution": "internal",
+      "autoIncrement": false,
+      "withoutCredentials": true,
+      "config": "store-captures.yml",
+      "ios": {
+        "simulator": true,
+        "image": "latest"
+      }
+    },
     "production": {
       "distribution": "store",
       "autoIncrement": true,

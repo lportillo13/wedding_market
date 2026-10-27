@@ -1,0 +1,16 @@
+build:
+  name: Wedding Market native iPhone and iPad captures
+  steps:
+    - eas/build
+    - eas/install_maestro
+    - run:
+        name: Capture English and Spanish guest screens on one device at a time
+        command: node e2e/store-capture.cjs
+    - eas/upload_artifact:
+        name: Upload native captures and provenance
+        if: ${ always() }
+        inputs:
+          type: build-artifact
+          path: |
+            native-store-screenshots/*.png
+            native-store-screenshots/provenance.json

@@ -10,6 +10,12 @@
 !mobile/eas.json
 !mobile/metro.config.js
 !mobile/tsconfig.json
+!mobile/.eas
+!mobile/.eas/build
+!mobile/.eas/build/store-captures.yml
+!mobile/e2e
+!mobile/e2e/store-capture.cjs
+!mobile/e2e/store-capture.yml
 !mobile/App.tsx
 !mobile/src
 !mobile/src/**

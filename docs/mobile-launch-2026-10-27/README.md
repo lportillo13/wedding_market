@@ -1,5 +1,7 @@
 # Signed release preparation — October 27, 2026
 
+The owner has since authorized public submission after acceptance checks pass, even with an empty directory, to recruit the first vendors. See [the current public-launch acceptance work](../launch-acceptance-2026-10-27/README.md). The private release receipts below remain valid; the earlier instruction to wait for vendors is superseded.
+
 ## Current private testing state — October 27, 2026
 
 The owner explicitly chose **“Keep private testing until real vendors join.”** Do not submit or release a public production app until that instruction is superseded. Keep public store/social links hidden. The live website/backend remains `0052234b649f57f720480f56990f817e66916ae6`; native styling and handoff updates do not require rebuilding it.

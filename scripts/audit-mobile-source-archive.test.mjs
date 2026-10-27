@@ -10,7 +10,7 @@ test('actual source archive rejects empty, changed and sensitive payloads', asyn
   const temp = await fs.mkdtemp(path.join(cache, 'archive-test-'));
   const source = path.join(temp, 'source'), archive = path.join(temp, 'archive');
   try {
-    const files = ['mobile/App.tsx','mobile/package.json','mobile/package-lock.json','mobile/app.json','mobile/app.config.js','mobile/eas.json','mobile/metro.config.js','mobile/tsconfig.json','mobile/src/screen.ts','mobile/assets/icon.png','shared/rules.ts'];
+    const files = ['mobile/App.tsx','mobile/package.json','mobile/package-lock.json','mobile/app.json','mobile/app.config.js','mobile/eas.json','mobile/metro.config.js','mobile/tsconfig.json','mobile/.eas/build/store-captures.yml','mobile/e2e/store-capture.cjs','mobile/e2e/store-capture.yml','mobile/src/screen.ts','mobile/assets/icon.png','shared/rules.ts'];
     for (const file of files) {
       await fs.mkdir(path.dirname(path.join(source,file)), { recursive: true });
       await fs.writeFile(path.join(source,file), 'fixture');
@@ -25,6 +25,8 @@ test('actual source archive rejects empty, changed and sensitive payloads', asyn
     assert.deepEqual((await inspectSourceArchive(source,archive)).sensitive,['mobile/credentials.json']);
     await fs.writeFile(path.join(archive,'mobile/src/key.ts'),'-----BEGIN PRIVATE KEY-----');
     assert.ok((await inspectSourceArchive(source,archive)).sensitive.includes('mobile/src/key.ts'));
+    await fs.writeFile(path.join(archive,'mobile/e2e/store-capture.yml'),'-----BEGIN PRIVATE KEY-----');
+    assert.ok((await inspectSourceArchive(source,archive)).sensitive.includes('mobile/e2e/store-capture.yml'));
   } finally {
     if (!temp.startsWith(cache + path.sep)) throw Error('Unsafe fixture cleanup path');
     await fs.rm(temp,{recursive:true,force:true});

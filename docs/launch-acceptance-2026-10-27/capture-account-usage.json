@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-27T16:02:03.150Z",
+  "plan": "Free",
+  "ios": {
+    "plan": {
+      "used": 10,
+      "limit": 15,
+      "percentUsed": 66
+    }
+  },
+  "android": {
+    "plan": {
+      "used": 15,
+      "limit": 15,
+      "percentUsed": 100
+    }
+  }
+}

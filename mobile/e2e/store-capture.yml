@@ -1,0 +1,38 @@
+appId: com.theweddingmarket.app
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Plan your dream wedding with less stress."
+    timeout: 60000
+- waitForAnimationToEnd
+- takeScreenshot: "${CAPTURE_PREFIX}-en-home"
+- scrollUntilVisible:
+    element:
+      text: "Explore popular services"
+    direction: DOWN
+    centerElement: true
+    timeout: 30000
+- waitForAnimationToEnd
+- takeScreenshot: "${CAPTURE_PREFIX}-en-categories"
+- tapOn:
+    text: "Log In"
+    index: 0
+- assertVisible: "Español"
+- tapOn: "Español"
+- waitForAnimationToEnd
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible: "Planea tu boda soñada con menos estrés."
+    timeout: 60000
+- waitForAnimationToEnd
+- takeScreenshot: "${CAPTURE_PREFIX}-es-home"
+- scrollUntilVisible:
+    element:
+      text: "Explora servicios populares"
+    direction: DOWN
+    centerElement: true
+    timeout: 30000
+- waitForAnimationToEnd
+- takeScreenshot: "${CAPTURE_PREFIX}-es-categories"

@@ -17,7 +17,7 @@ async function walk(root,relative='') {
 }
 export async function inspectSourceArchive(root,archive) {
   if((await fs.lstat(archive)).isSymbolicLink())throw Error('Archive root must not be a symlink.');
-  const config=['mobile/App.tsx','mobile/package.json','mobile/package-lock.json','mobile/app.json','mobile/app.config.js','mobile/eas.json','mobile/metro.config.js','mobile/tsconfig.json'];
+  const config=['mobile/App.tsx','mobile/package.json','mobile/package-lock.json','mobile/app.json','mobile/app.config.js','mobile/eas.json','mobile/metro.config.js','mobile/tsconfig.json','mobile/.eas/build/store-captures.yml','mobile/e2e/store-capture.cjs','mobile/e2e/store-capture.yml'];
   const expected=[...config,...await walk(root,'mobile/src'),...await walk(root,'mobile/assets'),...await walk(root,'shared')].filter(file=>!forbidden(file)).sort();
   const actual=await walk(archive);
   const extra=actual.filter(file=>!expected.includes(file));const missing=expected.filter(file=>!actual.includes(file));
@@ -25,7 +25,7 @@ export async function inspectSourceArchive(root,archive) {
   for(const file of actual) {
     const content=await fs.readFile(path.join(archive,file));bytes+=content.length;
     if(forbidden(file))sensitive.push(file);
-    if(/\.(?:tsx?|jsx?|json)$/.test(file)) {
+    if(/\.(?:tsx?|[cm]?jsx?|json|ya?ml)$/.test(file)) {
       const text=content.toString('utf8');
       if(/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|"private_key"\s*:|SUPABASE_SERVICE_ROLE_KEY\s*[:=]\s*["'`][^"'`]+/i.test(text))sensitive.push(file);
       for(const token of text.matchAll(/eyJ[A-Za-z0-9_-]+\.([A-Za-z0-9_-]+)\.[A-Za-z0-9_-]+/g)) {
