@@ -1,0 +1,364 @@
+{
+  "checkedAt": "2026-10-27T02:22:48.449400+00:00",
+  "releaseCommit": "0052234b649f57f720480f56990f817e66916ae6",
+  "publicTarget": "https://thewedmarket.com",
+  "results": [
+    {
+      "path": "/api/health",
+      "method": "GET",
+      "expected": 200,
+      "passed": true,
+      "status": 200
+    },
+    {
+      "path": "/",
+      "method": "GET",
+      "expected": 200,
+      "passed": true,
+      "status": 200,
+      "warmHeaderPresent": true,
+      "securityHeadersPassed": true,
+      "guestAccountRenderedOnServer": true,
+      "noAccountLoadingPlaceholder": true,
+      "htmlNotPubliclyCached": true
+    },
+    {
+      "path": "/vendors",
+      "method": "GET",
+      "expected": 200,
+      "passed": true,
+      "status": 200
+    },
+    {
+      "path": "/vendors/demo-destination-planning-golden-union-6",
+      "method": "GET",
+      "expected": 404,
+      "passed": true,
+      "status": 200,
+      "streamedNotFound": true,
+      "note": "Next.js streamed notFound can use HTTP200; content absence and the native/API404 are checked separately."
+    },
+    {
+      "path": "/api/vendors?pageSize=1",
+      "method": "GET",
+      "expected": 200,
+      "passed": true,
+      "status": 200,
+      "itemCount": 1
+    },
+    {
+      "path": "/api/vendors/demo-destination-planning-golden-union-6",
+      "method": "GET",
+      "expected": 404,
+      "passed": true,
+      "status": 404
+    },
+    {
+      "path": "/booking-isolated-preview",
+      "method": "GET",
+      "expected": 404,
+      "passed": true,
+      "status": 404
+    },
+    {
+      "path": "/api/rfqs/create",
+      "method": "POST",
+      "expected": 401,
+      "passed": true,
+      "status": 401
+    },
+    {
+      "path": "/api/uploads",
+      "method": "POST",
+      "expected": 401,
+      "passed": true,
+      "status": 401
+    },
+    {
+      "path": "/api/ready",
+      "method": "GET",
+      "expected": 401,
+      "passed": true,
+      "status": 401
+    },
+    {
+      "path": "/api/account-deletion",
+      "method": "POST",
+      "expected": 401,
+      "passed": true,
+      "status": 401
+    },
+    {
+      "path": "/api/admin/blog-posts",
+      "method": "GET",
+      "expected": 401,
+      "passed": true,
+      "status": 401
+    },
+    {
+      "path": "/api/mobile/quotes",
+      "method": "POST",
+      "expected": 401,
+      "passed": true,
+      "status": 401
+    },
+    {
+      "path": "/api/mobile/quote-replies",
+      "method": "POST",
+      "expected": 401,
+      "passed": true,
+      "status": 401
+    },
+    {
+      "path": "/api/mobile/quotes/accept",
+      "method": "POST",
+      "expected": 401,
+      "passed": true,
+      "status": 401
+    },
+    {
+      "path": "/api/mobile/push-token",
+      "method": "POST",
+      "expected": 401,
+      "passed": true,
+      "status": 401
+    },
+    {
+      "path": "/privacy?lang=en",
+      "passed": true,
+      "status": 200,
+      "languagePresent": true,
+      "titlePresent": true,
+      "contactPresent": true,
+      "publisherPresent": true,
+      "oldContactAbsent": true,
+      "placeholderLinksAbsent": true,
+      "websiteAnalyticsDisclosed": true
+    },
+    {
+      "path": "/privacy?lang=es",
+      "passed": true,
+      "status": 200,
+      "languagePresent": true,
+      "titlePresent": true,
+      "contactPresent": true,
+      "publisherPresent": true,
+      "oldContactAbsent": true,
+      "placeholderLinksAbsent": true,
+      "websiteAnalyticsDisclosed": true
+    },
+    {
+      "path": "/terms?lang=en",
+      "passed": true,
+      "status": 200,
+      "languagePresent": true,
+      "titlePresent": true,
+      "contactPresent": true,
+      "publisherPresent": true,
+      "oldContactAbsent": true,
+      "placeholderLinksAbsent": true
+    },
+    {
+      "path": "/terms?lang=es",
+      "passed": true,
+      "status": 200,
+      "languagePresent": true,
+      "titlePresent": true,
+      "contactPresent": true,
+      "publisherPresent": true,
+      "oldContactAbsent": true,
+      "placeholderLinksAbsent": true
+    },
+    {
+      "path": "/support?lang=en",
+      "passed": true,
+      "status": 200,
+      "languagePresent": true,
+      "titlePresent": true,
+      "contactPresent": true,
+      "publisherPresent": true,
+      "oldContactAbsent": true,
+      "placeholderLinksAbsent": true
+    },
+    {
+      "path": "/support?lang=es",
+      "passed": true,
+      "status": 200,
+      "languagePresent": true,
+      "titlePresent": true,
+      "contactPresent": true,
+      "publisherPresent": true,
+      "oldContactAbsent": true,
+      "placeholderLinksAbsent": true
+    },
+    {
+      "path": "/account-deletion?lang=en",
+      "passed": true,
+      "status": 200,
+      "languagePresent": true,
+      "titlePresent": true,
+      "contactPresent": true,
+      "publisherPresent": true,
+      "oldContactAbsent": true,
+      "placeholderLinksAbsent": true
+    },
+    {
+      "path": "/account-deletion?lang=es",
+      "passed": true,
+      "status": 200,
+      "languagePresent": true,
+      "titlePresent": true,
+      "contactPresent": true,
+      "publisherPresent": true,
+      "oldContactAbsent": true,
+      "placeholderLinksAbsent": true
+    },
+    {
+      "path": "/community-guidelines?lang=en",
+      "passed": true,
+      "status": 200,
+      "languagePresent": true,
+      "titlePresent": true,
+      "contactPresent": true,
+      "publisherPresent": true,
+      "oldContactAbsent": true,
+      "placeholderLinksAbsent": true
+    },
+    {
+      "path": "/community-guidelines?lang=es",
+      "passed": true,
+      "status": 200,
+      "languagePresent": true,
+      "titlePresent": true,
+      "contactPresent": true,
+      "publisherPresent": true,
+      "oldContactAbsent": true,
+      "placeholderLinksAbsent": true
+    },
+    {
+      "path": "/cookies?lang=en",
+      "passed": true,
+      "status": 200,
+      "languagePresent": true,
+      "titlePresent": true,
+      "contactPresent": true,
+      "publisherPresent": true,
+      "oldContactAbsent": true,
+      "placeholderLinksAbsent": true
+    },
+    {
+      "path": "/cookies?lang=es",
+      "passed": true,
+      "status": 200,
+      "languagePresent": true,
+      "titlePresent": true,
+      "contactPresent": true,
+      "publisherPresent": true,
+      "oldContactAbsent": true,
+      "placeholderLinksAbsent": true
+    },
+    {
+      "path": "/api/vendors?pageSize=50",
+      "passed": true,
+      "status": 200,
+      "total": 4,
+      "itemCount": 4,
+      "seedSlugAbsent": true
+    },
+    {
+      "path": "/sw.js",
+      "passed": true,
+      "status": 200,
+      "sha256": "01f10e102dbdf4a640464db427d9c180812d676c09783fd7e15166180b5652ef",
+      "sourceMatches": true
+    },
+    {
+      "path": "/offline.html",
+      "passed": true,
+      "cloudflareAnalyticsScripts": 0,
+      "edgeInstrumentation": "None; offline fallback must be script-free",
+      "noTransformPresent": true,
+      "status": 200,
+      "sha256": "fd9058ae7f8dfe5156ce8dac367526577801cc3c1f6ca727b0887d18e02fac10",
+      "sourceMatches": true
+    },
+    {
+      "path": "/icon.svg",
+      "passed": true,
+      "status": 200,
+      "sha256": "5d80e1e0096deff1e0a67cac4e193533c896881322fe89c3fb10d0f6a64bffd3",
+      "sourceMatches": true
+    },
+    {
+      "path": "/apple-touch-icon.png",
+      "passed": true,
+      "status": 200,
+      "sha256": "2fd37190c59351c8ed7912ae42e9a2f3edc2cab427ad47dca2bdc1bbc97440f5",
+      "sourceMatches": true
+    },
+    {
+      "path": "/icon-512.png",
+      "passed": true,
+      "status": 200,
+      "sha256": "45e19ae9f665f3ec67beb7dc2ad57d805f7b57ec8c69ed516259dbcae64bb3e9",
+      "sourceMatches": true
+    },
+    {
+      "path": "/favicon.ico",
+      "passed": true,
+      "status": 200,
+      "sha256": "8106f43c9bac2b5847cce202965195d550657c13f81dd0bd6dbe21e9e5d7c9d0",
+      "sourceMatches": true
+    },
+    {
+      "path": "/account/inbox",
+      "anonymousAccess": "redirect",
+      "expectedDestination": "/signup",
+      "passed": true,
+      "status": 307,
+      "redirectPath": "/signup",
+      "privateInboxAbsent": true
+    },
+    {
+      "path": "/account/inbox?view=deleted",
+      "anonymousAccess": "redirect",
+      "expectedDestination": "/signup",
+      "passed": true,
+      "status": 307,
+      "redirectPath": "/signup",
+      "privateInboxAbsent": true
+    },
+    {
+      "path": "/vendor/inbox",
+      "anonymousAccess": "redirect",
+      "expectedDestination": "/signup/vendor",
+      "passed": true,
+      "status": 307,
+      "redirectPath": "/signup/vendor",
+      "privateInboxAbsent": true
+    }
+  ],
+  "stylesheets": {
+    "stylesheetCount": 3,
+    "statuses": [
+      200,
+      200,
+      200
+    ],
+    "markers": {
+      "wm-conversations": true,
+      "wm-conversation-card__details": true,
+      "wm-workspace-footer": true,
+      "wm-notification-page": true,
+      "wm-thread": true,
+      "wm-conversation-card--unread": true
+    },
+    "passed": true
+  },
+  "directOrigin": {
+    "status": 403,
+    "expected": 403,
+    "passed": true
+  },
+  "allPassed": true
+}
