@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-10-27T22:52:38.564Z",
+  "releaseCommit": "cc866eae2d0a9f9f9b06483bd29b4ef4874b90a6",
+  "desktop": {
+    "alignment": "center",
+    "captionCenter": 712.5,
+    "difference": 0,
+    "headlineCenter": 712.5,
+    "marginLeft": "132px",
+    "marginRight": "132px",
+    "text": "Celebra en Costa Rica",
+    "width": 1425
+  },
+  "phone": {
+    "captionCenter": 187.5,
+    "difference": 0,
+    "headlineCenter": 187.5,
+    "width": 375
+  },
+  "passed": true
+}
