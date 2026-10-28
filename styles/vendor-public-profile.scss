@@ -92,9 +92,10 @@
   }
   .form-control,
   .form-select {
-    background-color: var(--lx-surface);
+    // The legacy global input skin marks these two properties important.
+    background-color: var(--lx-surface) !important;
     border-color: var(--lx-border);
-    border-radius: 7px;
+    border-radius: 7px !important;
     color: var(--lx-ink);
     font-size: 1rem;
   }
@@ -108,6 +109,7 @@
     font-size: 0.875rem;
     font-weight: 400;
     letter-spacing: 0;
+    text-transform: none;
   }
   .form-check-input:checked {
     background-color: var(--profile-accent);
@@ -667,6 +669,9 @@
     box-shadow: none;
   }
   .wm-vendor-gallery-slider__frame { border-radius: 10px; }
+  .wm-vendor-gallery-slider__meta p,
+  .wm-vendor-gallery-slider__count,
+  .wm-vendor-gallery-slider__expand { font-weight: 400; }
   .wm-vendor-gallery-slider .swiper-button-prev,
   .wm-vendor-gallery-slider .swiper-button-next {
     width: 44px;
