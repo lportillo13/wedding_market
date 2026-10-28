@@ -1,0 +1,41 @@
+{
+  "checkedAt": "2026-10-28T20:53:28.544Z",
+  "origin": "https://thewedmarket.com",
+  "featureRelease": "c947f2018a06ffec0807f6320375700393c2ebc9",
+  "previewMode": "Explicit in-memory simulation; production account transport remains separate",
+  "checks": {
+    "threeBoutiques": true,
+    "suitFilter": true,
+    "savedOutfitDeepLink": true,
+    "fittingRequest": true,
+    "storeConfirmation": true,
+    "coupleSeesConfirmation": true,
+    "twoWayMessages": true,
+    "coupleCancellation": true,
+    "reset": true,
+    "photoFilm": {
+      "durationSeconds": 5,
+      "observedPlaybackSeconds": 4.4818,
+      "error": null
+    }
+  },
+  "publicChecks": 30,
+  "localVisualCorrection": {
+    "source": "cb650d00a1740c819bd0adbb0c6c24c4bb45379a",
+    "cardAndHeroHeadingColor": "rgba(255, 255, 255, 0.92)",
+    "cleanGuestScreenshot": "example-boutiques-preview.jpg"
+  },
+  "limits": [
+    "Preview transport does not exercise production HTTP writes",
+    "No physical-device or signed-native acceptance"
+  ],
+  "finalRelease": "cb650d00a1740c819bd0adbb0c6c24c4bb45379a",
+  "finalLiveVisualCheck": {
+    "heroHeading": "rgba(255, 255, 255, 0.92)",
+    "allThreeCardHeadings": "rgba(255, 255, 255, 0.92)",
+    "normalSectionText": "rgb(51, 45, 39)",
+    "bodyBackground": "rgb(250, 248, 244)",
+    "language": "es",
+    "checkedAt": "2026-10-28T20:59:38.479Z"
+  }
+}

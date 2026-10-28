@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-28T20:15:15.482Z",
+  "checkedAt": "2026-10-28T20:55:33.090Z",
   "base": "https://thewedmarket.com",
   "checks": [
     {
@@ -21,6 +21,89 @@
       "status": 200,
       "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
       "location": null,
+      "passed": true
+    },
+    {
+      "path": "/boutiques?examples=1",
+      "status": 200,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-atelier-alba",
+      "status": 200,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?slug=example-atelier-alba",
+      "status": 404,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-casa-marfil",
+      "status": 200,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?slug=example-casa-marfil",
+      "status": 404,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-sastreria-roble",
+      "status": 200,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?slug=example-sastreria-roble",
+      "status": 404,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/examples/appointments",
+      "status": 200,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/examples/manage",
+      "status": 200,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/alba.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/marfil.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/roble.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/alba-photo-film.mp4",
+      "status": 200,
       "passed": true
     },
     {

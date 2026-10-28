@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-28T20:39:42.202Z",
+  "checkedAt": "2026-10-28T20:59:38.478Z",
   "web": {
     "architecture": true,
     "typecheck": true,
@@ -25,7 +25,10 @@
     "androidHermes": true,
     "iosHermes": true,
     "maxExportWorkers": 2,
-    "releaseHeld": true
+    "releaseHeld": true,
+    "androidBundle": "_expo/static/js/android/AppEntry-4034fd57fa321358d41383c452550a42.hbc",
+    "iosBundle": "_expo/static/js/ios/AppEntry-3cbf8da0986056af679e8e21c9a538bc.hbc",
+    "sourceCommit": "c947f2018a06ffec0807f6320375700393c2ebc9"
   },
   "visual": {
     "source": "Interactive production website build with explicit fictional preview transport",
@@ -33,7 +36,9 @@
     "spanishWidth": 320,
     "horizontalOverflow": false,
     "photosLoaded": true,
-    "displayFont": "GT Super"
+    "displayFont": "GT Super",
+    "photoHeadingColor": "rgba(255, 255, 255, 0.92)",
+    "liveHeroAndCardsVerified": true
   },
   "limits": [
     "No real authenticated two-account browser mutation test",
@@ -57,5 +62,8 @@
       "reset clears favorites"
     ],
     "regressions": 5
-  }
+  },
+  "commit": "cb650d00a1740c819bd0adbb0c6c24c4bb45379a",
+  "featureCommit": "c947f2018a06ffec0807f6320375700393c2ebc9",
+  "livePublicChecks": 30
 }
