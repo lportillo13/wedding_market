@@ -941,6 +941,7 @@
     padding: 0;
     img { padding: 0; }
   }
+  .wm-vendors-filters__toggle, .wm-vendors-filters__summary { display: none; }
   .wm-vendors-search {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
@@ -969,8 +970,45 @@
     &:hover { background: #514339; }
   }
   @media (max-width: 767.98px) {
-    .wm-vendors-search { grid-template-columns: minmax(0, 1fr); padding: .75rem; }
+    .wm-vendors-hero { padding: 2rem 0 1.5rem; }
+    .wm-vendors-hero__sub { margin-bottom: 1.5rem; }
+    .wm-vendors-content { padding-top: 1.5rem; }
+    .wm-vendors-filters__toggle {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      width: 100%;
+      min-height: 52px;
+      padding: .8rem 1rem;
+      border: 1px solid var(--wm-outline);
+      border-radius: 8px;
+      background: #fffdf9;
+      color: var(--wm-ink);
+      font: 400 .9375rem/1.4 var(--wm-font-body);
+      text-align: left;
+      &:hover { border-color: #9c8467; }
+      &:focus-visible { outline: 2px solid #805a40; outline-offset: 3px; }
+      > svg { flex-shrink: 0; }
+    }
+    .wm-vendors-filters__chevron { margin-left: auto; transition: transform .2s ease; }
+    .wm-vendors-filters[data-expanded="true"] .wm-vendors-filters__chevron { transform: rotate(180deg); }
+    .wm-vendors-filters[data-expanded="false"] .wm-vendors-filters__panel { display: none; }
+    .wm-vendors-filters__count { display: grid; place-items: center; min-width: 24px; min-height: 24px; padding: .1rem .35rem; border-radius: 50%; background: var(--wm-bg-secondary); font-size: .75rem; }
+    .wm-vendors-filters__summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .25rem .75rem;
+      margin: .75rem 0 0;
+      color: var(--wm-muted);
+      font: 400 .8125rem/1.5 var(--wm-font-body);
+      overflow-wrap: anywhere;
+      > span + span::before { content: '·'; margin-right: .75rem; }
+    }
+    .wm-vendors-search { grid-template-columns: minmax(0, 1fr); padding: .75rem; margin-top: .75rem; }
     .wm-vendors-search__field { width: 100%; border: 0; border-bottom: 1px solid var(--wm-outline); padding: .5rem .4rem; }
     .wm-vendors-search__btn { width: 100%; }
+    @media (prefers-reduced-motion: reduce) {
+      .wm-vendors-filters__chevron { transition: none; }
+    }
   }
 }

@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import HeaderIcon from "@/components/HeaderIcon";
 import SponsoredVendorsSection from "@/components/ads/SponsoredVendorsSection";
 import VendorAdsBanner from "@/components/ads/VendorAdsBanner";
 import ShortlistButton from "@/components/shortlist/ShortlistButton";
@@ -51,6 +52,7 @@ export default function VendorsPageContent({
   categories,
 }: VendorsPageContentProps) {
   const { dictionary, language } = useLanguage();
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const labels = dictionary.vendorsPage;
   const isExample = searchParams.examples === '1';
   const exampleLabels = exampleVendorCopy[language === 'es' ? 'es' : 'en'];
@@ -98,6 +100,10 @@ export default function VendorsPageContent({
       )?.key ?? ""
     );
   }, [categoryOptions, searchParams.category]);
+  const activeFilters = [
+    searchParams.q?.trim(),
+    categoryOptions.find((category) => category.key === selectedCategory)?.label || searchParams.category,
+  ].filter((value): value is string => Boolean(value));
 
   const pageLabel = useMemo(
     () => labels.pagination.pageLabel.replace("{current}", String(page)).replace("{total}", String(Math.max(1, totalPages))),
@@ -127,7 +133,23 @@ export default function VendorsPageContent({
           </h1>
           <p className="wm-vendors-hero__sub">{labels.description}</p>
 
-          <form action="/vendors" method="get">
+          <div className="wm-vendors-filters" data-expanded={filtersOpen}>
+            <button
+              className="wm-vendors-filters__toggle"
+              type="button"
+              aria-expanded={filtersOpen}
+              aria-controls="vendor-search-filters"
+              onClick={() => setFiltersOpen((open) => !open)}
+            >
+              <HeaderIcon name="search" aria-hidden="true" />
+              <span>{language === 'es' ? 'Búsqueda y filtros' : 'Search & filters'}</span>
+              {activeFilters.length > 0 && <span className="wm-vendors-filters__count">
+                {activeFilters.length}
+                <span className="visually-hidden">{language === 'es' ? ' filtros activos' : ' active filters'}</span>
+              </span>}
+              <HeaderIcon className="wm-vendors-filters__chevron" name="chevron" aria-hidden="true" />
+            </button>
+          <form className="wm-vendors-filters__panel" id="vendor-search-filters" action="/vendors" method="get">
             {isExample && <input type="hidden" name="examples" value="1" />}
             <div className="wm-vendors-search">
               <div className="wm-vendors-search__field">
@@ -169,7 +191,11 @@ export default function VendorsPageContent({
               </button>
             </div>
           </form>
+          {activeFilters.length > 0 && <p className="wm-vendors-filters__summary">
+            {activeFilters.map((filter, index) => <span key={`${index}-${filter}`}>{filter}</span>)}
+          </p>}
           {(searchParams.q || searchParams.category) && <Link className="wm-search-reset" href={resetHref}>{language === 'es' ? 'Limpiar búsqueda y filtros' : 'Clear search and filters'}</Link>}
+          </div>
         </div>
       </section>
 
