@@ -1,0 +1,107 @@
+{
+  "release": "06e7134078db2d048f90f208bb2e0b95c6672fd6",
+  "url": "https://thewedmarket.com/",
+  "desktop": [
+    {
+      "font": "\"GT Super\", Georgia, serif",
+      "lineHeight": "112px",
+      "size": "112px",
+      "text": "Tu boda.A tu manera.",
+      "weight": "300"
+    },
+    {
+      "font": "\"Lucia BT\", cursive",
+      "lineHeight": "102.144px",
+      "size": "107.52px",
+      "text": "A tu manera.",
+      "weight": "400"
+    },
+    {
+      "font": "\"Acumin Pro\", Arial, sans-serif",
+      "lineHeight": "28.8px",
+      "size": "16px",
+      "text": "Descubre profesionales de bodas en Costa Rica. Guarda tus favoritos y reúne tus cotizaciones y conversaciones en un solo lugar.",
+      "weight": "400"
+    },
+    {
+      "font": "\"GT Super\", Georgia, serif",
+      "lineHeight": "74.8px",
+      "size": "68px",
+      "text": "Un poco de inspiración paratu gran día.",
+      "weight": "300"
+    },
+    {
+      "font": "\"Lucia BT\", cursive",
+      "lineHeight": "82.62px",
+      "size": "91.8px",
+      "text": "tu gran día.",
+      "weight": "400"
+    },
+    {
+      "font": "\"Acumin Pro\", Arial, sans-serif",
+      "lineHeight": "28.8px",
+      "size": "16px",
+      "text": "Descubre lugares especiales, historias de diseño, consejos de planeación y los detalles que hacen que una celebración se sienta totalmente tuya.",
+      "weight": "400"
+    },
+    {
+      "font": "\"GT Super\", Georgia, serif",
+      "lineHeight": "42px",
+      "size": "40px",
+      "text": "¿Listos para empezar a planear?",
+      "weight": "400"
+    },
+    {
+      "font": "\"Acumin Pro\", Arial, sans-serif",
+      "lineHeight": "20.3px",
+      "size": "14px",
+      "text": "Guarda favoritos en un solo lugar",
+      "weight": "600"
+    },
+    {
+      "font": "\"Acumin Pro\", Arial, sans-serif",
+      "lineHeight": "20.3px",
+      "size": "14px",
+      "text": "Compara opciones sin perder contexto",
+      "weight": "600"
+    },
+    {
+      "font": "\"Acumin Pro\", Arial, sans-serif",
+      "lineHeight": "20.3px",
+      "size": "14px",
+      "text": "Mantén a tu pareja alineada",
+      "weight": "600"
+    }
+  ],
+  "phone": {
+    "clientWidth": 375,
+    "hero": {
+      "font": "\"GT Super\", Georgia, serif",
+      "lineHeight": "56px",
+      "size": "56px"
+    },
+    "heroAccent": {
+      "font": "\"Lucia BT\", cursive",
+      "lineHeight": "51.072px",
+      "size": "53.76px"
+    },
+    "magazineAccent": {
+      "font": "\"Lucia BT\", cursive",
+      "lineHeight": "68.7082px",
+      "size": "76.3425px"
+    },
+    "planning": {
+      "font": "\"GT Super\", Georgia, serif",
+      "lineHeight": "33.6px",
+      "size": "32px"
+    },
+    "scrollWidth": 375,
+    "viewportWidth": 390
+  },
+  "passed": true,
+  "screenshots": [
+    "live-reference-hero.png",
+    "live-reference-magazine.png",
+    "live-reference-planning.png"
+  ]
+}

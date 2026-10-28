@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-10-28T02:30:03.648Z",
+  "releaseCommit": "06e7134078db2d048f90f208bb2e0b95c6672fd6",
+  "passed": true,
+  "checks": [
+    {
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "language": "es",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/d308e2a27edde546.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/03edffb4660abd27.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/2a79a99c5f18e9ac.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "automatic-caption-side-margins",
+      "passed": true
+    },
+    {
+      "kind": "reference-typography-css",
+      "passed": true
+    }
+  ]
+}
