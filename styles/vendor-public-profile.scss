@@ -13,6 +13,7 @@
   --lx-sans: var(--wm-font-body);
   --profile-accent: var(--wm-accent, #805a40);
   --profile-serif: var(--wm-font-display);
+  --profile-tabs-height: 54px;
   background: var(--lx-bg);
   color: var(--lx-ink);
   // The site-wide main reveal must not contain this page's fixed phone action.
@@ -142,9 +143,10 @@
     grid-template-columns: minmax(0, 1fr);
     align-items: end;
     justify-items: center;
-    min-height: clamp(650px, 82svh, 860px);
+    min-height: 100vh;
+    min-height: 100svh;
     width: 100%;
-    padding: clamp(2.5rem, 5vw, 5rem) 1.5rem;
+    padding: calc(var(--wm-header-height) + 2rem) 1.5rem calc(var(--profile-tabs-height) + clamp(2.5rem, 5vw, 5rem));
     background: var(--lx-bg-2);
     &::after {
       content: '';
@@ -226,6 +228,8 @@
 
   .wm-vendor-tabs-shell {
     top: var(--wm-header-height);
+    margin-top: calc(-1 * var(--profile-tabs-height));
+    height: var(--profile-tabs-height);
     background: var(--lx-bg);
     border-block: 1px solid var(--lx-border);
     box-shadow: none;
@@ -729,7 +733,7 @@
     }
   }
   @media (max-width: 991.98px) {
-    .wm-profile-hero { min-height: 680px; padding: 3rem 1.5rem; }
+    .wm-profile-hero { padding-inline: 1.5rem; }
     .wm-profile-hero__copy { max-width: 680px; }
 
     .wm-profile-layout {
@@ -754,7 +758,7 @@
     .breadcrumb {
       font-size: 0.75rem;
     }
-    .wm-profile-hero { min-height: clamp(580px, 82svh, 740px); padding: 2.5rem 1.5rem; }
+    .wm-profile-hero { padding: calc(var(--wm-header-height) + 2rem) 1.5rem calc(var(--profile-tabs-height) + 2.5rem); }
     .wm-profile-hero__copy { max-width: none; }
     .wm-profile-hero h1 { font-size: clamp(2.5rem, 11vw, 3.4rem); }
     .wm-profile-hero__seal { width: 48px; height: 48px; }

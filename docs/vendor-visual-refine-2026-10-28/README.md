@@ -15,6 +15,8 @@ Approved visual reference: [centered editorial, desktop and phone](selected-conc
 
 The owner then explicitly requested the mockup's transparent menu over the cover. Profile navigation now overlays the image/video at the top and becomes solid warm charcoal after scrolling. Gallery/video controls sit below the header's touch area. Missing vendor routes retain the standard header.
 
+The owner requested a full-viewport opening with only the profile submenu at its bottom edge. The cover now has a `100svh` minimum (`100vh` fallback); the 54px profile navigation overlaps its lower edge in normal flow and remains sticky below the global header while scrolling. Content starts after the initial viewport, with no About teaser visible at the fold. Short viewports may grow to preserve readable content and controls.
+
 Three quote-sidebar alternatives were supplied before coding; the owner selected **A, slim floating bar**. The permanent right column and duplicate phone bar are replaced with one small dock on desktop and phone. It appears after the hero, hides when the contact section is reached, preserves guest sign-in/price restrictions and remains absent for vendor viewers. The main content uses the full grid width while About prose keeps a comfortable reading measure. Reference: [approved floating dock](selected-quote-a.png).
 
 - Vendors choose Photo or Video in Profile → Media. Video can be selected from their existing uploaded profile clips or supplied as a public YouTube, Vimeo or direct HTTPS MP4/WebM URL. Library choices must belong to that vendor's current video assets. Existing upload processing, 50 MB admission limit and three-video quota are unchanged.
