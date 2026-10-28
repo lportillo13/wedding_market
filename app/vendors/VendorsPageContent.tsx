@@ -245,13 +245,15 @@ export default function VendorsPageContent({
                             />
                         </span>}
                       </div>
+                      <div className="wm-vendor-card__details">
                       {(vendor.city || vendor.region) && <div className="wm-vendor-card__location"><span aria-hidden="true">⌖</span> {vendor.city || vendor.region}</div>}
                         <div className="wm-vendor-card__rating">
                           <span className="wm-vendor-card__star">★</span>
                           <strong>{Number(vendor.rating_avg || 0).toFixed(1)}</strong>
                           <span>({vendor.rating_count || 0})</span>
                         </div>
-                      <Link className="wm-vendor-card__profile-link" href={`/vendors/${vendor.slug}`} prefetch={false}><span>{language === 'es' ? 'Ver perfil' : 'View profile'}</span><span aria-hidden="true">→</span></Link>
+                      </div>
+                      <Link className="wm-vendor-card__profile-link" href={`/vendors/${vendor.slug}`} prefetch={false} aria-label={`${language === 'es' ? 'Ver perfil' : 'View profile'} · ${vendor.business_name}`}><span className="visually-hidden">{language === 'es' ? 'Ver perfil' : 'View profile'}</span><span aria-hidden="true">→</span></Link>
                     </div>
                   </article>
                 );
