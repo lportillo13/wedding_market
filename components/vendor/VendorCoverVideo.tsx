@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import type { VendorHeroVideo } from '@/shared/vendors/hero';
 import { resolveMediaUrl, shouldRenderUnoptimizedMedia } from '@/lib/media-url';
+import { getVendorNavigationHeight } from '@/features/vendors/client/viewport';
 
 export default function VendorCoverVideo({ source, poster, name, language }: { source: VendorHeroVideo; poster: string | null; name: string; language: 'en' | 'es' }) {
   const container = useRef<HTMLDivElement>(null);
@@ -25,7 +26,7 @@ export default function VendorCoverVideo({ source, poster, name, language }: { s
         offeredAutoplay = true;
         if (!reduced.matches) setRequested(true);
       }
-    }, { threshold: .05 });
+    }, { threshold: .05, rootMargin: `-${getVendorNavigationHeight()}px 0px 0px 0px` });
     if (container.current) observer.observe(container.current);
     reduced.addEventListener('change', motionChanged);
     document.addEventListener('visibilitychange', visibilityChanged);

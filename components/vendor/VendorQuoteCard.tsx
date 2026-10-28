@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from 'react';
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
+import { getVendorNavigationHeight } from '@/features/vendors/client/viewport';
 
 export default function VendorQuoteCard({
   vendor,
@@ -22,13 +23,13 @@ export default function VendorQuoteCard({
   useEffect(() => {
     const hero = document.querySelector('.wm-profile-hero');
     const contact = document.getElementById('contact');
-    const headerHeight = document.querySelector('.wm-site-header')?.getBoundingClientRect().height ?? 76;
+    const navigationHeight = getVendorNavigationHeight();
     const observer = new IntersectionObserver(entries => {
       for (const entry of entries) {
-        if (entry.target === hero) setHeroPast(!entry.isIntersecting && entry.boundingClientRect.bottom <= headerHeight);
+        if (entry.target === hero) setHeroPast(!entry.isIntersecting && entry.boundingClientRect.bottom <= navigationHeight);
         if (entry.target === contact) setContactReached(entry.boundingClientRect.top <= (entry.rootBounds?.bottom ?? window.innerHeight));
       }
-    }, { rootMargin: `-${headerHeight}px 0px 0px 0px` });
+    }, { rootMargin: `-${navigationHeight}px 0px 0px 0px` });
     if (hero) observer.observe(hero);
     if (contact) observer.observe(contact);
     return () => observer.disconnect();

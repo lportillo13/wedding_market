@@ -3,6 +3,7 @@
 import clsx from "clsx";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
+import { getVendorNavigationHeight } from '@/features/vendors/client/viewport';
 
 export type VendorTab = {
   id: string;
@@ -15,13 +16,7 @@ type VendorTabsProps = {
 };
 
 function getScrollOffset() {
-  const siteHeader =
-    document.querySelector(".wm-site-header")?.getBoundingClientRect().height ??
-    76;
-  const tabs =
-    document.querySelector(".wm-vendor-tabs-shell")?.getBoundingClientRect()
-      .height ?? 60;
-  return siteHeader + tabs + 20;
+  return getVendorNavigationHeight() + 20;
 }
 
 export default function VendorTabs({ sections, className }: VendorTabsProps) {
