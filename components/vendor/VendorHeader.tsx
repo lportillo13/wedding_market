@@ -8,7 +8,6 @@ import { Stars } from "@/components/Stars";
 import { useLanguage } from "@/contexts/LanguageContext";
 import ShareVendorMenu from "./ShareVendorMenu";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
-import { exampleVendorCopy } from "@/shared/vendors/examples";
 import type { VendorHeroVideo } from '@/shared/vendors/hero';
 import VendorCoverVideo from './VendorCoverVideo';
 
@@ -41,7 +40,6 @@ export default function VendorHeader({
   heroVideo = null,
 }: VendorHeaderProps) {
   const { dictionary, language } = useLanguage();
-  const exampleLabels = exampleVendorCopy[language === 'es' ? 'es' : 'en'];
   const labels = dictionary.vendorPublic.header;
   const editorial = dictionary.vendorPublic.editorial;
   const photos = media.filter(
@@ -96,8 +94,8 @@ export default function VendorHeader({
               isVendor ? "/vendor/inbox" : isLoggedIn ? "#contact" : loginHref
             }
           >
-            {isExample ? exampleLabels.form : isVendor ? labels.viewReceivedRequests : labels.requestQuote}
-            <span aria-hidden="true">↗︎</span>
+            {isExample ? labels.requestQuote : isVendor ? labels.viewReceivedRequests : labels.requestQuote}
+            <span aria-hidden="true">→</span>
           </Link>
           {!isExample && <ShortlistButton vendorId={vendor.id} />}
           <ShareVendorMenu vendorName={vendor.name} />

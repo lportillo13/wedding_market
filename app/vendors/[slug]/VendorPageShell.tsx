@@ -59,11 +59,16 @@ export default function VendorPageShell({
         profile.vendor.eventTypes.length
       ),
       content: (
+        <>
+        <div className="wm-profile-breadcrumbs">
+          <Breadcrumbs isExample={isExample} categories={profile.breadcrumbs.categories} vendorName={profile.vendor.name} />
+        </div>
         <VendorAbout
           vendor={profile.vendor}
           spaces={profile.spaces}
           categoryKeys={categoryKeys}
         />
+        </>
       ),
     },
     {
@@ -161,13 +166,6 @@ export default function VendorPageShell({
 
   return (
     <main className="wm-vendor-page wm-profile-editorial">
-      <div className="container wm-profile-breadcrumbs">
-        <Breadcrumbs
-          isExample={isExample}
-          categories={profile.breadcrumbs.categories}
-          vendorName={profile.vendor.name}
-        />
-      </div>
       <VendorHeader
         heroVideo={profile.heroVideo}
         isExample={isExample}
