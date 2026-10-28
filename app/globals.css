@@ -9813,14 +9813,6 @@ select:focus {
   transition: background 180ms ease;
 }
 
-.wm-vendor-gallery-slider__thumb > span {
-  font-family: var(--lx-sans);
-  font-size: 0.58rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  padding-left: 0.15rem;
-}
-
 .wm-vendor-gallery-slider__thumbs .swiper-slide-thumb-active .wm-vendor-gallery-slider__thumb-media {
   border-color: rgba(255, 255, 255, 0.82);
   transform: translateY(-0.12rem);
@@ -10023,10 +10015,6 @@ select:focus {
 
   .wm-vendor-gallery-slider__thumb-media {
     border-radius: 0.5rem;
-  }
-
-  .wm-vendor-gallery-slider__thumb > span {
-    display: none;
   }
 
   .wm-vendor-lightbox__caption {

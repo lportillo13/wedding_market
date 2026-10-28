@@ -637,7 +637,6 @@
   .wm-vendor-gallery-slider__thumb {
     color: var(--lx-muted);
     &:hover, &:focus-visible { color: var(--lx-ink); }
-    > span { font-weight: 400; font-size: .7rem; letter-spacing: .03em; }
   }
   .wm-vendor-gallery-slider__thumbs .swiper-slide-thumb-active .wm-vendor-gallery-slider__thumb { color: var(--lx-ink); }
   .wm-vendor-gallery-slider__thumbs .swiper-slide-thumb-active .wm-vendor-gallery-slider__thumb-media { border-color: var(--profile-accent); }
