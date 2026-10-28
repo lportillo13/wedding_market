@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-28",
+  "sourceCommit": "139fc4770481d59384391257b9fc8f613fde0419",
+  "checks": {
+    "architecture": "passed",
+    "typescript": "passed",
+    "eslint": "passed",
+    "productionBuild": "passed",
+    "phone390Visual": "passed",
+    "phone320Dimensions": "passed",
+    "desktop1150Dimensions": "passed",
+    "thumbnailAndArrowSelection": "passed"
+  },
+  "publication": {
+    "published": false,
+    "verifiedLiveCommit": "3c74fd44298b0ea85069a0d500d4f14f58ea6d84",
+    "preparedCandidate": "139fc4770481d59384391257b9fc8f613fde0419",
+    "manifestSha256": "14cab3f96c5fcbb9d44c1e8250d38eb581dc9977c285049b5484cf4d6215838b",
+    "bundleUploaded": false,
+    "jobLaunched": false,
+    "availableDiskBytes": 6264713216,
+    "requiredDiskBytes": 6442450944,
+    "ownerCleanupStillRequired": true
+  },
+  "nativeRelease": "held"
+}

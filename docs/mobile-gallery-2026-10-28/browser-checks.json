@@ -1,0 +1,87 @@
+{
+  "sourceCommit": "139fc4770481d59384391257b9fc8f613fde0419",
+  "liveCommit": "3c74fd44298b0ea85069a0d500d4f14f58ea6d84",
+  "environment": "Local production-build preview",
+  "beforeLive": {
+    "width": 390,
+    "thumbnailButtonWidth": 98.265625,
+    "thumbnailButtonHeight": 73.6875,
+    "mediaDisplay": "none",
+    "mediaWidth": 0,
+    "mediaHeight": 0
+  },
+  "phone390": {
+    "activePhoto": "Fotos 2",
+    "clientWidth": 375,
+    "scrollWidth": 375,
+    "thumbnails": [
+      {
+        "display": "block",
+        "height": 69.6875,
+        "width": 94.265625
+      },
+      {
+        "display": "block",
+        "height": 69.6875,
+        "width": 94.265625
+      },
+      {
+        "display": "block",
+        "height": 69.6875,
+        "width": 94.265625
+      }
+    ],
+    "width": 390
+  },
+  "phone320": {
+    "clientWidth": 305,
+    "scrollWidth": 305,
+    "thumbnails": [
+      {
+        "display": "block",
+        "height": 55,
+        "width": 74.671875
+      },
+      {
+        "display": "block",
+        "height": 55,
+        "width": 74.671875
+      },
+      {
+        "display": "block",
+        "height": 55,
+        "width": 74.671875
+      }
+    ],
+    "width": 320
+  },
+  "desktop1150": {
+    "clientWidth": 1135,
+    "scrollWidth": 1135,
+    "thumbnails": [
+      {
+        "display": "block",
+        "height": 76,
+        "width": 80
+      },
+      {
+        "display": "block",
+        "height": 76,
+        "width": 80
+      },
+      {
+        "display": "block",
+        "height": 76,
+        "width": 80
+      }
+    ],
+    "width": 1150
+  },
+  "interactions": {
+    "selectSecondPhoto": true,
+    "secondThumbnailPressed": true,
+    "nextSelectsThirdPhoto": true,
+    "previousReturnsToSecondPhoto": true
+  },
+  "published": false
+}
