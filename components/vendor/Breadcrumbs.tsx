@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { localizeVendorCategory } from '@/shared/vendors/category-label';
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { VendorBreadcrumb } from "@/types/vendor-profile";
 
@@ -16,17 +16,9 @@ export default function Breadcrumbs({ categories, vendorName, isExample = false 
   const homeCrumb = { href: "/", label: language === "es" ? "Inicio" : "Home" };
   const vendorsCrumb = { href: isExample ? '/vendors?examples=1' : "/vendors", label: dictionary.nav.vendors };
 
-  const categoryLabelsByKey = useMemo(
-    () =>
-      new Map(
-        dictionary.home.categories.items.map((item) => [item.slug.toLowerCase(), item.label]),
-      ),
-    [dictionary.home.categories.items],
-  );
-
   const categoryCrumbs = categories.map((category) => {
     const key = category.key?.trim().toLowerCase() ?? null;
-    const label = key ? categoryLabelsByKey.get(key) ?? category.label : category.label;
+    const label = localizeVendorCategory(category, dictionary.home.categories.items);
 
     return {
       href: key ? `/vendors?${isExample ? 'examples=1&' : ''}category=${encodeURIComponent(key)}` : undefined,

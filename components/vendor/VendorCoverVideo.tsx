@@ -23,14 +23,14 @@ export default function VendorCoverVideo({ source, poster, name, language }: { s
       setForeground(!document.hidden);
       if (entry?.isIntersecting && !offeredAutoplay) {
         offeredAutoplay = true;
-        if (source.provider === 'file' && !reduced.matches) setRequested(true);
+        if (!reduced.matches) setRequested(true);
       }
     }, { threshold: .05 });
     if (container.current) observer.observe(container.current);
     reduced.addEventListener('change', motionChanged);
     document.addEventListener('visibilitychange', visibilityChanged);
     return () => { observer.disconnect(); reduced.removeEventListener('change', motionChanged); document.removeEventListener('visibilitychange', visibilityChanged); };
-  }, [source.provider]);
+  }, []);
 
   useEffect(() => {
     const video = player.current;

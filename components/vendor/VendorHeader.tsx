@@ -10,6 +10,7 @@ import ShareVendorMenu from "./ShareVendorMenu";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
 import type { VendorHeroVideo } from '@/shared/vendors/hero';
 import VendorCoverVideo from './VendorCoverVideo';
+import { localizeVendorCategory } from '@/shared/vendors/category-label';
 
 type VendorHeaderProps = {
   vendor: VendorProfileDTO["vendor"];
@@ -65,7 +66,7 @@ export default function VendorHeader({
         </div>}
         {categories.length > 0 && (
           <p className="wm-profile-hero__category">
-            {categories.map((category) => category.label).join(" · ")}
+            {categories.map(category => localizeVendorCategory(category, dictionary.home.categories.items)).join(' · ')}
           </p>
         )}
         <h1>{vendor.name}</h1>

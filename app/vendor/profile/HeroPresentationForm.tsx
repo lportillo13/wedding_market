@@ -52,7 +52,7 @@ export default function HeroPresentationForm({ initial, videos }: { initial: unk
           </>}
         </div>
       </div>}
-      <p className="small text-muted">{es ? 'La foto de portada se conserva como imagen de respaldo. Los videos se reproducen sin sonido; YouTube y Vimeo se cargan al pulsar reproducir.' : 'Your cover photo stays as the fallback image. Videos play without sound; YouTube and Vimeo load when visitors press play.'}</p>
+      <p className="small text-muted">{es ? 'La foto de portada se conserva como imagen de respaldo. Los videos se reproducen automáticamente sin sonido y se pueden pausar.' : 'Your cover photo stays as the fallback image. Videos autoplay without sound and can be paused.'}</p>
       <button className="btn btn-primary btn-sm" type="submit" disabled={pending}>{pending ? es ? 'Guardando…' : 'Saving…' : es ? 'Guardar portada' : 'Save cover'}</button>
       {state.message && <p className={`small mt-3 mb-0 ${state.ok ? 'text-success' : 'text-danger'}`} role="status">{state.message}</p>}
     </form>
