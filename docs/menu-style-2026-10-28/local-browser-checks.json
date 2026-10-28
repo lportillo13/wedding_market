@@ -1,0 +1,32 @@
+{
+  "checks": [
+    {
+      "bodyScrolls": true,
+      "dialogScroll": 390,
+      "dialogWidth": 390,
+      "footerBottom": 844,
+      "language": "es",
+      "viewportHeight": 844,
+      "width": 390
+    },
+    {
+      "categoryMinHeight": 50,
+      "dialogWidth": 320,
+      "footerBottom": 640,
+      "height": 640,
+      "language": "es",
+      "scrollWidth": 320,
+      "searchFont": "16px",
+      "width": 320
+    },
+    {
+      "bodyUnlocked": true,
+      "escapeClosed": true,
+      "focusReturned": true
+    },
+    {
+      "searchFocused": true
+    }
+  ],
+  "passed": true
+}
