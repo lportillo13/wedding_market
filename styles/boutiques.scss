@@ -13,6 +13,7 @@
 .wm-boutique-toolbar{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:2rem;>div{display:flex;gap:1.5rem;flex-wrap:wrap;}a{color:var(--wm-muted);text-underline-offset:4px;}}
 .wm-boutique-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2.3rem 1.5rem;margin-top:2rem;}
 .wm-boutique-card{position:relative;aspect-ratio:3/4;background:var(--wm-cream);border-radius:10px;overflow:hidden;text-decoration:none;color:var(--wm-paper);>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}>div{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:2rem;background:linear-gradient(transparent,#211a13b8);h2{font-size:2.5rem;}p{margin:.5rem 0;}}}
+.wm-boutique-card h2,.wm-boutique-hero h1{color:inherit;}
 .wm-outfit{min-width:0;p{font-size:.9rem;color:var(--wm-muted);margin:.4rem 0;}}
 .wm-outfit-photo{position:relative;aspect-ratio:3/4;>button:first-child{display:block;width:100%;height:100%;padding:0;background:var(--wm-cream);border:0;border-radius:10px;overflow:hidden;color:var(--wm-ink);img{width:100%;height:100%;object-fit:cover;}}}
 .wm-outfit-heart{position:absolute;top:12px;right:12px;width:44px;height:44px;border-radius:50%;border:1px solid var(--wm-outline);background:var(--wm-paper);color:var(--wm-ink);font-size:1.4rem!important;}
