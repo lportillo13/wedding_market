@@ -93,6 +93,10 @@
   }
   .vendors-suggestion-list { border-radius: 5px; box-shadow: 0 10px 24px #332d2712 !important; }
   .wm-site-header__auth .dropdown-menu {
+    // The shared legacy card skin reads these tokens with !important.
+    --wm-bg-card: var(--wm-nav-surface);
+    --wm-outline: var(--wm-nav-line);
+    --wm-radius-lg: 6px;
     padding: .5rem .85rem;
     border-radius: 6px;
     background: var(--wm-nav-surface);
