@@ -41,9 +41,6 @@ export default function VendorQuoteCard({
 
   return (
     <aside className="wm-profile-quote" aria-labelledby="profile-quote-title">
-      <span className="wm-profile-quote__flourish" aria-hidden="true">
-        ✧
-      </span>
       <p className="wm-profile-eyebrow">{labels.editorial.quoteEyebrow}</p>
       <h2 id="profile-quote-title">{labels.editorial.quoteTitle}</h2>
       <p>{labels.editorial.quoteIntro}</p>

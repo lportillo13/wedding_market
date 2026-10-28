@@ -323,7 +323,7 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
           </form>
         ) : null}
       </div>
-      <div className="col-12">
+      {(vendor.phone || vendor.websiteUrl || vendor.location.addressLabel) && <div className="col-12">
         <aside className="bg-light border rounded p-4 h-100">
           <h3 className="h5">{labels.detailsHeading}</h3>
           <ul className="list-unstyled small mb-0">
@@ -341,7 +341,7 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
             ) : null}
           </ul>
         </aside>
-      </div>
+      </div>}
     </div>
   );
 }

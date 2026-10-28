@@ -189,7 +189,7 @@ export default function VendorHeader({
         )}
         {hero && (
           <p className="wm-profile-hero__caption">
-            <span aria-hidden="true">✧</span> {editorial.portfolio}
+            {editorial.portfolio}
           </p>
         )}
       </div>

@@ -79,7 +79,7 @@ export default function VendorReviews({ reviews }: VendorReviewsProps) {
         <div className="flex-grow-1">
           <h2 className="h3 mb-3">{labels.heading}</h2>
           <div className="d-flex align-items-baseline gap-3 mb-3">
-            <div className="display-5 fw-semibold">{reviews.summary.ratingAvg?.toFixed(1) ?? "--"}</div>
+            <div className="display-5 wm-profile-rating-value">{reviews.summary.ratingAvg?.toFixed(1) ?? "--"}</div>
             <div className="text-muted">{fill(labels.basedOn, { count: reviews.summary.ratingCount, suffix: reviewSuffix })}</div>
           </div>
           {reviews.summary.aiSummary ? <div className="alert alert-secondary" role="status">{reviews.summary.aiSummary}</div> : null}
