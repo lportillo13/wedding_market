@@ -37,8 +37,10 @@ h1, h2, h3, h4, h5, h6, .display-1, .display-2, .display-3, .display-4, .wm-sect
 .wm-auth-card__title, .wm-about-page :is(h1, h2, h3),
 .wm-vendor-page.wm-profile-editorial :is(h1, h2, h3, h4) { font-weight: 300; }
 .wm-discovery__tabs button[aria-selected="true"] { font-style: normal; }
-.wm-editorial-section__heading em, .wm-home-magazine__copy h2 em,
-.wm-founders-hero__content h1 em { font-weight: 300; }
+.wm-home-magazine__copy h2 em, .wm-founders-hero__content h1 em { font-family: var(--wm-font-script); font-style: normal; font-weight: 400; letter-spacing: 0; }
+.wm-founders-hero__content h1 em { font-size: .96em; line-height: .95; margin-top: -.28em; }
+.wm-home-magazine__copy h2 em { font-size: 1.35em; line-height: .9; }
+.wm-home-magazine__copy h2:lang(en) em { font-size: 1.15em; }
 .wm-editorial-section__heading em { font-family: var(--wm-font-script); font-size: .95em; font-style: normal; letter-spacing: 0; line-height: 1.3; }
 .wm-site-header__brand .wm-brand-wordmark--text { font-size: 1.25rem; }
 .wm-auth-card__brand .wm-brand-wordmark--text { font-size: 1.8rem; }
