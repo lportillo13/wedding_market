@@ -55,8 +55,8 @@ test('saving a cover preserves other profile settings and invalid selections nev
 
 test('video demo retains a photo poster and keeps video out of its photo gallery entries', () => {
   const sample = exampleVendorProfile('example-ritmo-atardecer', 'en')!;
-  assert.equal(sample.heroVideo?.provider, 'file');
+  assert.equal(sample.heroVideo?.provider, 'youtube');
   assert.equal(sample.media.filter(item => item.type === 'photo').length, 3);
-  assert.equal(sample.media.filter(item => item.type === 'video').length, 1);
+  assert.equal(sample.media.filter(item => item.type === 'video').length, 0);
   assert.equal(exampleVendorProfile('example-luz-de-abril', 'en')!.heroVideo, null);
 });

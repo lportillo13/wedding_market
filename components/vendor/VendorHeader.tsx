@@ -89,9 +89,6 @@ export default function VendorHeader({
             <span>{labels.noReviews}</span>
           )}
         </div>
-        {vendor.summary && (
-          <p className="wm-profile-hero__summary">{vendor.summary}</p>
-        )}
         <div className="wm-profile-hero__actions">
           <Link
             className="btn btn-primary"
@@ -107,33 +104,6 @@ export default function VendorHeader({
         </div>
         {!isVendor && !isLoggedIn && (
           <p className="wm-profile-hero__hint">{editorial.signInHint}</p>
-        )}
-        {(vendor.yearsInBusiness ||
-          vendor.languages.length > 0 ||
-          vendor.eventTypes.length > 0) && (
-          <div
-            className="wm-profile-hero__facts"
-            role="group"
-            aria-label={editorial.atAGlance}
-          >
-            {vendor.yearsInBusiness ? (
-              <span>
-                {fill(labels.yearsInBusiness, {
-                  years: vendor.yearsInBusiness,
-                })}
-              </span>
-            ) : null}
-            {vendor.languages.length > 0 && (
-              <span>
-                {fill(labels.languages, {
-                  languages: vendor.languages.join(", "),
-                })}
-              </span>
-            )}
-            {vendor.eventTypes.length > 0 && (
-              <span>{vendor.eventTypes.join(" · ")}</span>
-            )}
-          </div>
         )}
       </div>
       <div

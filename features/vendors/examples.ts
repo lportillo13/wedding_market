@@ -18,7 +18,7 @@ export function exampleVendorProfile(slug: string, language: 'en' | 'es'): Vendo
       location: { ...row.location, state: null, address: null, addressLabel: null, mapUrl: null },
     },
     heroVideo: row.hero_video,
-    media: row.media.map(item => ({ id: item.public_id, type: item.type === 'video' ? 'video' : 'photo', url: item.url, caption: item.caption, sort: item.sort })),
+    media: row.media.map(item => ({ id: item.public_id, type: 'photo', url: item.url, caption: item.caption, sort: item.sort })),
     spaces: row.spaces.map(item => ({ id: item.id, name: item.name, description: item.description, capacityMin: item.capacity_min, capacityMax: item.capacity_max })),
     pricing: row.pricing.map(item => ({ itemKey: item.item_key, priceCents: item.price_cents, currency: item.currency, contactForPrice: false, notes: item.notes })),
     amenities: { amenities: [], ceremonyTypes: [], settings: [], services: row.amenities.services },

@@ -29,6 +29,7 @@ function renderParagraphs(text: string | null) {
 export default function VendorAbout({ vendor, spaces, categoryKeys }: VendorAboutProps) {
   const { dictionary } = useLanguage();
   const labels = dictionary.vendorPublic.about;
+  const headerLabels = dictionary.vendorPublic.header;
   const serviceProfile = getVendorServiceProfile(categoryKeys);
   const serviceDetailHeadings = labels.serviceDetailHeadings as Record<string, string>;
   const detailsHeading = serviceDetailHeadings[serviceProfile.key] ?? labels.spacesHeading;
@@ -48,6 +49,11 @@ export default function VendorAbout({ vendor, spaces, categoryKeys }: VendorAbou
           </a>
         ) : null}
       </div>
+      {(vendor.yearsInBusiness || vendor.languages.length > 0 || vendor.eventTypes.length > 0) && <div className="wm-profile-about__facts" role="group" aria-label={dictionary.vendorPublic.editorial.atAGlance}>
+        {vendor.yearsInBusiness ? <span>{fill(headerLabels.yearsInBusiness, { years: vendor.yearsInBusiness })}</span> : null}
+        {vendor.languages.length > 0 && <span>{fill(headerLabels.languages, { languages: vendor.languages.join(', ') })}</span>}
+        {vendor.eventTypes.length > 0 && <span>{vendor.eventTypes.join(' · ')}</span>}
+      </div>}
       {vendor.summary ? <div className="lead text-body-secondary">{renderParagraphs(vendor.summary)}</div> : null}
       {vendor.description ? <div>{renderParagraphs(vendor.description)}</div> : null}
 

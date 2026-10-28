@@ -19,7 +19,6 @@ import type { VendorAdsConfig } from "@/lib/content/vendorAds";
 import { getVendorServiceProfile } from "@/lib/vendorServiceProfile";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
 import type { VendorContactPrefill } from "./data";
-import ExampleVendorNotice from "@/components/vendor/ExampleVendorNotice";
 import { exampleVendorCopy } from "@/shared/vendors/examples";
 
 export default function VendorPageShell({
@@ -54,7 +53,10 @@ export default function VendorPageShell({
         profile.vendor.description ||
         profile.vendor.summary ||
         profile.spaces.length ||
-        profile.vendor.teamSizeRange
+        profile.vendor.teamSizeRange ||
+        profile.vendor.yearsInBusiness ||
+        profile.vendor.languages.length ||
+        profile.vendor.eventTypes.length
       ),
       content: (
         <VendorAbout
@@ -159,7 +161,6 @@ export default function VendorPageShell({
 
   return (
     <main className="wm-vendor-page wm-profile-editorial">
-      {isExample && <div className="container"><ExampleVendorNotice profile /></div>}
       <div className="container wm-profile-breadcrumbs">
         <Breadcrumbs
           isExample={isExample}

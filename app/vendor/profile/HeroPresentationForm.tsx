@@ -17,7 +17,7 @@ export default function HeroPresentationForm({ initial, videos }: { initial: unk
 
   return <section className="wm-vendor-media-card wm-vendor-cover-settings mb-4">
     <h3 className="h5">{es ? 'Portada de tu perfil' : 'Your profile cover'}</h3>
-    <p className="text-muted small">{es ? 'Una imagen o un video a todo el ancho, con la información de tu negocio en una tarjeta discreta.' : 'One full-width photo or video, with your business details in a subtle card.'}</p>
+    <p className="text-muted small">{es ? 'Una imagen o un video a todo el ancho, con el nombre de tu negocio sobre la portada.' : 'One full-width photo or video, with your business name over the cover.'}</p>
     <form action={action}>
       <input type="hidden" name="language" value={language} />
       <fieldset className="border-0 p-0 mb-3">

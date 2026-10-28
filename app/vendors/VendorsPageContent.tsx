@@ -16,7 +16,6 @@ import {
 } from "@/lib/content/vendorAds";
 import { resolveMediaUrl, shouldRenderUnoptimizedMedia } from "@/lib/media-url";
 import type { CategoryOption, VendorListItem } from "./types";
-import ExampleVendorNotice from "@/components/vendor/ExampleVendorNotice";
 import { exampleVendorCopy } from "@/shared/vendors/examples";
 
 type VendorsPageContentProps = {
@@ -177,7 +176,6 @@ export default function VendorsPageContent({
       {/* ── Content ── */}
       <div className="wm-vendors-content">
         <div className="container">
-          {isExample && <ExampleVendorNotice />}
           {VENDOR_ADS_PUBLICLY_VISIBLE && <><div style={{ marginBottom: "2rem" }}>
             <VendorAdsBanner banner={adsConfig.directoryBanner} language={language} variant="directory" />
           </div>
