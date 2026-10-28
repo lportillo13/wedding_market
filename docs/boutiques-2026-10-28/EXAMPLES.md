@@ -1,6 +1,6 @@
 # Interactive boutique examples
 
-The owner requested example boutiques to test the visual design and all the main interactions. Open `/boutiques?examples=1`, or use **View example boutiques** in the normal Dresses & suits directory. The examples include:
+The owner requested example boutiques to test the visual design and all the main interactions. Open `/boutiques?examples=1`, or use **View example boutiques** in the normal Dresses & suits directory. The [expanded collection](GALLERIES.md) now has six outfits per boutique, with multiple images and video on featured outfits. The examples include:
 
 - **Atelier Alba**: a satin gown and charcoal suit, purchase/rental, and a short photo-presentation video.
 - **Casa Marfil**: a lace gown and a satin rental gown.

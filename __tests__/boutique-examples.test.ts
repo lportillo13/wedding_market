@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { existsSync } from 'node:fs';
 import { ExampleBoutiqueSession } from '../shared/boutiques/example-session';
 import { exampleBoutiques } from '../shared/boutiques/examples';
 import type { Boutique, BoutiqueAppointment, Outfit } from '../shared/boutiques/types';
@@ -13,15 +14,26 @@ function request(s: ExampleBoutiqueSession, submission = 'request-1', start = ne
 test('fictional catalog has dresses, suits and self-contained media for web/native', async () => {
     const shops = exampleBoutiques('https://thewedmarket.com/');
     assert.equal(shops.length, 3);
-    assert.equal(shops.flatMap(s => s.items).length, 6);
+    assert.equal(shops.flatMap(s => s.items).length, 18);
     assert.equal(new Set(shops.flatMap(s => s.items.map(i => i.kind))).size, 2);
     assert.ok(shops.every(s => s.slug.startsWith('example-')));
     assert.ok(shops.every(s => s.hero?.startsWith('https://thewedmarket.com/boutique-examples/')));
-    assert.equal(shops[0].items[0].videos.length, 1);
+    assert.ok(shops.every(s => s.items.length === 6));
+    for (const item of shops.flatMap(s => s.items)) {
+        assert.ok(item.media.length <= 6);
+        for (const url of [...item.images, ...item.videos])
+            assert.ok(existsSync('public' + new URL(url).pathname), url);
+    }
+    for (const item of [shops[0].items[0], shops[1].items[0], shops[1].items[1], shops[2].items[0]]) {
+        assert.equal(item.images.length, 3);
+        assert.equal(new Set(item.images).size, 3);
+        assert.equal(item.videos.length, 1);
+        assert.equal(item.media.length, 4);
+    }
     const s = new ExampleBoutiqueSession();
     const r = await s.api<Boutique>('?slug=example-atelier-alba&kind=suit');
-    assert.equal(r.items.length, 1);
-    assert.equal(r.items[0].kind, 'suit');
+    assert.equal(r.items.length, 2);
+    assert.ok(r.items.every(i => i.kind === 'suit'));
     r.items[0].name.en = 'Mutated response';
     assert.notEqual(s.shops[0].items[1].name.en, 'Mutated response');
 });
@@ -92,16 +104,24 @@ test('collection edits and publication use a stable media library and preserve p
     await command(s, c);
     s.setRole('store');
     const shop = s.shops[0], item = shop.items[0], originalName = item.name.en;
-    await command(s, { action: 'item', vendor: shop.vendor_id, id: item.id, data: { ...item, name: { en: 'Edited gown', es: 'Vestido editado' }, media_indexes: [0, 1], is_published: false } });
+    const before = await s.api<{
+        vendor: {
+            gallery_images: {
+                type: string;
+            }[];
+        };
+    }>('/account?mode=workspace');
+    const selection = [0, before.vendor.gallery_images.findIndex(m => m.type === 'video')];
+    await command(s, { action: 'item', vendor: shop.vendor_id, id: item.id, data: { ...item, name: { en: 'Edited gown', es: 'Vestido editado' }, media_indexes: selection, is_published: false } });
     assert.equal(s.requests[0].items_snapshot[0].name.en, originalName);
-    assert.equal((await s.api<Boutique>('?slug=' + shop.slug)).items.length, 1);
+    assert.equal((await s.api<Boutique>('?slug=' + shop.slug)).items.length, 5);
     const workspace = await s.api<{
         vendor: {
             gallery_images: unknown[];
         };
     }>('/account?mode=workspace');
-    assert.equal(workspace.vendor.gallery_images.length, 2);
-    await command(s, { action: 'item', vendor: shop.vendor_id, id: item.id, data: { ...item, media_indexes: [0, 1], is_published: true } });
+    assert.equal(workspace.vendor.gallery_images.length, before.vendor.gallery_images.length);
+    await command(s, { action: 'item', vendor: shop.vendor_id, id: item.id, data: { ...item, media_indexes: selection, is_published: true } });
     assert.equal(item.videos.length, 1);
     await command(s, { action: 'settings', vendor: shop.vendor_id, data: { enabled: false, duration_minutes: 60, companions_max: 2, visit_fee_cents: 0, currency: 'USD', policies: shop.policies } });
     assert.equal((await s.api<{

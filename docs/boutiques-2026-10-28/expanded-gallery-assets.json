@@ -1,0 +1,183 @@
+{
+  "images": [
+    {
+      "key": "alba-back",
+      "prompt": "Professional wedding-dress catalog photograph, portrait 2:3. Reference is garment design only. Show the BACK of the exact ivory satin A-line wedding gown from the reference on a neutral linen dressmaker's mannequin, no people. Preserve folded off-shoulder collar, fitted waist, full skirt and chapel train. Add a neat center-back seam with fabric-covered buttons. Warm ivory bridal showroom, soft window daylight, realistic satin folds, entire gown and hem visible. Single photograph, no writing or logos.",
+      "method": "Built-in image generation; reference-guided garment views where applicable; JPEG delivery encoding",
+      "fictional": true,
+      "path": "public/boutique-examples/alba-back.jpg",
+      "bytes": 120726,
+      "sha256": "65c339988c71ae9864b4de794c03de8658a2eb92d778cd4e92a59ca1d870851c"
+    },
+    {
+      "key": "alba-detail",
+      "prompt": "Professional textile-detail product photograph of the ivory satin wedding dress in the reference, displayed on a neutral linen dressmaker's mannequin. No people. Focus on folded neckline, overlapping satin panels, waist seam and fabric craftsmanship. Ivory satin and soft warm showroom daylight. A single closely framed photograph of the garment, no writing, no logos.",
+      "method": "Built-in image generation; reference-guided garment views where applicable; JPEG delivery encoding",
+      "fictional": true,
+      "path": "public/boutique-examples/alba-detail.jpg",
+      "bytes": 61882,
+      "sha256": "eebd641543b6f0d3cecc33779b39c4f59a61976e51f6d04a8059cf89a8c4ca9c"
+    },
+    {
+      "key": "marfil-back",
+      "prompt": "Professional bridal catalog photograph, portrait 2:3. Use the reference only for the exact ivory floral-lace dress design. Show a full BACK VIEW of that same A-line gown on a neutral linen dressmaker's mannequin, no people. Long floral-lace sleeves, covered center-back buttons, lace-lined back, chapel train, same ivory floral appliques and tulle skirt. Warm ivory showroom, soft daylight. Entire hem and train visible. Single product photograph, no writing or logos.",
+      "method": "Built-in image generation; reference-guided garment views where applicable; JPEG delivery encoding",
+      "fictional": true,
+      "path": "public/boutique-examples/marfil-back.jpg",
+      "bytes": 181860,
+      "sha256": "5b9f1806eb8429cf9dd0d143941f4439016a9f2ed6bf362eb368e6d3fa3c9bc6"
+    },
+    {
+      "key": "marfil-detail",
+      "prompt": "Professional bridal textile-detail photograph of the ivory floral-lace wedding gown in the reference, displayed on a neutral linen dressmaker's mannequin, no people. Close view of floral appliques, sleeve embroidery, V-shaped neckline and waist craftsmanship. Preserve the reference's floral lace pattern and soft ivory fabric. Warm soft daylight, quiet ivory showroom background. Single product photograph, no writing or logos.",
+      "method": "Built-in image generation; reference-guided garment views where applicable; JPEG delivery encoding",
+      "fictional": true,
+      "path": "public/boutique-examples/marfil-detail.jpg",
+      "bytes": 189419,
+      "sha256": "1d6f22b430f686c335306c132313e53006d86d7ce84a242df7b12e9edf09d655"
+    },
+    {
+      "key": "crepe-column",
+      "prompt": "Use case: product-mockup. A single photorealistic portrait 2:3 bridal catalog photograph of this garment: Ivory crepe column wedding gown, sleeveless square neckline with broad shoulder straps, clean fitted silhouette, small sweep train, no lace or beads. Display on a neutral linen dressmaker's mannequin, no people. Full front three-quarter view, complete dress and train fit in frame. Warm ivory bridal showroom with arched window and soft daylight, refined realistic fabric craftsmanship, professional editorial lighting. No text, labels, logos or collage.",
+      "method": "Built-in image generation; reference-guided garment views where applicable; JPEG delivery encoding",
+      "fictional": true,
+      "path": "public/boutique-examples/crepe-column.jpg",
+      "bytes": 139636,
+      "sha256": "0dd1d501974d4c024628096f20a6d9fd86de7bd6b538a688934a288200cc9f5b"
+    },
+    {
+      "key": "organza-a-line",
+      "prompt": "Use case: product-mockup. A single photorealistic portrait 2:3 bridal catalog photograph of this garment: Ivory wedding gown with soft organza A-line skirt, modest boat neckline, short flutter sleeves, delicate pleating, light airy fabric, small chapel train. Display on a neutral linen dressmaker's mannequin, no people. Full front three-quarter view, complete dress and train fit in frame. Warm ivory bridal showroom with arched window and soft daylight, refined realistic fabric craftsmanship, professional editorial lighting. No text, labels, logos or collage.",
+      "method": "Built-in image generation; reference-guided garment views where applicable; JPEG delivery encoding",
+      "fictional": true,
+      "path": "public/boutique-examples/organza-a-line.jpg",
+      "bytes": 133203,
+      "sha256": "cbd370d7155c80eedd1b10b18342dd949a08bcdba3c8878252d285e892c2346a"
+    },
+    {
+      "key": "mikado-square",
+      "prompt": "Use case: product-mockup. A single photorealistic portrait 2:3 bridal catalog photograph of this garment: Warm ivory mikado wedding ballgown with a structured square neckline, broad shoulder straps, fitted waist, voluminous box-pleated skirt, chapel train, no embellishment. Display on a neutral linen dressmaker's mannequin, no people. Full front three-quarter view, complete dress and train fit in frame. Warm ivory bridal showroom with arched window and soft daylight, refined realistic fabric craftsmanship, professional editorial lighting. No text, labels, logos or collage.",
+      "method": "Built-in image generation; reference-guided garment views where applicable; JPEG delivery encoding",
+      "fictional": true,
+      "path": "public/boutique-examples/mikado-square.jpg",
+      "bytes": 127706,
+      "sha256": "b7c6d118d0c39fae75938a3fe01e4f460ac7864ada8016b92cce708b75d86244"
+    },
+    {
+      "key": "champagne-ballgown",
+      "prompt": "Use case: product-mockup. A single photorealistic portrait 2:3 bridal catalog photograph of this garment: Champagne wedding ballgown, elegant bateau neckline, elbow-length lace sleeves, subtly embroidered fitted bodice, full luminous tulle skirt, long chapel train. Display on a neutral linen dressmaker's mannequin, no people. Full front three-quarter view, complete dress and train fit in frame. Warm ivory bridal showroom with arched window and soft daylight, refined realistic fabric craftsmanship, professional editorial lighting. No text, labels, logos or collage.",
+      "method": "Built-in image generation; reference-guided garment views where applicable; JPEG delivery encoding",
+      "fictional": true,
+      "path": "public/boutique-examples/champagne-ballgown.jpg",
+      "bytes": 184056,
+      "sha256": "fc6c2007d4fb2c04281fcf9d08c00869890b9819dd8e9e762f25ca5c875d4377"
+    },
+    {
+      "key": "blush-tulle",
+      "prompt": "Use case: product-mockup. Single photorealistic portrait 2:3 wedding fashion catalog photograph. A blush-pink tulle wedding gown with a lined bodice, modest scoop neckline, short airy sleeves, fitted waist and soft layered A-line skirt with a sweep train. Display on a neutral linen dressmaker's mannequin, no people. Full front three-quarter view, complete garment and hem or shoes in frame. warm ivory bridal showroom, soft natural daylight and refined realistic textile craftsmanship. Professional product photography. No writing, labels, logos or collage.",
+      "method": "Built-in image generation; reference-guided garment views where applicable; JPEG delivery encoding",
+      "fictional": true,
+      "path": "public/boutique-examples/blush-tulle.jpg",
+      "bytes": 187951,
+      "sha256": "20a3725a85dac8e7b07acf86033e1def06b808582f45aa6b22716c21c243a110"
+    },
+    {
+      "key": "beaded-sheath",
+      "prompt": "Use case: product-mockup. Single photorealistic portrait 2:3 wedding fashion catalog photograph. An ivory beaded wedding sheath gown, high jewel neckline, long sleeves, subtle pearl-like embroidery, fitted column skirt and short sweep train. Display on a neutral linen dressmaker's mannequin, no people. Full front three-quarter view, complete garment and hem or shoes in frame. warm ivory bridal showroom, soft natural daylight and refined realistic textile craftsmanship. Professional product photography. No writing, labels, logos or collage.",
+      "method": "Built-in image generation; reference-guided garment views where applicable; JPEG delivery encoding",
+      "fictional": true,
+      "path": "public/boutique-examples/beaded-sheath.jpg",
+      "bytes": 193488,
+      "sha256": "53e25381ab9b5b29d889cb9f3898735ba0f1f03bf881efa73116e08e524e0c70"
+    },
+    {
+      "key": "sand-linen",
+      "prompt": "Use case: product-mockup. Single photorealistic portrait 2:3 wedding fashion catalog photograph. A sand beige linen two-piece wedding suit, notch lapels, single-breasted two-button jacket, matching trousers, white collared shirt, no tie, brown dress shoes. Display on a full-length masculine tailor's mannequin with no face, no people. Full front three-quarter view, complete garment and hem or shoes in frame. warm wood and ivory tailoring showroom, soft natural daylight and refined realistic textile craftsmanship. Professional product photography. No writing, labels, logos or collage.",
+      "method": "Built-in image generation; reference-guided garment views where applicable; JPEG delivery encoding",
+      "fictional": true,
+      "path": "public/boutique-examples/sand-linen.jpg",
+      "bytes": 208138,
+      "sha256": "7e1c357cc18ae1770d50f6f7a76fe2662976ed2117ebfeac7dcf13c82f7b788d"
+    },
+    {
+      "key": "black-tuxedo",
+      "prompt": "Use case: product-mockup. Single photorealistic portrait 2:3 wedding fashion catalog photograph. A black wool wedding tuxedo, black satin peak lapels, white pleated dress shirt, black bow tie, matching black trousers and polished black shoes. Display on a full-length masculine tailor's mannequin with no face, no people. Full front three-quarter view, complete garment and hem or shoes in frame. warm wood and ivory tailoring showroom, soft natural daylight and refined realistic textile craftsmanship. Professional product photography. No writing, labels, logos or collage.",
+      "method": "Built-in image generation; reference-guided garment views where applicable; JPEG delivery encoding",
+      "fictional": true,
+      "path": "public/boutique-examples/black-tuxedo.jpg",
+      "bytes": 175078,
+      "sha256": "88e49ca5700d0b81bfd1caef5683fdee448ff2117f119344b22d34d1d6adf06b"
+    },
+    {
+      "key": "forest-three-piece",
+      "prompt": "Use case: product-mockup. Single photorealistic portrait 2:3 wedding tailoring catalog photograph. Forest green wool three-piece wedding suit: notch-lapel single-breasted jacket, matching waistcoat and trousers, white shirt, muted brown tie, brown dress shoes. Full-length masculine tailor's mannequin with no face, no people. Entire garment and shoes visible. Warm wood and ivory tailoring showroom, natural window light, refined realistic wool texture. No writing, labels, logos or collage.",
+      "method": "Built-in image generation; reference-guided garment views where applicable; JPEG delivery encoding",
+      "fictional": true,
+      "path": "public/boutique-examples/forest-three-piece.jpg",
+      "bytes": 208708,
+      "sha256": "8d797d3571cdb8f4278e60d9eb43854d0524f69f9f25ec7f132adb075fda086d"
+    },
+    {
+      "key": "pearl-double-breasted",
+      "prompt": "Use case: product-mockup. Single photorealistic portrait 2:3 wedding tailoring catalog photograph. Pearl light-grey double-breasted wedding suit: six-button jacket with peak lapels, matching trousers, white shirt, pale silver tie, black dress shoes. Full-length masculine tailor's mannequin with no face, no people. Entire garment and shoes visible. Warm wood and ivory tailoring showroom, soft natural window light, realistic wool texture. No writing, labels, logos or collage.",
+      "method": "Built-in image generation; reference-guided garment views where applicable; JPEG delivery encoding",
+      "fictional": true,
+      "path": "public/boutique-examples/pearl-double-breasted.jpg",
+      "bytes": 205826,
+      "sha256": "7c830d3ff4b605359f9522035c601785ee66023d59984bf7be97781e615bba67"
+    },
+    {
+      "key": "roble-back",
+      "prompt": "Professional wedding tailoring catalog photo, portrait 2:3. Reference is garment design only. Full BACK VIEW of the exact midnight navy tuxedo from the reference, displayed on a full-length masculine tailor's mannequin with no face, no people. Preserve dark navy wool, tailored jacket, double rear vents, matching trousers and polished black shoes. Entire garment visible. Warm wood-and-ivory showroom, natural daylight, realistic tailoring details. No writing, logos or collage.",
+      "method": "Built-in image generation; reference-guided garment views where applicable; JPEG delivery encoding",
+      "fictional": true,
+      "path": "public/boutique-examples/roble-back.jpg",
+      "bytes": 152009,
+      "sha256": "6dadad9c03c6b1efd1f4ad39e8c6676edbaaecec666087b0f8590ab3cfc78f74"
+    },
+    {
+      "key": "roble-detail",
+      "prompt": "Professional close-up tailoring product photograph. Reference is garment design only. The exact midnight navy tuxedo from the reference on a neutral tailor's mannequin, no people. Frame the black satin shawl lapels, black bow tie, white formal shirt buttons, white pocket square and fine navy wool texture. Same warm wood-and-ivory showroom, soft daylight. One catalog photograph, no writing, logos or collage.",
+      "method": "Built-in image generation; reference-guided garment views where applicable; JPEG delivery encoding",
+      "fictional": true,
+      "path": "public/boutique-examples/roble-detail.jpg",
+      "bytes": 115156,
+      "sha256": "26d77fdaf63c97fbeac1b99834852b7c4e9204e2707675de8f2d165d54a6d287"
+    }
+  ],
+  "films": [
+    {
+      "path": "public/boutique-examples/alba-gallery-film.mp4",
+      "inputs": [
+        "public/boutique-examples/alba.jpg",
+        "public/boutique-examples/alba-back.jpg",
+        "public/boutique-examples/alba-detail.jpg"
+      ],
+      "method": "11-second silent H.264 photo presentation with crossfades; 600×900,24fps; no live garment motion is claimed",
+      "bytes": 205509,
+      "sha256": "c0b9d79ea05403c3b58ecbbad366b8e52cc67f5827476adff0d17b2bd3615884"
+    },
+    {
+      "path": "public/boutique-examples/marfil-gallery-film.mp4",
+      "inputs": [
+        "public/boutique-examples/marfil.jpg",
+        "public/boutique-examples/marfil-back.jpg",
+        "public/boutique-examples/marfil-detail.jpg"
+      ],
+      "method": "11-second silent H.264 photo presentation with crossfades; 600×900,24fps; no live garment motion is claimed",
+      "bytes": 476914,
+      "sha256": "62ff836180f6f5891033189f6d59998d731320b00014126d9c97e2f33247e426"
+    },
+    {
+      "path": "public/boutique-examples/roble-gallery-film.mp4",
+      "inputs": [
+        "public/boutique-examples/roble.jpg",
+        "public/boutique-examples/roble-back.jpg",
+        "public/boutique-examples/roble-detail.jpg"
+      ],
+      "method": "11-second silent H.264 photo presentation with crossfades; 600×900,24fps; no live garment motion is claimed",
+      "bytes": 260012,
+      "sha256": "21b7c4f21f9ad1dc5bc208be82e4b0c003cf54928e2923dfcd6984208cf4ae46"
+    }
+  ]
+}
