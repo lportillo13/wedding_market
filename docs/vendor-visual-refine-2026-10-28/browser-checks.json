@@ -1,0 +1,192 @@
+{
+  "releaseCommit": "664cf033de949280a22caeaf6f19c4b24e6f6b2a",
+  "checkedAt": "2026-10-28T19:25:24.329Z",
+  "desktopCards": {
+    "width": 1150,
+    "client": 1135,
+    "scrollWidth": 1135,
+    "cards": [
+      {
+        "width": 317.328125,
+        "height": 528.90625,
+        "bodyPadding": "24px",
+        "bodyPosition": "absolute",
+        "categoryFont": "\"Lucia BT\", cursive",
+        "mediaRatio": "3 / 5",
+        "nameColor": "rgb(255, 253, 249)",
+        "nameWeight": "300"
+      },
+      {
+        "width": 317.328125,
+        "height": 528.90625,
+        "bodyPadding": "24px",
+        "bodyPosition": "absolute",
+        "categoryFont": "\"Lucia BT\", cursive",
+        "mediaRatio": "3 / 5",
+        "nameColor": "rgb(255, 253, 249)",
+        "nameWeight": "300"
+      },
+      {
+        "width": 317.34375,
+        "height": 528.90625,
+        "bodyPadding": "24px",
+        "bodyPosition": "absolute",
+        "categoryFont": "\"Lucia BT\", cursive",
+        "mediaRatio": "3 / 5",
+        "nameColor": "rgb(255, 253, 249)",
+        "nameWeight": "300"
+      }
+    ]
+  },
+  "phoneCards": {
+    "cards": [
+      {
+        "arrowHeight": 44,
+        "arrowWidth": 44,
+        "category": "\"Lucia BT\", cursive",
+        "height": 351,
+        "ratio": "1 / 1",
+        "width": 351
+      },
+      {
+        "arrowHeight": 44,
+        "arrowWidth": 44,
+        "category": "\"Lucia BT\", cursive",
+        "height": 351,
+        "ratio": "1 / 1",
+        "width": 351
+      },
+      {
+        "arrowHeight": 44,
+        "arrowWidth": 44,
+        "category": "\"Lucia BT\", cursive",
+        "height": 351,
+        "ratio": "1 / 1",
+        "width": 351
+      }
+    ],
+    "client": 375,
+    "scrollWidth": 375,
+    "width": 390
+  },
+  "phoneHero": {
+    "aboutTop": 868,
+    "autoplayFrame": "https://www.youtube-nocookie.com/embed/JgzkqjnsIvM?autoplay=1&mute=1&playsinline=1&loop=1&playlist=JgzkqjnsIvM&controls=0&rel=0",
+    "category": {
+      "font": "\"Lucia BT\", cursive",
+      "line": "26.4px",
+      "size": "24px"
+    },
+    "client": 375,
+    "control": "Pause cover video",
+    "dockHidden": true,
+    "gallery": {
+      "bottom": 774,
+      "height": 44,
+      "left": 164.25,
+      "right": 263,
+      "top": 730,
+      "width": 98.75,
+      "x": 164.25,
+      "y": 730
+    },
+    "height": 844,
+    "hero": {
+      "bottom": 844,
+      "height": 844,
+      "left": 0,
+      "right": 375,
+      "top": 0,
+      "width": 375,
+      "x": 0,
+      "y": 0
+    },
+    "play": {
+      "bottom": 774,
+      "height": 44,
+      "left": 16,
+      "right": 60,
+      "top": 730,
+      "width": 44,
+      "x": 16,
+      "y": 730
+    },
+    "scroll": 0,
+    "scrollWidth": 375,
+    "source": {
+      "bottom": 774,
+      "height": 44,
+      "left": 271,
+      "right": 359,
+      "top": 730,
+      "width": 88,
+      "x": 271,
+      "y": 730
+    },
+    "tabs": {
+      "bottom": 844,
+      "height": 54,
+      "left": 0,
+      "right": 375,
+      "top": 790,
+      "width": 375,
+      "x": 0,
+      "y": 790
+    },
+    "title": {
+      "line": "43.758px",
+      "size": "42.9px",
+      "weight": "300"
+    },
+    "width": 390
+  },
+  "desktopHero": {
+    "categoryFont": "\"Lucia BT\", cursive",
+    "control": "Pause cover video",
+    "headerBackground": "rgba(0, 0, 0, 0)",
+    "height": 900,
+    "heroHeight": 900,
+    "tabsBottom": 900,
+    "width": 1150
+  },
+  "phoneAboutDock": {
+    "aboutTop": 142,
+    "dockHidden": false,
+    "frames": 0,
+    "header": 68,
+    "heroBottom": 118,
+    "scroll": 726,
+    "tabs": 54
+  },
+  "desktopAboutDock": {
+    "dockHidden": false,
+    "frames": 0,
+    "headerBackground": "rgba(51, 45, 39, 0.96)",
+    "layoutWidth": 1000,
+    "sectionsWidth": 1000,
+    "sidebars": 0
+  },
+  "contactDock": {
+    "active": "#contact",
+    "dockHidden": true,
+    "frames": 0
+  },
+  "pause": {
+    "frames": 0,
+    "pressed": "false"
+  },
+  "languageSwitch": {
+    "category": "Photography",
+    "language": "en",
+    "script": "\"Lucia BT\", cursive"
+  },
+  "missingVendorRoute": {
+    "status": 404,
+    "header": "sticky"
+  },
+  "aboutTypography": {
+    "display": "GT Super Light 300",
+    "accent": "Lucia BT 400",
+    "phoneHorizontalOverflow": false
+  }
+}

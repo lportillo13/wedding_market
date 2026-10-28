@@ -1,0 +1,251 @@
+{
+  "checkedAt": "2026-10-28T19:22:33.768Z",
+  "releaseCommit": "664cf033de949280a22caeaf6f19c4b24e6f6b2a",
+  "checks": [
+    {
+      "kind": "sample-directory",
+      "language": "en",
+      "status": 200,
+      "cards": 6,
+      "passed": true
+    },
+    {
+      "kind": "editorial-card-links",
+      "language": "en",
+      "passed": true
+    },
+    {
+      "kind": "category-filter",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "sample-profile",
+      "language": "en",
+      "slug": "example-villa-brisa",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "approved-profile-structure",
+      "language": "en",
+      "slug": "example-villa-brisa",
+      "passed": true
+    },
+    {
+      "kind": "sample-profile",
+      "language": "en",
+      "slug": "example-luz-de-abril",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "approved-profile-structure",
+      "language": "en",
+      "slug": "example-luz-de-abril",
+      "passed": true
+    },
+    {
+      "kind": "sample-profile",
+      "language": "en",
+      "slug": "example-alma-celebraciones",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "approved-profile-structure",
+      "language": "en",
+      "slug": "example-alma-celebraciones",
+      "passed": true
+    },
+    {
+      "kind": "sample-profile",
+      "language": "en",
+      "slug": "example-tallo-floral",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "approved-profile-structure",
+      "language": "en",
+      "slug": "example-tallo-floral",
+      "passed": true
+    },
+    {
+      "kind": "sample-profile",
+      "language": "en",
+      "slug": "example-mesa-compartida",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "approved-profile-structure",
+      "language": "en",
+      "slug": "example-mesa-compartida",
+      "passed": true
+    },
+    {
+      "kind": "sample-profile",
+      "language": "en",
+      "slug": "example-ritmo-atardecer",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "approved-profile-structure",
+      "language": "en",
+      "slug": "example-ritmo-atardecer",
+      "passed": true
+    },
+    {
+      "kind": "single-video-cover",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "single-photo-cover",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "about-page",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "sample-directory",
+      "language": "es",
+      "status": 200,
+      "cards": 6,
+      "passed": true
+    },
+    {
+      "kind": "editorial-card-links",
+      "language": "es",
+      "passed": true
+    },
+    {
+      "kind": "category-filter",
+      "language": "es",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "sample-profile",
+      "language": "es",
+      "slug": "example-villa-brisa",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "approved-profile-structure",
+      "language": "es",
+      "slug": "example-villa-brisa",
+      "passed": true
+    },
+    {
+      "kind": "sample-profile",
+      "language": "es",
+      "slug": "example-luz-de-abril",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "approved-profile-structure",
+      "language": "es",
+      "slug": "example-luz-de-abril",
+      "passed": true
+    },
+    {
+      "kind": "sample-profile",
+      "language": "es",
+      "slug": "example-alma-celebraciones",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "approved-profile-structure",
+      "language": "es",
+      "slug": "example-alma-celebraciones",
+      "passed": true
+    },
+    {
+      "kind": "sample-profile",
+      "language": "es",
+      "slug": "example-tallo-floral",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "approved-profile-structure",
+      "language": "es",
+      "slug": "example-tallo-floral",
+      "passed": true
+    },
+    {
+      "kind": "sample-profile",
+      "language": "es",
+      "slug": "example-mesa-compartida",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "approved-profile-structure",
+      "language": "es",
+      "slug": "example-mesa-compartida",
+      "passed": true
+    },
+    {
+      "kind": "sample-profile",
+      "language": "es",
+      "slug": "example-ritmo-atardecer",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "approved-profile-structure",
+      "language": "es",
+      "slug": "example-ritmo-atardecer",
+      "passed": true
+    },
+    {
+      "kind": "single-video-cover",
+      "language": "es",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "single-photo-cover",
+      "language": "es",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "about-page",
+      "language": "es",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "normal-api-has-no-samples",
+      "total": 0,
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "samples-cannot-enable-default-api-data",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "sample-has-no-database-profile",
+      "status": 404,
+      "passed": true
+    }
+  ],
+  "passed": true
+}

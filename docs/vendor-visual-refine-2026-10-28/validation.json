@@ -1,0 +1,26 @@
+{
+  "applicationCommit": "664cf033de949280a22caeaf6f19c4b24e6f6b2a",
+  "web": {
+    "architecture": "passed",
+    "types": "passed",
+    "lint": "passed",
+    "productionBuild": "passed",
+    "tests": 102
+  },
+  "native": {
+    "types": "passed",
+    "lint": "passed",
+    "tests": 76,
+    "dependencyCheck": "offline bundled map reports current; online registry not checked",
+    "releaseHeld": true
+  },
+  "database": {
+    "schemaChanges": false,
+    "testRecordsCreated": false
+  },
+  "selectedReferences": {
+    "profile": "C centered editorial",
+    "quote": "A floating bar",
+    "directory": "B image-overlay cards"
+  }
+}
