@@ -1,0 +1,39 @@
+{
+  "liveCommit": "3c74fd44298b0ea85069a0d500d4f14f58ea6d84",
+  "phone390": {
+    "cardTop": 443.109375,
+    "clientWidth": 375,
+    "expanded": "false",
+    "height": 844,
+    "panelDisplay": "none",
+    "scrollWidth": 375,
+    "toggleHeight": 52,
+    "width": 390
+  },
+  "phone320": {
+    "clientWidth": 305,
+    "panelDisplay": "none",
+    "scrollWidth": 305,
+    "toggleHeight": 52,
+    "width": 320
+  },
+  "desktop1150": {
+    "clientWidth": 1135,
+    "gridColumns": "433.641px 433.656px 93.9219px",
+    "panelDisplay": "block",
+    "scrollWidth": 1135,
+    "toggleDisplay": "none",
+    "width": 1150
+  },
+  "verifiedInteractions": {
+    "defaultCollapsed": true,
+    "keyboardEnterToggles": true,
+    "draftKeywordAndCategorySurviveReopen": true,
+    "getSearchPreservesExamplesFlag": true,
+    "queryAndCategoryReturnLuzDeAbril": true,
+    "collapsedAppliedSummaryAndCount": true,
+    "clearRestoresAllSixCardsAndRemovesSummary": true,
+    "localEnglishAndSpanishLabels": true
+  },
+  "pending": "The category selector can retain its old uncontrolled selection after client-side clearing; correction f211a790 is checked but awaiting deployment disk space."
+}

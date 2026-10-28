@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-28",
+  "checkedSourceCommit": "f211a790cf61414a9e0b6710982c6cbaffff562f",
+  "checks": {
+    "architecture": "passed",
+    "typescript": "passed",
+    "eslint": "passed",
+    "productionBuild": "passed"
+  },
+  "liveCommit": "3c74fd44298b0ea85069a0d500d4f14f58ea6d84",
+  "pendingCorrection": "Reset the category selector after client-side Clear filters navigation",
+  "pendingCommit": "f211a790cf61414a9e0b6710982c6cbaffff562f",
+  "releasePrecondition": {
+    "availableDiskBytes": 6273073152,
+    "requiredDiskBytes": 6442450944,
+    "cleanupPerformed": false,
+    "retentionTimerEnabled": true,
+    "nextScheduledCleanupUtc": "2026-10-29T06:56:39Z",
+    "ownerActionRequested": "Start the existing wedding-market-retention.service from the server root terminal"
+  },
+  "nativeRelease": "held"
+}
