@@ -135,9 +135,10 @@ export default function FoundersHeroSection({ hero }: FoundersHeroSectionProps) 
     if (!section) return;
     event.preventDefault();
     section.focus({ preventScroll: true });
-    // Layout offsets keep reveal transforms from shifting the scroll destination.
+    // Leave the destination clear of the persistent header and reveal transforms.
+    const headerBottom = document.querySelector(".wm-site-header")?.getBoundingClientRect().bottom ?? 0;
     window.scrollTo({
-      top: section.offsetTop,
+      top: Math.max(0, section.offsetTop - headerBottom - 16),
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
     });
   }

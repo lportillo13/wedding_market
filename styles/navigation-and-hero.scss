@@ -32,6 +32,15 @@
   .wm-site-header__mobile-actions { gap: .5rem; }
 }
 .wm-site-header--home .wm-site-header__inner { padding-inline: 1.25rem; }
+.wm-site-header--home { position: fixed; }
+.wm-site-header--home .wm-site-header__inner {
+  transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+}
+.wm-site-header--home[data-scrolled="true"] .wm-site-header__inner {
+  background: #332d27f5;
+  border-color: #ffffff26;
+  box-shadow: 0 8px 28px #21180f20;
+}
 .wm-site-header--home .wm-header-action.btn-outline-secondary {
   background: transparent !important; border-color: #ffffff50 !important; color: #fffdf8 !important;
   &:hover, &:focus-visible, &:active { background: #ffffff14 !important; border-color: #ffffff90 !important; color: #fffdf8 !important; }
@@ -72,7 +81,7 @@
 .wm-mobile-navigation__categories a svg { flex: 0 0 16px; width: 16px; height: 16px; }
 
 // The hero occupies one full viewport, with its controls inside that frame.
-html:has(.wm-site-header--home) { scroll-padding-top: 0; }
+html:has(.wm-site-header--home) { scroll-padding-top: calc(var(--wm-header-height) + 48px); }
 .wm-founders-hero,
 .wm-site-header--home + .wm-site-shell__content .wm-founders-hero {
   height: 100vh; height: 100svh; min-height: 100vh; min-height: 100svh;

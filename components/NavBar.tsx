@@ -42,6 +42,7 @@ export default function NavBar({
   const [count, setCount] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [allCategories, setAllCategories] = useState(false);
+  const [hasScrolled, setHasScrolled] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const searchInput = useRef<HTMLInputElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
@@ -54,6 +55,23 @@ export default function NavBar({
       ? user.user_metadata.full_name
       : dictionary.auth.account;
   const accountLinks = getHeaderAccountLinks(isVendor);
+
+  useEffect(() => {
+    if (pathname !== "/") return;
+    let frame = requestAnimationFrame(sync);
+    function sync() {
+      frame = 0;
+      setHasScrolled(window.scrollY > 24);
+    }
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(sync);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     const sync = () => setCount(getShortlistCount());
@@ -119,6 +137,7 @@ export default function NavBar({
   return (
     <header
       className={`wm-site-header${pathname === "/" ? " wm-site-header--home" : ""}`}
+      data-scrolled={pathname === "/" && hasScrolled ? "true" : undefined}
     >
       <div className="container wm-site-header__inner">
         <Link href="/" className="wm-site-header__brand">

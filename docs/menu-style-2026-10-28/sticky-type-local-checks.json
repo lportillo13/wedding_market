@@ -1,0 +1,71 @@
+{
+  "checks": [
+    {
+      "kind": "initial",
+      "position": "fixed",
+      "scrolled": null,
+      "top": 24
+    },
+    {
+      "background": "rgba(51, 45, 39, 0.96)",
+      "focused": "benefits",
+      "headerBottom": 100,
+      "headerTop": 24,
+      "kind": "desktop-scrolled",
+      "scrolled": "true",
+      "sectionTop": 116
+    },
+    [
+      {
+        "selector": ".wm-home-premium-process__headline h2",
+        "weight": "300"
+      },
+      {
+        "selector": ".wm-home-premium-process__headline h2 em",
+        "weight": "300"
+      },
+      {
+        "selector": ".wm-home-premium-process__details h3",
+        "weight": "300"
+      },
+      {
+        "selector": ".wm-home-premium-process__details > p",
+        "weight": "400"
+      },
+      {
+        "selector": ".wm-home-premium-process__steps p",
+        "weight": "400"
+      },
+      {
+        "selector": ".wm-home-premium-process__details .wm-home-premium-button",
+        "weight": "400"
+      },
+      {
+        "selector": ".wm-home-premium-process__tab",
+        "weight": "400"
+      }
+    ],
+    {
+      "botanicalCount": 0,
+      "dialogWidth": 390,
+      "kind": "phone-menu-after-scroll",
+      "open": true
+    },
+    {
+      "clientWidth": 375,
+      "focus": "benefits",
+      "headerBottom": 80,
+      "headerTop": 16,
+      "kind": "phone-scrolled",
+      "scrollWidth": 375,
+      "scrolled": "true",
+      "sectionTop": 96
+    },
+    {
+      "kind": "phone-top",
+      "scrolled": "true",
+      "top": 16
+    }
+  ],
+  "passed": true
+}

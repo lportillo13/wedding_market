@@ -153,13 +153,14 @@
 .wm-home-premium-process__tab span { font-weight: 400; opacity: .6; }
 .wm-home-premium-process__content { padding: 4rem 2rem 2rem; }
 .wm-home-premium-process__headline h2 { font-size: clamp(3rem, 6vw, 6rem); line-height: 1.05; letter-spacing: -.04em; }
+.wm-home-premium-process__headline h2 em { font-weight: 300; }
 .wm-home-premium-process__details { animation: wm-panel-enter 550ms cubic-bezier(.16, 1, .3, 1) both; }
-.wm-home-premium-process__details h3 { font-family: var(--wm-font-display); font-size: clamp(2rem, 2.8vw, 2.5rem); font-weight: 400; line-height: 1.05; max-width: 16ch; }
-.wm-home-premium-process__details > p { font-size: 1rem; line-height: 1.6; margin-top: 1rem; }
+.wm-home-premium-process__details h3 { font-family: var(--wm-font-display); font-size: clamp(2rem, 2.8vw, 2.5rem); font-weight: 300; line-height: 1.05; max-width: 16ch; }
+.wm-home-premium-process__details > p { font-size: 1rem; font-weight: 400; line-height: 1.6; margin-top: 1rem; }
 .wm-home-premium-process__steps li { padding: 1rem 0; }
 .wm-home-premium-process__steps span { font-size: .75rem; font-weight: 400; }
-.wm-home-premium-process__steps p { font-size: .875rem; line-height: 1.45; font-weight: 600; }
-.wm-home-premium-process__details .wm-home-premium-button { min-height: 54px; font-size: 1rem; line-height: 1.25; font-weight: 600; border-radius: 7px; }
+.wm-home-premium-process__steps p { font-size: .875rem; line-height: 1.45; font-weight: 400; }
+.wm-home-premium-process__details .wm-home-premium-button { min-height: 54px; font-size: 1rem; line-height: 1.25; font-weight: 400; border-radius: 7px; }
 
 // Interior pages retain functional controls, with the same quieter visual hierarchy.
 .wm-vendors-hero { background: #eeece5; padding-block: clamp(3rem, 6vw, 6rem) 2.5rem; }
