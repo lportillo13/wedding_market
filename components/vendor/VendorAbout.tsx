@@ -54,8 +54,10 @@ export default function VendorAbout({ vendor, spaces, categoryKeys }: VendorAbou
         {vendor.languages.length > 0 && <span>{fill(headerLabels.languages, { languages: vendor.languages.join(', ') })}</span>}
         {vendor.eventTypes.length > 0 && <span>{vendor.eventTypes.join(' · ')}</span>}
       </div>}
-      {vendor.summary ? <div className="lead text-body-secondary">{renderParagraphs(vendor.summary)}</div> : null}
-      {vendor.description ? <div>{renderParagraphs(vendor.description)}</div> : null}
+      <div className="wm-profile-about__description">
+        {vendor.summary ? <div className="lead text-body-secondary">{renderParagraphs(vendor.summary)}</div> : null}
+        {vendor.description ? <div>{renderParagraphs(vendor.description)}</div> : null}
+      </div>
 
       {spaces.length ? (
         <div className="mt-5">

@@ -19,7 +19,6 @@ import type { VendorAdsConfig } from "@/lib/content/vendorAds";
 import { getVendorServiceProfile } from "@/lib/vendorServiceProfile";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
 import type { VendorContactPrefill } from "./data";
-import { exampleVendorCopy } from "@/shared/vendors/examples";
 
 export default function VendorPageShell({
   profile,
@@ -38,7 +37,6 @@ export default function VendorPageShell({
 }) {
   const { dictionary, language } = useLanguage();
   const labels = dictionary.vendorPublic;
-  const exampleLabels = exampleVendorCopy[language === 'es' ? 'es' : 'en'];
   const categoryKeys = profile.breadcrumbs.categories.map(
     (category) => category.key,
   );
@@ -201,9 +199,7 @@ export default function VendorPageShell({
           }
           excludeVendorId={profile.vendor.id}
         />
-        <div
-          className={`wm-profile-layout${isVendor ? " wm-profile-layout--full" : ""}`}
-        >
+        <div className="wm-profile-layout wm-profile-layout--full">
           <div className="wm-profile-sections">
             {sections.map((section, index) => (
               <section
@@ -222,32 +218,10 @@ export default function VendorPageShell({
               </section>
             ))}
           </div>
-          {!isVendor && (
-            <div className="wm-profile-sidebar">
-              <VendorQuoteCard
-                isExample={isExample}
-                vendor={profile.vendor}
-                isLoggedIn={isLoggedIn}
-                loginHref={loginHref}
-              />
-            </div>
-          )}
         </div>
       </div>
       {!isVendor && (
-        <div className="wm-vendor-mobile-action">
-          <div>
-            <strong>{profile.vendor.name}</strong>
-            <span>{labels.editorial.quoteEyebrow}</span>
-          </div>
-          <a
-            className="btn btn-primary"
-            href={isLoggedIn ? "#contact" : loginHref}
-          >
-            {isExample ? exampleLabels.form : labels.header.requestQuote}
-            <span aria-hidden="true">↗︎</span>
-          </a>
-        </div>
+        <VendorQuoteCard vendor={profile.vendor} isLoggedIn={isLoggedIn} loginHref={loginHref} />
       )}
     </main>
   );

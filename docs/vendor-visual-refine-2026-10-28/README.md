@@ -13,6 +13,10 @@ The owner identified card text touching borders and an overly boxed card finish,
 
 Approved visual reference: [centered editorial, desktop and phone](selected-concept-c.png). The selection applies to the profile hero; the existing global navigation structure remains.
 
+The owner then explicitly requested the mockup's transparent menu over the cover. Profile navigation now overlays the image/video at the top and becomes solid warm charcoal after scrolling. Gallery/video controls sit below the header's touch area. Missing vendor routes retain the standard header.
+
+Three quote-sidebar alternatives were supplied before coding; the owner selected **A, slim floating bar**. The permanent right column and duplicate phone bar are replaced with one small dock on desktop and phone. It appears after the hero, hides when the contact section is reached, preserves guest sign-in/price restrictions and remains absent for vendor viewers. The main content uses the full grid width while About prose keeps a comfortable reading measure. Reference: [approved floating dock](selected-quote-a.png).
+
 - Vendors choose Photo or Video in Profile → Media. Video can be selected from their existing uploaded profile clips or supplied as a public YouTube, Vimeo or direct HTTPS MP4/WebM URL. Library choices must belong to that vendor's current video assets. Existing upload processing, 50 MB admission limit and three-video quota are unchanged.
 - Selection is stored in the existing `extra_info.hero_presentation`; `hero_image` remains the photo/poster so installed native clients continue displaying an image. Deleted/missing video selections fall back to the photo. No schema migration is needed.
 - Direct clips loop silently with a pause/play control. Reduced motion disables automatic playback; clips pause offscreen or in background tabs. YouTube/Vimeo are click-to-load, use privacy-enhanced embeds and have an external source link. Provider embedding restrictions still apply. Supported parameters follow [YouTube's documentation](https://developers.google.com/youtube/player_parameters) and [Vimeo's player documentation](https://developer.vimeo.com/player/sdk/embed).

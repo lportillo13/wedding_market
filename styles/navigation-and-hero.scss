@@ -54,6 +54,35 @@
 }
 .wm-site-header--home .wm-site-header__cta:hover { background: #eee9df; border-color: #eee9df; color: #332d27; }
 
+// Profile covers share the cinematic menu treatment, without a floating frame.
+// Require an actual profile so missing vendor URLs retain the normal header.
+.wm-site-shell:has(.wm-profile-editorial) > .wm-site-header--vendor-profile {
+  position: fixed;
+  inset: 0 0 auto;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  .wm-site-header__inner { max-width: none; padding-inline: clamp(1rem, 3vw, 3rem); }
+  &[data-scrolled="true"] { background: #332d27f5; box-shadow: 0 4px 20px #21180f20; }
+  .wm-site-header__inner > .wm-site-header__brand,
+  .wm-site-header__desktop-nav > ul > li > a,
+  .wm-site-header__desktop-nav .vendors-mega-toggle.btn { color: #fffdf9; }
+  .wm-site-header__desktop-actions > .wm-site-header__icon,
+  .wm-site-header__mobile-actions :is(button, a),
+  .wm-site-header__auth > :is(a, button),
+  .wm-site-header__auth > .dropdown > button,
+  .wm-notification-dropdown > .btn { color: #fffdf9; border-color: #fffdf966; background: transparent; }
+  .wm-site-header__auth .btn-outline-secondary { color: #fffdf9 !important; background: transparent !important; border-color: #fffdf966 !important; }
+  .wm-site-header__cta { background: #fffdf9; border-color: #fffdf9; color: #332d27; }
+  .wm-site-header__desktop-actions .wm-header-language {
+    border-color: #fffdf966;
+    button { color: #fffdf9cc; }
+    button[aria-pressed="true"] { background: #fffdf9; color: #332d27; }
+  }
+  .wm-site-header__inner :is(a, button):focus-visible { outline-color: #fffdf9; }
+  :is(.vendors-mega-panel, .dropdown-menu) :is(a, button):focus-visible { outline-color: #805a40; }
+}
+
 // A connected language switch replaces the separate rounded badges.
 .wm-site-header .wm-header-language {
   display: inline-flex; align-items: center; gap: 2px; height: 44px;

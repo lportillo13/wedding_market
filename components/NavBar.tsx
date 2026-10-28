@@ -36,6 +36,7 @@ export default function NavBar({
   accountUnavailable = false,
 }: NavBarProps) {
   const pathname = usePathname() ?? "/";
+  const isVendorProfile = /^\/vendors\/[^/]+\/?$/.test(pathname);
   const { language, dictionary } = useLanguage();
   const t = useTranslation();
   const labels = dictionary.header;
@@ -57,7 +58,7 @@ export default function NavBar({
   const accountLinks = getHeaderAccountLinks(isVendor);
 
   useEffect(() => {
-    if (pathname !== "/") return;
+    if (pathname !== "/" && !isVendorProfile) return;
     let frame = requestAnimationFrame(sync);
     function sync() {
       frame = 0;
@@ -71,7 +72,7 @@ export default function NavBar({
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", onScroll);
     };
-  }, [pathname]);
+  }, [pathname, isVendorProfile]);
 
   useEffect(() => {
     const sync = () => setCount(getShortlistCount());
@@ -136,8 +137,8 @@ export default function NavBar({
   );
   return (
     <header
-      className={`wm-site-header${pathname === "/" ? " wm-site-header--home" : ""}`}
-      data-scrolled={pathname === "/" && hasScrolled ? "true" : undefined}
+      className={`wm-site-header${pathname === "/" ? " wm-site-header--home" : ""}${isVendorProfile ? " wm-site-header--vendor-profile" : ""}`}
+      data-scrolled={(pathname === "/" || isVendorProfile) && hasScrolled ? "true" : undefined}
     >
       <div className="container wm-site-header__inner">
         <Link href="/" className="wm-site-header__brand">
