@@ -1,7 +1,8 @@
 "use client";
 
 import VendorAccessPrompt from "./VendorAccessPrompt";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
+import HeaderIcon from "@/components/HeaderIcon";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
 
@@ -10,6 +11,24 @@ type VendorAvailabilityProps = {
   isLoggedIn: boolean;
   loginHref: string;
 };
+
+const MOBILE_CALENDAR_QUERY = "(max-width: 767.98px)";
+const CALENDAR_MONTHS = 24;
+const DESKTOP_MONTHS = 3;
+
+function subscribeToCalendarViewport(onChange: () => void) {
+  const query = window.matchMedia(MOBILE_CALENDAR_QUERY);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+}
+
+function isMobileCalendar() {
+  return window.matchMedia(MOBILE_CALENDAR_QUERY).matches;
+}
+
+function serverCalendarViewport() {
+  return false;
+}
 
 function pad(value: number) {
   return String(value).padStart(2, "0");
@@ -61,17 +80,25 @@ export default function VendorAvailability({
   const { dictionary, language } = useLanguage();
   const labels = dictionary.vendorPublic.availability;
   const [monthOffset, setMonthOffset] = useState(0);
+  const isMobile = useSyncExternalStore(subscribeToCalendarViewport, isMobileCalendar, serverCalendarViewport);
+  const desktopOffset = Math.min(monthOffset, CALENDAR_MONTHS - DESKTOP_MONTHS);
+  const visibleOffset = isMobile ? monthOffset : desktopOffset;
+  const monthCount = isMobile ? 1 : DESKTOP_MONTHS;
 
   const months = useMemo(
-    () => [0, 1, 2].map((offset) => startOfMonth(monthOffset + offset)),
-    [monthOffset]
+    () => Array.from({ length: monthCount }, (_, offset) => startOfMonth(visibleOffset + offset)),
+    [monthCount, visibleOffset]
   );
+  const weekdays = useMemo(() => {
+    const formatter = new Intl.DateTimeFormat(language, { weekday: "short" });
+    return Array.from({ length: 7 }, (_, day) => formatter.format(new Date(2023, 0, 1 + day)));
+  }, [language]);
   const statusMap = useMemo(
     () => new Map(dates.map((entry) => [entry.date, entry.status])),
     [dates]
   );
-  const sliderStartLabel = formatMonthLabel(startOfMonth(monthOffset), language);
-  const sliderEndLabel = formatMonthLabel(startOfMonth(monthOffset + 2), language);
+  const sliderStartLabel = formatMonthLabel(startOfMonth(desktopOffset), language);
+  const sliderEndLabel = formatMonthLabel(startOfMonth(desktopOffset + DESKTOP_MONTHS - 1), language);
 
   if (!isLoggedIn) {
     return (
@@ -113,23 +140,43 @@ export default function VendorAvailability({
               type="range"
               className="form-range"
               min={0}
-              max={21}
+              max={CALENDAR_MONTHS - DESKTOP_MONTHS}
               step={1}
-              value={monthOffset}
+              value={desktopOffset}
               onChange={(event) => setMonthOffset(Number(event.target.value))}
             />
             <div className="form-text">{labels.monthSliderHelp}</div>
           </div>
           <div className="wm-availability-months">
-            {months.map((monthStart) => {
+            {months.map((monthStart, monthIndex) => {
               const monthLabel = formatMonthLabel(monthStart, language);
               const cells = buildMonthDays(monthStart);
 
               return (
-                <section key={monthLabel} className="wm-availability-card">
-                  <div className="wm-availability-card__header">{monthLabel}</div>
+                <section key={monthIndex} className="wm-availability-card" aria-label={monthLabel}>
+                  <div className="wm-availability-card__header">
+                    <span aria-live={monthIndex === 0 ? "polite" : undefined} aria-atomic="true">{monthLabel}</span>
+                    {monthIndex === 0 && <div className="wm-availability-month-nav">
+                      <button
+                        type="button"
+                        aria-label={labels.previousMonth}
+                        disabled={monthOffset === 0}
+                        onClick={() => setMonthOffset((offset) => Math.max(0, offset - 1))}
+                      >
+                        <HeaderIcon name="chevron" aria-hidden="true" />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={labels.nextMonth}
+                        disabled={monthOffset === CALENDAR_MONTHS - 1}
+                        onClick={() => setMonthOffset((offset) => Math.min(CALENDAR_MONTHS - 1, offset + 1))}
+                      >
+                        <HeaderIcon name="chevron" aria-hidden="true" />
+                      </button>
+                    </div>}
+                  </div>
                   <div className="wm-availability-grid wm-availability-grid--weekdays">
-                    {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((label) => (
+                    {weekdays.map((label) => (
                       <div key={label} className="wm-availability-grid__weekday">
                         {label}
                       </div>

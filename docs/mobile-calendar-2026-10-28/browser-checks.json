@@ -1,0 +1,71 @@
+{
+  "environment": "Local production-build preview",
+  "published": false,
+  "phone390": {
+    "arrows": [
+      {
+        "height": 44,
+        "width": 44
+      },
+      {
+        "height": 44,
+        "width": 44
+      }
+    ],
+    "cards": 1,
+    "month": "octubre de 2026",
+    "previousDisabled": true,
+    "sliderDisplay": "none",
+    "width": 390
+  },
+  "keyboardYearBoundary": {
+    "cards": 1,
+    "focusedLabel": "Mes siguiente",
+    "month": "enero de 2027"
+  },
+  "phone320LastMonth": {
+    "cards": 1,
+    "clientWidth": 305,
+    "month": "septiembre de 2028",
+    "nextDisabled": true,
+    "scrollWidth": 305,
+    "width": 320
+  },
+  "desktop1150": {
+    "cards": 3,
+    "navDisplay": "none",
+    "sliderDisplay": "block",
+    "width": 1150
+  },
+  "desktopLastThreeMonths": [
+    "julio de 2028",
+    "agosto de 2028",
+    "septiembre de 2028"
+  ],
+  "english": {
+    "buttons": [
+      "Previous month",
+      "Next month"
+    ],
+    "month": "October 2026",
+    "weekdays": [
+      "Sun",
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat"
+    ]
+  },
+  "previousArrowReturnedToDecember": true,
+  "spanishWeekdays": [
+    "dom",
+    "lun",
+    "mar",
+    "mié",
+    "jue",
+    "vie",
+    "sáb"
+  ]
+}

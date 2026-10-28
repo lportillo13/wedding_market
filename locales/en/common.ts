@@ -711,6 +711,8 @@ const common = {
       "heading": "Availability",
       "availableLegend": "Available",
       "busyLegend": "Busy",
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
       "monthSliderLabel": "Browse months",
       "monthSliderHelp": "Move the slider to browse up to 2 years ahead.",
       "empty": "Availability calendar coming soon. Contact the vendor for current openings.",

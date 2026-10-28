@@ -711,6 +711,8 @@ const common = {
       "heading": "Disponibilidad",
       "availableLegend": "Disponible",
       "busyLegend": "Ocupado",
+      "previousMonth": "Mes anterior",
+      "nextMonth": "Mes siguiente",
       "monthSliderLabel": "Explorar meses",
       "monthSliderHelp": "Mueve el control para explorar hasta 2 años hacia adelante.",
       "empty": "El calendario de disponibilidad estará disponible pronto. Contacta al proveedor para confirmar fechas.",

@@ -507,6 +507,7 @@
   .wm-availability-card__header { color: var(--lx-ink); font: 300 1.35rem/1.3 var(--profile-serif); }
   .wm-availability-grid__weekday { font-weight: 400; color: var(--lx-muted); }
   .wm-availability-day { border-radius: 5px; font-weight: 400; }
+  .wm-availability-month-nav { display: none; }
   .wm-profile-hero__actions .bg-white { background: var(--lx-surface) !important; }
   .wm-profile-hero__actions .dropdown-item { min-height: 44px; padding: .7rem 1rem; color: var(--lx-ink); font-size: .875rem; }
   .wm-profile-section--contact {
@@ -771,6 +772,32 @@
     .wm-profile-hero__actions { flex-direction: column; gap: .25rem; }
     .wm-profile-hero__actions .btn-primary { width: 100%; max-width: 320px; min-width: 0; }
 
+    .wm-availability-slider { display: none; }
+    .wm-availability-months { grid-template-columns: minmax(0, 1fr); }
+    .wm-availability-months > .wm-availability-card ~ .wm-availability-card { display: none; }
+    .wm-availability-card__header { display: flex; align-items: center; gap: .5rem; }
+    .wm-availability-card__header > span { flex: 1; min-width: 0; }
+    .wm-availability-month-nav {
+      display: flex;
+      flex-shrink: 0;
+      gap: .35rem;
+      button {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border: 1px solid var(--lx-border);
+        border-radius: 7px;
+        background: var(--lx-surface);
+        color: var(--lx-ink);
+        &:hover:not(:disabled) { background: var(--lx-bg-2); }
+        &:focus-visible { outline: 2px solid var(--profile-accent); outline-offset: 2px; }
+        &:disabled { opacity: .35; cursor: default; }
+        &:first-child svg { transform: rotate(90deg); }
+        &:last-child svg { transform: rotate(-90deg); }
+      }
+    }
     .wm-profile-section {
       margin-bottom: 0;
       padding: 2rem 0;
