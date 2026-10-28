@@ -1,16 +1,16 @@
-import { colors, fontFamilies } from "../tokens";
+import { colors, fontFamilies, radii } from "../tokens";
 import { StyleSheet } from "react-native";
 export const vendorEditorStyles = StyleSheet.create({
     languageSegment: {
         alignSelf: "flex-start",
         backgroundColor: colors.soft,
-        borderRadius: 999,
+        borderRadius: radii.control,
         flexDirection: "row",
         gap: 4,
         padding: 4,
     },
     languageSegmentButton: {
-        borderRadius: 999,
+        borderRadius: radii.control,
         paddingHorizontal: 14,
         paddingVertical: 8,
     },
@@ -18,9 +18,11 @@ export const vendorEditorStyles = StyleSheet.create({
         backgroundColor: colors.ink,
     },
     languageSegmentText: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 18,
         color: colors.muted,
         fontSize: 12,
-        fontWeight: "900",
+        fontWeight: "normal",
     },
     languageSegmentTextActive: {
         color: "#FFFFFF",
@@ -29,7 +31,7 @@ export const vendorEditorStyles = StyleSheet.create({
         gap: 7,
     },
     vendorWorkspaceHero: {
-        borderRadius: 28,
+        borderRadius: radii.surface,
         height: 270,
         marginBottom: 14,
         overflow: "hidden",
@@ -61,7 +63,7 @@ export const vendorEditorStyles = StyleSheet.create({
     editorTab: {
         alignItems: "center",
         backgroundColor: colors.soft,
-        borderRadius: 999,
+        borderRadius: radii.control,
         flexDirection: "row",
         gap: 6,
         minHeight: 40,
@@ -71,9 +73,11 @@ export const vendorEditorStyles = StyleSheet.create({
         backgroundColor: colors.ink,
     },
     editorTabText: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 18,
         color: colors.tealDark,
         fontSize: 12,
-        fontWeight: "900",
+        fontWeight: "normal",
     },
     editorTabTextActive: {
         color: colors.paper,
@@ -81,14 +85,14 @@ export const vendorEditorStyles = StyleSheet.create({
     editorPanel: {
         backgroundColor: colors.paper,
         borderColor: colors.line,
-        borderRadius: 26,
+        borderRadius: radii.surface,
         borderWidth: 1,
         gap: 14,
         padding: 16,
     },
     editorSubCard: {
         backgroundColor: colors.soft,
-        borderRadius: 22,
+        borderRadius: radii.surface,
         gap: 10,
         padding: 14,
     },
@@ -105,7 +109,7 @@ export const vendorEditorStyles = StyleSheet.create({
     imageUploadButton: {
         alignItems: "center",
         backgroundColor: colors.soft,
-        borderRadius: 20,
+        borderRadius: radii.control,
         flexDirection: "row",
         gap: 8,
         minHeight: 48,
@@ -117,7 +121,7 @@ export const vendorEditorStyles = StyleSheet.create({
     },
     currentMediaCard: {
         backgroundColor: colors.soft,
-        borderRadius: 24,
+        borderRadius: radii.surface,
         gap: 10,
         overflow: "hidden",
         padding: 12,
@@ -126,7 +130,7 @@ export const vendorEditorStyles = StyleSheet.create({
         alignItems: "center",
     },
     currentMediaImage: {
-        borderRadius: 18,
+        borderRadius: radii.surface,
         height: 180,
         width: "100%",
     },
@@ -137,15 +141,17 @@ export const vendorEditorStyles = StyleSheet.create({
     currentMediaFallback: {
         alignItems: "center",
         backgroundColor: "#D7D7D4",
-        borderRadius: 18,
+        borderRadius: radii.surface,
         height: 180,
         justifyContent: "center",
         width: "100%",
     },
     currentMediaFallbackText: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 21,
         color: colors.muted,
         fontSize: 14,
-        fontWeight: "900",
+        fontWeight: "normal",
     },
     uploadProgressCard: {
         backgroundColor: "#E8F7EE",
@@ -159,14 +165,18 @@ export const vendorEditorStyles = StyleSheet.create({
         justifyContent: "space-between",
     },
     uploadProgressTitle: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 19,
         color: colors.ink,
         fontSize: 13,
-        fontWeight: "900",
+        fontWeight: "normal",
     },
     uploadProgressPercent: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 19,
         color: colors.tealDark,
         fontSize: 13,
-        fontWeight: "900",
+        fontWeight: "normal",
     },
     uploadProgressTrack: {
         backgroundColor: "rgba(29,122,114,0.18)",
@@ -180,21 +190,25 @@ export const vendorEditorStyles = StyleSheet.create({
         height: "100%",
     },
     uploadProgressStatus: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 18,
         color: colors.muted,
         fontSize: 12,
-        fontWeight: "800",
+        fontWeight: "normal",
     },
     detailTitle: {
         color: "#FFFFFF",
         fontFamily: fontFamilies.displayRegular,
         fontSize: 34,
-        fontWeight: "400",
+        fontWeight: "normal",
         lineHeight: 38,
     },
     detailCategories: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 19,
         color: "rgba(255,255,255,0.84)",
         fontSize: 13,
-        fontWeight: "800",
+        fontWeight: "normal",
         marginTop: 8,
     },
     detailChips: {
@@ -206,16 +220,18 @@ export const vendorEditorStyles = StyleSheet.create({
     detailChip: {
         alignItems: "center",
         backgroundColor: colors.soft,
-        borderRadius: 999,
+        borderRadius: radii.control,
         flexDirection: "row",
         gap: 5,
         paddingHorizontal: 10,
         paddingVertical: 7,
     },
     detailChipText: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 18,
         color: colors.tealDark,
         fontSize: 12,
-        fontWeight: "800",
+        fontWeight: "normal",
     },
     galleryStrip: {
         gap: 10,
@@ -223,7 +239,7 @@ export const vendorEditorStyles = StyleSheet.create({
     },
     galleryImage: {
         backgroundColor: colors.line,
-        borderRadius: 22,
+        borderRadius: radii.surface,
         height: 150,
         width: 210,
     }

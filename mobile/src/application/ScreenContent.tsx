@@ -20,7 +20,7 @@ import { colors } from "../theme/tokens";
 import { ProtectedScreen } from "../ui/ProtectedScreen";
 import { type TabKey } from "./types";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 
 export function ScreenContent({
   tab,
@@ -62,6 +62,9 @@ export function ScreenContent({
 }) {
   const connectedToSupabase = Boolean(supabase);
   const labels = copy[language];
+  const { width } = useWindowDimensions();
+  const heroDisplaySize = Math.min(54, width * 0.13);
+  const heroScriptSize = Math.min(58, width * 0.15);
 
   if (tab === "home") {
     return (
@@ -70,8 +73,9 @@ export function ScreenContent({
           <Image source={{ uri: heroImageUrl }} style={styles.heroImage} resizeMode="cover" />
           <View style={styles.heroOverlay} />
           <View style={styles.heroCopy}>
-            <Text style={styles.heroBadge}>{labels.heroBadgeHome}</Text>
-            <Text style={styles.heroTitle}>{labels.heroTitleHome}</Text>
+            <Text style={styles.heroEyebrow}>{labels.heroBadgeHome}</Text>
+            <Text style={[styles.heroTitle, { fontSize: heroDisplaySize, lineHeight: Math.ceil(heroDisplaySize * 1.1) }]}>{labels.heroTitleHome}</Text>
+            <Text style={[styles.heroScript, { fontSize: heroScriptSize, lineHeight: Math.ceil(heroScriptSize * 1.24) }]}>{labels.heroAccentHome}</Text>
             <Text style={styles.heroText}>{labels.heroTextHome}</Text>
             <View style={styles.heroButtons}>
               <TouchableOpacity onPress={() => onNavigate("search")} style={styles.heroPrimaryButton}>
@@ -161,9 +165,9 @@ export function ScreenContent({
           <View style={styles.ctaBand}>
             <Text style={styles.ctaTitle}>{labels.ctaTitle}</Text>
             <Text style={styles.ctaText}>{labels.ctaBody}</Text>
-            <TouchableOpacity onPress={() => onNavigate("search")} style={styles.primaryButton}>
-              <Ionicons name="search-outline" size={18} color="#FFFFFF" />
-              <Text style={styles.primaryButtonText}>{labels.browseVendors}</Text>
+            <TouchableOpacity onPress={() => onNavigate("search")} style={[styles.primaryButton, styles.ctaButton]}>
+              <Ionicons name="search-outline" size={18} color={colors.ink} />
+              <Text style={[styles.primaryButtonText, styles.ctaButtonText]}>{labels.browseVendors}</Text>
             </TouchableOpacity>
           </View>
         </View>

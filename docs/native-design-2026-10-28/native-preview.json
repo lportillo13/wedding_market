@@ -1,0 +1,68 @@
+{
+  "capturedAt": "2026-10-28T15:43:40.083Z",
+  "runtime": "Official Expo Go 57.0.9",
+  "platform": "Android API 36 emulator",
+  "nativeRendering": true,
+  "mockup": false,
+  "realCustomerData": false,
+  "accountSubmitted": false,
+  "emulatorResources": {
+    "cores": 2,
+    "memoryMb": 2048
+  },
+  "testedSizes": [
+    {
+      "physicalWidth": 1080,
+      "physicalHeight": 2400,
+      "density": 420,
+      "fontScale": 1
+    },
+    {
+      "logicalWidth": 320,
+      "logicalHeight": 640,
+      "fontScale": 1.3
+    }
+  ],
+  "scenarios": [
+    "English and Spanish home typography",
+    "Account menu and persistent language selection",
+    "Spanish preference after preview restart",
+    "Vendor directory empty state",
+    "Login form presentation",
+    "Signup introduction and empty first-step fields",
+    "320-point phone with larger text and reachable primary action"
+  ],
+  "nativeSourceSha256": "5c03ae38e18b5ece6a15b491810eb74596033767212980a9f570f76770f43d02",
+  "captures": [
+    {
+      "file": "android-directory-es.png",
+      "sha256": "aa5f8b1e6a160ec86a5e894c29e8edd0be5c94d3a3878535995fcf06f9fdd23a"
+    },
+    {
+      "file": "android-home-en.png",
+      "sha256": "727334836408e3217439655f09ccc7ad27b956c522fece76e0651d48e9694824"
+    },
+    {
+      "file": "android-home-es.png",
+      "sha256": "2b916f7a710b530949287093ba31bda8fe87ed1aabceb1de4fe55262bfd1c407"
+    },
+    {
+      "file": "android-login-es.png",
+      "sha256": "aac4762e71ff18c9a921fc46f6844d2abc8197741d7b21d86340e9d2ce441d4e"
+    },
+    {
+      "file": "android-menu-en.png",
+      "sha256": "cdd621b1b089b5ff03c14fcdf7195ee765748a0dc4052e7a7c5db775eade2f86"
+    },
+    {
+      "file": "android-signup-fields-es.png",
+      "sha256": "2dc6282c39b482135edc2577f8543275e6c8d7a0e664883be7db12d7c4a0c971"
+    },
+    {
+      "file": "android-small-large-text-es.png",
+      "sha256": "0a619f65777ec67e9892f97fecae529fbaf6d99b5ec5c30e3b659043148944ac"
+    }
+  ],
+  "iosDeviceVisualReview": false,
+  "release": false
+}

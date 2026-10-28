@@ -1,4 +1,4 @@
-import { colors } from "../tokens";
+import { colors, fontFamilies, radii } from "../tokens";
 import { StyleSheet } from "react-native";
 export const adminStyles = StyleSheet.create({
     dashboardGrid: {
@@ -9,22 +9,26 @@ export const adminStyles = StyleSheet.create({
     dashboardStat: {
         backgroundColor: colors.paper,
         borderColor: colors.line,
-        borderRadius: 24,
+        borderRadius: radii.surface,
         borderWidth: 1,
         minHeight: 118,
         padding: 14,
         width: "48%",
     },
     dashboardStatValue: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 38,
         color: colors.ink,
         fontSize: 26,
-        fontWeight: "900",
+        fontWeight: "normal",
         marginTop: 12,
     },
     dashboardStatLabel: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 18,
         color: colors.muted,
         fontSize: 12,
-        fontWeight: "800",
+        fontWeight: "normal",
         marginTop: 4,
     }
 });

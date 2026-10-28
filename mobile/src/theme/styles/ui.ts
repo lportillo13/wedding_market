@@ -1,4 +1,4 @@
-import { colors } from "../tokens";
+import { colors, fontFamilies, radii } from "../tokens";
 import { StyleSheet } from "react-native";
 export const uiStyles = StyleSheet.create({
     signupFieldLabel: {
@@ -11,9 +11,11 @@ export const uiStyles = StyleSheet.create({
         minHeight: 28,
     },
     quoteClearDateText: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 18,
         color: "#B42318",
         fontSize: 12,
-        fontWeight: "800",
+        fontWeight: "normal",
         marginTop: 8,
     },
     nativeSelectBlock: {
@@ -27,9 +29,11 @@ export const uiStyles = StyleSheet.create({
         gap: 10,
     },
     nativeSelectHelper: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 18,
         color: colors.muted,
         fontSize: 12,
-        fontWeight: "800",
+        fontWeight: "normal",
     },
     nativeSelectOptions: {
         flexDirection: "row",
@@ -37,8 +41,10 @@ export const uiStyles = StyleSheet.create({
         gap: 8,
     },
     nativeSelectPill: {
+        minHeight: 44,
+        justifyContent: "center",
         backgroundColor: colors.soft,
-        borderRadius: 999,
+        borderRadius: 5,
         paddingHorizontal: 12,
         paddingVertical: 9,
     },
@@ -46,9 +52,11 @@ export const uiStyles = StyleSheet.create({
         backgroundColor: colors.ink,
     },
     nativeSelectText: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 20,
         color: colors.muted,
-        fontSize: 12,
-        fontWeight: "800",
+        fontSize: 14,
+        fontWeight: "normal",
     },
     nativeSelectTextActive: {
         color: colors.paper,
@@ -60,7 +68,7 @@ export const uiStyles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: colors.paper,
         borderColor: colors.line,
-        borderRadius: 16,
+        borderRadius: radii.control,
         borderWidth: 1,
         flexDirection: "row",
         justifyContent: "space-between",
@@ -71,10 +79,12 @@ export const uiStyles = StyleSheet.create({
         borderColor: colors.ink,
     },
     countryDropdownValue: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 22,
         color: colors.ink,
         flex: 1,
         fontSize: 15,
-        fontWeight: "700",
+        fontWeight: "normal",
     },
     countryDropdownValueCentered: {
         paddingHorizontal: 24,
@@ -90,23 +100,26 @@ export const uiStyles = StyleSheet.create({
     countryDropdownMenu: {
         backgroundColor: colors.paper,
         borderColor: colors.line,
-        borderRadius: 18,
+        borderRadius: radii.control,
         borderWidth: 1,
         padding: 10,
     },
     countrySearchInputWrap: {
         alignItems: "center",
         backgroundColor: colors.soft,
-        borderRadius: 14,
+        borderRadius: radii.control,
         flexDirection: "row",
         gap: 8,
         minHeight: 42,
         paddingHorizontal: 10,
     },
     countrySearchInput: {
+        fontFamily: fontFamilies.body,
+        fontWeight: "normal",
+        lineHeight: 22,
         color: colors.ink,
         flex: 1,
-        fontSize: 15,
+        fontSize: 16,
         minHeight: 42,
         padding: 0,
     },
@@ -128,17 +141,19 @@ export const uiStyles = StyleSheet.create({
         borderRadius: 12,
         flexDirection: "row",
         justifyContent: "space-between",
-        minHeight: 40,
+        minHeight: 44,
         paddingHorizontal: 10,
     },
     countryOptionRowActive: {
         backgroundColor: colors.soft,
     },
     countryOptionText: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 21,
         color: colors.ink,
         flex: 1,
         fontSize: 14,
-        fontWeight: "700",
+        fontWeight: "normal",
     },
     countryOptionTextCentered: {
         paddingHorizontal: 24,
@@ -149,12 +164,15 @@ export const uiStyles = StyleSheet.create({
         right: 10,
     },
     countryOptionTextActive: {
-        fontWeight: "900",
+        fontFamily: fontFamilies.body,
+        fontWeight: "normal",
     },
     countryNoResults: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 19,
         color: colors.muted,
         fontSize: 13,
-        fontWeight: "700",
+        fontWeight: "normal",
         padding: 12,
         textAlign: "center",
     },
@@ -190,13 +208,15 @@ export const uiStyles = StyleSheet.create({
     },
     availabilityMonthCard: {
         backgroundColor: colors.soft,
-        borderRadius: 22,
+        borderRadius: radii.surface,
         padding: 12,
     },
     availabilityCalendarTitle: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 22,
         color: colors.ink,
         fontSize: 15,
-        fontWeight: "900",
+        fontWeight: "normal",
         marginBottom: 10,
     },
     availabilityWeekdays: {
@@ -204,10 +224,12 @@ export const uiStyles = StyleSheet.create({
         marginBottom: 6,
     },
     availabilityWeekday: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 16,
         color: colors.muted,
         flex: 1,
         fontSize: 11,
-        fontWeight: "900",
+        fontWeight: "normal",
         textAlign: "center",
     },
     availabilityCalendarGrid: {
@@ -230,9 +252,10 @@ export const uiStyles = StyleSheet.create({
         width: "14.285%",
     },
     availabilityCalendarNumber: {
+        fontFamily: fontFamilies.body,
         color: colors.ink,
         fontSize: 13,
-        fontWeight: "800",
+        fontWeight: "normal",
         includeFontPadding: false,
         left: 0,
         lineHeight: 18,

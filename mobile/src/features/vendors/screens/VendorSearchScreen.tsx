@@ -227,13 +227,13 @@ export function VendorSearchScreen({
             onChangeText={setQuery}
             onSubmitEditing={() => void loadVendors(query)}
             placeholder={labels.searchVendors}
-            placeholderTextColor="#8A969C"
+            placeholderTextColor={colors.muted}
             returnKeyType="search"
             style={styles.searchInput}
             value={query}
           />
         </View>
-        <TouchableOpacity onPress={() => setIsFiltersOpen((current) => !current)} style={styles.searchButton}>
+        <TouchableOpacity accessibilityRole="button" accessibilityLabel={labels.filters} accessibilityState={{ expanded: isFiltersOpen }} onPress={() => setIsFiltersOpen((current) => !current)} style={styles.searchButton}>
           <Ionicons name="options-outline" size={21} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
@@ -350,7 +350,7 @@ export function VendorSearchScreen({
 
       {isLoading ? (
         <View style={styles.searchState}>
-          <ActivityIndicator color="#A17619" />
+          <ActivityIndicator color={colors.teal} />
           <Text style={styles.loadingText}>{labels.loadingVendors}</Text>
         </View>
       ) : message ? (

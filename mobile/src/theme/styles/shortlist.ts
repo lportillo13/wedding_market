@@ -1,11 +1,11 @@
-import { colors } from "../tokens";
+import { colors, radii } from "../tokens";
 import { StyleSheet } from "react-native";
 export const shortlistStyles = StyleSheet.create({
     favoriteBatchButton: {
         alignItems: "center",
         alignSelf: "flex-start",
         backgroundColor: colors.ink,
-        borderRadius: 999,
+        borderRadius: radii.control,
         flexDirection: "row",
         gap: 8,
         justifyContent: "center",

@@ -7,7 +7,7 @@ import {colors} from '../../theme/tokens';
 
 export function FontLicenseNotice({language}:{language:'en'|'es'}) {
   const [open,setOpen]=useState(false);
-  const title=language==='es'?'Licencia de tipografía':'Font license';
+  const title=language==='es'?'Licencias de tipografía':'Font licenses';
   return <View>
     <TouchableOpacity accessibilityRole="button" style={styles.textLinkButton} onPress={()=>setOpen(true)}><Text style={styles.textLink}>{title}</Text></TouchableOpacity>
     <Modal visible={open} animationType="slide" onRequestClose={()=>setOpen(false)}>

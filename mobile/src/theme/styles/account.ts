@@ -1,10 +1,10 @@
-import { colors } from "../tokens";
+import { colors, radii } from "../tokens";
 import { StyleSheet } from "react-native";
 export const accountStyles = StyleSheet.create({
     formSection: {
         backgroundColor: colors.paper,
         borderColor: colors.line,
-        borderRadius: 24,
+        borderRadius: radii.surface,
         borderWidth: 1,
         gap: 10,
         marginTop: 14,
@@ -17,7 +17,7 @@ export const accountStyles = StyleSheet.create({
     profileHero: {
         alignItems: "center",
         backgroundColor: colors.soft,
-        borderRadius: 28,
+        borderRadius: radii.surface,
         flexDirection: "row",
         gap: 14,
         padding: 18,

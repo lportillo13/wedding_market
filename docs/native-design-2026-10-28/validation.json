@@ -1,0 +1,42 @@
+{
+  "checkedAt": "2026-10-28T15:37:29.406Z",
+  "nativeSourceSha256": "5c03ae38e18b5ece6a15b491810eb74596033767212980a9f570f76770f43d02",
+  "checks": [
+    {
+      "name": "native-check",
+      "passed": true
+    },
+    {
+      "name": "architecture",
+      "passed": true
+    },
+    {
+      "name": "android-export",
+      "passed": true
+    },
+    {
+      "name": "ios-export",
+      "passed": true
+    },
+    {
+      "name": "stable-source-during-validation",
+      "passed": true
+    }
+  ],
+  "bundles": {
+    "android": {
+      "bundle": "_expo/static/js/android/AppEntry-cd943ed6883a8436f7e89d38aa41fdb4.hbc",
+      "assetCount": 8,
+      "bundleSha256": "0aca063759234c382ceb89564c7c2c5c5583778fe8413430548f4ce6a29301e3"
+    },
+    "ios": {
+      "bundle": "_expo/static/js/ios/AppEntry-09c50784a61ad19102ba24cfa31bba86.hbc",
+      "assetCount": 8,
+      "bundleSha256": "c6232670a6d0896d0b2996f61f8a5373d6b3291e4b8f112f29abc6005945eadd"
+    }
+  },
+  "passed": true,
+  "signedBuildCreated": false,
+  "cloudUpload": false,
+  "release": false
+}

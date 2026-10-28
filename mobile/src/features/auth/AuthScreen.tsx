@@ -518,7 +518,6 @@ export function AuthScreen({
       <ExpoStatusBar style="dark" />
       <ScrollView contentContainerStyle={styles.authScroll} keyboardShouldPersistTaps="handled">
         <View style={styles.authShell}>
-          <View style={{ alignItems: "center", marginBottom: 28 }}><BrandWordmark /></View>
           <Text style={[styles.authTitle, mode === "signup" && !isForgotPassword && styles.signupAuthCenteredText]}>
             {isForgotPassword
               ? labels.passwordResetTitle
@@ -686,7 +685,7 @@ export function AuthScreen({
             <View style={styles.signupModalLogo}>
               <BrandWordmark />
             </View>
-            <TouchableOpacity onPress={requestCloseSignupModal} style={styles.signupModalCloseButton}>
+            <TouchableOpacity accessibilityRole="button" accessibilityLabel={language === "es" ? "Cerrar" : "Close"} onPress={requestCloseSignupModal} style={styles.signupModalCloseButton}>
               <Ionicons name="close" size={22} color={colors.ink} />
             </TouchableOpacity>
           </View>

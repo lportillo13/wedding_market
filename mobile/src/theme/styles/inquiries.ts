@@ -1,13 +1,15 @@
-import { colors } from "../tokens";
+import { colors, fontFamilies, radii } from "../tokens";
 import { StyleSheet } from "react-native";
 export const inquiriesStyles = StyleSheet.create({
     inputError: {
         borderColor: "#B42318",
     },
     requiredHint: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 18,
         color: colors.muted,
         fontSize: 12,
-        fontWeight: "700",
+        fontWeight: "normal",
     },
     modalBackdrop: {
         backgroundColor: "rgba(22,26,29,0.32)",
@@ -25,7 +27,7 @@ export const inquiriesStyles = StyleSheet.create({
     quoteModalHandle: {
         alignSelf: "center",
         backgroundColor: colors.line,
-        borderRadius: 999,
+        borderRadius: radii.surface,
         height: 5,
         marginBottom: 12,
         width: 52,

@@ -1,8 +1,5 @@
 import { BrandWordmark } from "../ui/BrandWordmark";
-import { PlayfairDisplay_400Regular } from "@expo-google-fonts/playfair-display/400Regular";
-import { PlayfairDisplay_500Medium } from "@expo-google-fonts/playfair-display/500Medium";
-import { PlayfairDisplay_700Bold } from "@expo-google-fonts/playfair-display/700Bold";
-import { PlayfairDisplay_900Black } from "@expo-google-fonts/playfair-display/900Black";
+import { editorialFonts } from "../theme/fonts";
 import { CommunityConsent } from "../features/account/CommunityConsent";
 import { COMMUNITY_TERMS_VERSION } from "../../../shared/safety/copy";
 import { confirmAccountDeletion } from "../features/account/deletion";
@@ -31,12 +28,7 @@ import { ActivityIndicator, Alert, AppState, BackHandler, Image, Linking, Platfo
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function App() {
-  const [fontsLoaded] = useFonts({
-    PlayfairDisplay_400Regular,
-    PlayfairDisplay_500Medium,
-    PlayfairDisplay_700Bold,
-    PlayfairDisplay_900Black,
-  });
+  const [fontsLoaded] = useFonts(editorialFonts);
   const [isBooting, setIsBooting] = useState(true);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [profile, setProfile] = useState<AuthProfile | null>(null);

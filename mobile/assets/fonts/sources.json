@@ -1,0 +1,72 @@
+[
+  {
+    "archive": "Grilli-Type-Trial-Fonts-2026-04.zip",
+    "entry": "Desktop/GT-Super/GT-Super-Display-Light-Trial.otf",
+    "file": "GT-Super-Display-Light-Trial.otf",
+    "sha256": "75b68d122e9577c2111853764a099c2a352959e810917a23b8776831b49d3f85",
+    "family": "GT Super Ds Trial Lt",
+    "copyright": "Noel Leu",
+    "license": null,
+    "evaluationOnly": true
+  },
+  {
+    "archive": "Grilli-Type-Trial-Fonts-2026-04.zip",
+    "entry": "Desktop/GT-Super/GT-Super-Display-Light-Italic-Trial.otf",
+    "file": "GT-Super-Display-Light-Italic-Trial.otf",
+    "sha256": "c13592d2d69b812ee036cdcfa2e6ab205024e50005745a277f07218299465f8c",
+    "family": "GT Super Ds Trial Lt It",
+    "copyright": "Copyright © 2017 by Grilli Type GmbH. All rights reserved.",
+    "license": null,
+    "evaluationOnly": true
+  },
+  {
+    "archive": "Grilli-Type-Trial-Fonts-2026-04.zip",
+    "entry": "Desktop/GT-Super/GT-Super-Display-Regular-Trial.otf",
+    "file": "GT-Super-Display-Regular-Trial.otf",
+    "sha256": "4d88faebf484e80a266bec3019cca982e7aab2c7dbf09fdd61fc7ed32f5ebf92",
+    "family": "GT Super Ds Trial Rg",
+    "copyright": "Noel Leu",
+    "license": null,
+    "evaluationOnly": true
+  },
+  {
+    "archive": "acumin-pro.zip",
+    "entry": "Acumin-RPro.otf",
+    "file": "Acumin-RPro.otf",
+    "sha256": "3f05ab8d12586c0be911d6aceb7cadb7275ac11ee0f4572236ad0a7c0563d687",
+    "family": "Acumin Pro",
+    "copyright": "© 2014 Adobe Systems Incorporated. All Rights Reserved.",
+    "license": null,
+    "evaluationOnly": true
+  },
+  {
+    "archive": "acumin-pro.zip",
+    "entry": "Acumin-ItPro.otf",
+    "file": "Acumin-ItPro.otf",
+    "sha256": "fb3a9cd1507c13fab6305cfc7a83dde84beb839df4d4fd05da89757dda347e16",
+    "family": "Acumin Pro",
+    "copyright": "© 2014 Adobe Systems Incorporated. All Rights Reserved.",
+    "license": null,
+    "evaluationOnly": true
+  },
+  {
+    "archive": "acumin-pro.zip",
+    "entry": "Acumin-BdPro.otf",
+    "file": "Acumin-BdPro.otf",
+    "sha256": "99deb299ff78ba765605c71c8e80a67f3cb1e15331dce03761dec25b094bd050",
+    "family": "Acumin Pro",
+    "copyright": "© 2014 Adobe Systems Incorporated. All Rights Reserved.",
+    "license": null,
+    "evaluationOnly": true
+  },
+  {
+    "archive": "lucia-bt.zip",
+    "entry": "Lucia BT.ttf",
+    "file": "Lucia BT.ttf",
+    "sha256": "9dfb76cd1c10737c48c3bb827aeaed5212c797838af00a87d9f10abca8b8666b",
+    "family": "Lucia BT",
+    "copyright": "Copyright 1990-1993 Bitstream Inc.  All rights reserved.",
+    "license": null,
+    "evaluationOnly": true
+  }
+]

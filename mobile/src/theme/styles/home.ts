@@ -1,4 +1,4 @@
-import { colors } from "../tokens";
+import { colors, fontFamilies } from "../tokens";
 import { StyleSheet } from "react-native";
 export const homeStyles = StyleSheet.create({
     logoCarouselBlock: {
@@ -34,8 +34,10 @@ export const homeStyles = StyleSheet.create({
         width: 54,
     },
     logoCarouselInitials: {
+        fontFamily: fontFamilies.body,
+        lineHeight: 24,
         color: colors.tealDark,
         fontSize: 16,
-        fontWeight: "900",
+        fontWeight: "normal",
     }
 });
