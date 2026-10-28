@@ -172,6 +172,7 @@ export default function VendorsPageContent({
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <span className="wm-vendors-search__label">{language === 'es' ? 'Tipo de servicio' : 'Service category'}</span>
                   <select
+                    key={selectedCategory}
                     className="wm-vendors-search__input wm-vendors-search__select"
                     name="category"
                     aria-label={labels.searchForm.categoryPlaceholder}
