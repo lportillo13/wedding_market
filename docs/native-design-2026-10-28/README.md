@@ -2,6 +2,8 @@
 
 The owner requested consistent app design and styling with the refined website. This pass updates the existing native application source and shared styles. **The app release remains held.** No EAS update, signed application build, store upload or release was performed. The live website remains `cb35e01ff5cd4ee7297f5144706553bc7d961306`.
 
+Validated, held native source: **b548640ce80a26e9eb3b783eb529e339d612154e**. Later documentation-only commits do not imply a new app artifact or publication.
+
 ## Implemented design
 
 - GT Super Light for display text and the uppercase Wedding Market wordmark, Acumin for body text and controls, and Lucia for the home hero accent. The former Playfair dependency is removed. Explicit native font faces replace synthetic heavy weights in 140 text styles.
