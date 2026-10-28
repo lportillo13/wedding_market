@@ -1,0 +1,89 @@
+{
+  "checkedAt": "2026-10-28T16:53:29.108Z",
+  "releaseCommit": "2b2524efd0d94f8416e64f85aee1afb4fd635cb7",
+  "desktop": {
+    "button": {
+      "background": "rgb(51, 45, 39)",
+      "fontSize": "14px",
+      "paddingLeft": "18.4px",
+      "paddingRight": "18.4px",
+      "radius": "7px",
+      "textTransform": "none",
+      "weight": "400"
+    },
+    "clientWidth": 1265,
+    "contactDetailsShown": false,
+    "cover": {
+      "background": "rgb(236, 223, 207)",
+      "fontSize": "16px",
+      "paddingLeft": "0px",
+      "paddingRight": "0px",
+      "radius": "10px",
+      "textTransform": "none",
+      "weight": "400"
+    },
+    "input": {
+      "background": "rgb(255, 253, 249)",
+      "fontSize": "16px",
+      "paddingLeft": "16px",
+      "paddingRight": "16px",
+      "radius": "7px",
+      "textTransform": "none",
+      "weight": "400"
+    },
+    "label": {
+      "background": "rgba(0, 0, 0, 0)",
+      "fontSize": "14px",
+      "paddingLeft": "0px",
+      "paddingRight": "0px",
+      "radius": "0px",
+      "textTransform": "none",
+      "weight": "400"
+    },
+    "sampleSendDisabled": true,
+    "scrollWidth": 1265,
+    "title": {
+      "background": "rgba(0, 0, 0, 0)",
+      "fontSize": "58.88px",
+      "paddingLeft": "0px",
+      "paddingRight": "0px",
+      "radius": "0px",
+      "textTransform": "none",
+      "weight": "300"
+    },
+    "width": 1280
+  },
+  "phone": {
+    "actionHeight": 48,
+    "actionRadius": "7px",
+    "clientWidth": 375,
+    "inputSize": "16px",
+    "scrollWidth": 375,
+    "titleWeight": "300",
+    "width": 390
+  },
+  "narrowSpanish": {
+    "actionDisplay": "flex",
+    "buttonHeight": 48,
+    "buttonRadius": "7px",
+    "buttonRight": 289,
+    "clientWidth": 305,
+    "contactTop": 152.6875,
+    "inputRadius": "7px",
+    "inputSize": "16px",
+    "language": "es",
+    "scrollWidth": 305,
+    "sendDisabled": true,
+    "tabsBottom": 132,
+    "width": 320
+  },
+  "interactions": {
+    "galleryOpened": true,
+    "galleryClosedWithEscape": true,
+    "fiveStarFilterShowsOneSampleReview": true,
+    "pricingTabActive": true,
+    "pricingTop": 151.4375,
+    "stickyTabsBottom": 130
+  },
+  "passed": true
+}

@@ -1,8 +1,10 @@
 # App styling aligned with the website
 
-The owner requested consistent app design and styling with the refined website. This pass updates the existing native application source and shared styles. **The app release remains held.** No EAS update, signed application build, store upload or release was performed. The live website remains `cb35e01ff5cd4ee7297f5144706553bc7d961306`.
+The owner requested consistent app design and styling with the refined website. This pass updates the existing native application source and shared styles. **The app release remains held.** No EAS update, signed application build, store upload or release was performed. Later website releases are tracked in [the current project context](../project-context.md).
 
 Validated, held native source: **b548640ce80a26e9eb3b783eb529e339d612154e**. Later documentation-only commits do not imply a new app artifact or publication.
+
+The subsequent [sample-vendor review](../example-vendors-2026-10-28/README.md) at **3e71d123b783a2f28ff17c184ed65bc5ab8f8743** adds an explicit development-preview entry and shared sample data. Its 76 tests and both local platform exports pass. That is the latest held native source; no native cloud update or distribution followed.
 
 ## Implemented design
 

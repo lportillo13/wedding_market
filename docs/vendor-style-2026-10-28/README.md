@@ -10,4 +10,10 @@ The owner reviewed the sample photography profile and requested consistent styli
 
 Existing category-specific fields, pricing/contact access gates, real inquiries, saved-vendor behavior and gallery/review interactions are preserved. Sample labels and disabled sending remain enforced. No database change, account write or native app release is part of this visual pass.
 
-The production build, architecture/type/lint checks and existing application regression tests are run before deployment. Final live evidence is recorded alongside this handoff. The app release remains held.
+## Verified release and review
+
+Website **2b2524efd0d94f8416e64f85aee1afb4fd635cb7** is live. [The exact gateway receipt](deployment-success.json) confirms a successful switch and rollback at `/var/www/wedding-market.before-20261028-164802`. The earlier `f54d141565b1e59d810b6db296bb6f2c59764677` pass is superseded by the final scoped correction for legacy input properties marked important.
+
+Architecture/type/lint, all **94 web tests** and the final production build pass. [Public checks](public-checks.json) pass 19 bilingual page/filter/API cases. [Browser measurements](browser-checks.json) confirm 300-weight titles, 400-weight controls, symmetric button padding, 7px inputs/buttons, 16px input text, 10px photo corners, disabled sample sending and no document overflow at desktop, 390px and 320px. Gallery open/Escape, five-star filtering and sticky section navigation work; the Pricing section clears the tabs by about 21px. Spanish content was checked after reloading the selected language. English and the normal viewport were restored afterward.
+
+Public-only captures: [wide profile](live-wide-profile.jpg), [phone profile](live-phone-profile.jpg), [320px Spanish inquiry form](live-narrow-contact-es.jpg). Account identity is excluded. No customer information was entered or submitted. Native source was not changed by this styling pass; **the app release remains held**.

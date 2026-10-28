@@ -17,3 +17,7 @@ The held native source has an explicit **development-preview-only** sample entry
 - Local HTTP confirms the sample directory renders; the in-app browser could not connect to the local server, so final browser verification uses the deployed normal site.
 
 No authenticated customer workspace or customer records are needed for this review. Native installed-device visual acceptance for the new sample mode remains separate from bundle/test validation.
+
+## Verified release
+
+The sample source is **3e71d123b783a2f28ff17c184ed65bc5ab8f8743**. Website release **067d5b5ee782adbcb8c220b9fa146e0a5ac332fc** also corrects a 320px header gap; its [receipt](deployment-success.json) confirms the exact revision. [Initial bilingual checks](public-checks.json) pass all six profiles and filtering while normal APIs exclude samples. All 17 distinct reference-image URLs returned image responses. The subsequent [vendor-page styling update](../vendor-style-2026-10-28/README.md) is now the live website revision and includes final phone/desktop evidence. The temporary local server was stopped. App source remains held.
