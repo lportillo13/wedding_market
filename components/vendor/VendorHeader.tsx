@@ -58,7 +58,7 @@ export default function VendorHeader({
     .join(", ");
 
   return (
-    <header className="wm-profile-hero">
+    <header className={`wm-profile-hero${heroVideo && heroVideo.provider !== 'file' ? ' wm-profile-hero--external-video' : ''}`}>
       <div className="wm-profile-hero__copy">
         {vendor.logoUrl && <div className="wm-profile-hero__seal">
           <Image src={resolveMediaUrl(vendor.logoUrl)} alt={fill(labels.logoAlt, { vendor: vendor.name })} width={56} height={56} unoptimized={shouldRenderUnoptimizedMedia(vendor.logoUrl)} />
@@ -120,7 +120,8 @@ export default function VendorHeader({
               />}
             </div>
               <a className="wm-profile-hero__gallery-link" href="#photos">
-                {editorial.viewGallery}
+                <span className="wm-profile-hero__gallery-label">{editorial.viewGallery}</span>
+                <span className="wm-profile-hero__gallery-short">{dictionary.vendorPublic.tabs.photos}</span>
                 <span aria-hidden="true">↗︎</span>
               </a>
           </>

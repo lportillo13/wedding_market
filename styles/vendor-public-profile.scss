@@ -146,7 +146,7 @@
     min-height: 100vh;
     min-height: 100svh;
     width: 100%;
-    padding: calc(var(--wm-header-height) + 2rem) 1.5rem calc(var(--profile-tabs-height) + clamp(2.5rem, 5vw, 5rem));
+    padding: calc(var(--wm-header-height) + 2rem) 1.5rem calc(var(--profile-tabs-height) + 7rem);
     background: var(--lx-bg-2);
     &::after {
       content: '';
@@ -167,10 +167,10 @@
     padding: 0;
     text-align: center;
   }
-  .wm-profile-hero__category { color: #fffdf9e6; font-size: .7rem; letter-spacing: .16em; text-transform: uppercase; margin: 0 0 1rem; }
+  .wm-profile-hero__category { color: #fffdf9; font: 400 clamp(1.5rem, 2.5vw, 2.1rem)/1.1 var(--wm-font-script); letter-spacing: 0; text-transform: none; margin: 0 0 .15rem; }
   .wm-profile-hero h1 {
     color: #fffdf9;
-    font: 300 clamp(2.75rem, 5vw, 4.5rem)/1.08 var(--profile-serif);
+    font: 300 clamp(2.75rem, 5vw, 4.5rem)/1.02 var(--profile-serif);
     letter-spacing: -.03em;
     margin: 0 0 .8rem;
     overflow-wrap: anywhere;
@@ -203,11 +203,11 @@
   .wm-profile-cover-video__file { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; }
   .wm-profile-cover-video__file.is-playing { opacity: 1; }
   .wm-profile-cover-video__embed { position: absolute; top: 50%; left: 50%; width: max(100cqw, 177.78cqh); height: max(100cqh, 56.25cqw); border: 0; transform: translate(-50%, -50%) scale(1.35); pointer-events: none; }
-  .wm-profile-cover-video__toggle { position: absolute; top: calc(var(--wm-header-height) + 1rem); left: 1rem; z-index: 1; width: 44px; height: 44px; border: 1px solid #ffffff80; border-radius: 7px; background: #fffdf9ed; color: var(--lx-ink); }
-  .wm-profile-cover-video__source { position: absolute; top: calc(var(--wm-header-height) + 4.3rem); left: 1rem; padding: .5rem .75rem; border-radius: 7px; background: #fffdf9ed; color: var(--lx-ink); font-size: .75rem; }
+  .wm-profile-cover-video__toggle { position: absolute; bottom: calc(var(--profile-tabs-height) + 1rem); left: 1rem; z-index: 1; width: 44px; height: 44px; border: 1px solid #ffffff80; border-radius: 7px; background: #fffdf9ed; color: var(--lx-ink); }
+  .wm-profile-cover-video__source { position: absolute; bottom: calc(var(--profile-tabs-height) + 1rem); right: 1rem; display: inline-flex; justify-content: center; align-items: center; width: 88px; min-height: 44px; padding: .6rem .75rem; border: 1px solid #ffffff80; border-radius: 7px; background: #fffdf9ed; color: var(--lx-ink); font-size: .75rem; }
   .wm-profile-hero__gallery-link {
     position: absolute;
-    top: calc(var(--wm-header-height) + 1rem);
+    bottom: calc(var(--profile-tabs-height) + 1rem);
     right: 1rem;
     display: inline-flex;
     align-items: center;
@@ -220,6 +220,8 @@
     color: var(--lx-ink);
     font: 400 .8rem/1.4 var(--wm-font-body);
   }
+  .wm-profile-hero--external-video .wm-profile-hero__gallery-link { right: calc(1rem + 88px + .5rem); }
+  .wm-profile-hero__gallery-short { display: none; }
   .wm-profile-hero__seal { margin: 0 auto 1rem; padding: .35rem; border-radius: 7px; background: #fffdf9; width: 56px; height: 56px; }
   .wm-profile-hero__seal img { width: 100%; height: 100%; object-fit: contain; }
   .wm-profile-hero__visual--empty { display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 2rem; background: var(--lx-bg-2); }
@@ -240,7 +242,8 @@
     gap: 0.75rem !important;
     overflow-x: auto;
     padding-block: 0 !important;
-    scrollbar-width: thin;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
   }
   .wm-vendor-tabs-shell .nav-link {
     position: relative;
@@ -758,7 +761,9 @@
     .breadcrumb {
       font-size: 0.75rem;
     }
-    .wm-profile-hero { padding: calc(var(--wm-header-height) + 2rem) 1.5rem calc(var(--profile-tabs-height) + 2.5rem); }
+    .wm-profile-hero { padding: calc(var(--wm-header-height) + 2rem) 1.5rem calc(var(--profile-tabs-height) + 7rem); }
+    .wm-profile-hero__gallery-label { display: none; }
+    .wm-profile-hero__gallery-short { display: inline; }
     .wm-profile-hero__copy { max-width: none; }
     .wm-profile-hero h1 { font-size: clamp(2.5rem, 11vw, 3.4rem); }
     .wm-profile-hero__seal { width: 48px; height: 48px; }
