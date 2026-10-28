@@ -1,0 +1,47 @@
+{
+  "releaseCommit": "85bd0ff8c53499fb3dd0089c8072850eb035b49a",
+  "pause": {
+    "button": {
+      "bottom": 650,
+      "height": 44,
+      "left": 16,
+      "right": 60,
+      "top": 606,
+      "width": 44,
+      "x": 16,
+      "y": 606
+    },
+    "fill": "currentColor",
+    "icon": {
+      "bottom": 638,
+      "height": 20,
+      "left": 28,
+      "right": 48,
+      "top": 618,
+      "width": 20,
+      "x": 28,
+      "y": 618
+    },
+    "label": "Pause cover video",
+    "path": "M6 4h4v16H6ZM14 4h4v16h-4Z",
+    "pressed": "true",
+    "stroke": "none",
+    "text": ""
+  },
+  "play": {
+    "frameCount": 0,
+    "label": "Play cover video",
+    "path": "M8 5v14l11-7Z",
+    "pressed": "false"
+  },
+  "resumed": {
+    "frameCount": 1,
+    "label": "Pause cover video",
+    "pressed": "true"
+  },
+  "homepage": {
+    "hasRomanNumeral": false,
+    "label": "Pause background video",
+    "path": "M6 4h4v16H6ZM14 4h4v16h-4Z"
+  }
+}
