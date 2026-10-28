@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import type { HomepageContent } from "@/lib/content/siteContent";
 import { resolveMediaUrl } from "@/lib/media-url";
 import { useLanguage } from "@/contexts/LanguageContext";
+import HeaderIcon from '@/components/HeaderIcon';
 
 const HERO_YOUTUBE_EMBED_URL =
   "https://www.youtube-nocookie.com/embed/JgzkqjnsIvM?autoplay=1&mute=1&controls=0&playsinline=1&loop=1&playlist=JgzkqjnsIvM&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1&fs=0";
@@ -209,7 +210,7 @@ export default function FoundersHeroSection({ hero }: FoundersHeroSectionProps) 
       )}
 
       <button type="button" className="wm-founders-hero__motion" onClick={() => setVideoPlaying((playing) => !playing)} aria-label={language === "es" ? videoPlaying ? "Pausar video de fondo" : "Reproducir video de fondo" : videoPlaying ? "Pause background video" : "Play background video"}>
-        <span aria-hidden="true">{videoPlaying ? "Ⅱ" : "▷"}</span>
+        <HeaderIcon name={videoPlaying ? 'pause' : 'play'} fill="currentColor" stroke="none" />
         <span className="wm-founders-hero__motion-label">{language === "es" ? videoPlaying ? "Pausar video" : "Ver video" : videoPlaying ? "Pause video" : "Play video"}</span>
       </button>
       <a href="#benefits" className="wm-founders-hero__scroll-cue" onClick={scrollToDetails} aria-label={language === "es" ? "Desplazarse a la siguiente sección" : "Scroll to the next section"}>

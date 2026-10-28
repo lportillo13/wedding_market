@@ -8,6 +8,8 @@ export type HeaderIconName =
   | "user"
   | "inbox"
   | "bell"
+  | "play"
+  | "pause"
   | "grid"
   | "chevron";
 const paths: Record<HeaderIconName, string> = {
@@ -22,6 +24,8 @@ const paths: Record<HeaderIconName, string> = {
   bell: "M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4",
   grid: "M3 3h7v7H3V3Zm11 0h7v7h-7V3ZM3 14h7v7H3v-7Zm11 0h7v7h-7v-7Z",
   chevron: "m8 10 4 4 4-4",
+  play: "M8 5v14l11-7Z",
+  pause: "M6 4h4v16H6ZM14 4h4v16h-4Z",
 };
 export default function HeaderIcon({
   name,

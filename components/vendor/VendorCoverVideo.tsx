@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { VendorHeroVideo } from '@/shared/vendors/hero';
 import { resolveMediaUrl, shouldRenderUnoptimizedMedia } from '@/lib/media-url';
 import { getVendorNavigationHeight } from '@/features/vendors/client/viewport';
+import HeaderIcon from '@/components/HeaderIcon';
 
 export default function VendorCoverVideo({ source, poster, name, language }: { source: VendorHeroVideo; poster: string | null; name: string; language: 'en' | 'es' }) {
   const container = useRef<HTMLDivElement>(null);
@@ -44,7 +45,7 @@ export default function VendorCoverVideo({ source, poster, name, language }: { s
   return <div className="wm-profile-cover-video" ref={container}>
     {poster && <Image src={resolveMediaUrl(poster)} alt="" fill priority sizes="100vw" unoptimized={shouldRenderUnoptimizedMedia(poster)} className="wm-profile-cover-video__poster" />}
     {source.provider === 'file' ? <video ref={player} src={resolveMediaUrl(source.url)} poster={poster ? resolveMediaUrl(poster) : undefined} muted playsInline loop preload="metadata" aria-hidden="true" className={`wm-profile-cover-video__file${active ? ' is-playing' : ''}`} onError={() => setRequested(false)} /> : active && <iframe src={source.embedUrl} title={`${name} · ${language === 'es' ? 'Video de portada' : 'Cover video'}`} className="wm-profile-cover-video__embed" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" referrerPolicy="strict-origin-when-cross-origin" tabIndex={-1} />}
-    <button type="button" className="wm-profile-cover-video__toggle" aria-label={label} aria-pressed={active} onClick={() => setRequested(current => !current)}><span aria-hidden="true">{active ? 'Ⅱ' : '▶'}</span></button>
+    <button type="button" className="wm-profile-cover-video__toggle" aria-label={label} aria-pressed={active} onClick={() => setRequested(current => !current)}><HeaderIcon name={active ? 'pause' : 'play'} fill="currentColor" stroke="none" /></button>
     {source.provider !== 'file' && <a className="wm-profile-cover-video__source" href={source.url} target="_blank" rel="noreferrer">{source.provider === 'youtube' ? 'YouTube' : 'Vimeo'} ↗</a>}
   </div>;
 }

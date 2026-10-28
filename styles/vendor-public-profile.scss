@@ -203,7 +203,7 @@
   .wm-profile-cover-video__file { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; }
   .wm-profile-cover-video__file.is-playing { opacity: 1; }
   .wm-profile-cover-video__embed { position: absolute; top: 50%; left: 50%; width: max(100vw, 177.78svh); height: max(100svh, 56.25vw); min-width: 100%; min-height: 100%; border: 0; transform: translate(-50%, -50%) scale(1.35); pointer-events: none; }
-  .wm-profile-cover-video__toggle { position: absolute; bottom: calc(var(--profile-tabs-height) + 1rem); left: 1rem; z-index: 3; width: 44px; height: 44px; border: 1px solid #ffffff80; border-radius: 7px; background: #fffdf9ed; color: var(--lx-ink); }
+  .wm-profile-cover-video__toggle { position: absolute; bottom: calc(var(--profile-tabs-height) + 1rem); left: 1rem; z-index: 3; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #ffffff80; border-radius: 7px; background: #fffdf9ed; color: var(--lx-ink); }
   .wm-profile-cover-video__source { position: absolute; bottom: calc(var(--profile-tabs-height) + 1rem); right: 1rem; z-index: 3; display: inline-flex; justify-content: center; align-items: center; width: 88px; min-height: 44px; padding: .6rem .75rem; border: 1px solid #ffffff80; border-radius: 7px; background: #fffdf9ed; color: var(--lx-ink); font-size: .75rem; }
   .wm-profile-hero__gallery-link {
     position: absolute;
