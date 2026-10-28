@@ -16,6 +16,8 @@ import {
 } from "@/lib/content/vendorAds";
 import { resolveMediaUrl, shouldRenderUnoptimizedMedia } from "@/lib/media-url";
 import type { CategoryOption, VendorListItem } from "./types";
+import ExampleVendorNotice from "@/components/vendor/ExampleVendorNotice";
+import { exampleVendorCopy } from "@/shared/vendors/examples";
 
 type VendorsPageContentProps = {
   error?: boolean;
@@ -63,6 +65,9 @@ export default function VendorsPageContent({
 }: VendorsPageContentProps) {
   const { dictionary, language } = useLanguage();
   const labels = dictionary.vendorsPage;
+  const isExample = searchParams.examples === '1';
+  const exampleLabels = exampleVendorCopy[language === 'es' ? 'es' : 'en'];
+  const resetHref = isExample ? '/vendors?examples=1' : '/vendors';
   const categoryOptions = useMemo(() => {
     const sourceCategories =
       categories.length > 0
@@ -131,11 +136,12 @@ export default function VendorsPageContent({
         <div className="container">
           <p className="wm-vendors-hero__eyebrow">{labels.eyebrow}</p>
           <h1 className="wm-vendors-hero__title">
-            {labels.title}
+            {isExample ? exampleLabels.title : labels.title}
           </h1>
           <p className="wm-vendors-hero__sub">{labels.description}</p>
 
           <form action="/vendors" method="get">
+            {isExample && <input type="hidden" name="examples" value="1" />}
             <div className="wm-vendors-search">
               <div className="wm-vendors-search__field">
                 <svg className="wm-vendors-search__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -148,7 +154,7 @@ export default function VendorsPageContent({
                     defaultValue={searchParams.q || ""}
                     ariaLabel={labels.searchForm.queryPlaceholder}
                     suggestions={vendorSuggestions}
-                    suggestionsEndpoint="/api/vendors/suggest"
+                    suggestionsEndpoint={isExample ? undefined : "/api/vendors/suggest"}
                   />
                 </div>
               </div>
@@ -176,13 +182,14 @@ export default function VendorsPageContent({
               </button>
             </div>
           </form>
-          {(searchParams.q || searchParams.category) && <Link className="wm-search-reset" href="/vendors">{language === 'es' ? 'Limpiar búsqueda y filtros' : 'Clear search and filters'}</Link>}
+          {(searchParams.q || searchParams.category) && <Link className="wm-search-reset" href={resetHref}>{language === 'es' ? 'Limpiar búsqueda y filtros' : 'Clear search and filters'}</Link>}
         </div>
       </section>
 
       {/* ── Content ── */}
       <div className="wm-vendors-content">
         <div className="container">
+          {isExample && <ExampleVendorNotice />}
           {VENDOR_ADS_PUBLICLY_VISIBLE && <><div style={{ marginBottom: "2rem" }}>
             <VendorAdsBanner banner={adsConfig.directoryBanner} language={language} variant="directory" />
           </div>
@@ -203,7 +210,8 @@ export default function VendorsPageContent({
             <div className="wm-vendors-empty">
               <h2>{language === 'es' ? 'Cada gran boda empieza con una conexión.' : 'Every great wedding starts with a connection.'}</h2>
               <p>{labels.empty}</p>
-              {(searchParams.q || searchParams.category) ? <Link href="/vendors" className="btn btn-outline-secondary">{language === 'es' ? 'Ver todos los servicios' : 'See all services'}</Link> : <Link href="/signup/vendor" className="btn btn-outline-secondary">{language === 'es' ? '¿Ofreces servicios para bodas? Únete' : 'A wedding professional? Join us'}</Link>}
+              {!isExample && <p><Link href="/vendors?examples=1" className="wm-example-entry">{exampleLabels.title} <span aria-hidden="true">↗</span></Link></p>}
+              {(searchParams.q || searchParams.category) ? <Link href={resetHref} className="btn btn-outline-secondary">{language === 'es' ? 'Ver todos los servicios' : 'See all services'}</Link> : !isExample && <Link href="/signup/vendor" className="btn btn-outline-secondary">{language === 'es' ? '¿Ofreces servicios para bodas? Únete' : 'A wedding professional? Join us'}</Link>}
             </div>
           ) : (
             <div className="wm-vendor-grid">
@@ -232,6 +240,7 @@ export default function VendorsPageContent({
                       </div>
                     ) : null}
                     <div className="wm-vendor-card__body">
+                      {vendor.is_example && <span className="wm-vendor-card__cats">{exampleLabels.badge}</span>}
                       {sponsoredBadge ? (
                         <span className="wm-vendor-card__badge">{sponsoredBadge}</span>
                       ) : null}
@@ -264,7 +273,7 @@ export default function VendorsPageContent({
                           <strong>{Number(vendor.rating_avg || 0).toFixed(1)}</strong>
                           <span>({vendor.rating_count || 0})</span>
                         </div>
-                        {!isVendor ? (
+                        {!isVendor && !vendor.is_example ? (
                           <div style={{ position: "relative", zIndex: 1 }}>
                             <ShortlistButton vendorId={vendor.id} />
                           </div>

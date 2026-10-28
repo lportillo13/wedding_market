@@ -8,6 +8,7 @@ import { Stars } from "@/components/Stars";
 import { useLanguage } from "@/contexts/LanguageContext";
 import ShareVendorMenu from "./ShareVendorMenu";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
+import { exampleVendorCopy } from "@/shared/vendors/examples";
 
 type VendorHeaderProps = {
   vendor: VendorProfileDTO["vendor"];
@@ -16,6 +17,7 @@ type VendorHeaderProps = {
   isVendor: boolean;
   isLoggedIn: boolean;
   loginHref: string;
+  isExample?: boolean;
 };
 
 function fill(template: string, values: Record<string, string | number>) {
@@ -32,8 +34,10 @@ export default function VendorHeader({
   isVendor,
   isLoggedIn,
   loginHref,
+  isExample = false,
 }: VendorHeaderProps) {
-  const { dictionary } = useLanguage();
+  const { dictionary, language } = useLanguage();
+  const exampleLabels = exampleVendorCopy[language === 'es' ? 'es' : 'en'];
   const labels = dictionary.vendorPublic.header;
   const editorial = dictionary.vendorPublic.editorial;
   const photos = media.filter(
@@ -90,10 +94,10 @@ export default function VendorHeader({
               isVendor ? "/vendor/inbox" : isLoggedIn ? "#contact" : loginHref
             }
           >
-            {isVendor ? labels.viewReceivedRequests : labels.requestQuote}
+            {isExample ? exampleLabels.form : isVendor ? labels.viewReceivedRequests : labels.requestQuote}
             <span aria-hidden="true">↗︎</span>
           </Link>
-          <ShortlistButton vendorId={vendor.id} />
+          {!isExample && <ShortlistButton vendorId={vendor.id} />}
           <ShareVendorMenu vendorName={vendor.name} />
         </div>
         {!isVendor && !isLoggedIn && (

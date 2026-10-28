@@ -6,6 +6,7 @@ export type CategoryOption = {
 };
 
 export type VendorListItem = {
+  is_example?: boolean;
   id: string;
   slug: string;
   business_name: string;

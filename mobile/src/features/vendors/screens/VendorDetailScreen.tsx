@@ -11,6 +11,8 @@ import { formatCategory, formatMoney } from "../../../ui/format";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Image, Linking, Modal, ScrollView, Share, Text, TouchableOpacity, View, type LayoutChangeEvent } from "react-native";
+import { ExampleVendorNotice } from "../components/ExampleVendorNotice";
+import { exampleVendorCopy } from "../../../../../shared/vendors/examples";
 
 export function InfoMetric({
   icon,
@@ -135,7 +137,7 @@ export function VendorDetailScreen({
       setMessage("");
 
       try {
-        const detail = await fetchVendorDetail(slug);
+        const detail = await fetchVendorDetail(slug, language);
         if (isMounted) setLoadedVendor({ slug, vendor: detail });
       } catch (error) {
         if (isMounted) setMessage(error instanceof Error ? error.message : "Unable to load vendor.");
@@ -149,7 +151,7 @@ export function VendorDetailScreen({
     return () => {
       isMounted = false;
     };
-  }, [slug]);
+  }, [slug, language]);
 
   if (isLoading && !vendor) {
     return (
@@ -213,23 +215,23 @@ export function VendorDetailScreen({
         )}
         <View style={styles.detailHeroShade} />
         <View style={styles.detailHeroActions}>
-          <TouchableOpacity onPress={() => onToggleSaved(vendor)} style={styles.detailIconButton}>
+          {!vendor.is_example && <TouchableOpacity onPress={() => onToggleSaved(vendor)} style={styles.detailIconButton}>
             <Ionicons name={isSaved ? "heart" : "heart-outline"} size={20} color={isSaved ? "#B42318" : colors.ink} />
-          </TouchableOpacity>
+          </TouchableOpacity>}
           <TouchableOpacity onPress={() => void handleShare()} style={styles.detailIconButton}>
             <Ionicons name="share-outline" size={20} color={colors.ink} />
           </TouchableOpacity>
         </View>
         <View style={styles.detailHeroCopy}>
-          <Text style={styles.heroBadge}>{labels.vendorProfile}</Text>
+          <Text style={styles.heroBadge}>{vendor.is_example ? exampleVendorCopy[language].badge : labels.vendorProfile}</Text>
           <Text style={styles.detailTitle}>{vendor.business_name}</Text>
           {categoriesText ? <Text style={styles.detailCategories}>{categoriesText}</Text> : null}
         </View>
       </View>
 
       <View style={styles.detailSheet}>
-      <ContentSafety key={vendor.id} kind="vendor" targetId={vendor.id} language={language} />
-      <View style={styles.detailActionBar}>
+      {vendor.is_example ? <ExampleVendorNotice language={language} /> : <ContentSafety key={vendor.id} kind="vendor" targetId={vendor.id} language={language} />}
+      {!vendor.is_example && <View style={styles.detailActionBar}>
         <TouchableOpacity onPress={() => onRequestQuote(vendor)} style={styles.detailQuoteButton}>
           <Ionicons name="send-outline" size={17} color="#FFFFFF" />
           <Text style={styles.detailQuoteText}>{labels.requestQuote}</Text>
@@ -242,7 +244,7 @@ export function VendorDetailScreen({
           <Ionicons name="call-outline" size={17} color={colors.tealDark} />
           <Text style={styles.detailGhostText}>{labels.call}</Text>
         </TouchableOpacity>
-      </View>
+      </View>}
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.detailTabs}>
         {detailSections.map((section) => (
@@ -492,10 +494,10 @@ export function VendorDetailScreen({
             </View>
           ) : null}
         </View>
-        <TouchableOpacity onPress={() => onRequestQuote(vendor)} style={styles.detailQuoteButton}>
+        {vendor.is_example ? <Text style={styles.detailBody}>{exampleVendorCopy[language].disabled}</Text> : <TouchableOpacity onPress={() => onRequestQuote(vendor)} style={styles.detailQuoteButton}>
           <Ionicons name="send-outline" size={17} color="#FFFFFF" />
           <Text style={styles.detailQuoteText}>{labels.requestQuote}</Text>
-        </TouchableOpacity>
+        </TouchableOpacity>}
       </DetailSection>
       </View>
 

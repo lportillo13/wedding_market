@@ -6,6 +6,8 @@ import VendorAbout from "@/components/vendor/VendorAbout";
 import VendorAmenities from "@/components/vendor/VendorAmenities";
 import VendorPricing from "@/components/vendor/VendorPricing";
 import VendorQuoteCard from "@/components/vendor/VendorQuoteCard";
+import VendorContact from "@/components/vendor/VendorContact";
+import { exampleVendorProfile } from "@/features/vendors/examples";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
 
@@ -45,6 +47,17 @@ const vendor: VendorProfileDTO["vendor"] = {
 function renderWithLanguage(element: ReactElement, language: "en" | "es" = "en") {
   return renderToStaticMarkup(<LanguageProvider initialLanguage={language}>{element}</LanguageProvider>);
 }
+
+test('example profiles expose the real inquiry form with sending disabled in both languages', () => {
+  for (const language of ['en', 'es'] as const) {
+    const profile = exampleVendorProfile('example-villa-brisa', language)!;
+    const html = renderWithLanguage(<VendorContact vendor={profile.vendor} prefill={null} isVendor={false} isLoggedIn loginHref="/login" isExample />, language);
+    assert.match(html, /<form/);
+    assert.match(html, /type="submit" disabled=""/);
+    assert.match(html, language === 'es' ? /envío desactivado/ : /sending disabled/);
+    assert.match(html, /type="date"/);
+  }
+});
 
 test("guest quote cards keep prices hidden and preserve the return destination in both languages", () => {
   const loginHref = "/login?next=%2Fvendors%2Fvendor-1";

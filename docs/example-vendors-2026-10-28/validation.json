@@ -1,0 +1,25 @@
+{
+  "checkedAt": "2026-10-28T16:29:27.384Z",
+  "webTests": 94,
+  "nativeTests": 76,
+  "architecture": true,
+  "typechecks": true,
+  "lint": true,
+  "webProductionBuild": true,
+  "nativeExports": {
+    "android": {
+      "bundle": "_expo/static/js/android/AppEntry-8c5ea97b0d0d7a73853d0f781c61ecb3.hbc",
+      "assets": 8,
+      "sha256": "8af49337bf1e21df5b7d37215f28b339a41e7a3181241608138bab861ec65cc1"
+    },
+    "ios": {
+      "bundle": "_expo/static/js/ios/AppEntry-f2dbdc1a76e535f08befad0a9dda633b.hbc",
+      "assets": 8,
+      "sha256": "3df8a6887095d7e5c6757a0f1aa4e41ba126bcfd8f1bc6d71af1606dd435c661"
+    }
+  },
+  "expoCompatibility": "local dependency map; unchanged dependencies",
+  "databaseWrites": false,
+  "nativeCloudUpload": false,
+  "nativeRelease": false
+}

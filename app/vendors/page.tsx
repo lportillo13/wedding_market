@@ -5,6 +5,12 @@ import { loadSponsoredVendorAds, loadVendorAdsConfig } from "@/lib/content/vendo
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import VendorsPageContent from "./VendorsPageContent";
 import type { CategoryOption, VendorListItem, VendorsResponse } from "./types";
+import { searchExampleVendors } from "@/shared/vendors/examples";
+import type { Metadata } from "next";
+
+export async function generateMetadata({ searchParams }: { searchParams: Promise<Record<string, string>> }): Promise<Metadata> {
+  return (await searchParams).examples === '1' ? { title: 'Sample vendors | Wedding Market', robots: { index: false, follow: false } } : {};
+}
 
 async function fetchVendors(params: Record<string,string>): Promise<VendorsResponse> {
   try { return await searchVendorDirectory(params); }
@@ -37,7 +43,7 @@ export default async function VendorsPage({
   const sp = await searchParams;
   const { user, isVendor } = await getRoles();
   const [{ items, total, error }, adsConfig, categories] = await Promise.all([
-    fetchVendors(sp),
+    sp.examples === '1' ? Promise.resolve<VendorsResponse>(searchExampleVendors({ q: sp.q, category: sp.category, page: directoryInteger(sp.page, 1, 1000) })) : fetchVendors(sp),
     loadVendorAdsConfig(),
     fetchVendorCategories(),
   ]);

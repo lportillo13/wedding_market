@@ -8,6 +8,8 @@ import { styles } from "../../../theme/styles";
 import { colors } from "../../../theme/tokens";
 import { hasVendorCoordinates, vendorLocationLabel } from "../../../ui/format";
 import { VendorCard } from "../components/VendorCard";
+import { ExampleVendorNotice } from "../components/ExampleVendorNotice";
+import { exampleVendorCopy } from "../../../../../shared/vendors/examples";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Image, Linking, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -123,6 +125,7 @@ export function VendorSearchScreen({
 }) {
   const labels = copy[language];
   const [query, setQuery] = useState("");
+  const [showExamples, setShowExamples] = useState(false);
   const [category, setCategory] = useState(initialCategory ?? "");
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [vendors, setVendors] = useState<VendorListItem[]>([]);
@@ -147,6 +150,8 @@ export function VendorSearchScreen({
 
     try {
       const response = await fetchVendors({
+        examples: showExamples,
+        language,
         q: nextQuery.trim() || undefined,
         category: nextCategory || undefined,
         page: nextPage,
@@ -172,7 +177,7 @@ export function VendorSearchScreen({
   useEffect(() => {
     setCategory(initialCategory ?? "");
     void loadVendors("", initialCategory ?? "");
-  }, [initialCategory]);
+  }, [initialCategory, showExamples]);
 
   useEffect(() => {
     const term = query.trim();
@@ -186,6 +191,8 @@ export function VendorSearchScreen({
     setIsSuggesting(true);
     const timeout = setTimeout(() => {
       fetchVendors({
+        examples: showExamples,
+        language,
         q: term,
         category: category || undefined,
         page: 1,
@@ -206,7 +213,7 @@ export function VendorSearchScreen({
       isCurrent = false;
       clearTimeout(timeout);
     };
-  }, [query, category]);
+  }, [query, category, showExamples, language]);
 
   const activeCategory = categories.find((item) => item.slug === category);
   const showSuggestions = query.trim().length >= 2;
@@ -217,7 +224,9 @@ export function VendorSearchScreen({
         <Text style={styles.kicker}>{labels.vendorSearch}</Text>
         <Text style={styles.title}>{labels.vendorSearchTitle}</Text>
         <Text style={styles.body}>{labels.vendorSearchBody}</Text>
+        {__DEV__ && !showExamples && <TouchableOpacity accessibilityRole="button" onPress={() => setShowExamples(true)} style={styles.secondaryButton}><Text style={styles.secondaryButtonText}>{exampleVendorCopy[language].title}</Text></TouchableOpacity>}
       </View>
+      {showExamples && <ExampleVendorNotice language={language} onExit={() => setShowExamples(false)} />}
 
       <View style={styles.searchBar}>
         <View style={styles.searchInputWrap}>

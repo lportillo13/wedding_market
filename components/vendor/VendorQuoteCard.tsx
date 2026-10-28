@@ -3,18 +3,22 @@
 import Link from "next/link";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
+import { exampleVendorCopy } from "@/shared/vendors/examples";
 
 export default function VendorQuoteCard({
   vendor,
   isLoggedIn,
   loginHref,
+  isExample = false,
 }: {
   vendor: VendorProfileDTO["vendor"];
   isLoggedIn: boolean;
   loginHref: string;
+  isExample?: boolean;
 }) {
   const { dictionary, language } = useLanguage();
   const labels = dictionary.vendorPublic;
+  const exampleLabels = exampleVendorCopy[language === 'es' ? 'es' : 'en'];
   let startingPrice: string | null = null;
   if (
     isLoggedIn &&
@@ -53,11 +57,11 @@ export default function VendorQuoteCard({
         className="btn btn-primary"
         href={isLoggedIn ? "#contact" : loginHref}
       >
-        {labels.header.requestQuote}
+        {isExample ? exampleLabels.form : labels.header.requestQuote}
         <span aria-hidden="true">↗︎</span>
       </Link>
       <small>
-        {isLoggedIn ? labels.editorial.quoteNote : labels.editorial.signInHint}
+        {isExample ? exampleLabels.disabled : isLoggedIn ? labels.editorial.quoteNote : labels.editorial.signInHint}
       </small>
     </aside>
   );

@@ -5,6 +5,7 @@ import { styles } from "../../../theme/styles";
 import { colors } from "../../../theme/tokens";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Image, Text, TouchableOpacity, View } from "react-native";
+import { exampleVendorCopy } from "../../../../../shared/vendors/examples";
 
 export function VendorCard({
   vendor,
@@ -26,7 +27,7 @@ export function VendorCard({
   const rating = Number(vendor.rating_avg ?? 0);
   const ratingCount = Number(vendor.rating_count ?? 0);
   const categories = (vendor.categories ?? []).slice(0, 3);
-  const bio = (vendor.bio_en ?? vendor.bio_es ?? "").trim();
+  const bio = ((language === 'es' ? vendor.bio_es : vendor.bio_en) || vendor.bio_en || vendor.bio_es || "").trim();
 
   return (
     <TouchableOpacity style={styles.vendorCard} onPress={() => onPress(vendor)} activeOpacity={0.88}>
@@ -40,12 +41,12 @@ export function VendorCard({
             </Text>
           </View>
         )}
-        <TouchableOpacity onPress={() => onToggleSaved(vendor)} style={styles.favoriteButton}>
+        {!vendor.is_example && <TouchableOpacity onPress={() => onToggleSaved(vendor)} style={styles.favoriteButton}>
           <Ionicons name={isSaved ? "heart" : "heart-outline"} size={20} color={isSaved ? "#B42318" : colors.ink} />
-        </TouchableOpacity>
+        </TouchableOpacity>}
         <View style={styles.availabilityBadge}>
-          <Ionicons name="calendar-outline" size={13} color={colors.tealDark} />
-          <Text style={styles.availabilityText}>{labels.available}</Text>
+          <Ionicons name={vendor.is_example ? 'eye-outline' : 'calendar-outline'} size={13} color={colors.tealDark} />
+          <Text style={styles.availabilityText}>{vendor.is_example ? exampleVendorCopy[language].badge : labels.available}</Text>
         </View>
       </View>
       <View style={styles.vendorCardBody}>
@@ -73,9 +74,9 @@ export function VendorCard({
             <Ionicons name="location-outline" size={14} color={colors.muted} />
             <Text style={styles.vendorMeta}>{ratingCount} {labels.reviews}</Text>
           </View>
-          <TouchableOpacity onPress={() => onRequestQuote(vendor)} style={styles.quoteButton}>
+          <TouchableOpacity onPress={() => vendor.is_example ? onPress(vendor) : onRequestQuote(vendor)} style={styles.quoteButton}>
             <Ionicons name="send-outline" size={13} color="#FFFFFF" />
-            <Text style={styles.quoteButtonText}>{labels.requestQuote}</Text>
+            <Text style={styles.quoteButtonText}>{vendor.is_example ? labels.vendorProfile : labels.requestQuote}</Text>
           </TouchableOpacity>
         </View>
       </View>

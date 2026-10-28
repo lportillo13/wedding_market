@@ -1,5 +1,6 @@
 import { mobileConfig } from "./config";
 import { requestJson } from "./http";
+import { getExampleVendor, searchExampleVendors } from "../../../shared/vendors/examples";
 
 export type VendorImage = {
   url?: string | null;
@@ -11,6 +12,7 @@ export type VendorImage = {
 };
 
 export type VendorListItem = {
+  is_example?: boolean;
   id: string;
   slug: string;
   business_name: string;
@@ -111,6 +113,8 @@ export type VendorsResponse = {
 };
 
 export type VendorSearchParams = {
+  examples?: boolean;
+  language?: 'en' | 'es';
   q?: string;
   category?: string;
   page?: number;
@@ -118,6 +122,7 @@ export type VendorSearchParams = {
 };
 
 export async function fetchVendors(params: VendorSearchParams = {}): Promise<VendorsResponse> {
+  if (params.examples) return searchExampleVendors(params);
   if (!mobileConfig.webApiUrl) {
     throw new Error("EXPO_PUBLIC_WEB_API_URL is not configured.");
   }
@@ -132,7 +137,9 @@ export async function fetchVendors(params: VendorSearchParams = {}): Promise<Ven
   return requestJson<VendorsResponse>(`${mobileConfig.webApiUrl}/api/vendors${query ? `?${query}` : ""}`);
 }
 
-export async function fetchVendorDetail(slug: string): Promise<VendorDetail> {
+export async function fetchVendorDetail(slug: string, language: 'en' | 'es' = 'en'): Promise<VendorDetail> {
+  const example = getExampleVendor(slug, language);
+  if (example) return example;
   if (!mobileConfig.webApiUrl) {
     throw new Error("EXPO_PUBLIC_WEB_API_URL is not configured.");
   }

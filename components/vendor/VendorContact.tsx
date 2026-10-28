@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
 import type { VendorContactPrefill } from "@/app/vendors/[slug]/data";
+import { exampleVendorCopy } from "@/shared/vendors/examples";
 
 type VendorContactProps = {
   vendor: VendorProfileDTO["vendor"];
@@ -13,6 +14,7 @@ type VendorContactProps = {
   isVendor: boolean;
   isLoggedIn: boolean;
   loginHref: string;
+  isExample?: boolean;
 };
 
 type FormValues = {
@@ -58,7 +60,7 @@ function buildDefaultValues(prefill: VendorContactPrefill | null): FormValues {
   };
 }
 
-export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, loginHref }: VendorContactProps) {
+export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, loginHref, isExample = false }: VendorContactProps) {
   const { dictionary, language } = useLanguage();
   const labels = dictionary.vendorPublic.contact;
   const headerLabels = dictionary.vendorPublic.header;
@@ -136,6 +138,7 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
   }, [prefill, reset]);
 
   const onSubmit = handleSubmit(async (values) => {
+    if (isExample) return;
     if (values.honeypot) return;
     setSubmitState("loading");
     setErrorMessage(null);
@@ -308,13 +311,14 @@ export default function VendorContact({ vendor, prefill, isVendor, isLoggedIn, l
               {formState.errors.message ? <div className="invalid-feedback">{formState.errors.message.message}</div> : null}
             </div>
             <div className="col-12">
-              <button className="btn btn-primary btn-lg" type="submit" disabled={submitState === "loading"}>
+              <button className="btn btn-primary btn-lg" type="submit" disabled={isExample || submitState === "loading"}>
                 {submitState === "loading"
                   ? labels.submitting
                   : prefill?.hasExistingRequest
                     ? labels.update
                     : labels.submit}
               </button>
+              {isExample && <p className="small mt-2 mb-0">{exampleVendorCopy[language === 'es' ? 'es' : 'en'].disabled}</p>}
             </div>
           </form>
         ) : null}

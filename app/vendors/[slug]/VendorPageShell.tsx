@@ -19,6 +19,8 @@ import type { VendorAdsConfig } from "@/lib/content/vendorAds";
 import { getVendorServiceProfile } from "@/lib/vendorServiceProfile";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
 import type { VendorContactPrefill } from "./data";
+import ExampleVendorNotice from "@/components/vendor/ExampleVendorNotice";
+import { exampleVendorCopy } from "@/shared/vendors/examples";
 
 export default function VendorPageShell({
   profile,
@@ -26,15 +28,18 @@ export default function VendorPageShell({
   isVendor,
   isLoggedIn,
   adsConfig,
+  isExample = false,
 }: {
   profile: VendorProfileDTO;
   contactPrefill: VendorContactPrefill | null;
   isVendor: boolean;
   isLoggedIn: boolean;
   adsConfig: VendorAdsConfig;
+  isExample?: boolean;
 }) {
   const { dictionary, language } = useLanguage();
   const labels = dictionary.vendorPublic;
+  const exampleLabels = exampleVendorCopy[language === 'es' ? 'es' : 'en'];
   const categoryKeys = profile.breadcrumbs.categories.map(
     (category) => category.key,
   );
@@ -141,6 +146,7 @@ export default function VendorPageShell({
       visible: !isVendor,
       content: (
         <VendorContact
+          isExample={isExample}
           vendor={profile.vendor}
           prefill={contactPrefill}
           isVendor={isVendor}
@@ -153,13 +159,16 @@ export default function VendorPageShell({
 
   return (
     <main className="wm-vendor-page wm-profile-editorial">
+      {isExample && <div className="container"><ExampleVendorNotice profile /></div>}
       <div className="container wm-profile-breadcrumbs">
         <Breadcrumbs
+          isExample={isExample}
           categories={profile.breadcrumbs.categories}
           vendorName={profile.vendor.name}
         />
       </div>
       <VendorHeader
+        isExample={isExample}
         vendor={profile.vendor}
         media={profile.media}
         categories={profile.breadcrumbs.categories}
@@ -216,6 +225,7 @@ export default function VendorPageShell({
           {!isVendor && (
             <div className="wm-profile-sidebar">
               <VendorQuoteCard
+                isExample={isExample}
                 vendor={profile.vendor}
                 isLoggedIn={isLoggedIn}
                 loginHref={loginHref}
@@ -234,7 +244,7 @@ export default function VendorPageShell({
             className="btn btn-primary"
             href={isLoggedIn ? "#contact" : loginHref}
           >
-            {labels.header.requestQuote}
+            {isExample ? exampleLabels.form : labels.header.requestQuote}
             <span aria-hidden="true">↗︎</span>
           </a>
         </div>

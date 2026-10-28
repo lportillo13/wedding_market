@@ -5,6 +5,8 @@ import { getRoles } from "@/lib/auth/roles";
 import { loadVendorAdsConfig } from "@/lib/content/vendorAdsServer";
 import { fetchVendorContactPrefill, fetchVendorProfile, fetchVendorShareMetadata } from "./data";
 import VendorPageShell from "./VendorPageShell";
+import { exampleVendorProfile } from "@/features/vendors/examples";
+import { isExampleVendor } from "@/shared/vendors/examples";
 
 export async function generateMetadata({
   params,
@@ -12,6 +14,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  if (isExampleVendor(slug)) return { title: 'Sample vendor | Wedding Market', robots: { index: false, follow: false } };
   const shareMetadata = await fetchVendorShareMetadata(slug);
 
   const vendorName = shareMetadata?.name ?? "Proveedor de bodas";
@@ -54,6 +57,9 @@ export default async function VendorProfilePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const language = await getRequestLanguage();
+  const example = exampleVendorProfile(slug, language === 'es' ? 'es' : 'en');
+  if (example) return <VendorPageShell profile={example} contactPrefill={null} isVendor={false} isLoggedIn={true} isExample adsConfig={await loadVendorAdsConfig()} />;
   const { user, isVendor } = await getRoles();
   const profile = await fetchVendorProfile(slug);
   const [contactPrefill, adsConfig] = await Promise.all([
@@ -61,7 +67,6 @@ export default async function VendorProfilePage({
     loadVendorAdsConfig(),
   ]);
 
-  const language = await getRequestLanguage();
   return (<>
     <VendorPageShell
       profile={profile}

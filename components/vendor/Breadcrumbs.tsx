@@ -8,12 +8,13 @@ import type { VendorBreadcrumb } from "@/types/vendor-profile";
 type BreadcrumbsProps = {
   categories: VendorBreadcrumb[];
   vendorName: string;
+  isExample?: boolean;
 };
 
-export default function Breadcrumbs({ categories, vendorName }: BreadcrumbsProps) {
+export default function Breadcrumbs({ categories, vendorName, isExample = false }: BreadcrumbsProps) {
   const { dictionary, language } = useLanguage();
   const homeCrumb = { href: "/", label: language === "es" ? "Inicio" : "Home" };
-  const vendorsCrumb = { href: "/vendors", label: dictionary.nav.vendors };
+  const vendorsCrumb = { href: isExample ? '/vendors?examples=1' : "/vendors", label: dictionary.nav.vendors };
 
   const categoryLabelsByKey = useMemo(
     () =>
@@ -28,7 +29,7 @@ export default function Breadcrumbs({ categories, vendorName }: BreadcrumbsProps
     const label = key ? categoryLabelsByKey.get(key) ?? category.label : category.label;
 
     return {
-      href: key ? `/vendors?category=${encodeURIComponent(key)}` : undefined,
+      href: key ? `/vendors?${isExample ? 'examples=1&' : ''}category=${encodeURIComponent(key)}` : undefined,
       label,
     };
   });
