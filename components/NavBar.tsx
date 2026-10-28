@@ -14,7 +14,6 @@ import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
 import HeaderSignOutButton from "./HeaderSignOutButton";
 import HeaderIcon from "./HeaderIcon";
 import HeaderLanguageSwitch from "./HeaderLanguageSwitch";
-import HeaderBotanicalAccent from "./HeaderBotanicalAccent";
 import HeaderAccountRetry from "./HeaderAccountRetry";
 import VendorsMegaMenu, { type HeaderVendorCategory } from "./VendorsMegaMenu";
 
@@ -235,7 +234,6 @@ export default function NavBar({
       >
         <div className="wm-mobile-navigation__shell">
           <div className="wm-mobile-navigation__top">
-            <HeaderBotanicalAccent />
             <Link href="/" className="wm-site-header__brand" onClick={close}>
               {brand}
             </Link>

@@ -411,16 +411,6 @@ html {
     background: var(--wm-nav-blush);
   }
 }
-.wm-header-botanical {
-  position: absolute;
-  width: 140px;
-  height: 100%;
-  right: 55px;
-  top: 0;
-  color: var(--wm-nav-gold);
-  opacity: 0.3;
-  pointer-events: none;
-}
 .wm-mobile-navigation__body {
   flex: 1;
   min-height: 0;
@@ -776,10 +766,6 @@ html {
   .wm-mobile-navigation__body,
   .wm-mobile-navigation__footer {
     padding-inline: 1rem;
-  }
-  .wm-header-botanical {
-    width: 100px;
-    opacity: 0.2;
   }
   .wm-mobile-navigation__categories a {
     padding-inline: 0.65rem;
