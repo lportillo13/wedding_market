@@ -1,0 +1,125 @@
+{
+  "checkedAt": "2026-10-28T20:15:15.482Z",
+  "base": "https://thewedmarket.com",
+  "checks": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "cache": "no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/boutiques",
+      "status": 200,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/favorites",
+      "status": 200,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?page=1",
+      "status": 200,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?page=1001",
+      "status": 400,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?kind=invalid",
+      "status": 400,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?slug=wm-never-published-boutique",
+      "status": 404,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account?mode=state",
+      "status": 401,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account?mode=favorites",
+      "status": 401,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account?mode=workspace",
+      "status": 401,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account?mode=appointments",
+      "status": 401,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account",
+      "status": 401,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account",
+      "status": 403,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/vendor/boutique",
+      "status": 307,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": "/signup/vendor",
+      "passed": true
+    },
+    {
+      "path": "/account/inbox/appointments",
+      "status": 307,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": "/signup",
+      "passed": true
+    },
+    {
+      "path": "/vendor/inbox/appointments",
+      "status": 307,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": "/signup/vendor",
+      "passed": true
+    },
+    {
+      "path": "/api/vendors?page=1&pageSize=1",
+      "status": 200,
+      "cache": "public, s-maxage=30, stale-while-revalidate=60",
+      "location": null,
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "checkedAt": "2026-10-28T20:39:42.202Z",
+  "web": {
+    "architecture": true,
+    "typecheck": true,
+    "lint": true,
+    "productionBuild": true,
+    "tests": 109
+  },
+  "database": {
+    "migrationReplay": true,
+    "checks": 47,
+    "liveRollbackWorkflow": true,
+    "syntheticRecordsRemaining": 0
+  },
+  "tooling": {
+    "tests": 14
+  },
+  "native": {
+    "typecheck": true,
+    "lint": true,
+    "tests": 78,
+    "suites": 18,
+    "expoCompatibility": true,
+    "androidHermes": true,
+    "iosHermes": true,
+    "maxExportWorkers": 2,
+    "releaseHeld": true
+  },
+  "visual": {
+    "source": "Interactive production website build with explicit fictional preview transport",
+    "englishWidth": 390,
+    "spanishWidth": 320,
+    "horizontalOverflow": false,
+    "photosLoaded": true,
+    "displayFont": "GT Super"
+  },
+  "limits": [
+    "No real authenticated two-account browser mutation test",
+    "No new physical-device or signed app acceptance"
+  ],
+  "initialFeatureCommit": "93eaf8707c0538cf90791bdc61fd45bdbfdd2f51",
+  "examples": {
+    "stores": 3,
+    "outfits": 6,
+    "generatedPhotos": 3,
+    "photoPresentationVideos": 1,
+    "databaseRecordsWritten": 0,
+    "inMemoryOnly": true,
+    "browserChecked": [
+      "favorite and saved outfit deep link",
+      "fitting request",
+      "store-only confirmation",
+      "two-way messages",
+      "outfit name and price editing",
+      "boutique selection",
+      "reset clears favorites"
+    ],
+    "regressions": 5
+  }
+}

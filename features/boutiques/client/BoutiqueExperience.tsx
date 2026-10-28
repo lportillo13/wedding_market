@@ -8,7 +8,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { supabaseBrowser } from '@/lib/supabase/client';
 import { boutiqueCopy } from '@/shared/boutiques/copy';
 import { boutiqueText, outfitDetailKeys, type Boutique, type Outfit, costaRicaDateTime } from '@/shared/boutiques/types';
-import { boutiqueApi } from './api';
+import { useBoutiqueTransport } from './transport';
 type Catalog = {
     items: Boutique[];
 };
@@ -28,6 +28,7 @@ export default function BoutiqueExperience({ initial, store = null, favorites = 
 }) {
     const { language } = useLanguage(), t = boutiqueCopy[language];
     const router = useRouter();
+    const { api: boutiqueApi, example: isExample } = useBoutiqueTransport();
     const [authRevision, setAuthRevision] = useState(0);
     const [shops, setShops] = useState(initial?.items ?? []), [shop, setShop] = useState(store), [items, setItems] = useState<Outfit[]>(store?.items ?? []);
     const [kind, setKind] = useState(''), [page, setPage] = useState(1), [saved, setSaved] = useState<string[]>([]), [account, setAccount] = useState<State['profile']>(null);
@@ -37,14 +38,34 @@ export default function BoutiqueExperience({ initial, store = null, favorites = 
         fingerprint: string;
     } | null>(null);
     const slug = store?.slug;
-    useEffect(() => { let active = true; let version = 0; const load = async () => { const own = ++version; setSaved([]); setAccount(null); setItems(old => favorites?[]:old.map(item => ({ ...item, price_cents: null }))); setDetail(old=>old?{...old,price_cents:null}:null); setShop(old => old ? { ...old, address: null, map_url: null } : null); setAuthRevision(old => old + 1); try {
-        const result = await boutiqueApi<State>('/account?mode=state');
-        if (active && version === own) {
-            setSaved(result.saved);
-            setAccount(result.profile);
-        }
-    }
-    catch { /* Guests can browse; authenticated actions show the sign-in link. */ } }; void load(); const { data } = supabaseBrowser.auth.onAuthStateChange(() => { void load(); }); return () => { active = false; version++; data.subscription.unsubscribe(); }; }, [favorites]);
+    useEffect(() => {
+        let active = true;
+        let version = 0;
+        const load = async () => {
+            const own = ++version;
+            setSaved([]);
+            setAccount(null);
+            if (!isExample) {
+                setItems(old => favorites ? [] : old.map(item => ({ ...item, price_cents: null })));
+                setDetail(old => old ? { ...old, price_cents: null } : null);
+                setShop(old => old ? { ...old, address: null, map_url: null } : null);
+            }
+            setAuthRevision(old => old + 1);
+            try {
+                const result = await boutiqueApi<State>('/account?mode=state');
+                if (active && version === own) {
+                    setSaved(result.saved);
+                    setAccount(result.profile);
+                }
+            }
+            catch { /* Guests can browse; authenticated actions show the sign-in link. */ }
+        };
+        void load();
+        if (isExample)
+            return () => { active = false; version++; };
+        const { data } = supabaseBrowser.auth.onAuthStateChange(() => { void load(); });
+        return () => { active = false; version++; data.subscription.unsubscribe(); };
+    }, [favorites, boutiqueApi, isExample]);
     useEffect(() => {
         let active = true;
         const version = ++seq.current;
@@ -64,6 +85,8 @@ export default function BoutiqueExperience({ initial, store = null, favorites = 
                     if (active && version === seq.current) {
                         setShop(r);
                         setItems(r.items);
+                        if (isExample)
+                            setDetail(old => old ? r.items.find(i => i.id === old.id) ?? null : null);
                     }
                 }
                 else {
@@ -83,20 +106,25 @@ export default function BoutiqueExperience({ initial, store = null, favorites = 
         };
         void load();
         return () => { active = false; };
-    }, [slug, kind, page, favorites, language, t.error, authRevision]);
-    async function toggle(item: Outfit) { if (busy)
-        return; setBusy(true); setMessage(''); try {
-        await boutiqueApi('/account', { action: 'favorite', id: item.id, saved: !saved.includes(item.id) });
-        setSaved(old => old.includes(item.id) ? old.filter(id => id !== item.id) : [...old, item.id]);
-        if (favorites)
-            setItems(old => old.filter(i => i.id !== item.id));
+    }, [slug, kind, page, favorites, language, t.error, authRevision, boutiqueApi, isExample]);
+    async function toggle(item: Outfit) {
+        if (busy)
+            return;
+        setBusy(true);
+        setMessage('');
+        try {
+            await boutiqueApi('/account', { action: 'favorite', id: item.id, saved: !saved.includes(item.id) });
+            setSaved(old => old.includes(item.id) ? old.filter(id => id !== item.id) : [...old, item.id]);
+            if (favorites)
+                setItems(old => old.filter(i => i.id !== item.id));
+        }
+        catch {
+            setMessage(account ? t.error : t.signIn);
+        }
+        finally {
+            setBusy(false);
+        }
     }
-    catch {
-        setMessage(account ? t.error : t.signIn);
-    }
-    finally {
-        setBusy(false);
-    } }
     const list = shop || favorites;
     const title = detail ? boutiqueText(detail.name, language) : favorites ? t.favorites : t.title;
     return <main className="wm-boutiques">
@@ -105,27 +133,31 @@ export default function BoutiqueExperience({ initial, store = null, favorites = 
   </section> : null}
   {shop && !detail && !booking ? <nav className="wm-boutique-tabs" aria-label={t.about}><a href="#boutique-collection">{t.collection}</a><a href="#boutique-about">{t.about}</a><button onClick={() => setBooking(true)}>{t.visit}</button></nav> : null}
   <div className="container py-4 py-lg-5">
-   <div className="wm-boutique-toolbar"><Link href="/boutiques">{t.title}</Link><div><Link href="/boutiques/favorites">♡ {t.favorites}</Link><Link href="/account/inbox/appointments">{t.appointments}</Link></div></div>
+   <div className="wm-boutique-toolbar"><Link href={isExample ? "/boutiques?examples=1" : "/boutiques"}>{t.title}</Link><div><Link href={isExample ? "/boutiques/favorites?examples=1" : "/boutiques/favorites"}>♡ {t.favorites}</Link><Link href={isExample ? "/boutiques/examples/appointments" : account?.role === 'vendor' ? "/vendor/inbox/appointments" : "/account/inbox/appointments"}>{t.appointments}</Link></div></div>
    {message ? <p role="alert" className="wm-boutique-notice">{message} {!account ? <Link href={`/login?next=${encodeURIComponent(favorites ? '/boutiques/favorites' : `/boutiques/${shop?.slug ?? ''}`)}`}>{t.account} →</Link> : null}</p> : null}
    {booking && shop ? <AppointmentForm shop={{ ...shop, items: detail && !shop.items.some(item => item.id === detail.id) ? [detail, ...shop.items] : shop.items }} selected={detail ? [detail.id] : []} profile={account} submission={submission} onBack={() => setBooking(false)} onSuccess={() => { setBooking(false); setMessage(t.requested); }}/> :
             detail ? <section className="wm-boutique-detail"><button className="btn btn-outline-secondary mb-4" onClick={() => setDetail(null)}>← {t.back}</button><div className="wm-boutique-detail-grid"><div>{detail.images.map((url, i) => <img key={url} src={url} alt={`${title} ${i + 1}`} loading={i ? 'lazy' : 'eager'}/>)}{detail.videos.map(url => <video key={url} src={url} controls muted preload="none" aria-label={title}/>)}</div><div><p className="wm-boutique-script">{detail.designer}</p><h1>{title}</h1><p>{boutiqueText(detail.description, language)}</p><p>{t[detail.offer]} · {detail.price_cents === null ? t.price : new Intl.NumberFormat(language, { style: 'currency', currency: detail.currency }).format(detail.price_cents / 100)}</p><dl>{outfitDetailKeys[detail.kind].filter(key => detail.details[key]).map(key => <div key={key}><dt>{key === 'back' ? t.backDetail : t[key]}</dt><dd>{detail.details[key]}</dd></div>)}{[[t.sample, detail.sample_sizes], [t.sizes, detail.order_sizes], [t.timeline, detail.lead_time], [t.reference, detail.reference]].filter(([, v]) => v).map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><p className="text-muted">{t.availability}</p><div className="wm-boutique-actions"><button className="btn btn-primary" onClick={() => setBooking(true)}>{t.request} →</button><button className="btn btn-outline-secondary" disabled={busy} onClick={() => void toggle(detail)}>{saved.includes(detail.id) ? '♥' : '♡'} {saved.includes(detail.id) ? t.unsave : t.save}</button></div></div></div></section> :
                 <><section id="boutique-collection"><p className="wm-boutique-script">{shop ? t.accent : t.boutiques}</p><h1>{shop ? t.collection : title}</h1>{!shop && !favorites ? <p className="text-muted">{t.intro}</p> : null}
     {shop ? <div className="wm-boutique-filters">{[['', t.all], ['dress', t.dress], ['suit', t.suit]].map(([value, label]) => <button key={value} className={`btn ${kind === value ? 'btn-primary' : 'btn-outline-secondary'}`} aria-pressed={kind === value} onClick={() => { setKind(value); setPage(1); }}>{label}</button>)}</div> : null}
     {loading ? <p role="status">{t.loading}</p> : null}
-    <div className="wm-boutique-grid">{list ? items.map(item => <article className="wm-outfit" key={item.id}><div className="wm-outfit-photo"><button onClick={() => { if (favorites)
-                    router.push(`/boutiques/${(item as Outfit & {
-                        slug: string;
-                    }).slug}?outfit=${item.id}`);
-                else
-                    setDetail(item); }} aria-label={boutiqueText(item.name, language)}>{item.images[0] ? <img src={item.images[0]} alt={boutiqueText(item.name, language)} loading="lazy"/> : <span>{t[item.kind]}</span>}</button><button className="wm-outfit-heart" disabled={busy} aria-label={saved.includes(item.id) ? t.unsave : t.save} aria-pressed={saved.includes(item.id)} onClick={() => void toggle(item)}>{saved.includes(item.id) ? '♥' : '♡'}</button></div><button className="wm-outfit-name" onClick={() => { if (favorites)
-                    router.push(`/boutiques/${(item as Outfit & {
-                        slug: string;
-                    }).slug}?outfit=${item.id}`);
-                else
-                    setDetail(item); }}>{boutiqueText(item.name, language)}</button><p>{t[item.offer]} · {item.designer}</p><p>{item.price_cents === null ? t.price : new Intl.NumberFormat(language, { style: 'currency', currency: item.currency }).format(item.price_cents / 100)}</p></article>) : shops.map(s => <Link href={`/boutiques/${s.slug}`} className="wm-boutique-card" key={s.vendor_id} prefetch={false}>{s.hero ? <img src={s.hero} alt={s.name} loading="lazy"/> : null}<div><span className="wm-boutique-script">{t.boutiques}</span><h2>{s.name}</h2><p>{[s.city, s.region].filter(Boolean).join(' · ')}</p><span>{t.explore} ↗</span></div></Link>)}</div>
-    {!loading && !(list ? items : shops).length ? <p className="wm-boutique-empty">{favorites ? t.noFavorites : shop ? t.noItems : t.empty}</p> : null}
+    <div className="wm-boutique-grid">{list ? items.map(item => <article className="wm-outfit" key={item.id}><div className="wm-outfit-photo"><button onClick={() => {
+                            if (favorites)
+                                router.push(`/boutiques/${(item as Outfit & {
+                                    slug: string;
+                                }).slug}?outfit=${item.id}`);
+                            else
+                                setDetail(item);
+                        }} aria-label={boutiqueText(item.name, language)}>{item.images[0] ? <img src={item.images[0]} alt={boutiqueText(item.name, language)} loading="lazy"/> : <span>{t[item.kind]}</span>}</button><button className="wm-outfit-heart" disabled={busy} aria-label={saved.includes(item.id) ? t.unsave : t.save} aria-pressed={saved.includes(item.id)} onClick={() => void toggle(item)}>{saved.includes(item.id) ? '♥' : '♡'}</button></div><button className="wm-outfit-name" onClick={() => {
+                            if (favorites)
+                                router.push(`/boutiques/${(item as Outfit & {
+                                    slug: string;
+                                }).slug}?outfit=${item.id}`);
+                            else
+                                setDetail(item);
+                        }}>{boutiqueText(item.name, language)}</button><p>{t[item.offer]} · {item.designer}</p><p>{item.price_cents === null ? t.price : new Intl.NumberFormat(language, { style: 'currency', currency: item.currency }).format(item.price_cents / 100)}</p></article>) : shops.map(s => <Link href={`/boutiques/${s.slug}`} className="wm-boutique-card" key={s.vendor_id} prefetch={false}>{s.hero ? <img src={s.hero} alt={s.name} loading="lazy"/> : null}<div><span className="wm-boutique-script">{t.boutiques}</span><h2>{s.name}</h2><p>{[s.city, s.region].filter(Boolean).join(' · ')}</p><span>{t.explore} ↗</span></div></Link>)}</div>
+    {!isExample && !shop && !favorites ? <p className="mt-3"><Link href="/boutiques?examples=1">{language === 'es' ? 'Ver boutiques de ejemplo' : 'View example boutiques'} →</Link></p> : null}{!loading && !(list ? items : shops).length ? <p className="wm-boutique-empty">{favorites ? t.noFavorites : shop ? t.noItems : t.empty}</p> : null}
     <div className="wm-boutique-actions mt-4">{page > 1 ? <button className="btn btn-outline-secondary" disabled={loading} onClick={() => setPage(p => p - 1)}>{t.previous}</button> : null}{(list ? items : shops).length === 12 ? <button className="btn btn-outline-secondary" disabled={loading} onClick={() => setPage(p => p + 1)}>{t.next}</button> : null}</div>
-   </section>{shop ? <section id="boutique-about" className="wm-boutique-about"><h2>{t.about}</h2><p>{boutiqueText(shop.bio, language)}</p><p>{shop.languages?.join(' · ')}</p>{shop.address ? <p>{shop.address}</p> : null}{shop.map_url && /^https:\/\//.test(shop.map_url) ? <a href={shop.map_url} target="_blank" rel="noopener noreferrer">{shop.city} ↗</a> : null}<ContentSafety kind="vendor" targetId={shop.vendor_id} language={language}/><h3>{t.policies}</h3><p>{boutiqueText(shop.policies, language)}</p><p>{shop.duration_minutes} min · {shop.companions_max} {t.companions.toLowerCase()} · {shop.visit_fee_cents ? new Intl.NumberFormat(language, { style: 'currency', currency: shop.currency }).format(shop.visit_fee_cents / 100) : t.free}</p><button className="btn btn-primary" onClick={() => setBooking(true)}>{t.request} →</button></section> : null}</>}
+   </section>{shop ? <section id="boutique-about" className="wm-boutique-about"><h2>{t.about}</h2><p>{boutiqueText(shop.bio, language)}</p><p>{shop.languages?.join(' · ')}</p>{shop.address ? <p>{shop.address}</p> : null}{shop.map_url && /^https:\/\//.test(shop.map_url) ? <a href={shop.map_url} target="_blank" rel="noopener noreferrer">{shop.city} ↗</a> : null}{!isExample ? <ContentSafety kind="vendor" targetId={shop.vendor_id} language={language}/> : null}<h3>{t.policies}</h3><p>{boutiqueText(shop.policies, language)}</p><p>{shop.duration_minutes} min · {shop.companions_max} {t.companions.toLowerCase()} · {shop.visit_fee_cents ? new Intl.NumberFormat(language, { style: 'currency', currency: shop.currency }).format(shop.visit_fee_cents / 100) : t.free}</p><button className="btn btn-primary" onClick={() => setBooking(true)}>{t.request} →</button></section> : null}</>}
   </div>
  </main>;
 }
@@ -141,6 +173,7 @@ function AppointmentForm({ shop, selected, profile, submission, onBack, onSucces
     onSuccess: () => void;
 }) {
     const { language } = useLanguage(), t = boutiqueCopy[language];
+    const { api: boutiqueApi, example: isExample } = useBoutiqueTransport();
     const [busy, setBusy] = useState(false), [error, setError] = useState('');
     const lock = useRef(false);
     async function send(event: React.FormEvent<HTMLFormElement>) {
@@ -174,7 +207,7 @@ function AppointmentForm({ shop, selected, profile, submission, onBack, onSucces
         }
     }
     return <section className="wm-boutique-appointment"><button className="btn btn-outline-secondary mb-4" onClick={onBack}>← {t.back}</button><p className="wm-boutique-script">{shop.name}</p><h1>{t.request}</h1><p>{t.confirmedOnly}</p><p>{t.timezone}</p><div className="wm-boutique-policy"><h2>{t.policies}</h2><p>{boutiqueText(shop.policies, language)}</p><p>{shop.duration_minutes} min · {shop.companions_max} {t.companions.toLowerCase()}</p><p>{shop.visit_fee_cents ? `${t.fee}: ${new Intl.NumberFormat(language, { style: 'currency', currency: shop.currency }).format(shop.visit_fee_cents / 100)}` : t.free}</p></div>
- {!profile || profile.role !== 'user' ? <Link className="btn btn-primary" href={`/login?next=${encodeURIComponent('/boutiques/' + shop.slug)}`}>{t.signIn}</Link> : <form onSubmit={send} className="wm-boutique-form" aria-busy={busy}>
+ {isExample&&profile?.role!=='user'?<p>{language==='es'?'Elige «Probar como pareja» para solicitar una cita.':'Choose “Try as couple” to request a fitting.'}</p>:!profile || profile.role !== 'user' ? <Link className="btn btn-primary" href={`/login?next=${encodeURIComponent('/boutiques/' + shop.slug)}`}>{t.signIn}</Link> : <form onSubmit={send} className="wm-boutique-form" aria-busy={busy}>
   <label>{t.date} *<input className="form-control" type="date" name="date" min={new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Costa_Rica' }).format(new Date())} required/></label><label>{t.time} *<input className="form-control" type="time" name="time" required/></label>
   <label>{t.wedding} · {t.optional}<input className="form-control" type="date" name="wedding" defaultValue={profile.tentative_wedding_date ?? ''}/></label><label>{t.companions}<select className="form-select" name="companions">{Array.from({ length: shop.companions_max + 1 }, (_, i) => <option key={i}>{i}</option>)}</select></label>
   <label>{t.size} · {t.optional}<input className="form-control" name="size" maxLength={300}/></label><label>{t.budget} · {t.optional}<input className="form-control" name="budget" maxLength={120}/></label>

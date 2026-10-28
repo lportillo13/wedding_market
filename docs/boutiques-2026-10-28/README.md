@@ -1,6 +1,6 @@
 # Boutique microstores — October 28, 2026
 
-The owner selected **Editorial boutique** for the website and native app. The first version adds dresses and suits, individual boutique storefronts, private outfit favorites, and fitting requests that the store confirms. It inherits the existing GT Super / Acumin / Lucia typefaces, warm surfaces, photo-led cover, restrained controls and existing global navigation structure.
+The owner selected **Editorial boutique** for the website and native app. The first version adds dresses and suits, individual boutique storefronts, private outfit favorites, and fitting requests that the store confirms. It inherits the existing GT Super / Acumin / Lucia typefaces, warm surfaces, photo-led cover, restrained controls and existing global navigation structure. The owner subsequently requested [three interactive fictional boutiques](EXAMPLES.md) for testing and visual review, using the same components with an isolated preview session.
 
 ## Implemented experience
 
@@ -30,4 +30,4 @@ Public and appointment pages use fixed 12-record pages; owner collections cap at
 
 No signed native artifact, OTA update, store upload or app release is part of this batch. **The native release remains held.** No new physical Android/iPhone acceptance is claimed; both platform bundle checks are local compilation evidence. No real customer/store appointment was submitted for testing.
 
-Deployment/public verification is recorded here after the restricted gateway finishes. The source does not assume a gateway job succeeded merely because it was accepted.
+The initial feature release was `93eaf8707c0538cf90791bdc61fd45bdbfdd2f51`, with rollback `/var/www/wedding-market.before-20261028-201245`. Migration and rollback-only live checks were verified before that release. The subsequent example release uses the latest verified website revision (including the SVG video-control correction) as its expected base. Current exact deployment/public verification is recorded in the adjacent receipts only after the restricted gateway finishes.

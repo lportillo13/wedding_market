@@ -1,0 +1,34 @@
+{
+  "images": [
+    {
+      "path": "public/boutique-examples/alba.jpg",
+      "bytes": 105415,
+      "sha256": "08bff8bcee656e0f141ba3d2e18d2325656a0141c2f8547ce8f3802b8e7e9b09",
+      "prompt": "An adult bride in an ivory off-shoulder satin A-line gown and groom in a charcoal wedding suit, full length in a warm ivory bridal showroom. Natural editorial wedding photography, no text or logos.",
+      "method": "Built-in image generation; JPEG encoding for website delivery",
+      "fictional": true
+    },
+    {
+      "path": "public/boutique-examples/marfil.jpg",
+      "bytes": 169390,
+      "sha256": "9f75a7e784d296a48e9965dc93378e077ac810fc1f2d9efbc1b87ef47cf16578",
+      "prompt": "A single adult woman in an ivory floral lace A-line wedding gown, long sleeves, V neckline and chapel train, full body in a warm ivory bridal showroom. Portrait 2:3, natural light, realistic lace, no text or logos.",
+      "method": "Built-in image generation; JPEG encoding for website delivery",
+      "fictional": true
+    },
+    {
+      "path": "public/boutique-examples/roble.jpg",
+      "bytes": 170158,
+      "sha256": "3580f4402313c9a10793f82d558858a9b2a362e537138d5a6cd0fd8bdd6e5a48",
+      "prompt": "A single adult man in a midnight navy wedding tuxedo, shawl lapels, white shirt and black bow tie, full body in a warm wood-and-ivory tailoring showroom. Portrait 2:3, natural editorial photography, no text or logos.",
+      "method": "Built-in image generation; JPEG encoding for website delivery",
+      "fictional": true
+    }
+  ],
+  "photoFilm": {
+    "path": "public/boutique-examples/alba-photo-film.mp4",
+    "method": "5-second silent H.264 presentation of the generated Alba still; 600×900 at 24fps. Described as a photo presentation in both languages.",
+    "bytes": 46763,
+    "sha256": "7fd2efc389e5fd83df661f0e0686ddaee06444c1b4c5f6900b5b8415f8783313"
+  }
+}
