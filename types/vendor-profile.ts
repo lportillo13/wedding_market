@@ -1,3 +1,5 @@
+import type { VendorHeroVideo } from '../shared/vendors/hero';
+
 export type VendorMediaItem = {
   id: string | number;
   type: 'photo' | 'video';
@@ -69,6 +71,7 @@ export type VendorBreadcrumb = {
 };
 
 export type VendorProfileDTO = {
+  heroVideo?: VendorHeroVideo | null;
   vendor: {
     id: string;
     slug: string;

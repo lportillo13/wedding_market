@@ -1,0 +1,64 @@
+// About uses the same supplied typefaces and warm palette as the public site.
+.wm-about-page {
+  --wm-about-black: var(--wm-ink);
+  --wm-about-gray: var(--wm-bg-primary);
+  --wm-about-gray-2: var(--wm-bg-secondary);
+  --wm-about-muted: var(--wm-muted);
+  --wm-about-faint: var(--wm-accent);
+  font-family: var(--wm-font-body);
+  font-weight: 400;
+
+  h1, h2, h3 { font-family: var(--wm-font-display); font-weight: 300; }
+  .wm-about-eyebrow { color: var(--wm-muted); font: 400 .7rem/1.5 var(--wm-font-body); letter-spacing: .12em; }
+  .wm-about-heading { padding-top: clamp(3rem, 6vw, 6rem); }
+  .wm-about-heading h1 {
+    font: 300 clamp(3rem, 7vw, 6.75rem)/1.12 var(--wm-font-display);
+    letter-spacing: -.035em;
+    text-wrap: balance;
+    span {
+      display: inline-block;
+      padding: .04em .1em .08em;
+      color: var(--wm-accent);
+      font: 400 1.1em/1.2 var(--wm-font-script);
+      letter-spacing: 0;
+    }
+  }
+  .wm-about-heading__text { color: var(--wm-muted); font: 400 1rem/1.75 var(--wm-font-body); max-width: 38rem; }
+  .wm-about-story__grid h2, .wm-about-journal h2 {
+    font: 300 clamp(2.5rem, 4.5vw, 4.25rem)/1.12 var(--wm-font-display);
+    letter-spacing: -.03em;
+  }
+  .wm-about-story__grid h2 em, .wm-about-journal h2 span {
+    color: var(--wm-accent);
+    font-family: var(--wm-font-display);
+    font-style: italic;
+    font-weight: 300;
+  }
+  .wm-about-split__mask { padding-bottom: .08em; margin-bottom: -.08em; }
+  .wm-about-story__grid h3 { font: 300 clamp(1.5rem, 2.1vw, 2rem)/1.4 var(--wm-font-display); }
+  .wm-about-story__grid p { color: var(--wm-muted); font: 400 1rem/1.75 var(--wm-font-body); }
+  .wm-about-quote blockquote { font: italic 300 clamp(1.5rem, 2.5vw, 2.2rem)/1.4 var(--wm-font-display); }
+  .wm-about-quote figcaption { color: var(--wm-muted); font: 400 .8125rem/1.6 var(--wm-font-body); }
+  .wm-about-mission__intro h2 { font: 300 clamp(2rem, 4vw, 3.75rem)/1.2 var(--wm-font-display); }
+  .wm-about-mission__copy h3 { font: 300 clamp(2.25rem, 4vw, 4rem)/1.12 var(--wm-font-display); letter-spacing: -.03em; }
+  .wm-about-mission__copy h3 em { font-family: var(--wm-font-display); font-weight: 300; }
+  .wm-about-mission .wm-about-eyebrow, .wm-about-join .wm-about-eyebrow { color: #fffdf9b3; }
+  .wm-about-mission__copy p, .wm-about-join__content p { font: 400 1rem/1.75 var(--wm-font-body); }
+  .wm-about-button { min-height: 48px; padding: .85rem 1.15rem; border-radius: 7px; font: 400 .875rem/1.5 var(--wm-font-body); box-shadow: none; }
+  .wm-about-stat { border-radius: 10px; }
+  .wm-about-stat strong { font: 300 clamp(2.7rem, 4vw, 4rem)/1.15 var(--wm-font-display); }
+  .wm-about-stat strong > span { font: inherit; color: inherit; }
+  .wm-about-stat > span { font: 400 .875rem/1.6 var(--wm-font-body); }
+  .wm-about-gallery__image, .wm-about-story__feature, .wm-about-quote img, .wm-about-article img { border-radius: 10px; }
+  .wm-about-article h3 { font: 300 clamp(1.5rem, 2.2vw, 1.9rem)/1.25 var(--wm-font-display); }
+  .wm-about-article small, .wm-about-journal__link { font-family: var(--wm-font-body); font-weight: 400; }
+  .wm-about-join__content h2 { font: 300 clamp(2.25rem, 4.5vw, 4.5rem)/1.15 var(--wm-font-display); letter-spacing: -.03em; }
+
+  @media (max-width: 575.98px) {
+    .wm-about-heading { padding-inline: 1.25rem; }
+    .wm-about-heading h1 { font-size: clamp(2.7rem, 12vw, 3.6rem); }
+    .wm-about-heading__text { margin-top: 1rem; }
+    .wm-about-story__grid h2, .wm-about-journal h2 { font-size: 2.6rem; }
+    .wm-about-button { max-width: 100%; gap: 1rem; }
+  }
+}

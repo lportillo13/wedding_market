@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useActionState, useState } from "react";
-import { useTranslation } from "@/contexts/LanguageContext";
+import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
+import HeroPresentationForm from './HeroPresentationForm';
 import { uploadWithProgress } from "@/lib/client/uploads";
 import { resolveMediaUrl, shouldRenderUnoptimizedMedia } from "@/lib/media-url";
 import type { VendorImage } from "@/types/vendor";
@@ -21,6 +22,7 @@ type ImagesFormProps = {
   heroImage: VendorImage | null;
   thumbnailImage: VendorImage | null;
   galleryImages: VendorImage[];
+  heroPresentation?: unknown;
 };
 
 function ActionMessage({ state }: { state: ImageActionState }) {
@@ -85,9 +87,11 @@ function UploadMeta({
   );
 }
 
-export default function ImagesForm({ vendorName, heroImage, thumbnailImage, galleryImages }: ImagesFormProps) {
+export default function ImagesForm({ vendorName, heroImage, thumbnailImage, galleryImages, heroPresentation }: ImagesFormProps) {
   const router = useRouter();
   const t = useTranslation();
+  const { language } = useLanguage();
+  const es = language === 'es';
   const [heroState, setHeroState] = useState(initialState);
   const [thumbState, setThumbState] = useState(initialState);
   const [galleryState, setGalleryState] = useState(initialState);
@@ -184,12 +188,14 @@ export default function ImagesForm({ vendorName, heroImage, thumbnailImage, gall
       <h2 className="h5">{t("vendorDashboard.profileImages.heading")}</h2>
       <p className="text-muted small">{t("vendorDashboard.profileImages.help")}</p>
 
+      <HeroPresentationForm initial={heroPresentation} videos={videoItems} />
+
       <div className="wm-vendor-media-grid">
         <section className="wm-vendor-media-card">
           <div className="d-flex align-items-center justify-content-between gap-3 mb-3">
             <div>
-              <h3 className="h6 mb-1">{t("vendorDashboard.profileImages.heroLabel")}</h3>
-              <p className="small text-muted mb-0">Large editorial image for the top of your public profile.</p>
+              <h3 className="h6 mb-1">{es ? 'Foto de portada / imagen del video' : 'Cover photo / video poster'}</h3>
+              <p className="small text-muted mb-0">{es ? 'También aparece cuando el video está en pausa o no está disponible.' : 'Also appears when your cover video is paused or unavailable.'}</p>
             </div>
             {heroImage?.url ? (
               <form action={deleteHeroAction}>
@@ -354,7 +360,7 @@ export default function ImagesForm({ vendorName, heroImage, thumbnailImage, gall
       </section>
 
       <section className="wm-vendor-media-card">
-        <h3 className="h6">{t("vendorPublic.gallery.videosHeading")}</h3>
+        <h3 className="h6" id="profile-videos">{t("vendorPublic.gallery.videosHeading")}</h3>
         <p className="text-muted small mb-3">Upload videos to your vendor profile. They will be converted to MP4 and capped at 50MB.</p>
         {videoItems.length > 0 ? (
           <div className="row row-cols-1 row-cols-md-2 g-3 mb-3">

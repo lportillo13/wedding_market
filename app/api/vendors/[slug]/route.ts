@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { parseMediaAsset } from "@/lib/images";
+import { resolveVendorHeroVideo } from '@/shared/vendors/hero';
 
 type RouteContext = {
   params: Promise<{ slug: string }>;
@@ -244,8 +245,8 @@ export async function GET(_request: Request, context: RouteContext) {
       })
     : [];
 
-  const heroImage = baseHeroImage ?? media[0] ?? null;
-  const thumbnailImage = baseThumbnailImage ?? media.find((item) => item.url !== heroImage?.url) ?? heroImage;
+  const heroImage = baseHeroImage ?? media.find((item) => item.type !== 'video') ?? null;
+  const thumbnailImage = baseThumbnailImage ?? media.find((item) => item.type !== 'video' && item.url !== heroImage?.url) ?? heroImage;
   const extraInfo = row.extra_info && typeof row.extra_info === "object"
     ? row.extra_info as Record<string, unknown>
     : {};
@@ -255,6 +256,7 @@ export async function GET(_request: Request, context: RouteContext) {
 
   return NextResponse.json({
     vendor: {
+      hero_video: resolveVendorHeroVideo(extraInfo.hero_presentation, Array.isArray(vendorMedia?.gallery_images) ? vendorMedia.gallery_images : []),
       id: row.id,
       slug: row.slug,
       business_name: row.name,

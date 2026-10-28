@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import { resolveVendorHeroVideo } from '@/shared/vendors/hero';
 import { notFound } from "next/navigation";
 import { fetchGoogleBusinessReviews } from "@/lib/google/places";
 import { parseMediaAsset } from "@/lib/images";
@@ -422,6 +423,7 @@ export async function fetchVendorProfile(slug: string): Promise<VendorProfileDTO
     reviewSource === "google" ? externalReviewUrl ?? googleBusinessProfileUrl : null;
 
   const profile: VendorProfileDTO = {
+    heroVideo: resolveVendorHeroVideo(extraInfo.hero_presentation, Array.isArray(vendorMediaRow?.gallery_images) ? vendorMediaRow.gallery_images : []),
     vendor,
     media,
     spaces,

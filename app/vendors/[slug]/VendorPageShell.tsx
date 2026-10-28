@@ -168,6 +168,7 @@ export default function VendorPageShell({
         />
       </div>
       <VendorHeader
+        heroVideo={profile.heroVideo}
         isExample={isExample}
         vendor={profile.vendor}
         media={profile.media}

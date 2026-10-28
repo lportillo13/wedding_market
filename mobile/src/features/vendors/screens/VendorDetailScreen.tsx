@@ -215,6 +215,9 @@ export function VendorDetailScreen({
         )}
         <View style={styles.detailHeroShade} />
         <View style={styles.detailHeroActions}>
+          {vendor.hero_video && <TouchableOpacity accessibilityRole="button" accessibilityLabel={language === 'es' ? 'Ver video de portada' : 'Watch cover video'} onPress={() => void Linking.openURL(vendor.hero_video!.url).catch(() => undefined)} style={styles.detailIconButton}>
+            <Ionicons name="play" size={20} color={colors.ink} />
+          </TouchableOpacity>}
           {!vendor.is_example && <TouchableOpacity onPress={() => onToggleSaved(vendor)} style={styles.detailIconButton}>
             <Ionicons name={isSaved ? "heart" : "heart-outline"} size={20} color={isSaved ? "#B42318" : colors.ink} />
           </TouchableOpacity>}

@@ -111,6 +111,7 @@ export type VendorProfileTabsProps = {
   heroImage: VendorImage | null;
   thumbnailImage: VendorImage | null;
   galleryImages: VendorImage[];
+  heroPresentation?: unknown;
   contactInitial: ContactInitial;
   pricingInitial: PricingInitial;
   amenitiesInitial: AmenitiesInitial;
@@ -128,6 +129,7 @@ export default function VendorProfileTabs({
   heroImage,
   thumbnailImage,
   galleryImages,
+  heroPresentation,
   contactInitial,
   pricingInitial,
   amenitiesInitial,
@@ -387,6 +389,7 @@ export default function VendorProfileTabs({
             heroImage={heroImage}
             thumbnailImage={thumbnailImage}
             galleryImages={galleryImages}
+            heroPresentation={heroPresentation}
           />
         );
     }

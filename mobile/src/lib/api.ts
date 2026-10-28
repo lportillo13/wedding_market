@@ -1,6 +1,7 @@
 import { mobileConfig } from "./config";
 import { requestJson } from "./http";
 import { getExampleVendor, searchExampleVendors } from "../../../shared/vendors/examples";
+import type { VendorHeroVideo } from '../../../shared/vendors/hero';
 
 export type VendorImage = {
   url?: string | null;
@@ -32,6 +33,7 @@ export type VendorListItem = {
 };
 
 export type VendorDetail = VendorListItem & {
+  hero_video?: VendorHeroVideo | null;
   extra_info_en?: string | null;
   extra_info_es?: string | null;
   logo_url?: string | null;

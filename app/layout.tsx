@@ -13,6 +13,7 @@ import "../styles/editorial-fonts.scss";
 import "../styles/footer-and-consent.scss";
 import "../styles/navigation-and-hero.scss";
 import "../styles/navigation-editorial.scss";
+import "../styles/about-editorial.scss";
 import NavBarContainer from "@/components/NavBarContainer";
 import AuthStateSync from "@/components/AuthStateSync";
 import PwaServiceWorkerRegistration from "@/components/PwaServiceWorkerRegistration";

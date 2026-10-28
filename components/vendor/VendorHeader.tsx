@@ -9,6 +9,8 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import ShareVendorMenu from "./ShareVendorMenu";
 import type { VendorProfileDTO } from "@/types/vendor-profile";
 import { exampleVendorCopy } from "@/shared/vendors/examples";
+import type { VendorHeroVideo } from '@/shared/vendors/hero';
+import VendorCoverVideo from './VendorCoverVideo';
 
 type VendorHeaderProps = {
   vendor: VendorProfileDTO["vendor"];
@@ -18,6 +20,7 @@ type VendorHeaderProps = {
   isLoggedIn: boolean;
   loginHref: string;
   isExample?: boolean;
+  heroVideo?: VendorHeroVideo | null;
 };
 
 function fill(template: string, values: Record<string, string | number>) {
@@ -35,6 +38,7 @@ export default function VendorHeader({
   isLoggedIn,
   loginHref,
   isExample = false,
+  heroVideo = null,
 }: VendorHeaderProps) {
   const { dictionary, language } = useLanguage();
   const exampleLabels = exampleVendorCopy[language === 'es' ? 'es' : 'en'];
@@ -47,7 +51,6 @@ export default function VendorHeader({
       !item.url.includes("/video/"),
   );
   const hero = photos[0];
-  const supporting = photos.slice(1, 3);
   const location = [
     vendor.location.city,
     vendor.location.region,
@@ -134,50 +137,31 @@ export default function VendorHeader({
         )}
       </div>
       <div
-        className={`wm-profile-hero__visual${hero ? supporting.length ? " wm-profile-hero__visual--collage" : "" : " wm-profile-hero__visual--empty"}`}
+        className={`wm-profile-hero__visual${hero || heroVideo ? "" : " wm-profile-hero__visual--empty"}`}
       >
-        {hero ? (
+        {hero || heroVideo ? (
           <>
-            <a
-              className="wm-profile-hero__cover"
-              href="#photos"
-              aria-label={editorial.viewGallery}
-            >
-              <Image
+            <div className="wm-profile-hero__cover">
+              {heroVideo ? <VendorCoverVideo key={heroVideo.url} source={heroVideo} poster={hero?.url ?? null} name={vendor.name} language={language === 'es' ? 'es' : 'en'} /> : hero && <Image
                 src={resolveMediaUrl(hero.url)}
                 alt={hero.caption || vendor.name}
                 fill
                 priority
-                sizes="(max-width: 575px) 100vw, 70vw"
+                sizes="100vw"
                 unoptimized={shouldRenderUnoptimizedMedia(hero.url)}
-              />
-              <span className="wm-profile-hero__gallery-link">
+              />}
+            </div>
+              <a className="wm-profile-hero__gallery-link" href="#photos">
                 {editorial.viewGallery}
                 <span aria-hidden="true">↗︎</span>
-              </span>
-            </a>
-            {supporting.length > 0 && (
-              <div className="wm-profile-hero__details" aria-hidden="true">
-                {supporting.map((photo) => (
-                  <div key={photo.id}>
-                    <Image
-                      src={resolveMediaUrl(photo.url)}
-                      alt=""
-                      fill
-                      sizes="30vw"
-                      unoptimized={shouldRenderUnoptimizedMedia(photo.url)}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
+              </a>
           </>
         ) : (
           <div className="wm-profile-hero__monogram" aria-hidden="true">
             {vendor.name.slice(0, 1)}
           </div>
         )}
-        {!hero && <p>{editorial.noPhotos}</p>}
+        {!hero && !heroVideo && <p>{editorial.noPhotos}</p>}
       </div>
     </header>
   );

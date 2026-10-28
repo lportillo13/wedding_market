@@ -1,5 +1,6 @@
 "use server";
 import { invalidatePublicVendorCache } from "@/features/vendors/server/cache";
+import { saveVendorHeroPresentation } from "@/features/vendors/server/hero";
 
 import {
   prepareProfilePricing,
@@ -66,6 +67,19 @@ export type ImageActionState = {
   ok: boolean;
   message: string;
 };
+
+export async function saveHeroPresentation(_previous: ImageActionState, formData: FormData): Promise<ImageActionState> {
+  const { supabase, vendor, error } = await requireAuthVendor();
+  const es = formData.get('language') === 'es';
+  if (error || !vendor) return { ok: false, message: es ? 'Inicia sesión como proveedor para guardar tu portada.' : 'Sign in as the vendor to save your cover.' };
+  const result = await saveVendorHeroPresentation(supabase, vendor, { mode: formData.get('hero_mode'), source: formData.get('hero_source'), assetId: formData.get('hero_asset_id'), url: formData.get('hero_url') });
+  if (!result.ok) return { ok: false, message: result.error === 'save' ? es ? 'No se pudo guardar la portada. Inténtalo de nuevo.' : 'Could not save your cover. Please try again.' : result.error === 'asset' ? es ? 'Elige uno de los videos de tu perfil.' : 'Choose a video uploaded to your profile.' : es ? 'Usa un enlace público de YouTube, Vimeo, MP4 o WebM e inténtalo de nuevo.' : 'Use a public YouTube, Vimeo, MP4 or WebM link and try again.' };
+  invalidatePublicVendorCache();
+  revalidatePath('/vendor/profile');
+  revalidatePath(`/vendors/${vendor.slug}`);
+  revalidatePath('/vendors');
+  return { ok: true, message: es ? 'Portada actualizada.' : 'Cover updated.' };
+}
 
 export type FormMessageState = {
   ok: boolean;

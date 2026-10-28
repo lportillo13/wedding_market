@@ -357,6 +357,7 @@ export default async function ProfilePage() {
       heroImage={heroImage}
       thumbnailImage={thumbnailImage}
       galleryImages={safeGallery}
+      heroPresentation={extraInfo.hero_presentation}
       contactInitial={contactInitial}
       pricingInitial={pricingInitial}
       amenitiesInitial={amenitiesInitial}

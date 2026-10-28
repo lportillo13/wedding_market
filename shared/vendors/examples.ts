@@ -3,7 +3,7 @@ type TextPair = { en: string; es: string };
 type Example = {
   key: string; name: string; category: string; categoryLabel: TextPair;
   city: string; region: string; summary: TextPair; description: TextPair;
-  photos: string[]; price: number; typical: number; capacity?: number;
+  photos: string[]; video?: string; price: number; typical: number; capacity?: number;
   pricing: { key: string; price: number; note: TextPair }[];
   services: TextPair[]; team: TextPair;
 };
@@ -55,6 +55,7 @@ const examples: Example[] = [
   },
   {
     key: 'ritmo-atardecer', name: 'Ritmo Atardecer', category: 'music', categoryLabel: words('Music & entertainment', 'Música y entretenimiento'), city: 'Santa Teresa', region: 'Puntarenas',
+    video: 'https://thewedmarket.com/hero/wedding-demo.mp4',
     summary: words('An acoustic ceremony, a relaxed cocktail set and a dance floor that feels like your crowd.', 'Una ceremonia acústica, un cóctel relajado y una pista de baile con su propia energía.'),
     description: words('A sample music collective for every part of a wedding day. Start with a ceremony duo, move into a live cocktail set and finish with a DJ. The service details show sound setup, musical preferences and bilingual announcements without borrowing venue-specific fields.', 'Un colectivo musical de ejemplo para cada momento de la boda. Empieza con un dúo para la ceremonia, sigue con música en vivo para el cóctel y termina con DJ. Los servicios muestran el sonido, las preferencias musicales y las presentaciones bilingües.'),
     photos: ['1511795409834-ef04bbd61622', '1470225620780-dba8ba36b745', '1493225457124-a3eb161ffa5f'], price: 90000, typical: 210000,
@@ -76,6 +77,7 @@ export function getExampleVendor(slug: string, language: 'en' | 'es' = 'en') {
     caption: language === 'es' ? 'Fotografía de referencia · Unsplash' : 'Reference photography · Unsplash', sort: index,
   }));
   const reviewBody = words('This is sample feedback to review the layout, typography and vendor response. It does not describe a real booking.', 'Esta reseña de ejemplo permite revisar el diseño, la tipografía y la respuesta del proveedor. No describe una contratación real.');
+  const media = [...photos, ...(example.video ? [{ url: example.video, public_id: `${slug}-video`, width: 1920, height: 1080, format: 'mp4', type: 'video' as const, caption: language === 'es' ? 'Video de referencia' : 'Reference video', sort: photos.length }] : [])];
   return {
     id: slug, slug, is_example: true as const, business_name: example.name,
     bio_en: example.summary.en, bio_es: example.summary.es,
@@ -84,7 +86,8 @@ export function getExampleVendor(slug: string, language: 'en' | 'es' = 'en') {
     category_details: [{ key: example.category, slug: example.category, label: example.categoryLabel[language] }],
     city: example.city, region: example.region, country: 'Costa Rica',
     location: { city: example.city, region: example.region, country: 'Costa Rica', address_label: null },
-    logo_url: null, hero_image: photos[0], thumbnail_image: photos[0], gallery_images: photos, media: photos,
+    logo_url: null, hero_image: photos[0], thumbnail_image: photos[0], gallery_images: media, media,
+    hero_video: example.video ? { provider: 'file' as const, url: example.video } : null,
     starting_price_cents: example.price, starting_price_currency: 'USD',
     typical_spend_cents: example.typical, typical_spend_currency: 'USD', capacity_max: example.capacity ?? null,
     phone: null, website_url: null, years_in_business: 6, languages: ['English', 'Español'], team_size_range: '2–4',

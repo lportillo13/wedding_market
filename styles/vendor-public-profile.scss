@@ -193,11 +193,17 @@
     color: var(--lx-muted);
     font-size: .75rem;
   }
-  .wm-profile-hero__visual { position: absolute; inset: 0; z-index: 0; display: grid; min-width: 0; gap: .5rem; overflow: hidden; }
-  .wm-profile-hero__visual--collage { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+  .wm-profile-hero__visual { position: absolute; inset: 0; z-index: 0; min-width: 0; overflow: hidden; }
   .wm-profile-hero__cover { position: relative; display: block; width: 100%; height: 100%; min-height: 0; background: var(--lx-bg-2); overflow: hidden; }
   .wm-profile-hero__cover img { object-fit: cover; transition: transform 500ms ease; }
   .wm-profile-hero__cover:hover img { transform: scale(1.02); }
+  .wm-profile-cover-video { position: absolute; inset: 0; overflow: hidden; container-type: size; }
+  .wm-profile-cover-video__poster { object-fit: cover; }
+  .wm-profile-cover-video__file { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; }
+  .wm-profile-cover-video__file.is-playing { opacity: 1; }
+  .wm-profile-cover-video__embed { position: absolute; top: 50%; left: 50%; width: max(100cqw, 177.78cqh); height: max(100cqh, 56.25cqw); border: 0; transform: translate(-50%, -50%); pointer-events: none; }
+  .wm-profile-cover-video__toggle { position: absolute; top: 1rem; left: 1rem; z-index: 1; width: 44px; height: 44px; border: 1px solid #ffffff80; border-radius: 7px; background: #fffdf9ed; color: var(--lx-ink); }
+  .wm-profile-cover-video__source { position: absolute; top: 4.3rem; left: 1rem; padding: .5rem .75rem; border-radius: 7px; background: #fffdf9ed; color: var(--lx-ink); font-size: .75rem; }
   .wm-profile-hero__gallery-link {
     position: absolute;
     top: 1rem;
@@ -213,9 +219,6 @@
     color: var(--lx-ink);
     font: 400 .8rem/1.4 var(--wm-font-body);
   }
-  .wm-profile-hero__details { display: grid; grid-auto-rows: minmax(0, 1fr); gap: .5rem; min-width: 0; min-height: 0; }
-  .wm-profile-hero__details > div { position: relative; min-height: 0; overflow: hidden; }
-  .wm-profile-hero__details img { object-fit: cover; }
   .wm-profile-hero__seal { float: right; margin: 0 0 .6rem .8rem; width: 56px; height: 56px; }
   .wm-profile-hero__seal img { width: 100%; height: 100%; object-fit: contain; }
   .wm-profile-hero__visual--empty { display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 2rem; background: var(--lx-bg-2); }
@@ -727,8 +730,6 @@
     .wm-profile-hero { min-height: max(740px, calc(100svh - var(--wm-header-height))); padding: 1rem; }
     .wm-profile-hero__copy { max-width: none; padding: 1.25rem; background: #fffdf9f2; }
     .wm-profile-hero h1 { font-size: clamp(2.1rem, 9vw, 2.8rem); }
-    .wm-profile-hero__visual--collage { grid-template-columns: minmax(0, 1fr); }
-    .wm-profile-hero__details { display: none; }
     .wm-profile-hero__seal { width: 48px; height: 48px; }
     .wm-profile-hero__actions .btn { padding-inline: 1rem; }
 
