@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { invalidatePublicVendorCache } from '@/features/vendors/server/cache';
 
 export type SaveLocState = { ok: boolean; message: string };
 
@@ -50,6 +51,9 @@ export async function saveLocation(
 
   if (upErr) return { ok: false, message: upErr.message };
 
+  invalidatePublicVendorCache();
+  revalidatePath('/vendors');
+  revalidatePath(`/vendors/${vendor.slug}`);
   revalidatePath("/vendor/location");
   return { ok: true, message: "Location saved." };
 }

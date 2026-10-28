@@ -850,21 +850,21 @@
 }
 .wm-example-entry { color: #805a40; text-underline-offset: .3rem; }
 
-// Directory cards and profile pages share the same surface/control finish.
+// Approved editorial directory: portrait photography and unboxed captions.
 .wm-vendors-shell {
   background: var(--wm-bg-primary);
   .wm-vendor-card {
     border: 0;
-    border-radius: 10px;
-    background: var(--wm-bg-card);
+    border-radius: 0;
+    background: transparent;
+    overflow: visible;
     box-shadow: none;
     &:hover { transform: none; box-shadow: none; }
     &::before { display: none; }
   }
   .wm-vendor-card__body {
-    // Keep this scoped: the earlier editorial layer reset horizontal padding.
-    padding: 1.25rem 1.25rem 1.15rem;
-    gap: .65rem;
+    padding: 1rem 0 0;
+    gap: .55rem;
     min-width: 0;
   }
   .wm-vendor-card__heading {
@@ -876,7 +876,7 @@
   .wm-vendor-card__name {
     min-width: 0;
     color: var(--wm-ink);
-    font: 300 1.65rem/1.2 var(--wm-font-display);
+    font: 300 clamp(1.75rem, 2.3vw, 2rem)/1.15 var(--wm-font-display);
     overflow-wrap: anywhere;
   }
   .wm-vendor-card__sample {
@@ -886,8 +886,9 @@
   }
   .wm-vendor-card__cats {
     color: var(--wm-accent);
-    font: 400 .75rem/1.5 var(--wm-font-body);
-    letter-spacing: .08em;
+    font: 400 1.5rem/1.15 var(--wm-font-script);
+    letter-spacing: 0;
+    text-transform: none;
   }
   .wm-vendor-card__bio {
     color: var(--wm-muted);
@@ -901,9 +902,21 @@
   }
   .wm-vendor-card__rating {
     color: var(--wm-muted);
-    font: 400 .8125rem/1.5 var(--wm-font-body);
+    font: 400 .875rem/1.5 var(--wm-font-body);
     strong { color: var(--wm-ink); font-weight: 400; }
   }
+  .wm-vendor-grid { row-gap: 2.5rem; }
+  .wm-vendor-card__media { aspect-ratio: 4 / 5; border-radius: 5px; }
+  .wm-vendor-card__image-link { position: absolute; inset: 0; display: block; }
+  .wm-vendor-card__photo-empty { display: grid; place-items: center; height: 100%; padding: 1.5rem; color: var(--wm-muted); background: var(--wm-bg-secondary); font-size: .875rem; }
+  .wm-vendor-card__save { position: absolute; top: .4rem; right: .4rem; z-index: 1; }
+  .wm-vendor-card__save .btn { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; background: #332d2720; color: #fffdf9; border-radius: 50%; box-shadow: none; }
+  .wm-vendor-card__save .btn:hover { background: #332d2760; }
+  .wm-vendor-card__save .btn:focus-visible { outline: 2px solid #fffdf9; outline-offset: 2px; }
+  .wm-vendor-card__save .btn[aria-pressed="true"] svg path { fill: currentColor; }
+  .wm-vendor-card__location { color: var(--wm-muted); font: 400 .875rem/1.5 var(--wm-font-body); }
+  .wm-vendor-card__location > span { margin-right: .35rem; }
+  .wm-vendor-card__profile-link { display: inline-flex; align-items: center; align-self: flex-start; gap: .8rem; min-height: 44px; margin-top: .2rem; padding-block: .5rem; border-bottom: 1px solid var(--wm-accent); color: var(--wm-accent); font: 400 .875rem/1.4 var(--wm-font-body); text-decoration: none; }
   .wm-vendor-card__logo {
     flex-shrink: 0;
     border: 0;

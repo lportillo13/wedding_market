@@ -202,8 +202,6 @@ export default function VendorsPageContent({
           ) : (
             <div className="wm-vendor-grid">
               {items.map((vendor) => {
-                const bio = language === "es" ? vendor.bio_es || vendor.bio_en || "" : vendor.bio_en || vendor.bio_es || "";
-                const preview = bio.length > 130 ? `${bio.slice(0, 130)}...` : bio;
                 const localizedCategories = (vendor.categories ?? []).map((category) => {
                   const key = category.trim().toLowerCase();
                   return categoryLabelsByKey.get(key) ?? category;
@@ -213,23 +211,25 @@ export default function VendorsPageContent({
 
                 return (
                   <article className="wm-vendor-card" key={vendor.id}>
-                    {vendor.thumbnail_image?.url ? (
                       <div className="wm-vendor-card__media">
-                        <Image
+                        <Link className="wm-vendor-card__image-link" href={`/vendors/${vendor.slug}`} prefetch={false} aria-label={vendor.business_name} tabIndex={-1}>
+                        {vendor.thumbnail_image?.url ? <Image
                           src={resolveMediaUrl(vendor.thumbnail_image.url)}
                           alt={`${vendor.business_name} thumbnail`}
                           fill
                           unoptimized={shouldRenderUnoptimizedMedia(vendor.thumbnail_image.url)}
                           sizes="(max-width: 768px) 100vw, 360px"
                           style={{ objectFit: "cover" }}
-                        />
+                        /> : <span className="wm-vendor-card__photo-empty">{dictionary.vendorPublic.editorial.noPhotos}</span>}
+                        </Link>
+                        {!isVendor && !vendor.is_example && <div className="wm-vendor-card__save"><ShortlistButton vendorId={vendor.id} iconOnly /></div>}
                       </div>
-                    ) : null}
                     <div className="wm-vendor-card__body">
-                      {vendor.is_example && <span className="wm-vendor-card__sample">{exampleLabels.badge}</span>}
+                      {vendor.is_example && <span className="visually-hidden">{exampleLabels.badge}</span>}
                       {sponsoredBadge ? (
                         <span className="wm-vendor-card__badge">{sponsoredBadge}</span>
                       ) : null}
+                      {localizedCategories.length > 0 && <div className="wm-vendor-card__cats">{localizedCategories.join(' · ')}</div>}
                       <div className="wm-vendor-card__heading">
                         <a href={`/vendors/${vendor.slug}`} className="wm-vendor-card__name">
                           {vendor.business_name}
@@ -245,22 +245,13 @@ export default function VendorsPageContent({
                             />
                         </span>}
                       </div>
-                      {localizedCategories.length > 0 ? (
-                        <div className="wm-vendor-card__cats">{localizedCategories.join(" · ")}</div>
-                      ) : null}
-                      {bio ? <p className="wm-vendor-card__bio">{preview}</p> : <div style={{ flex: 1 }} />}
-                      <div className="wm-vendor-card__footer">
+                      {(vendor.city || vendor.region) && <div className="wm-vendor-card__location"><span aria-hidden="true">⌖</span> {vendor.city || vendor.region}</div>}
                         <div className="wm-vendor-card__rating">
                           <span className="wm-vendor-card__star">★</span>
                           <strong>{Number(vendor.rating_avg || 0).toFixed(1)}</strong>
                           <span>({vendor.rating_count || 0})</span>
                         </div>
-                        {!isVendor && !vendor.is_example ? (
-                          <div style={{ position: "relative", zIndex: 1 }}>
-                            <ShortlistButton vendorId={vendor.id} />
-                          </div>
-                        ) : null}
-                      </div>
+                      <Link className="wm-vendor-card__profile-link" href={`/vendors/${vendor.slug}`} prefetch={false}><span>{language === 'es' ? 'Ver perfil' : 'View profile'}</span><span aria-hidden="true">→</span></Link>
                     </div>
                   </article>
                 );

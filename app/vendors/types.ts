@@ -15,6 +15,9 @@ export type VendorListItem = {
   extra_info_en?: string | null;
   extra_info_es?: string | null;
   categories: string[];
+  city?: string | null;
+  region?: string | null;
+  country?: string | null;
   rating_avg: number;
   rating_count: number;
   created_at: string;

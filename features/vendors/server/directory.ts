@@ -24,7 +24,12 @@ export async function searchVendorDirectory(params: Record<string,string | undef
   }).abortSignal(AbortSignal.timeout(10000));
   if (error) throw new Error('The vendor directory is temporarily unavailable.');
   const result=data as {items:VendorListItem[];total:number};
-  return {items:(result.items ?? []).map(row=>({...row,thumbnail_image:parseMediaAsset(row.thumbnail_image),
+  const rows=(result.items ?? []).slice(0,pageSize);
+  // Only public city/region, bounded to this page; never fetch street/contact data.
+  const {data:locations}=rows.length ? await client.from('vendor_locations').select('vendor_id,city,region')
+    .in('vendor_id',rows.map(row=>row.id)).limit(pageSize).abortSignal(AbortSignal.timeout(5000)) : {data:[]};
+  const cities=new Map((locations ?? []).map(location=>[location.vendor_id,location]));
+  return {items:rows.map(row=>({...row,city:cities.get(row.id)?.city ?? row.city ?? null,region:cities.get(row.id)?.region ?? row.region ?? null,thumbnail_image:parseMediaAsset(row.thumbnail_image),
     logo_image:row.logo_url ? {url:row.logo_url,public_id:row.logo_url,width:160,height:160,format:'image'} : null,
   })),total:result.total ?? 0,page,pageSize};
   });
