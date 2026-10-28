@@ -40,18 +40,6 @@ function buildPageHref(searchParams: Record<string, string>, page: number) {
   return query ? `/vendors?${query}` : "/vendors";
 }
 
-function getVendorInitials(name: string) {
-  const initials = name
-    .split(/\s+/)
-    .map((part) => part.trim())
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join("");
-
-  return initials || name.slice(0, 2).toUpperCase();
-}
-
 export default function VendorsPageContent({
   error,
   items,
@@ -240,7 +228,7 @@ export default function VendorsPageContent({
                       </div>
                     ) : null}
                     <div className="wm-vendor-card__body">
-                      {vendor.is_example && <span className="wm-vendor-card__cats">{exampleLabels.badge}</span>}
+                      {vendor.is_example && <span className="wm-vendor-card__sample">{exampleLabels.badge}</span>}
                       {sponsoredBadge ? (
                         <span className="wm-vendor-card__badge">{sponsoredBadge}</span>
                       ) : null}
@@ -248,8 +236,7 @@ export default function VendorsPageContent({
                         <a href={`/vendors/${vendor.slug}`} className="wm-vendor-card__name">
                           {vendor.business_name}
                         </a>
-                        <span className="wm-vendor-card__logo" aria-hidden="true">
-                          {logoUrl ? (
+                        {logoUrl && <span className="wm-vendor-card__logo" aria-hidden="true">
                             <Image
                               src={resolveMediaUrl(logoUrl)}
                               alt=""
@@ -258,10 +245,7 @@ export default function VendorsPageContent({
                               sizes="44px"
                               style={{ objectFit: "contain" }}
                             />
-                          ) : (
-                            <span>{getVendorInitials(vendor.business_name)}</span>
-                          )}
-                        </span>
+                        </span>}
                       </div>
                       {localizedCategories.length > 0 ? (
                         <div className="wm-vendor-card__cats">{localizedCategories.join(" · ")}</div>

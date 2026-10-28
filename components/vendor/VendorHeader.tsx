@@ -57,9 +57,11 @@ export default function VendorHeader({
     .join(", ");
 
   return (
-    <header className="container wm-profile-hero">
+    <header className="wm-profile-hero">
       <div className="wm-profile-hero__copy">
-        <p className="wm-profile-eyebrow">{editorial.eyebrow}</p>
+        {vendor.logoUrl && <div className="wm-profile-hero__seal">
+          <Image src={resolveMediaUrl(vendor.logoUrl)} alt={fill(labels.logoAlt, { vendor: vendor.name })} width={56} height={56} unoptimized={shouldRenderUnoptimizedMedia(vendor.logoUrl)} />
+        </div>}
         {categories.length > 0 && (
           <p className="wm-profile-hero__category">
             {categories.map((category) => category.label).join(" · ")}
@@ -132,7 +134,7 @@ export default function VendorHeader({
         )}
       </div>
       <div
-        className={`wm-profile-hero__visual${hero ? "" : " wm-profile-hero__visual--empty"}`}
+        className={`wm-profile-hero__visual${hero ? supporting.length ? " wm-profile-hero__visual--collage" : "" : " wm-profile-hero__visual--empty"}`}
       >
         {hero ? (
           <>
@@ -146,7 +148,7 @@ export default function VendorHeader({
                 alt={hero.caption || vendor.name}
                 fill
                 priority
-                sizes="(max-width: 991px) 100vw, 55vw"
+                sizes="(max-width: 575px) 100vw, 70vw"
                 unoptimized={shouldRenderUnoptimizedMedia(hero.url)}
               />
               <span className="wm-profile-hero__gallery-link">
@@ -162,7 +164,7 @@ export default function VendorHeader({
                       src={resolveMediaUrl(photo.url)}
                       alt=""
                       fill
-                      sizes="(max-width: 991px) 45vw, 25vw"
+                      sizes="30vw"
                       unoptimized={shouldRenderUnoptimizedMedia(photo.url)}
                     />
                   </div>
@@ -176,22 +178,6 @@ export default function VendorHeader({
           </div>
         )}
         {!hero && <p>{editorial.noPhotos}</p>}
-        {vendor.logoUrl && (
-          <div className="wm-profile-hero__seal">
-            <Image
-              src={resolveMediaUrl(vendor.logoUrl)}
-              alt={fill(labels.logoAlt, { vendor: vendor.name })}
-              width={80}
-              height={80}
-              unoptimized={shouldRenderUnoptimizedMedia(vendor.logoUrl)}
-            />
-          </div>
-        )}
-        {hero && (
-          <p className="wm-profile-hero__caption">
-            {editorial.portfolio}
-          </p>
-        )}
       </div>
     </header>
   );
