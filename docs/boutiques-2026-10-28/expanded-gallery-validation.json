@@ -1,0 +1,75 @@
+{
+  "checkedAt": "2026-10-28T23:31:30.555Z",
+  "sourceCommit": "a9bdf8cdfaa5f7a6acb9e8cd98b3cc68880666a3",
+  "web": {
+    "architecture": true,
+    "typecheck": true,
+    "lint": true,
+    "productionBuild": true,
+    "tests": 109
+  },
+  "native": {
+    "typecheck": true,
+    "lint": true,
+    "tests": 78,
+    "suites": 18,
+    "expoCompatibility": true,
+    "androidHermes": true,
+    "iosHermes": true,
+    "assetCount": 8,
+    "androidBundle": "AppEntry-e7a187faedfa01089132482daabf9ff6.hbc",
+    "iosBundle": "AppEntry-c37debdec2a06f4d6ba4806e3543a02e.hbc",
+    "publicationHeld": true
+  },
+  "catalog": {
+    "outfits": 18,
+    "perStore": 6,
+    "featuredGalleries": 4,
+    "photosPerFeatured": 3,
+    "videosPerFeatured": 1,
+    "newGeneratedImages": 16,
+    "newVideoFiles": 3,
+    "maxSelectedMedia": 6,
+    "newMediaBytes": 3527277
+  },
+  "browser": {
+    "localStoreCounts": [
+      6,
+      6,
+      6
+    ],
+    "photoSelection": true,
+    "videoSelection": true,
+    "videoRemovedOnPhotoSelection": true,
+    "videoDurationsSeconds": {
+      "alba": 11,
+      "marfil": 11,
+      "roble": 11
+    },
+    "mediaErrors": false,
+    "favoriteDeepLink": true,
+    "fittingWithNewDressSelection": true,
+    "spanishPhoneWidth": 390,
+    "documentWidth": 375,
+    "horizontalOverflow": false
+  },
+  "limits": [
+    "Photo films are generated-image presentations, not live garment-motion footage",
+    "No physical-device or signed-native acceptance",
+    "Preview interactions use the isolated in-memory transport; production writes were not submitted"
+  ],
+  "deployment": {
+    "target": "a9bdf8cdfaa5f7a6acb9e8cd98b3cc68880666a3",
+    "expectedBase": "3c74fd44298b0ea85069a0d500d4f14f58ea6d84",
+    "accepted": true,
+    "exactSuccessReceipt": false,
+    "liveSourceUnchanged": true,
+    "preflight": {
+      "freeDiskBytes": 6265036800,
+      "requiredFreeDiskBytes": 6442450944,
+      "additionalBytesNeeded": 177414144,
+      "availableMemoryMiB": 6395
+    },
+    "administratorCacheCleanupRequested": true
+  }
+}
