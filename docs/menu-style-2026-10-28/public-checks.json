@@ -1,0 +1,57 @@
+{
+  "checkedAt": "2026-10-28T14:35:09.266Z",
+  "releaseCommit": "cb35e01ff5cd4ee7297f5144706553bc7d961306",
+  "passed": true,
+  "checks": [
+    {
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "language": "es",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/d308e2a27edde546.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/f8c4cd2c1db9f848.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/4d200e1e4bf6c725.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/baa501dffb323683.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "kind": "editorial-menu-styles",
+      "passed": true
+    },
+    {
+      "kind": "scoped-account-popup-tokens",
+      "passed": true
+    },
+    {
+      "kind": "botanical-decoration-removed",
+      "passed": true
+    },
+    {
+      "kind": "persistent-header-style",
+      "passed": true
+    },
+    {
+      "kind": "regular-planning-list",
+      "passed": true
+    }
+  ]
+}

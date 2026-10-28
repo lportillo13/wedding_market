@@ -1,0 +1,86 @@
+{
+  "releaseCommit": "cb35e01ff5cd4ee7297f5144706553bc7d961306",
+  "checks": [
+    {
+      "kind": "desktop-initial",
+      "position": "fixed",
+      "scrolled": null,
+      "top": 24
+    },
+    {
+      "background": "rgba(51, 45, 39, 0.96)",
+      "bottom": 100,
+      "focus": "benefits",
+      "kind": "desktop-scrolled",
+      "scrolled": "true",
+      "sectionTop": 116,
+      "top": 24
+    },
+    {
+      "kind": "planning-type",
+      "weights": [
+        {
+          "selector": ".wm-home-premium-process__headline h2",
+          "weight": "300"
+        },
+        {
+          "selector": ".wm-home-premium-process__headline h2 em",
+          "weight": "300"
+        },
+        {
+          "selector": ".wm-home-premium-process__details h3",
+          "weight": "300"
+        },
+        {
+          "selector": ".wm-home-premium-process__details > p",
+          "weight": "400"
+        },
+        {
+          "selector": ".wm-home-premium-process__steps p",
+          "weight": "400"
+        },
+        {
+          "selector": ".wm-home-premium-process__details .wm-home-premium-button",
+          "weight": "400"
+        },
+        {
+          "selector": ".wm-home-premium-process__tab",
+          "weight": "400"
+        }
+      ]
+    },
+    {
+      "kind": "desktop-return-top",
+      "scrollY": 0,
+      "scrolled": null
+    },
+    {
+      "botanicalCount": 0,
+      "dialogWidth": 390,
+      "kind": "clean-mobile-menu",
+      "open": true
+    },
+    {
+      "clientWidth": 375,
+      "focus": "benefits",
+      "headerBottom": 80,
+      "headerTop": 16,
+      "kind": "phone-scrolled",
+      "scrollWidth": 375,
+      "scrolled": "true",
+      "sectionTop": 96
+    },
+    {
+      "botanicalCount": 0,
+      "count": 19,
+      "kind": "final-menu-categories"
+    },
+    {
+      "background": "rgb(252, 250, 246)",
+      "itemHeight": 44,
+      "kind": "final-account-popup",
+      "radius": "6px"
+    }
+  ],
+  "passed": true
+}
