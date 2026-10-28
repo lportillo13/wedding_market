@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useTranslation } from "@/contexts/LanguageContext";
+import { useTranslation, useLanguage } from "@/contexts/LanguageContext";
 import { isHeaderLinkCurrent } from "@/lib/header-navigation";
 
 const tabs = [
@@ -16,6 +16,7 @@ const tabs = [
 
 export default function VendorDashboardHeader() {
   const t = useTranslation();
+  const {language}=useLanguage();
   const pathname = usePathname();
   const router = useRouter();
   const activeHref = tabs.find(tab => tab.href !== '/vendor' && isHeaderLinkCurrent(pathname, tab.href))?.href ?? '/vendor';
@@ -40,6 +41,7 @@ export default function VendorDashboardHeader() {
         ))}
       </ul>
       </nav>
+      <div className="wm-boutique-inbox-link"><Link href="/vendor/boutique">{language==='es'?'Colección de la boutique':'Boutique collection'} ↗</Link></div>
     </>
   );
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AppointmentInboxLink } from '@/features/boutiques/client/AppointmentInbox';
 import { redirect } from "next/navigation";
 import InboxPageView from "@/components/inbox/InboxPageView";
 import { buildAutocompleteSuggestions } from "@/lib/search/autocomplete";
@@ -58,6 +59,7 @@ export default async function VendorInboxPage({
     ]),
   );
   return (
+    <><AppointmentInboxLink vendor/>
     <InboxPageView
       scope="vendor"
       language={language}
@@ -72,6 +74,6 @@ export default async function VendorInboxPage({
       markThreadRead={markVendorInboxThreadRead}
       deleteThreads={closeVendorInboxThreads}
       restoreThreads={restoreVendorInboxThreads}
-    />
+    /></>
   );
 }

@@ -150,6 +150,7 @@ export default function NavBar({
         >
           <ul>
             <VendorsMegaMenu categories={vendorCategories} />
+            <li><Link href="/boutiques" aria-current={isHeaderLinkCurrent(pathname,'/boutiques')?'page':undefined}>{language==='es'?'Vestidos y trajes':'Dresses & suits'}</Link></li>
             <li>
               <Link
                 href="/about"
@@ -350,6 +351,7 @@ export default function NavBar({
                 </Link>
               ) : null}
               <div className="wm-mobile-navigation__explore">
+                <Link href="/boutiques" onClick={close}>{language==='es'?'Vestidos y trajes':'Dresses & suits'}</Link>
                 <Link
                   href="/about"
                   onClick={close}

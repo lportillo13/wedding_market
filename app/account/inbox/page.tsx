@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AppointmentInboxLink } from '@/features/boutiques/client/AppointmentInbox';
 import InboxPageView from "@/components/inbox/InboxPageView";
 import { buildAutocompleteSuggestions } from "@/lib/search/autocomplete";
 import { getRequestI18n } from "@/lib/i18n/server";
@@ -60,6 +61,7 @@ export default async function AccountInboxPage({
     ]),
   );
   return (
+    <><div className="container"><AppointmentInboxLink /></div>
     <InboxPageView
       scope="client"
       language={language}
@@ -73,6 +75,6 @@ export default async function AccountInboxPage({
       markThreadRead={markAccountInboxThreadRead}
       deleteThreads={closeAccountInboxThreads}
       restoreThreads={restoreAccountInboxThreads}
-    />
+    /></>
   );
 }

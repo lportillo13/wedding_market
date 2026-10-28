@@ -1,4 +1,8 @@
 import { categories, categoryLabel, heroImageUrl } from "../content/catalog";
+import { useEffect, useState } from 'react';
+import { BoutiqueHub, type BoutiqueMode } from '../features/boutiques/BoutiqueHub';
+import { BoutiqueButton } from '../features/boutiques/ui';
+import { boutiqueCopy } from '../../../shared/boutiques/copy';
 import { AccountProfileScreen } from "../features/account/AccountProfileScreen";
 import { FontLicenseNotice } from "../features/account/FontLicenseNotice";
 import { AdminDashboardScreen } from "../features/admin/AdminDashboardScreen";
@@ -65,6 +69,10 @@ export function ScreenContent({
   const { width } = useWindowDimensions();
   const heroDisplaySize = Math.min(54, width * 0.13);
   const heroScriptSize = Math.min(58, width * 0.15);
+  const [boutiqueMode,setBoutiqueMode]=useState<BoutiqueMode|null>(null);
+  useEffect(()=>{setBoutiqueMode(null);},[tab]);
+  const boutiqueLabels=boutiqueCopy[language];
+  if(boutiqueMode)return <BoutiqueHub language={language} role={role} mode={boutiqueMode} onBack={()=>setBoutiqueMode(null)} onSignIn={()=>{setBoutiqueMode(null);onNavigate('profile');}}/>;
 
   if (tab === "home") {
     return (
@@ -91,6 +99,7 @@ export function ScreenContent({
         </View>
 
         <View style={styles.homeBody}>
+          <View style={styles.sectionBlock}><BoutiqueButton title={boutiqueLabels.title+' →'} onPress={()=>setBoutiqueMode('directory')}/></View>
           <View style={styles.statStrip}>
             {[
               ["01", labels.discover],
@@ -177,6 +186,7 @@ export function ScreenContent({
 
   if (tab === "search") {
     return (
+      <View><BoutiqueButton title={boutiqueLabels.title+' →'} secondary onPress={()=>setBoutiqueMode('directory')}/>
       <VendorSearchScreen
         initialCategory={initialSearchCategory}
         savedVendorIds={savedVendorIds}
@@ -184,7 +194,7 @@ export function ScreenContent({
         onOpenVendor={onOpenVendor}
         onRequestQuote={onRequestQuote}
         onToggleSaved={onToggleSaved}
-      />
+      /></View>
     );
   }
 
@@ -228,6 +238,7 @@ export function ScreenContent({
     return (
       <View>
       <NotificationSettings notifications={notifications} />
+      {role==='vendor'?<View style={{gap:12,marginVertical:18}}><BoutiqueButton title={boutiqueLabels.management} secondary onPress={()=>setBoutiqueMode('manage')}/><BoutiqueButton title={boutiqueLabels.appointments} secondary onPress={()=>setBoutiqueMode('appointments')}/></View>:null}
       {role==='vendor'?<VendorWorkspaceScreen language={language} />:
       <AccountProfileScreen
         userEmail={userEmail}
@@ -242,6 +253,7 @@ export function ScreenContent({
 
   if (tab === "favorites") {
     return (
+      <View><BoutiqueButton title={boutiqueLabels.favorites+' →'} secondary onPress={()=>setBoutiqueMode('favorites')}/>
       <FavoritesScreen
         savedVendorIds={savedVendorIds}
         language={language}
@@ -249,12 +261,12 @@ export function ScreenContent({
         onRequestQuote={onRequestQuote}
         onRequestQuoteBatch={onRequestQuoteBatch}
         onToggleSaved={onToggleSaved}
-      />
+      /></View>
     );
   }
 
   if (tab === "inbox") {
-    return <InboxScreen role={role} language={language} openRequest={notificationTarget} onOpenConsumed={onNotificationConsumed} revision={inboxRevision} />;
+    return <View><BoutiqueButton title={boutiqueLabels.appointments+' →'} secondary onPress={()=>setBoutiqueMode('appointments')}/><InboxScreen role={role} language={language} openRequest={notificationTarget} onOpenConsumed={onNotificationConsumed} revision={inboxRevision} /></View>;
   }
 
   const fallbackTab = tab as string;

@@ -1,0 +1,10 @@
+{
+  "project": "aousexbvujjnvbudpsmz",
+  "version": "202610280013",
+  "boutiques": 0,
+  "rlsTables": 5,
+  "sourceMd5": "f722eb264a231cb512e4ef3e79d5ad95",
+  "normalizedSourceMd5": "8635ef6377c77dc18582545e2d709d6f",
+  "verifiedEditorSha256": "6a638c128ec0eef2a3c8c46d59e52474ef675f761ee7ff67dc6423c2df5bb497",
+  "note": "Supabase editor uses CRLF line endings; normalized source matches the tested migration."
+}
