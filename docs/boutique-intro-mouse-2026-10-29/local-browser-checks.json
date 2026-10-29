@@ -1,0 +1,69 @@
+{
+  "checks": [
+    {
+      "beforeCollection": true,
+      "case": "full-width-introduction",
+      "collectionWidth": 1132,
+      "expanded": false,
+      "height": 155.375,
+      "instances": 1,
+      "width": 1132
+    },
+    {
+      "case": "read-more",
+      "expanded": true,
+      "policyVisible": true
+    },
+    {
+      "case": "phone-introduction",
+      "expanded": false,
+      "overflow": false,
+      "width": 320
+    },
+    {
+      "case": "intro-appointment-action",
+      "form": true,
+      "policyText": true
+    },
+    {
+      "animation": "wm-scroll-wheel",
+      "case": "phone-mouse-cue",
+      "circleBorder": "0px",
+      "heroHeight": 844,
+      "hitHeight": 48,
+      "hitWidth": 48,
+      "mouseHeight": 33,
+      "mouseWidth": 21,
+      "overflow": false,
+      "viewportHeight": 844
+    },
+    {
+      "case": "mouse-keyboard-scroll",
+      "focus": "benefits",
+      "scrollY": 604
+    },
+    {
+      "case": "desktop-full-height",
+      "height": 900,
+      "viewport": 900
+    }
+  ],
+  "optionsAt320": [
+    {
+      "scrollWidth": 273,
+      "visible": "Atelier gallery",
+      "width": 273
+    },
+    {
+      "scrollWidth": 273,
+      "visible": "Runway focus",
+      "width": 273
+    },
+    {
+      "scrollWidth": 273,
+      "visible": "Magazine story",
+      "width": 273
+    }
+  ],
+  "viewportReset": true
+}

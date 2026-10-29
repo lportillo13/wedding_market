@@ -125,13 +125,15 @@ html:has(.wm-site-header--home) { scroll-padding-top: calc(var(--wm-header-heigh
 .wm-founders-hero__scroll-cue {
   position: absolute; display: grid; place-items: center;
   left: 50%; right: auto; bottom: 24px; transform: translateX(-50%);
-  width: 48px; height: 48px; padding: 0; border: 1px solid #ffffff70;
-  border-radius: 50%; background: #ffffff08; color: #fffdf8; z-index: 2;
-  transition: background-color 180ms ease, border-color 180ms ease;
-  svg { width: 20px; height: 20px; animation: wm-scroll-arrow 2s ease-in-out infinite; }
-  &:hover, &:focus-visible { color: #332d27; background: #fffdf8; border-color: #fffdf8; }
+  width: 48px; height: 48px; padding: 0; border: 0;
+  border-radius: 7px; background: transparent; color: #fffdf8; z-index: 2;
+  transition: opacity 180ms ease;
+  &:hover, &:focus-visible { color: #fffdf8; background: transparent; transform: translateX(-50%); opacity: 1; }
+  &:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 }
-@keyframes wm-scroll-arrow { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(3px); } }
+.wm-founders-hero__scroll-mouse { position: relative; display: block; width: 21px; height: 33px; border: 1.5px solid currentColor; border-radius: 12px; }
+.wm-founders-hero__scroll-wheel { position: absolute; top: 6px; left: calc(50% - 1px); width: 2px; height: 6px; border-radius: 2px; background: currentColor; animation: wm-scroll-wheel 1.8s ease-in-out infinite; }
+@keyframes wm-scroll-wheel { 0%, 15% { transform: translateY(0); opacity: 1; } 65% { transform: translateY(8px); opacity: 0; } 100% { transform: translateY(0); opacity: 0; } }
 .wm-editorial-section:focus { outline: none; }
 @media (max-width: 767.98px) {
   .wm-site-header--home .wm-site-header__inner { padding-inline: .8rem; gap: .5rem; }
@@ -159,6 +161,6 @@ html:has(.wm-site-header--home) { scroll-padding-top: calc(var(--wm-header-heigh
   .wm-founders-hero__links { margin-top: 1rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .wm-founders-hero__scroll-cue svg { animation: none; }
+  .wm-founders-hero__scroll-wheel { animation: none; }
   .wm-site-header *, .wm-founders-hero__scroll-cue { transition: none !important; }
 }

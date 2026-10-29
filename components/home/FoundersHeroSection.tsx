@@ -214,17 +214,7 @@ export default function FoundersHeroSection({ hero }: FoundersHeroSectionProps) 
         <span className="wm-founders-hero__motion-label">{language === "es" ? videoPlaying ? "Pausar video" : "Ver video" : videoPlaying ? "Pause video" : "Play video"}</span>
       </button>
       <a href="#benefits" className="wm-founders-hero__scroll-cue" onClick={scrollToDetails} aria-label={language === "es" ? "Desplazarse a la siguiente sección" : "Scroll to the next section"}>
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="m6 9 6 6 6-6" />
-        </svg>
+        <span className="wm-founders-hero__scroll-mouse" aria-hidden="true"><span className="wm-founders-hero__scroll-wheel"/></span>
       </a>
     </section>
   );
