@@ -11,3 +11,8 @@ Category labels missing from the home-page shortlist now have EN/ES translations
 Architecture, TypeScript, ESLint, production build and all 109 existing web tests pass. The category regression check includes music translation and an unknown prototype-like key. Production-preview checks at 320/390px, tablet 900px and desktop confirm the contained initials seal, centered heading/summary, stacked or row facts, and no horizontal overflow. English music/category/fact labels switch correctly; Spanish was restored. Villa Brisa retains its two service-space cards, and Luz de Abril uses the same signature. See `local-browser-checks.json`; no console errors were recorded. The exact publication receipt and live screenshots will be added after the fixed gateway completes.
 
 Native app publication remains held. No database or infrastructure change is required.
+
+
+## Verified publication
+
+Website **e35e23b223f870c6fbdd5c8ba583e5fe19872481** is deployed against prior verified release `7d35a4214cd73e113a1290b49aeb975dfa8c38d8`. The fixed gateway receipt confirms this exact target and rollback `/var/www/wedding-market.before-20261029-191724`. All 12 public checks pass. Live desktop/phone alignment, logo sizing, fact layout and category checks are in `live-browser-checks.json`; actual screenshots are `live-vendor-signature-desktop.jpg` and `live-vendor-signature-mobile.jpg`. Native publication remains held.

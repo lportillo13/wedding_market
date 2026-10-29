@@ -1,0 +1,317 @@
+{
+  "checkedAt": "2026-10-29T19:24:52.098Z",
+  "releaseCommit": "e35e23b223f870c6fbdd5c8ba583e5fe19872481",
+  "checks": [
+    {
+      "body": {
+        "bottom": 808.828125,
+        "height": 188,
+        "left": 151.5,
+        "right": 983.5,
+        "top": 620.828125,
+        "width": 832,
+        "x": 151.5,
+        "y": 620.828125
+      },
+      "bodyAlignment": "start",
+      "category": "Música y entretenimiento",
+      "eyebrowFont": "10.4px",
+      "facts": [
+        "Tamaño del equipo: 2–4",
+        "6+ años de experiencia",
+        "Idiomas: English, Español",
+        "Bodas"
+      ],
+      "factsLayout": "flex",
+      "heading": "Sobre Ritmo Atardecer",
+      "heroHeight": 900,
+      "logo": {
+        "bottom": 348.125,
+        "height": 112,
+        "left": 511.5,
+        "right": 623.5,
+        "top": 236.125,
+        "width": 112,
+        "x": 511.5,
+        "y": 236.125
+      },
+      "logoText": {
+        "bottom": 318.125,
+        "height": 52,
+        "left": 535,
+        "right": 600,
+        "top": 266.125,
+        "width": 65,
+        "x": 535,
+        "y": 266.125
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "signature": {
+        "bottom": 501.4375,
+        "height": 265.3125,
+        "left": 67.5,
+        "right": 1067.5,
+        "top": 236.125,
+        "width": 1000,
+        "x": 67.5,
+        "y": 236.125
+      },
+      "summaryAlignment": "center",
+      "viewport": [
+        1150,
+        900
+      ]
+    },
+    {
+      "body": {
+        "bottom": 751.046875,
+        "height": 191.5,
+        "left": 216.5,
+        "right": 1048.5,
+        "top": 559.546875,
+        "width": 832,
+        "x": 216.5,
+        "y": 559.546875
+      },
+      "bodyAlignment": "start",
+      "category": "Music & entertainment",
+      "eyebrowFont": "10.4px",
+      "facts": [
+        "Team size: 2–4",
+        "6+ years in business",
+        "Languages: English, Español",
+        "Bodas"
+      ],
+      "factsLayout": "flex",
+      "heading": "About Ritmo Atardecer",
+      "heroHeight": 900,
+      "logo": {
+        "bottom": 280.125,
+        "height": 112,
+        "left": 576.5,
+        "right": 688.5,
+        "top": 168.125,
+        "width": 112,
+        "x": 576.5,
+        "y": 168.125
+      },
+      "logoText": {
+        "bottom": 250.125,
+        "height": 52,
+        "left": 600,
+        "right": 665,
+        "top": 198.125,
+        "width": 65,
+        "x": 600,
+        "y": 198.125
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "signature": {
+        "bottom": 440.15625,
+        "height": 272.03125,
+        "left": 66.5,
+        "right": 1198.5,
+        "top": 168.125,
+        "width": 1132,
+        "x": 66.5,
+        "y": 168.125
+      },
+      "summaryAlignment": "center",
+      "viewport": [
+        1280,
+        900
+      ]
+    },
+    {
+      "body": {
+        "bottom": 740.828125,
+        "height": 188,
+        "left": 151.5,
+        "right": 983.5,
+        "top": 552.828125,
+        "width": 832,
+        "x": 151.5,
+        "y": 552.828125
+      },
+      "bodyAlignment": "start",
+      "category": "Música y entretenimiento",
+      "eyebrowFont": "10.4px",
+      "facts": [
+        "Tamaño del equipo: 2–4",
+        "6+ años de experiencia",
+        "Idiomas: English, Español",
+        "Bodas"
+      ],
+      "factsLayout": "flex",
+      "heading": "Sobre Ritmo Atardecer",
+      "heroHeight": 900,
+      "logo": {
+        "bottom": 280.125,
+        "height": 112,
+        "left": 511.5,
+        "right": 623.5,
+        "top": 168.125,
+        "width": 112,
+        "x": 511.5,
+        "y": 168.125
+      },
+      "logoText": {
+        "bottom": 250.125,
+        "height": 52,
+        "left": 535,
+        "right": 600,
+        "top": 198.125,
+        "width": 65,
+        "x": 535,
+        "y": 198.125
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "signature": {
+        "bottom": 433.4375,
+        "height": 265.3125,
+        "left": 67.5,
+        "right": 1067.5,
+        "top": 168.125,
+        "width": 1000,
+        "x": 67.5,
+        "y": 168.125
+      },
+      "summaryAlignment": "center",
+      "viewport": [
+        1150,
+        900
+      ]
+    },
+    {
+      "body": {
+        "bottom": 967.78125,
+        "height": 289.453125,
+        "left": 12,
+        "right": 363,
+        "top": 678.328125,
+        "width": 351,
+        "x": 12,
+        "y": 678.328125
+      },
+      "bodyAlignment": "start",
+      "category": "Música y entretenimiento",
+      "eyebrowFont": "11.2px",
+      "facts": [
+        "Tamaño del equipo: 2–4",
+        "6+ años de experiencia",
+        "Idiomas: English, Español",
+        "Bodas"
+      ],
+      "factsLayout": "grid",
+      "heading": "Sobre Ritmo Atardecer",
+      "heroHeight": 844,
+      "logo": {
+        "bottom": 333.96875,
+        "height": 96,
+        "left": 139.5,
+        "right": 235.5,
+        "top": 237.96875,
+        "width": 96,
+        "x": 139.5,
+        "y": 237.96875
+      },
+      "logoText": {
+        "bottom": 307.96875,
+        "height": 44,
+        "left": 160,
+        "right": 215,
+        "top": 263.96875,
+        "width": 55,
+        "x": 160,
+        "y": 263.96875
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "signature": {
+        "bottom": 464.59375,
+        "height": 226.625,
+        "left": 12,
+        "right": 363,
+        "top": 237.96875,
+        "width": 351,
+        "x": 12,
+        "y": 237.96875
+      },
+      "summaryAlignment": "center",
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "body": {
+        "bottom": 909.703125,
+        "height": 317.453125,
+        "left": 12,
+        "right": 293,
+        "top": 592.25,
+        "width": 281,
+        "x": 12,
+        "y": 592.25
+      },
+      "bodyAlignment": "start",
+      "category": "Música y entretenimiento",
+      "eyebrowFont": "11.2px",
+      "facts": [
+        "Tamaño del equipo: 2–4",
+        "6+ años de experiencia",
+        "Idiomas: English, Español",
+        "Bodas"
+      ],
+      "factsLayout": "grid",
+      "heading": "Sobre Ritmo Atardecer",
+      "heroHeight": 740,
+      "logo": {
+        "bottom": 229.96875,
+        "height": 96,
+        "left": 104.5,
+        "right": 200.5,
+        "top": 133.96875,
+        "width": 96,
+        "x": 104.5,
+        "y": 133.96875
+      },
+      "logoText": {
+        "bottom": 203.96875,
+        "height": 44,
+        "left": 125,
+        "right": 180,
+        "top": 159.96875,
+        "width": 55,
+        "x": 125,
+        "y": 159.96875
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "signature": {
+        "bottom": 378.515625,
+        "height": 244.546875,
+        "left": 12,
+        "right": 293,
+        "top": 133.96875,
+        "width": 281,
+        "x": 12,
+        "y": 133.96875
+      },
+      "summaryAlignment": "center",
+      "viewport": [
+        320,
+        740
+      ]
+    }
+  ],
+  "interactions": {
+    "heroAndAboutMusicCategorySwitchToEnglish": true,
+    "spanishRestored": true,
+    "logoFallbackContained": true
+  },
+  "consoleErrors": []
+}
