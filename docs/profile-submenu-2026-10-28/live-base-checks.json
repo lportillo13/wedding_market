@@ -1,0 +1,31 @@
+{
+  "liveCommit": "62c21d1810428720bef913339a837746932b2c15",
+  "galleryThumbnails": [
+    {
+      "display": "block",
+      "height": 69.6875,
+      "width": 94.265625
+    },
+    {
+      "display": "block",
+      "height": 69.6875,
+      "width": 94.265625
+    },
+    {
+      "display": "block",
+      "height": 69.6875,
+      "width": 94.265625
+    }
+  ],
+  "calendar": {
+    "months": 1,
+    "nextLabel": "Mes siguiente",
+    "previousDisabled": true,
+    "sliderDisplay": "none"
+  },
+  "afterNextMonth": {
+    "month": "noviembre de 2026",
+    "months": 1
+  },
+  "moreSubmenuPublished": false
+}

@@ -1,0 +1,30 @@
+{
+  "sourceCommit": "2fb01dda5b8e7dfebf76128dbee27ab8053cee15",
+  "checks": {
+    "architecture": "passed",
+    "typescript": "passed",
+    "eslint": "passed",
+    "productionBuild": "passed",
+    "phone320And390Fit": "passed",
+    "desktop1150AllSections": "passed",
+    "englishAndSpanish": "passed",
+    "keyboardEscapeAndFocus": "passed",
+    "outsideTap": "passed",
+    "upwardAndDownwardPlacement": "passed",
+    "hiddenSectionSelectionAndActiveState": "passed",
+    "browserConsoleErrors": 0
+  },
+  "publication": {
+    "submenuPublished": false,
+    "verifiedLiveBase": "62c21d1810428720bef913339a837746932b2c15",
+    "earlierMobileRepairsPublished": true,
+    "availableDiskBytesAfterBaseRelease": 4467896320,
+    "requiredDiskBytes": 6442450944,
+    "preparedCandidate": "2fb01dda5b8e7dfebf76128dbee27ab8053cee15",
+    "preparedExpectedBase": "62c21d1810428720bef913339a837746932b2c15",
+    "manifestSha256": "c5ddea0409ac73346193aeb07de6bfbfa5a5c6b4b847dd24b789ceff7d24735b",
+    "candidateUploaded": false,
+    "candidateLaunched": false
+  },
+  "nativeRelease": "held"
+}
