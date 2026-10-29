@@ -44,19 +44,21 @@ export default function VendorAbout({ vendor, spaces, categoryKeys, categories =
   const hasFacts = vendor.teamSizeRange || vendor.yearsInBusiness || vendor.languages.length > 0 || vendor.eventTypes.length > 0;
 
   return (
-    <div className="wm-profile-about wm-profile-about--signature">
-      <div className="wm-profile-about__signature">
+    <div className="wm-profile-about wm-profile-about--editorial">
+      <div className="wm-profile-about__identity">
         <div className="wm-profile-about__logo">
           {vendor.logoUrl && failedLogo !== vendor.logoUrl ? <img src={resolveMediaUrl(vendor.logoUrl)} alt={fill(headerLabels.logoAlt, { vendor: vendor.name })} width={112} height={112} loading="lazy" onError={() => setFailedLogo(vendor.logoUrl)}/> : <span aria-hidden="true">{initials}</span>}
         </div>
-        <p className="wm-profile-eyebrow">{dictionary.vendorPublic.editorial.story}</p>
-        <h2>{fill(labels.heading, { vendor: vendor.name })}</h2>
-        {categories.length > 0 && <p className="wm-profile-about__category">{categories.map(category => localizeVendorCategory(category, dictionary.home.categories.items, dictionary.vendorPublic.categoryLabels)).join(' · ')}</p>}
-        {vendor.websiteUrl ? (
-          <a href={vendor.websiteUrl} className="wm-profile-about__website" target="_blank" rel="noreferrer">
-            {fill(labels.visitWebsite, { vendor: vendor.name })}<HeaderIcon name="arrow"/>
-          </a>
-        ) : null}
+        <div className="wm-profile-about__heading">
+          <p className="wm-profile-eyebrow">{dictionary.vendorPublic.editorial.story}</p>
+          <h2>{fill(labels.heading, { vendor: vendor.name })}</h2>
+          {categories.length > 0 && <p className="wm-profile-about__category">{categories.map(category => localizeVendorCategory(category, dictionary.home.categories.items, dictionary.vendorPublic.categoryLabels)).join(' · ')}</p>}
+          {vendor.websiteUrl ? (
+            <a href={vendor.websiteUrl} className="wm-profile-about__website" target="_blank" rel="noreferrer">
+              {fill(labels.visitWebsite, { vendor: vendor.name })}<HeaderIcon name="arrow"/>
+            </a>
+          ) : null}
+        </div>
       </div>
       {hasFacts && <div className="wm-profile-about__facts" role="group" aria-label={dictionary.vendorPublic.editorial.atAGlance}>
         {vendor.teamSizeRange && <span><HeaderIcon name="users"/><span>{fill(labels.teamSize, { size: vendor.teamSizeRange })}</span></span>}

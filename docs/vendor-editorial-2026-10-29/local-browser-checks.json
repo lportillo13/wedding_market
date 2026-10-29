@@ -1,0 +1,292 @@
+{
+  "checkedAt": "2026-10-29T19:37:26.922Z",
+  "checks": [
+    {
+      "category": "Música y entretenimiento",
+      "factsLayout": "flex",
+      "heading": {
+        "bottom": 365.4375,
+        "height": 129.3125,
+        "left": 211.5,
+        "right": 1067.5,
+        "top": 236.125,
+        "width": 856,
+        "x": 211.5,
+        "y": 236.125
+      },
+      "headingAlignment": "left",
+      "headingText": "Sobre Ritmo Atardecer",
+      "identity": {
+        "bottom": 365.4375,
+        "height": 129.3125,
+        "left": 67.5,
+        "right": 1067.5,
+        "top": 236.125,
+        "width": 1000,
+        "x": 67.5,
+        "y": 236.125
+      },
+      "logo": {
+        "bottom": 356.78125,
+        "height": 112,
+        "left": 67.5,
+        "right": 179.5,
+        "top": 244.78125,
+        "width": 112,
+        "x": 67.5,
+        "y": 244.78125
+      },
+      "logoBackground": "rgb(245, 239, 230)",
+      "logoRadius": "7px",
+      "logoText": {
+        "bottom": 326.78125,
+        "height": 52,
+        "left": 91,
+        "right": 156,
+        "top": 274.78125,
+        "width": 65,
+        "x": 91,
+        "y": 274.78125
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "serviceCards": 0,
+      "summaryAlignment": "left",
+      "viewport": [
+        1150,
+        900
+      ]
+    },
+    {
+      "category": "Música y entretenimiento",
+      "factsLayout": "grid",
+      "heading": {
+        "bottom": 399.625,
+        "height": 161.65625,
+        "left": 108,
+        "right": 363,
+        "top": 237.96875,
+        "width": 255,
+        "x": 108,
+        "y": 237.96875
+      },
+      "headingAlignment": "left",
+      "headingText": "Sobre Ritmo Atardecer",
+      "identity": {
+        "bottom": 399.625,
+        "height": 161.65625,
+        "left": 12,
+        "right": 363,
+        "top": 237.96875,
+        "width": 351,
+        "x": 12,
+        "y": 237.96875
+      },
+      "logo": {
+        "bottom": 317.96875,
+        "height": 80,
+        "left": 12,
+        "right": 92,
+        "top": 237.96875,
+        "width": 80,
+        "x": 12,
+        "y": 237.96875
+      },
+      "logoBackground": "rgb(245, 239, 230)",
+      "logoRadius": "7px",
+      "logoText": {
+        "bottom": 297.96875,
+        "height": 40,
+        "left": 27,
+        "right": 77,
+        "top": 257.96875,
+        "width": 50,
+        "x": 27,
+        "y": 257.96875
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "serviceCards": 0,
+      "summaryAlignment": "left",
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "category": "Música y entretenimiento",
+      "factsLayout": "grid",
+      "heading": {
+        "bottom": 295.625,
+        "height": 161.65625,
+        "left": 108,
+        "right": 293,
+        "top": 133.96875,
+        "width": 185,
+        "x": 108,
+        "y": 133.96875
+      },
+      "headingAlignment": "left",
+      "headingText": "Sobre Ritmo Atardecer",
+      "identity": {
+        "bottom": 295.625,
+        "height": 161.65625,
+        "left": 12,
+        "right": 293,
+        "top": 133.96875,
+        "width": 281,
+        "x": 12,
+        "y": 133.96875
+      },
+      "logo": {
+        "bottom": 213.96875,
+        "height": 80,
+        "left": 12,
+        "right": 92,
+        "top": 133.96875,
+        "width": 80,
+        "x": 12,
+        "y": 133.96875
+      },
+      "logoBackground": "rgb(245, 239, 230)",
+      "logoRadius": "7px",
+      "logoText": {
+        "bottom": 193.96875,
+        "height": 40,
+        "left": 27,
+        "right": 77,
+        "top": 153.96875,
+        "width": 50,
+        "x": 27,
+        "y": 153.96875
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "serviceCards": 0,
+      "summaryAlignment": "left",
+      "viewport": [
+        320,
+        740
+      ]
+    },
+    {
+      "category": "Music & entertainment",
+      "factsLayout": "flex",
+      "heading": {
+        "bottom": 444.15625,
+        "height": 136.03125,
+        "left": 210.5,
+        "right": 1198.5,
+        "top": 308.125,
+        "width": 988,
+        "x": 210.5,
+        "y": 308.125
+      },
+      "headingAlignment": "left",
+      "headingText": "About Ritmo Atardecer",
+      "identity": {
+        "bottom": 444.15625,
+        "height": 136.03125,
+        "left": 66.5,
+        "right": 1198.5,
+        "top": 308.125,
+        "width": 1132,
+        "x": 66.5,
+        "y": 308.125
+      },
+      "logo": {
+        "bottom": 432.140625,
+        "height": 112,
+        "left": 66.5,
+        "right": 178.5,
+        "top": 320.140625,
+        "width": 112,
+        "x": 66.5,
+        "y": 320.140625
+      },
+      "logoBackground": "rgb(245, 239, 230)",
+      "logoRadius": "7px",
+      "logoText": {
+        "bottom": 402.140625,
+        "height": 52,
+        "left": 90,
+        "right": 155,
+        "top": 350.140625,
+        "width": 65,
+        "x": 90,
+        "y": 350.140625
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "serviceCards": 0,
+      "summaryAlignment": "left",
+      "viewport": [
+        1280,
+        900
+      ]
+    },
+    {
+      "category": "Lugares",
+      "factsLayout": "grid",
+      "heading": {
+        "bottom": 1131.15625,
+        "height": 113.03125,
+        "left": 214.5,
+        "right": 814.5,
+        "top": 1018.125,
+        "width": 600,
+        "x": 214.5,
+        "y": 1018.125
+      },
+      "headingAlignment": "left",
+      "headingText": "Sobre Villa Brisa",
+      "identity": {
+        "bottom": 1131.15625,
+        "height": 113.03125,
+        "left": 70.5,
+        "right": 814.5,
+        "top": 1018.125,
+        "width": 744,
+        "x": 70.5,
+        "y": 1018.125
+      },
+      "logo": {
+        "bottom": 1130.640625,
+        "height": 112,
+        "left": 70.5,
+        "right": 182.5,
+        "top": 1018.640625,
+        "width": 112,
+        "x": 70.5,
+        "y": 1018.640625
+      },
+      "logoBackground": "rgb(245, 239, 230)",
+      "logoRadius": "7px",
+      "logoText": {
+        "bottom": 1100.640625,
+        "height": 52,
+        "left": 96.4375,
+        "right": 156.546875,
+        "top": 1048.640625,
+        "width": 60.109375,
+        "x": 96.4375,
+        "y": 1048.640625
+      },
+      "overflow": false,
+      "path": "/vendors/example-villa-brisa",
+      "serviceCards": 2,
+      "summaryAlignment": "left",
+      "viewport": [
+        900,
+        900
+      ]
+    }
+  ],
+  "interactions": {
+    "languageSwitchVerified": true,
+    "spanishRestored": true,
+    "logoAndHeadingSideBySide": true,
+    "venueServiceCardsRetained": 2
+  },
+  "consoleErrors": []
+}

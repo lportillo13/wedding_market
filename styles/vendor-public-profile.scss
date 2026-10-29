@@ -188,12 +188,11 @@
   .wm-profile-hero__hint { color: #fffdf9cc; font-size: .75rem; margin: .8rem 0 0; }
   .wm-profile-about__facts {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     flex-wrap: wrap;
     gap: 1rem 1.5rem;
     margin: 2rem 0;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--lx-border);
+    padding-bottom: 0;
     color: var(--lx-muted);
     font-size: .875rem;
     > span { display: flex; align-items: center; gap: .65rem; min-width: 0; }
@@ -203,14 +202,14 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       max-width: 42rem;
-      margin-inline: auto;
+      margin-inline: 0;
       > span + span { border-left: 0; padding-left: 0; }
     }
     @media (max-width: 767.98px) {
       grid-template-columns: minmax(0, 1fr);
       max-width: 24rem;
       gap: .9rem;
-      padding-bottom: 1.5rem;
+      padding-bottom: 0;
       margin-block: 1.75rem;
     }
   }
@@ -284,6 +283,7 @@
     border-block: 1px solid var(--lx-border);
     box-shadow: none;
     z-index: 100;
+    transition: background-color 180ms ease, border-color 180ms ease;
   }
   .wm-vendor-tabs-shell .nav {
     flex-wrap: nowrap;
@@ -363,6 +363,22 @@
     background: var(--lx-bg-2);
     color: var(--lx-ink);
     &::after { transform: scaleX(1); }
+  }
+  .wm-profile-hero:has(.wm-profile-hero__cover) + .wm-vendor-tabs-shell[data-hero-state="cover"] {
+    background: transparent;
+    border-color: transparent;
+    .nav > .nav-link,
+    .wm-vendor-tabs__more { background: transparent; color: #fffdf9d9; }
+    .nav > .nav-link:is(.active, [aria-current="location"], :hover, :focus-visible),
+    .wm-vendor-tabs__more:is(.active, :hover, :focus-visible) { background: transparent; color: #fffdf9; }
+    .nav > .nav-link::after,
+    .wm-vendor-tabs__more::after { background: #e2cda7; }
+    .nav > .nav-link:focus-visible,
+    .wm-vendor-tabs__more:focus-visible { outline-color: #fffdf9; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wm-vendor-tabs-shell,
+    .wm-vendor-tabs-shell .nav-link { transition: none; }
   }
   .wm-vendor-content-wrap {
     padding-block: 2.5rem 4rem;
@@ -457,24 +473,25 @@
     font-size: inherit;
     line-height: 1.45;
   }
-  .wm-profile-about__signature { text-align: center; }
+  .wm-profile-about__identity { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: center; gap: 2rem; }
+  .wm-profile-about__heading { min-width: 0; text-align: left; }
   .wm-profile-about__logo {
     display: grid;
     place-items: center;
     width: 112px;
     height: 112px;
-    margin: 0 auto 1.5rem;
+    margin: 0;
     padding: 18px;
-    border: 1px solid var(--lx-gold);
-    border-radius: 50%;
+    border: 0;
+    border-radius: 7px;
     color: var(--lx-gold);
-    background: transparent;
+    background: var(--wm-cream, #f3ece2);
     img { display: block; width: 100%; height: 100%; object-fit: contain; }
     > span { font: 300 3.25rem/1 var(--profile-serif); letter-spacing: -.12em; padding-right: .12em; white-space: nowrap; overflow-wrap: normal; }
   }
-  .wm-profile-about__signature > .wm-profile-eyebrow { font-size: .65rem; line-height: 1.6; margin-bottom: .75rem; }
-  .wm-profile-about--signature h2 { font-size: clamp(2rem, 3.5vw, 2.75rem); line-height: 1.15; margin: 0; }
-  .wm-profile-about__signature > .wm-profile-about__category {
+  .wm-profile-about__heading > .wm-profile-eyebrow { font-size: .65rem; line-height: 1.6; margin-bottom: .75rem; }
+  .wm-profile-about--editorial h2 { font-size: clamp(2rem, 3.5vw, 2.75rem); line-height: 1.15; margin: 0; }
+  .wm-profile-about__heading > .wm-profile-about__category {
     margin: .5rem 0 0;
     color: var(--profile-accent);
     font: 400 clamp(1.5rem, 2.6vw, 2rem)/1.15 var(--wm-font-script);
@@ -490,15 +507,15 @@
     text-underline-offset: 5px;
     svg { width: 16px; height: 16px; transform: rotate(-45deg); }
   }
-  .wm-profile-about--signature .wm-profile-about__description { max-width: 52rem; margin-inline: auto; }
-  .wm-profile-about--signature .wm-profile-about__description .lead {
-    max-width: 46rem;
-    margin: 0 auto 1.5rem;
+  .wm-profile-about--editorial .wm-profile-about__description { max-width: 54rem; margin-inline: 0; }
+  .wm-profile-about--editorial .wm-profile-about__description .lead {
+    margin: 0 0 1.5rem;
     font-size: clamp(1.4rem, 2.4vw, 1.8rem);
-    text-align: center;
+    text-align: left;
   }
   @media (max-width: 767.98px) {
-    .wm-profile-about__logo { width: 96px; height: 96px; padding: 14px; margin-bottom: 1.25rem; > span { font-size: 2.75rem; } }
+    .wm-profile-about__identity { grid-template-columns: 80px minmax(0, 1fr); align-items: start; gap: 1rem; }
+    .wm-profile-about__logo { width: 80px; height: 80px; padding: 10px; > span { font-size: 2.5rem; } }
   }
   .wm-profile-services .card {
     background: var(--lx-surface) !important;

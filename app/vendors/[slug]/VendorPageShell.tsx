@@ -13,6 +13,7 @@ import VendorPricing from "@/components/vendor/VendorPricing";
 import VendorQuoteCard from "@/components/vendor/VendorQuoteCard";
 import VendorReviews from "@/components/vendor/VendorReviews";
 import VendorTabs from "@/components/vendor/VendorTabs";
+import HeroSectionNav from '@/components/HeroSectionNav';
 import VendorTeam from "@/components/vendor/VendorTeam";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { VendorAdsConfig } from "@/lib/content/vendorAds";
@@ -176,11 +177,11 @@ export default function VendorPageShell({
         isLoggedIn={isLoggedIn}
         loginHref={loginHref}
       />
-      <div className="wm-vendor-tabs-shell position-sticky">
+      <HeroSectionNav key={profile.vendor.id} className="wm-vendor-tabs-shell position-sticky" coverSelector=".wm-profile-hero__cover">
         <div className="container">
           <VendorTabs sections={sections} />
         </div>
-      </div>
+      </HeroSectionNav>
       <div className="container wm-vendor-content-wrap">
         <div className="wm-vendor-ads-row">
           <VendorAdsBanner

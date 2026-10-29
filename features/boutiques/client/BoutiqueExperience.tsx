@@ -5,6 +5,7 @@ import OutfitDetails from './OutfitDetails';
 import OutfitCard from './OutfitCard';
 import BoutiqueAbout from './BoutiqueAbout';
 import BoutiqueToolbar from './BoutiqueToolbar';
+import HeroSectionNav from '@/components/HeroSectionNav';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -134,7 +135,7 @@ export default function BoutiqueExperience({ initial, store = null, favorites = 
   {shop && !detail && !booking ? <section className={`wm-boutique-hero${shop.hero ? '' : ' wm-boutique-hero--empty'}`} style={shop.hero ? { backgroundImage: `linear-gradient(180deg,#17120da6 0%,#17120d40 23%,#17120d1a 36%,#17120d66 64%,#17120dcc 100%),url("${shop.hero.replaceAll('"', '%22')}")` } : undefined}>
     <div>{isExample?<p className="wm-boutique-example-label">{language==='es'?'Boutique de ejemplo':'Example boutique'}</p>:null}<p className="wm-boutique-script">{t.accent}</p><h1>{shop.name}</h1><p>{[shop.city, shop.region, 'Costa Rica'].filter(Boolean).join(' · ')}</p><div className="wm-boutique-actions"><button className="btn btn-light" onClick={() => { setBooking(true); setMessage(''); }}>{t.request} →</button><a href="#boutique-collection">{t.explore}</a></div></div>
   </section> : null}
-  {shop && !detail && !booking ? <nav className="wm-boutique-tabs" aria-label={t.about}><a href="#boutique-collection">{t.collection}</a><a href="#boutique-about">{t.about}</a><button onClick={() => setBooking(true)}>{t.visit}</button></nav> : null}
+  {shop && !detail && !booking ? <HeroSectionNav key={shop.vendor_id} as="nav" className="wm-boutique-tabs" label={t.about} coverSelector=".wm-boutique-hero:not(.wm-boutique-hero--empty)" enabled={Boolean(shop.hero)}><a href="#boutique-collection">{t.collection}</a><a href="#boutique-about">{t.about}</a><button onClick={() => setBooking(true)}>{t.visit}</button></HeroSectionNav> : null}
   <div className={detail && !booking ? 'container wm-boutique-detail-container' : 'container py-4 py-lg-5'}>
    {!detail || booking ? <BoutiqueToolbar language={language} example={isExample} vendor={account?.role === 'vendor'}/> : null}
    {message ? <p role="alert" className="wm-boutique-notice">{message} {!account ? <Link href={`/login?next=${encodeURIComponent(favorites ? '/boutiques/favorites' : `/boutiques/${shop?.slug ?? ''}`)}`}>{t.account} →</Link> : null}</p> : null}

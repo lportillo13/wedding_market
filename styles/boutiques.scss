@@ -12,6 +12,14 @@
 .wm-boutique-hero--empty{min-height:440px;background:var(--wm-cream);color:var(--wm-ink);}
 .wm-boutique-actions{display:flex;align-items:center;flex-wrap:wrap;gap:1rem;}
 .wm-boutique-tabs{display:flex;justify-content:center;gap:clamp(1rem,5vw,4rem);height:var(--wm-boutique-tabs-height);margin-top:calc(-1 * var(--wm-boutique-tabs-height));background:var(--wm-paper);position:sticky;top:var(--wm-header-height,76px);z-index:12;border-bottom:1px solid var(--wm-outline);a,button{display:inline-flex;align-items:center;justify-content:center;height:100%;padding:0;min-height:0;white-space:nowrap;color:var(--wm-ink);background:none;border:0;text-decoration:none;font:inherit;font-size:.9rem;}a:hover,button:hover{box-shadow:inset 0 -2px var(--wm-accent);}}
+.wm-boutique-tabs{transition:background-color 180ms ease,border-color 180ms ease;a,button{transition:color 180ms ease,box-shadow 180ms ease;}}
+.wm-boutique-hero:not(.wm-boutique-hero--empty) + .wm-boutique-tabs[data-hero-state="cover"] {
+ background:transparent;border-color:transparent;
+ a,button{color:#fffdf9e6;}
+ >a:first-child,a:hover,button:hover,a:focus-visible,button:focus-visible{color:#fffdf9;box-shadow:inset 0 -2px #e2cda7;}
+ a:focus-visible,button:focus-visible{outline-color:#fffdf9;}
+}
+@media(prefers-reduced-motion:reduce){.wm-boutique-tabs,.wm-boutique-tabs a,.wm-boutique-tabs button{transition:none;}}
 .wm-boutique-toolbar {
  display:flex;justify-content:space-between;align-items:center;gap:.5rem 1.5rem;flex-wrap:wrap;margin-bottom:2.25rem;
  >div{display:flex;align-items:center;gap:1.5rem;}

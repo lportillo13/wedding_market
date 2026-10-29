@@ -1,0 +1,663 @@
+[
+  {
+    "background": "rgba(0, 0, 0, 0)",
+    "border": "rgba(0, 0, 0, 0)",
+    "header": {
+      "bottom": 68,
+      "height": 68,
+      "left": 0,
+      "right": 1135,
+      "top": 0,
+      "width": 1135,
+      "x": 0,
+      "y": 0
+    },
+    "links": [
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "rgb(255, 253, 249)",
+        "text": "Información"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "rgba(255, 253, 249, 0.85)",
+        "text": "Fotos"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "rgba(255, 253, 249, 0.85)",
+        "text": "Precios"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "rgba(255, 253, 249, 0.85)",
+        "text": "Amenidades"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "rgba(255, 253, 249, 0.85)",
+        "text": "Equipo"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "rgba(255, 253, 249, 0.85)",
+        "text": "Disponibilidad"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "rgba(255, 253, 249, 0.85)",
+        "text": "Reseñas"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "rgba(255, 253, 249, 0.85)",
+        "text": "Contacto"
+      },
+      {
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "rgba(255, 253, 249, 0.85)",
+        "text": "Más"
+      }
+    ],
+    "menu": null,
+    "nav": {
+      "bottom": 900,
+      "height": 54,
+      "left": 0,
+      "right": 1135,
+      "top": 846,
+      "width": 1135,
+      "x": 0,
+      "y": 846
+    },
+    "overflow": false,
+    "path": "/vendors/example-ritmo-atardecer",
+    "scrollY": 0,
+    "state": "cover",
+    "viewport": [
+      1150,
+      900
+    ]
+  },
+  {
+    "case": "vendor-desktop-sticky",
+    "result": {
+      "background": "rgb(250, 248, 244)",
+      "border": "rgb(222, 217, 207) rgb(51, 45, 39)",
+      "header": {
+        "bottom": 68,
+        "height": 68,
+        "left": 0,
+        "right": 1135,
+        "top": 0,
+        "width": 1135,
+        "x": 0,
+        "y": 0
+      },
+      "links": [
+        {
+          "background": "rgb(238, 236, 229)",
+          "color": "rgb(51, 45, 39)",
+          "text": "Información"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(114, 104, 94)",
+          "text": "Fotos"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(114, 104, 94)",
+          "text": "Precios"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(114, 104, 94)",
+          "text": "Amenidades"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(114, 104, 94)",
+          "text": "Equipo"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(114, 104, 94)",
+          "text": "Disponibilidad"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(114, 104, 94)",
+          "text": "Reseñas"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(114, 104, 94)",
+          "text": "Contacto"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(114, 104, 94)",
+          "text": "Más"
+        }
+      ],
+      "menu": null,
+      "nav": {
+        "bottom": 122,
+        "height": 54,
+        "left": 0,
+        "right": 1135,
+        "top": 68,
+        "width": 1135,
+        "x": 0,
+        "y": 68
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "scrollY": 798,
+      "state": "solid",
+      "viewport": [
+        1150,
+        900
+      ]
+    }
+  },
+  {
+    "case": "vendor-mobile-return-cover",
+    "result": {
+      "background": "rgba(0, 0, 0, 0)",
+      "border": "rgba(0, 0, 0, 0)",
+      "header": {
+        "bottom": 68,
+        "height": 68,
+        "left": 0,
+        "right": 375,
+        "top": 0,
+        "width": 375,
+        "x": 0,
+        "y": 0
+      },
+      "links": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(255, 253, 249)",
+          "text": "Información"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(255, 253, 249, 0.85)",
+          "text": "Fotos"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(255, 253, 249, 0.85)",
+          "text": "Precios"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(255, 253, 249, 0.85)",
+          "text": "Más"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(255, 253, 249, 0.85)",
+          "text": "Más"
+        }
+      ],
+      "menu": null,
+      "nav": {
+        "bottom": 844,
+        "height": 54,
+        "left": 0,
+        "right": 375,
+        "top": 790,
+        "width": 375,
+        "x": 0,
+        "y": 790
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "scrollY": 0,
+      "state": "cover",
+      "viewport": [
+        390,
+        844
+      ]
+    }
+  },
+  {
+    "case": "vendor-mobile-more-cover",
+    "result": {
+      "background": "rgba(0, 0, 0, 0)",
+      "border": "rgba(0, 0, 0, 0)",
+      "header": {
+        "bottom": 68,
+        "height": 68,
+        "left": 0,
+        "right": 375,
+        "top": 0,
+        "width": 375,
+        "x": 0,
+        "y": 0
+      },
+      "links": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(255, 253, 249)",
+          "text": "Información"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(255, 253, 249, 0.85)",
+          "text": "Fotos"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(255, 253, 249, 0.85)",
+          "text": "Precios"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(255, 253, 249)",
+          "text": "Más"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(255, 253, 249, 0.85)",
+          "text": "Más"
+        }
+      ],
+      "menu": {
+        "background": "rgb(255, 253, 249)",
+        "firstColor": "rgb(114, 104, 94)",
+        "rect": {
+          "bottom": 733.78125,
+          "height": 234.78125,
+          "left": 143,
+          "right": 363,
+          "top": 499,
+          "width": 220,
+          "x": 143,
+          "y": 499
+        }
+      },
+      "nav": {
+        "bottom": 492,
+        "height": 54,
+        "left": 0,
+        "right": 375,
+        "top": 438,
+        "width": 375,
+        "x": 0,
+        "y": 438
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "scrollY": 352,
+      "state": "cover",
+      "viewport": [
+        390,
+        844
+      ]
+    }
+  },
+  {
+    "case": "vendor-mobile-more-sticky",
+    "result": {
+      "background": "rgb(250, 248, 244)",
+      "border": "rgb(222, 217, 207) rgb(51, 45, 39)",
+      "header": {
+        "bottom": 68,
+        "height": 68,
+        "left": 0,
+        "right": 375,
+        "top": 0,
+        "width": 375,
+        "x": 0,
+        "y": 0
+      },
+      "links": [
+        {
+          "background": "rgb(238, 236, 229)",
+          "color": "rgb(51, 45, 39)",
+          "text": "Información"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(114, 104, 94)",
+          "text": "Fotos"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(114, 104, 94)",
+          "text": "Precios"
+        },
+        {
+          "background": "rgb(238, 236, 229)",
+          "color": "rgb(51, 45, 39)",
+          "text": "Más"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(114, 104, 94)",
+          "text": "Más"
+        }
+      ],
+      "menu": {
+        "background": "rgb(255, 253, 249)",
+        "firstColor": "rgb(114, 104, 94)",
+        "rect": {
+          "bottom": 363.78125,
+          "height": 234.78125,
+          "left": 143,
+          "right": 363,
+          "top": 129,
+          "width": 220,
+          "x": 143,
+          "y": 129
+        }
+      },
+      "nav": {
+        "bottom": 122,
+        "height": 54,
+        "left": 0,
+        "right": 375,
+        "top": 68,
+        "width": 375,
+        "x": 0,
+        "y": 68
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "scrollY": 1015,
+      "state": "solid",
+      "viewport": [
+        390,
+        844
+      ]
+    }
+  },
+  {
+    "case": "vendor-mobile-reverse",
+    "result": {
+      "background": "rgba(0, 0, 0, 0)",
+      "border": "rgba(0, 0, 0, 0)",
+      "header": {
+        "bottom": 68,
+        "height": 68,
+        "left": 0,
+        "right": 375,
+        "top": 0,
+        "width": 375,
+        "x": 0,
+        "y": 0
+      },
+      "links": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(255, 253, 249)",
+          "text": "Información"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(255, 253, 249, 0.85)",
+          "text": "Fotos"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(255, 253, 249, 0.85)",
+          "text": "Precios"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(255, 253, 249, 0.85)",
+          "text": "Más"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(255, 253, 249, 0.85)",
+          "text": "Más"
+        }
+      ],
+      "menu": null,
+      "nav": {
+        "bottom": 844,
+        "height": 54,
+        "left": 0,
+        "right": 375,
+        "top": 790,
+        "width": 375,
+        "x": 0,
+        "y": 790
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "scrollY": 0,
+      "state": "cover",
+      "viewport": [
+        390,
+        844
+      ]
+    }
+  },
+  {
+    "case": "boutique-small-phone-cover",
+    "result": {
+      "background": "rgba(0, 0, 0, 0)",
+      "border": "rgba(0, 0, 0, 0)",
+      "header": {
+        "bottom": 68,
+        "height": 68,
+        "left": 0,
+        "right": 305,
+        "top": 0,
+        "width": 305,
+        "x": 0,
+        "y": 0
+      },
+      "links": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(255, 253, 249)",
+          "text": "La colección"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(255, 253, 249, 0.9)",
+          "text": "La boutique"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(255, 253, 249, 0.9)",
+          "text": "Tu visita"
+        }
+      ],
+      "menu": null,
+      "nav": {
+        "bottom": 568,
+        "height": 54,
+        "left": 0,
+        "right": 305,
+        "top": 514,
+        "width": 305,
+        "x": 0,
+        "y": 514
+      },
+      "overflow": false,
+      "path": "/boutiques/example-casa-marfil",
+      "scrollY": 0,
+      "state": "cover",
+      "viewport": [
+        320,
+        568
+      ]
+    }
+  },
+  {
+    "case": "boutique-small-phone-sticky",
+    "result": {
+      "background": "rgb(255, 253, 249)",
+      "border": "rgb(51, 45, 39) rgb(51, 45, 39) rgb(222, 217, 207)",
+      "header": {
+        "bottom": 68,
+        "height": 68,
+        "left": 0,
+        "right": 305,
+        "top": 0,
+        "width": 305,
+        "x": 0,
+        "y": 0
+      },
+      "links": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(51, 45, 39)",
+          "text": "La colección"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(51, 45, 39)",
+          "text": "La boutique"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(51, 45, 39)",
+          "text": "Tu visita"
+        }
+      ],
+      "menu": null,
+      "nav": {
+        "bottom": 122,
+        "height": 54,
+        "left": 0,
+        "right": 305,
+        "top": 68,
+        "width": 305,
+        "x": 0,
+        "y": 68
+      },
+      "overflow": false,
+      "path": "/boutiques/example-casa-marfil",
+      "scrollY": 471,
+      "state": "solid",
+      "viewport": [
+        320,
+        568
+      ]
+    }
+  },
+  {
+    "case": "boutique-fitting",
+    "result": {
+      "cover": false,
+      "nav": false,
+      "overflow": false
+    }
+  },
+  {
+    "case": "boutique-desktop-cover-after-remount",
+    "result": {
+      "background": "rgba(0, 0, 0, 0)",
+      "border": "rgba(0, 0, 0, 0)",
+      "header": {
+        "bottom": 68,
+        "height": 68,
+        "left": 0,
+        "right": 1135,
+        "top": 0,
+        "width": 1135,
+        "x": 0,
+        "y": 0
+      },
+      "links": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(255, 253, 249)",
+          "text": "La colección"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(255, 253, 249, 0.9)",
+          "text": "La boutique"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(255, 253, 249, 0.9)",
+          "text": "Tu visita"
+        }
+      ],
+      "menu": null,
+      "nav": {
+        "bottom": 900,
+        "height": 54,
+        "left": 0,
+        "right": 1135,
+        "top": 846,
+        "width": 1135,
+        "x": 0,
+        "y": 846
+      },
+      "overflow": false,
+      "path": "/boutiques/example-casa-marfil",
+      "scrollY": 0,
+      "state": "cover",
+      "viewport": [
+        1150,
+        900
+      ]
+    }
+  },
+  {
+    "case": "boutique-desktop-sticky",
+    "result": {
+      "background": "rgba(0, 0, 0, 0)",
+      "border": "rgba(0, 0, 0, 0)",
+      "header": {
+        "bottom": 68,
+        "height": 68,
+        "left": 0,
+        "right": 1135,
+        "top": 0,
+        "width": 1135,
+        "x": 0,
+        "y": 0
+      },
+      "links": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(255, 253, 249)",
+          "text": "La colección"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(255, 253, 249, 0.9)",
+          "text": "La boutique"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgba(255, 253, 249, 0.9)",
+          "text": "Tu visita"
+        }
+      ],
+      "menu": null,
+      "nav": {
+        "bottom": 131,
+        "height": 54,
+        "left": 0,
+        "right": 1135,
+        "top": 77,
+        "width": 1135,
+        "x": 0,
+        "y": 77
+      },
+      "overflow": false,
+      "path": "/boutiques/example-casa-marfil",
+      "scrollY": 769,
+      "state": "cover",
+      "viewport": [
+        1150,
+        900
+      ]
+    }
+  }
+]
