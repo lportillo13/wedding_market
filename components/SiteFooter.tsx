@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useId, useState } from "react";
+import { useId, useState, type ReactNode } from "react";
+import HeaderIcon from "@/components/HeaderIcon";
 import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
 import type { HeaderVendorCategory } from "@/components/VendorsMegaMenu";
 import { usesWorkspaceFooter } from "@/lib/header-navigation";
@@ -10,6 +11,25 @@ import WorkspaceFooter from "./WorkspaceFooter";
 import { publisher } from "@/features/legal/identity";
 
 type SiteFooterProps = { vendorCategories: HeaderVendorCategory[] };
+
+function FooterMenu({ title, headingId, className, children }: {
+  title: string;
+  headingId: string;
+  className: string;
+  children: ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+  const contentId = useId();
+  return <nav className={`wm-footer__menu ${className}`} aria-label={title} data-open={open}>
+    <h3 id={headingId} className="wm-footer__menu-heading wm-footer__eyebrow">
+      <span className="wm-footer__menu-title">{title}</span>
+      <button className="wm-footer__menu-toggle" type="button" aria-expanded={open} aria-controls={contentId} onClick={() => setOpen((value) => !value)}>
+        {title}<HeaderIcon name="chevron" aria-hidden="true" />
+      </button>
+    </h3>
+    <div id={contentId} className="wm-footer__menu-content">{children}</div>
+  </nav>;
+}
 
 export default function SiteFooter({ vendorCategories }: SiteFooterProps) {
   const pathname = usePathname();
@@ -76,26 +96,23 @@ export default function SiteFooter({ vendorCategories }: SiteFooterProps) {
             {subscribeError ? <p id={`${emailId}-error`} className="wm-footer__error" role="alert">{subscribeError}</p> : null}
             <Link href="/privacy" className="wm-footer__privacy">{es ? "Nuestra política de privacidad" : "Our privacy policy"}</Link>
           </section>
-          <nav className="wm-footer__links" aria-labelledby="footer-explore-title">
-            <h3 id="footer-explore-title">{es ? "Explora" : "Explore"}</h3>
+          <FooterMenu key={`${pathname}-explore`} title={es ? "Explora" : "Explore"} headingId="footer-explore-title" className="wm-footer__links">
             <Link href="/vendors">{t("nav.vendors")}</Link>
             <Link href="/about">{t("nav.about")}</Link>
             <Link href="/blog">{t("nav.blog")}</Link>
             <Link href="/shortlist">{t("nav.shortlist")}</Link>
             <Link href="/signup">{t("nav.signUp")}</Link>
-          </nav>
-          <nav className="wm-footer__links" aria-labelledby="footer-services-title">
-            <h3 id="footer-services-title">{es ? "Para tu boda" : "For your wedding"}</h3>
+          </FooterMenu>
+          <FooterMenu key={`${pathname}-services`} title={es ? "Para tu boda" : "For your wedding"} headingId="footer-services-title" className="wm-footer__links">
             {vendorCategories.slice(0, 5).map((category) => (
               <Link key={category.key} href={`/vendors?category=${encodeURIComponent(category.key)}`}>{category.label[language]}</Link>
             ))}
-          </nav>
-          <div className="wm-footer__professionals">
-            <p className="wm-footer__eyebrow">{es ? "Profesionales de bodas" : "Wedding professionals"}</p>
+          </FooterMenu>
+          <FooterMenu key={`${pathname}-professionals`} title={es ? "Profesionales de bodas" : "Wedding professionals"} headingId="footer-professionals-title" className="wm-footer__professionals">
             <Link href="/signup/vendor" className="wm-footer__vendor-link">{t("footer.vendorLinks.join")}<span aria-hidden="true">↗</span></Link>
             <Link href="/support" className="wm-footer__support">{es ? "¿Necesitas ayuda?" : "Need a hand?"}</Link>
             <a href={`mailto:${publisher.email}`} className="wm-footer__email">{publisher.email}</a>
-          </div>
+          </FooterMenu>
         </div>
         <div className="wm-footer__bottom">
           <div className="wm-footer__publisher">

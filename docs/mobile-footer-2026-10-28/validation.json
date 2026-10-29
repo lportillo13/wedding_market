@@ -1,0 +1,26 @@
+{
+  "checks": {
+    "architecture": "passed",
+    "typescript": "passed",
+    "eslint": "passed",
+    "productionBuild": "passed",
+    "phone390DefaultClosed": "passed",
+    "phone320NoOverflow": "passed",
+    "desktop1150AllLinksVisible": "passed",
+    "tablet900Layout": "passed",
+    "englishAndSpanish": "passed",
+    "keyboardActivation": "passed",
+    "pathnameNavigationResetsMenus": "passed",
+    "browserConsoleErrors": 0,
+    "newsletterSubmitted": false
+  },
+  "publication": {
+    "footerPublished": false,
+    "moreSubmenuPublished": false,
+    "verifiedLiveBase": "62c21d1810428720bef913339a837746932b2c15",
+    "availableDiskBytes": 4467671040,
+    "requiredDiskBytes": 6442450944,
+    "jobLaunched": false
+  },
+  "nativeRelease": "held"
+}

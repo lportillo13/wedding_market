@@ -1,0 +1,154 @@
+{
+  "environment": "Local production-build preview",
+  "phone390Closed": {
+    "clientWidth": 375,
+    "footerHeight": 777.265625,
+    "menus": [
+      {
+        "buttonHeight": 52,
+        "expanded": "false",
+        "label": "Explora",
+        "links": 5,
+        "panelDisplay": "none"
+      },
+      {
+        "buttonHeight": 52,
+        "expanded": "false",
+        "label": "Para tu boda",
+        "links": 5,
+        "panelDisplay": "none"
+      },
+      {
+        "buttonHeight": 52,
+        "expanded": "false",
+        "label": "Profesionales de bodas",
+        "links": 3,
+        "panelDisplay": "none"
+      }
+    ],
+    "scrollWidth": 375,
+    "width": 390
+  },
+  "allMenusExpanded": {
+    "footerHeight": 1390.03125,
+    "menus": [
+      {
+        "expanded": "true",
+        "label": "Explora",
+        "linkHeights": [
+          44,
+          44,
+          44,
+          44,
+          44
+        ],
+        "panelDisplay": "flex"
+      },
+      {
+        "expanded": "true",
+        "label": "Para tu boda",
+        "linkHeights": [
+          44,
+          44,
+          44,
+          44,
+          44
+        ],
+        "panelDisplay": "flex"
+      },
+      {
+        "expanded": "true",
+        "label": "Profesionales de bodas",
+        "linkHeights": [
+          44,
+          44,
+          44
+        ],
+        "panelDisplay": "flex"
+      }
+    ]
+  },
+  "desktop1150": {
+    "clientWidth": 1135,
+    "menus": [
+      {
+        "label": "Explora",
+        "links": 5,
+        "panelDisplay": "flex",
+        "toggleDisplay": "none"
+      },
+      {
+        "label": "Para tu boda",
+        "links": 5,
+        "panelDisplay": "flex",
+        "toggleDisplay": "none"
+      },
+      {
+        "label": "Profesionales de bodas",
+        "links": 3,
+        "panelDisplay": "flex",
+        "toggleDisplay": "none"
+      }
+    ],
+    "scrollWidth": 1135,
+    "width": 1150
+  },
+  "tablet900": {
+    "clientWidth": 885,
+    "professionalLayout": "grid",
+    "scrollWidth": 885,
+    "width": 900
+  },
+  "phone320": {
+    "clientWidth": 305,
+    "menus": [
+      {
+        "expanded": "false",
+        "panelDisplay": "none"
+      },
+      {
+        "expanded": "false",
+        "panelDisplay": "none"
+      },
+      {
+        "expanded": "false",
+        "panelDisplay": "none"
+      }
+    ],
+    "scrollWidth": 305,
+    "width": 320
+  },
+  "english320": {
+    "clientWidth": 305,
+    "menus": [
+      {
+        "expanded": "true",
+        "label": "Explore",
+        "panelDisplay": "flex"
+      },
+      {
+        "expanded": "false",
+        "label": "For your wedding",
+        "panelDisplay": "none"
+      },
+      {
+        "expanded": "false",
+        "label": "Wedding professionals",
+        "panelDisplay": "none"
+      }
+    ],
+    "scrollWidth": 305,
+    "width": 320
+  },
+  "interactions": {
+    "keyboardEnterOpensExplore": true,
+    "independentMenus": true,
+    "allLinksHave44pxPhoneTargets": true,
+    "navigationFromAboutToVendorsResetsAllMenus": true,
+    "returnedToSpanish": true,
+    "newsletterFormNotSubmitted": true
+  },
+  "screenshots": [
+    "collapsed-footer-mobile.jpg"
+  ]
+}
