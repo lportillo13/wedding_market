@@ -11,6 +11,7 @@ import type { VendorProfileDTO } from "@/types/vendor-profile";
 import type { VendorHeroVideo } from '@/shared/vendors/hero';
 import VendorCoverVideo from './VendorCoverVideo';
 import { localizeVendorCategory } from '@/shared/vendors/category-label';
+import HeaderIcon from '@/components/HeaderIcon';
 
 type VendorHeaderProps = {
   vendor: VendorProfileDTO["vendor"];
@@ -59,7 +60,7 @@ export default function VendorHeader({
     .join(", ");
 
   return (
-    <header className={`wm-profile-hero${heroVideo && heroVideo.provider !== 'file' ? ' wm-profile-hero--external-video' : ''}`}>
+    <header className="wm-profile-hero">
       <div className="wm-profile-hero__copy">
         {vendor.logoUrl && <div className="wm-profile-hero__seal">
           <Image src={resolveMediaUrl(vendor.logoUrl)} alt={fill(labels.logoAlt, { vendor: vendor.name })} width={56} height={56} unoptimized={shouldRenderUnoptimizedMedia(vendor.logoUrl)} />
@@ -120,11 +121,6 @@ export default function VendorHeader({
                 unoptimized={shouldRenderUnoptimizedMedia(hero.url)}
               />}
             </div>
-              <a className="wm-profile-hero__gallery-link" href="#photos">
-                <span className="wm-profile-hero__gallery-label">{editorial.viewGallery}</span>
-                <span className="wm-profile-hero__gallery-short">{dictionary.vendorPublic.tabs.photos}</span>
-                <span aria-hidden="true">↗︎</span>
-              </a>
           </>
         ) : (
           <div className="wm-profile-hero__monogram" aria-hidden="true">
@@ -133,6 +129,17 @@ export default function VendorHeader({
         )}
         {!hero && !heroVideo && <p>{editorial.noPhotos}</p>}
       </div>
+      {(hero || heroVideo) && <div className="wm-profile-hero__media-links">
+        <a className="wm-profile-hero__gallery-link" href="#photos">
+          <HeaderIcon name="grid" />
+          <span className="wm-profile-hero__gallery-label">{editorial.viewGallery}</span>
+          <span className="wm-profile-hero__gallery-short">{dictionary.vendorPublic.tabs.photos}</span>
+        </a>
+        {heroVideo && heroVideo.provider !== 'file' && <a className="wm-profile-cover-video__source" href={heroVideo.url} target="_blank" rel="noreferrer">
+          {heroVideo.provider === 'youtube' ? 'YouTube' : 'Vimeo'}
+          <HeaderIcon name="arrow" />
+        </a>}
+      </div>}
     </header>
   );
 }

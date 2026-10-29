@@ -17,6 +17,8 @@ const nextConfig: NextConfig = {
   },
   serverExternalPackages: ["ffmpeg-static", "sharp"],
   sassOptions: {
+    // An embedded Sass BOM becomes part of the first selector when CSS chunks merge.
+    charset: false,
     quietDeps: true,
     silenceDeprecations: ["import", "legacy-js-api"],
   },

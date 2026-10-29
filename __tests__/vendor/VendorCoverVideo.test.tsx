@@ -1,11 +1,14 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { renderToStaticMarkup } from 'react-dom/server';
-import VendorCoverVideo from '../../components/vendor/VendorCoverVideo';
+import VendorHeader from '../../components/vendor/VendorHeader';
+import { LanguageProvider } from '../../contexts/LanguageContext';
+import { exampleVendorProfile } from '../../features/vendors/examples';
 import { parseVendorVideoUrl } from '../../shared/vendors/hero';
 
 test('external cover providers render a poster and controls before client visibility admits playback', () => {
-  const html = renderToStaticMarkup(<VendorCoverVideo source={parseVendorVideoUrl('https://youtu.be/abcdefghijk')!} poster="/photo.jpg" name="Sample" language="es" />);
+  const profile = exampleVendorProfile('example-ritmo-atardecer', 'es')!;
+  const html = renderToStaticMarkup(<LanguageProvider initialLanguage="es"><VendorHeader vendor={profile.vendor} categories={profile.breadcrumbs.categories} media={[{ ...profile.media[0], url: '/photo.jpg' }]} heroVideo={parseVendorVideoUrl('https://youtu.be/abcdefghijk')!} isVendor={false} isLoggedIn={false} loginHref="/login" isExample /></LanguageProvider>);
   assert.doesNotMatch(html, /<iframe/);
   assert.match(html, /Reproducir video de portada/);
   assert.match(html, /aria-pressed="false"/);
