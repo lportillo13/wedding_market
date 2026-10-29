@@ -1,0 +1,88 @@
+{
+  "checks": [
+    {
+      "case": "live-content",
+      "color": "#faf8f4",
+      "path": "/about",
+      "tags": 1,
+      "expected": "#faf8f4",
+      "passed": true
+    },
+    {
+      "case": "live-open-menu",
+      "color": "#faf8f4",
+      "path": "/",
+      "tags": 1,
+      "expected": "#faf8f4",
+      "passed": true
+    },
+    {
+      "case": "live-loaded-home",
+      "color": "#332d27",
+      "path": "/",
+      "tags": 1,
+      "expected": "#332d27",
+      "passed": true
+    },
+    {
+      "case": "live-settled-open-menu",
+      "color": "#faf8f4",
+      "path": "/",
+      "tags": 1,
+      "expected": "#faf8f4",
+      "passed": true
+    },
+    {
+      "case": "live-settled-close-menu",
+      "color": "#332d27",
+      "path": "/",
+      "tags": 1,
+      "expected": "#332d27",
+      "passed": true
+    },
+    {
+      "case": "live-boutique-cover",
+      "color": "#332d27",
+      "path": "/boutiques/example-atelier-alba",
+      "tags": 1,
+      "expected": "#332d27",
+      "passed": true
+    },
+    {
+      "case": "live-outfit-details",
+      "color": "#faf8f4",
+      "path": "/boutiques/example-atelier-alba",
+      "tags": 1,
+      "expected": "#faf8f4",
+      "passed": true
+    },
+    {
+      "case": "live-fitting-form",
+      "color": "#faf8f4",
+      "path": "/boutiques/example-atelier-alba",
+      "tags": 1,
+      "expected": "#faf8f4",
+      "passed": true
+    },
+    {
+      "case": "live-return-to-cover",
+      "color": "#332d27",
+      "path": "/boutiques/example-atelier-alba",
+      "tags": 1,
+      "expected": "#332d27",
+      "passed": true
+    }
+  ],
+  "navigationPendingMeasurements": [
+    {
+      "case": "live-home-cover",
+      "color": "#faf8f4",
+      "path": "/about",
+      "tags": 1,
+      "expected": "#332d27",
+      "passed": false
+    }
+  ],
+  "viewportReset": true,
+  "scope": "Metadata updates verified; native browser UI painting depends on browser support."
+}

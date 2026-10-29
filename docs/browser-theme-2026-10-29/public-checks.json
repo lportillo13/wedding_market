@@ -1,0 +1,41 @@
+{
+  "checkedAt": "2026-10-29T16:16:23.492Z",
+  "base": "https://thewedmarket.com",
+  "checks": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/about",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-atelier-alba",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-casa-marfil?outfit=e0130000-0000-4000-8000-000000000124",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/manifest.webmanifest",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account?mode=state",
+      "status": 401,
+      "passed": true
+    }
+  ]
+}
