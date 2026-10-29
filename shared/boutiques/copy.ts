@@ -1,6 +1,7 @@
 export const boutiqueCopy = {
     en: {
         title: 'Dresses & suits', accent: 'Find your wedding look', boutiques: 'Boutiques', collection: 'The collection',
+        directoryHeading: 'Find your wedding look', directoryIntro: 'Boutiques to discover dresses, suits and a personal fitting experience.', directoryFilters: 'Find boutiques by collection', directoryNoMatches: 'No boutiques match this collection yet. Try All to keep exploring.', directoryExamples: 'View example boutiques',
         about: 'The boutique', visit: 'Your visit', all: 'All', dress: 'Dresses', suit: 'Suits',
         toolbarSaved: 'Saved', toolbarAppointments: 'My fittings', aboutMore: 'Meet the boutique', aboutLess: 'Show less',
         collectionAt: 'Collection at', designMaterials: 'Design & materials', sizesFitting: 'Sizes, preparation & fitting', fittingHint: 'The boutique confirms your visit and the available samples.',
@@ -35,6 +36,7 @@ export const boutiqueCopy = {
     },
     es: {
         title: 'Vestidos y trajes', accent: 'Encuentra tu look de boda', boutiques: 'Boutiques', collection: 'La colección',
+        directoryHeading: 'Encuentra tu look de boda', directoryIntro: 'Boutiques para descubrir vestidos, trajes y una atención personal.', directoryFilters: 'Encuentra boutiques por colección', directoryNoMatches: 'Aún no hay boutiques con esta colección. Prueba Todos para seguir explorando.', directoryExamples: 'Ver boutiques de ejemplo',
         about: 'La boutique', visit: 'Tu visita', all: 'Todos', dress: 'Vestidos', suit: 'Trajes',
         toolbarSaved: 'Guardados', toolbarAppointments: 'Mis citas', aboutMore: 'Conoce la boutique', aboutLess: 'Ver menos',
         collectionAt: 'La colección de', designMaterials: 'Diseño y materiales', sizesFitting: 'Tallas, tiempos y prueba', fittingHint: 'La boutique confirma tu visita y las muestras disponibles.',

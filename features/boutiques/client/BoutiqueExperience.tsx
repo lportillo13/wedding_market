@@ -5,6 +5,7 @@ import OutfitDetails from './OutfitDetails';
 import OutfitCard from './OutfitCard';
 import BoutiqueAbout from './BoutiqueAbout';
 import BoutiqueToolbar from './BoutiqueToolbar';
+import BoutiqueDirectory from './BoutiqueDirectory';
 import HeroSectionNav from '@/components/HeroSectionNav';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
@@ -94,7 +95,7 @@ export default function BoutiqueExperience({ initial, store = null, favorites = 
                     }
                 }
                 else {
-                    const r = await boutiqueApi<Catalog>('?page=' + page);
+                    const r = await boutiqueApi<Catalog>('?page=' + page + (kind ? '&kind=' + kind : ''));
                     if (active && version === seq.current)
                         setShops(r.items);
                 }
@@ -131,7 +132,7 @@ export default function BoutiqueExperience({ initial, store = null, favorites = 
     }
     const list = shop || favorites;
     const title = detail ? boutiqueText(detail.name, language) : favorites ? t.favorites : t.title;
-    return <main className="wm-boutiques">
+    return <main className={`wm-boutiques${!list && !detail && !booking ? ' wm-boutiques--directory' : ''}`}>
   {shop && !detail && !booking ? <section className={`wm-boutique-hero${shop.hero ? '' : ' wm-boutique-hero--empty'}`} style={shop.hero ? { backgroundImage: `linear-gradient(180deg,#17120da6 0%,#17120d40 23%,#17120d1a 36%,#17120d66 64%,#17120dcc 100%),url("${shop.hero.replaceAll('"', '%22')}")` } : undefined}>
     <div>{isExample?<p className="wm-boutique-example-label">{language==='es'?'Boutique de ejemplo':'Example boutique'}</p>:null}<p className="wm-boutique-script">{t.accent}</p><h1>{shop.name}</h1><p>{[shop.city, shop.region, 'Costa Rica'].filter(Boolean).join(' · ')}</p><div className="wm-boutique-actions"><button className="btn btn-light" onClick={() => { setBooking(true); setMessage(''); }}>{t.request} →</button><a href="#boutique-collection">{t.explore}</a></div></div>
   </section> : null}
@@ -141,16 +142,16 @@ export default function BoutiqueExperience({ initial, store = null, favorites = 
    {message ? <p role="alert" className="wm-boutique-notice">{message} {!account ? <Link href={`/login?next=${encodeURIComponent(favorites ? '/boutiques/favorites' : `/boutiques/${shop?.slug ?? ''}`)}`}>{t.account} →</Link> : null}</p> : null}
    {booking && shop ? <AppointmentForm shop={{ ...shop, items: detail && !shop.items.some(item => item.id === detail.id) ? [detail, ...shop.items] : shop.items }} selected={detail ? [detail.id] : []} profile={account} submission={submission} onBack={() => setBooking(false)} onSuccess={() => { setBooking(false); setMessage(t.requested); }}/> :
             detail ? <OutfitDetails outfit={detail} shop={shop} language={language} example={isExample} saved={saved.includes(detail.id)} busy={busy} onBack={() => setDetail(null)} onVisit={() => setBooking(true)} onToggle={() => void toggle(detail)}/> :
-                <>{shop ? <BoutiqueAbout key={shop.slug} shop={shop} language={language} example={isExample} onVisit={() => setBooking(true)}/> : null}<section id="boutique-collection"><p className="wm-boutique-script">{shop ? t.accent : t.boutiques}</p>{shop ? <h2 className="wm-boutique-collection-title">{t.collection}</h2> : <h1>{title}</h1>}{!shop && !favorites ? <p className="text-muted">{t.intro}</p> : null}
+                <>{shop ? <BoutiqueAbout key={shop.slug} shop={shop} language={language} example={isExample} onVisit={() => setBooking(true)}/> : null}{!list ? <BoutiqueDirectory shops={shops} language={language} kind={kind} page={page} loading={loading} example={isExample} onKind={value => { if (value === kind) return; setKind(value); setPage(1); setShops([]); }} onPage={setPage}/> : <section id="boutique-collection"><p className="wm-boutique-script">{shop ? t.accent : t.boutiques}</p>{shop ? <h2 className="wm-boutique-collection-title">{t.collection}</h2> : <h1>{title}</h1>}
     {shop ? <div className="wm-boutique-filters" role="group" aria-label={t.collection}>{[['', t.all], ['dress', t.dress], ['suit', t.suit]].map(([value, label]) => <button type="button" key={value} aria-pressed={kind === value} onClick={() => { setKind(value); setPage(1); }}>{label}</button>)}</div> : null}
     {loading ? <p role="status">{t.loading}</p> : null}
-    <div className={list ? "wm-vendor-grid wm-boutique-grid--editorial" : "wm-boutique-grid"}>{list ? items.map(item => <OutfitCard key={item.id} outfit={item} language={language} saved={saved.includes(item.id)} busy={busy} onToggle={() => void toggle(item)} onOpen={() => {
+    <div className="wm-vendor-grid wm-boutique-grid--editorial">{items.map(item => <OutfitCard key={item.id} outfit={item} language={language} saved={saved.includes(item.id)} busy={busy} onToggle={() => void toggle(item)} onOpen={() => {
         if (favorites) router.push(`/boutiques/${(item as Outfit & { slug: string }).slug}?outfit=${item.id}`);
         else setDetail(item);
-    }}/>) : shops.map(s => <Link href={`/boutiques/${s.slug}`} className="wm-boutique-card" key={s.vendor_id} prefetch={false}>{s.hero ? <img src={s.hero} alt={s.name} loading="lazy"/> : null}<div><span className="wm-boutique-script">{t.boutiques}</span><h2>{s.name}</h2><p>{[s.city, s.region].filter(Boolean).join(' · ')}</p><span>{t.explore} ↗</span></div></Link>)}</div>
-    {!isExample && !shop && !favorites ? <p className="mt-3"><Link href="/boutiques?examples=1">{language === 'es' ? 'Ver boutiques de ejemplo' : 'View example boutiques'} →</Link></p> : null}{!loading && !(list ? items : shops).length ? <p className="wm-boutique-empty">{favorites ? t.noFavorites : shop ? t.noItems : t.empty}</p> : null}
-    <div className="wm-boutique-actions mt-4">{page > 1 ? <button className="btn btn-outline-secondary" disabled={loading} onClick={() => setPage(p => p - 1)}>{t.previous}</button> : null}{(list ? items : shops).length === 12 ? <button className="btn btn-outline-secondary" disabled={loading} onClick={() => setPage(p => p + 1)}>{t.next}</button> : null}</div>
-   </section></>}
+    }}/>)}</div>
+    {!loading && !items.length ? <p className="wm-boutique-empty">{favorites ? t.noFavorites : t.noItems}</p> : null}
+    <div className="wm-boutique-actions mt-4">{page > 1 ? <button className="btn btn-outline-secondary" disabled={loading} onClick={() => setPage(p => p - 1)}>{t.previous}</button> : null}{items.length === 12 ? <button className="btn btn-outline-secondary" disabled={loading} onClick={() => setPage(p => p + 1)}>{t.next}</button> : null}</div>
+   </section>}</>}
   </div>
  </main>;
 }

@@ -1,0 +1,8 @@
+normalized_body_md5
+security_definer
+settings
+rls_tables
+16c3db440ffd24e7622515da63522c7c
+true
+["search_path=\"\""]
+5

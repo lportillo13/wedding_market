@@ -1,0 +1,48 @@
+.wm-boutiques--directory .wm-boutique-toolbar { justify-content:flex-end; margin-bottom:1.5rem; .wm-boutique-toolbar__back { display:none; } }
+.wm-boutique-directory {
+  &__intro { display:grid; grid-template-columns:1fr 1.08fr; min-height:330px; background:var(--wm-bg-primary,#faf8f4); }
+  &__copy { padding:clamp(1.5rem,3vw,3rem) 2rem clamp(1.5rem,3vw,3rem) 0; display:flex; flex-direction:column; justify-content:center; min-width:0; }
+  &__eyebrow { font-size:.68rem; letter-spacing:.15em; text-transform:uppercase; color:var(--wm-muted); margin:0 0 1rem; }
+  &__copy h1 { font-size:clamp(2.7rem,5vw,4.6rem); line-height:1.03; letter-spacing:-.035em; max-width:8.5em; margin:0 0 1.25rem; }
+  &__copy > p:last-child { font-size:clamp(.95rem,1.4vw,1.1rem); color:var(--wm-muted); line-height:1.65; max-width:26rem; margin:0; }
+  &__image { display:block; width:100%; height:100%; min-height:0; object-fit:cover; object-position:61% center; margin:0; }
+  &__controls { display:flex; justify-content:space-between; align-items:center; gap:1rem; border-top:1px solid var(--wm-outline); margin-top:1.5rem; padding:.4rem 0 1rem; }
+  &__controls .wm-boutique-filters { margin:0; gap:1.5rem; }
+  &__location { display:inline-flex; align-items:center; gap:.4rem; color:var(--wm-muted); white-space:nowrap; font-size:.8rem; svg { width:16px; height:16px; } }
+  &__grid { display:grid; grid-template-columns:1.25fr 1fr 1fr; gap:12px; }
+  &__status { margin:0 0 .75rem; font-size:.8rem; color:var(--wm-muted); }
+  &__pagination { display:flex; justify-content:space-between; margin-top:1.5rem; &:empty { display:none; } button { display:inline-flex; align-items:center; gap:.6rem; min-height:44px; padding:.5rem 0; border:0; background:none; color:var(--wm-ink); font-size:.9rem; } svg { width:18px; height:18px; } button.wm-boutique-directory__previous svg { transform:rotate(180deg); } }
+  &__examples { margin:2rem 0 0; font-size:.85rem; a { display:inline-flex; align-items:center; gap:.7rem; color:var(--wm-ink); text-underline-offset:5px; } svg { width:16px; height:16px; } }
+}
+.wm-boutique-directory-card {
+  position:relative; display:block; min-width:0; height:clamp(370px,44vw,560px); overflow:hidden; border-radius:7px; background:#695948; color:#fffdf9; text-decoration:none; isolation:isolate;
+  &::after { content:''; position:absolute; inset:0; z-index:-1; background:linear-gradient(180deg,transparent 25%,#211a1329 48%,#211a13db 100%); }
+  &__photo { position:absolute; inset:0; z-index:-2; width:100%; height:100%; object-fit:cover; margin:0; transition:transform 500ms ease; }
+  &__identity { position:absolute; inset:auto 0 0; padding:clamp(1.25rem,2.3vw,2rem); }
+  &__mark { display:grid; place-items:center start; width:64px; height:64px; margin-bottom:.65rem; color:#f0e3cf; font:300 2.9rem/1 var(--wm-font-display); letter-spacing:-.1em; padding-right:.1em; white-space:nowrap; }
+  &__mark--image { background:#fffdf9; border-radius:5px; padding:8px; place-items:center; img { display:block; width:100%; height:100%; object-fit:contain; margin:0; } }
+  h2 { color:inherit; font-size:clamp(1.65rem,2.6vw,2.7rem); line-height:1.12; letter-spacing:-.025em; margin:0 0 .5rem; }
+  p { color:#fffdf9dc; font-size:.85rem; line-height:1.5; margin:0 0 1.35rem; }
+  &__action { display:inline-flex; align-items:center; gap:1rem; padding-bottom:.3rem; border-bottom:1px solid #fffdf970; font-size:.8rem; svg { width:23px; height:23px; transition:transform 180ms ease; } }
+  &__placeholder { position:absolute; inset:0; z-index:-2; display:grid; place-items:center; color:#f0e3cf70; font:300 7rem/1 var(--wm-font-display); }
+  &:hover { color:#fffdf9; .wm-boutique-directory-card__photo { transform:scale(1.035); } .wm-boutique-directory-card__action svg { transform:translateX(4px); } }
+  &:focus-visible { outline:2px solid var(--wm-accent); outline-offset:4px; }
+}
+@media(max-width:767px) {
+  .wm-boutique-directory {
+    &__intro { grid-template-columns:1.2fr 1fr; min-height:215px; }
+    &__copy { padding:1.25rem 1rem 1.25rem 0; }
+    &__eyebrow { font-size:.55rem; letter-spacing:.08em; margin-bottom:.65rem; }
+    &__copy h1 { font-size:clamp(1.75rem,6.4vw,2.8rem); line-height:1.04; margin-bottom:.75rem; }
+    &__copy > p:last-child { font-size:.78rem; line-height:1.55; }
+    &__image { object-position:67% center; }
+    &__controls { gap:.5rem; margin-top:1rem; padding-bottom:.8rem; flex-wrap:wrap; }
+    &__controls .wm-boutique-filters { gap:1rem; button { font-size:.8rem; } }
+    &__location { font-size:.7rem; gap:.25rem; }
+    &__grid { grid-template-columns:minmax(0,1fr); gap:12px; }
+  }
+  .wm-boutique-directory-card { height:auto; aspect-ratio:4/5; max-height:530px; &__identity { padding:1.4rem; } h2 { font-size:2.15rem; } }
+}
+@media(prefers-reduced-motion:reduce) { .wm-boutique-directory-card__photo,.wm-boutique-directory-card__action svg { transition:none; } }
+@media(max-width:359px) { .wm-boutique-directory__copy h1 { font-size:1.6rem; } .wm-boutique-directory__copy > p:last-child { font-size:.72rem; } }
+

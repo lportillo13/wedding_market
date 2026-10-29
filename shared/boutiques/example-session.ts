@@ -30,8 +30,10 @@ export class ExampleBoutiqueSession {
         if (!body) {
             if (!path.startsWith('/account')) {
                 const slug = url.searchParams.get('slug');
-                if (!slug)
-                    return clone({ items: slice(this.shops.filter(s => s.enabled)) }) as T;
+                if (!slug) {
+                    const kind = url.searchParams.get('kind');
+                    return clone({ items: slice(this.shops.filter(s => s.enabled && (!kind || s.items.some(item => item.is_published && item.kind === kind)))) }) as T;
+                }
                 const store = this.shops.find(s => s.slug === slug && s.enabled);
                 if (!store)
                     throw Error('Example boutique unavailable.');

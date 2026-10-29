@@ -36,6 +36,17 @@ test('boutique privacy, catalog and appointment transactions',async t=>{
   await assert.rejects(as(null,'SELECT * FROM boutique_items'),{code:'42501'});
   assert.equal((await as(4,'SELECT * FROM boutique_items WHERE id=$1',[itemA])).rows.length,0);
  });
+ await t.test('directory type filters exclude drafts and unavailable boutiques without exposing collections',async()=>{
+  const draft=await rpc(3,'save_boutique_item',{p_vendor:id(11),p_id:null,p_data:{...garment,kind:'suit',is_published:false}});
+  const suits=await rpc(null,'boutique_storefront',{p_kind:'suit'});
+  assert.deepEqual(suits.items.map(shop=>shop.slug),['boutique-b']);
+  assert.ok(suits.items.every(shop=>!('items' in shop)&&!('address' in shop)&&!('price_cents' in shop)));
+  assert.deepEqual((await rpc(null,'boutique_storefront',{p_kind:'dress'})).items.map(shop=>shop.slug),['boutique-a']);
+  await db.query('UPDATE boutiques SET enabled=false WHERE vendor_id=$1',[id(12)]);
+  assert.equal((await rpc(null,'boutique_storefront',{p_kind:'suit'})).items.length,0);
+  await db.query('UPDATE boutiques SET enabled=true WHERE vendor_id=$1',[id(12)]);
+  await db.query('DELETE FROM boutique_items WHERE id=$1',[draft]);
+ });
  await t.test('favorites persist idempotently and remain private',async()=>{
   await rpc(1,'set_boutique_favorite',{p_item:itemA,p_saved:true});await rpc(1,'set_boutique_favorite',{p_item:itemA,p_saved:true});
   assert.equal((await rpc(1,'boutique_saved_outfits',{})).length,1);assert.equal((await rpc(2,'boutique_saved_outfits',{})).length,0);

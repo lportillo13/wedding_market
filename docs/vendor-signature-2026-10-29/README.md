@@ -1,5 +1,7 @@
 # Vendor information — centered signature C
 
+Historical design: the owner subsequently switched to [A — Editorial identity](../vendor-editorial-2026-10-29/README.md). The category translation improvements from this release remain included.
+
 The owner reviewed three vendor-logo treatments and selected **C — Centered signature**. The chosen image is archived as `selected-option-c.png` (built-in imagegen preview; not a runtime asset). Its brief was a centered company mark above a light serif heading and script category, icon facts, a centered short summary and a left-aligned longer story.
 
 The information section now uses the existing vendor logo in a fine circular frame, with initials when a logo is missing or fails. The logo uses contained sizing and lazy loading; no optimizer cache or new media store is introduced. Breadcrumbs remain above the signature. The story eyebrow moves into the signature; the team-size fact joins experience, languages and event types. Facts form a quiet row on desktop, two columns on tablet and a single column on phones. Service-specific spaces/details and the existing public website destination remain.

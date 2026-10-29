@@ -37,6 +37,18 @@ test('fictional catalog has dresses, suits and self-contained media for web/nati
     r.items[0].name.en = 'Mutated response';
     assert.notEqual(s.shops[0].items[1].name.en, 'Mutated response');
 });
+test('directory filters use published collection types before pagination', async () => {
+    const session = new ExampleBoutiqueSession();
+    const catalog = (kind: string, page = 1) => session.api<{ items: Boutique[] }>(`?kind=${kind}&page=${page}`);
+    assert.deepEqual((await catalog('suit')).items.map(shop => shop.slug), ['example-atelier-alba', 'example-sastreria-roble']);
+    assert.deepEqual((await catalog('dress')).items.map(shop => shop.slug), ['example-atelier-alba', 'example-casa-marfil']);
+    session.shops[2].enabled = false;
+    session.shops[0].items.filter(item => item.kind === 'suit').forEach(item => { item.is_published = false; });
+    assert.equal((await catalog('suit')).items.length, 0);
+    assert.equal((await catalog('')).items.length, 2);
+    assert.equal((await catalog('', 2)).items.length, 0);
+});
+
 test('favorites persist in one preview, deep-link to stores, and reset in a new session', async () => {
     const s = new ExampleBoutiqueSession(), id = s.shops[1].items[0].id;
     await command(s, { action: 'favorite', id, saved: true });
