@@ -67,7 +67,7 @@ export default function VendorHeader({
         </div>}
         {categories.length > 0 && (
           <p className="wm-profile-hero__category">
-            {categories.map(category => localizeVendorCategory(category, dictionary.home.categories.items)).join(' · ')}
+            {categories.map(category => localizeVendorCategory(category, dictionary.home.categories.items, dictionary.vendorPublic.categoryLabels)).join(' · ')}
           </p>
         )}
         <h1>{vendor.name}</h1>

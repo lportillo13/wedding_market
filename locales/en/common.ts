@@ -476,6 +476,16 @@ const common = {
     }
   },
   "vendorPublic": {
+    "categoryLabels": {
+      "music": "Music & entertainment",
+      "planners": "Wedding planners",
+      "videography": "Videography",
+      "flowers": "Flowers & decor",
+      "transport": "Transportation",
+      "rentals": "Event rentals",
+      "officiants": "Officiants",
+      "cakes": "Wedding cakes"
+    },
     "breadcrumbHome": "Home",
     "editorial": {
       "navigation": "Explore this vendor",

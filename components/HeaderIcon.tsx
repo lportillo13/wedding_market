@@ -13,6 +13,9 @@ export type HeaderIconName =
   | "grid"
   | "calendar"
   | "pin"
+  | "users"
+  | "globe"
+  | "rings"
   | "chevron";
 const paths: Record<HeaderIconName, string> = {
   search: "M21 21l-4.6-4.6M19 10.5a8.5 8.5 0 1 1-17 0 8.5 8.5 0 0 1 17 0Z",
@@ -27,6 +30,9 @@ const paths: Record<HeaderIconName, string> = {
   grid: "M3 3h7v7H3V3Zm11 0h7v7h-7V3ZM3 14h7v7H3v-7Zm11 0h7v7h-7v-7Z",
   calendar: "M5 5h14a2 2 0 0 1 2 2v13H3V7a2 2 0 0 1 2-2ZM7 3v4M17 3v4M3 10h18M7 14h2M12 14h2M7 17h2",
   pin: "M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0ZM15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z",
+  users: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.87M13 3.13a4 4 0 0 1 0 7.75M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z",
+  globe: "M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0ZM2 12h20M12 2a18 18 0 0 1 0 20 18 18 0 0 1 0-20Z",
+  rings: "M15 14a7 7 0 1 1-14 0 7 7 0 0 1 14 0ZM23 14a7 7 0 1 1-14 0 7 7 0 0 1 14 0ZM7 3l1-2 1 2-1 2-1-2ZM15 3l1-2 1 2-1 2-1-2Z",
   chevron: "m8 10 4 4 4-4",
   play: "M8 5v14l11-7Z",
   pause: "M6 4h4v16H6ZM14 4h4v16h-4Z",

@@ -49,6 +49,7 @@ export default function VendorPageShell({
       kicker: labels.editorial.story,
       visible: !!(
         profile.vendor.description ||
+        profile.vendor.logoUrl ||
         profile.vendor.summary ||
         profile.spaces.length ||
         profile.vendor.teamSizeRange ||
@@ -65,6 +66,7 @@ export default function VendorPageShell({
           vendor={profile.vendor}
           spaces={profile.spaces}
           categoryKeys={categoryKeys}
+          categories={profile.breadcrumbs.categories}
         />
         </>
       ),
@@ -208,12 +210,12 @@ export default function VendorPageShell({
                 className={`wm-vendor-section-block wm-vendor-section wm-profile-section wm-profile-section--${section.id}`}
                 key={section.id}
               >
-                <p className="wm-profile-eyebrow">
+                {section.id !== 'about' && <p className="wm-profile-eyebrow">
                   <span aria-hidden="true">
                     {String(index + 1).padStart(2, "0")} /{" "}
                   </span>
                   {section.kicker}
-                </p>
+                </p>}
                 {section.content}
               </section>
             ))}

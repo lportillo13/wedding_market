@@ -1,13 +1,19 @@
 "use client";
+/* eslint-disable @next/next/no-img-element -- Reuse the admitted company logo without adding an optimizer cache. */
 
+import { useState } from 'react';
+import HeaderIcon from '@/components/HeaderIcon';
 import { useLanguage } from "@/contexts/LanguageContext";
 import { getVendorServiceProfile } from "@/lib/vendorServiceProfile";
+import { resolveMediaUrl } from '@/lib/media-url';
+import { localizeVendorCategory } from '@/shared/vendors/category-label';
 import type { VendorProfileDTO, VendorSpace } from "@/types/vendor-profile";
 
 type VendorAboutProps = {
   vendor: VendorProfileDTO["vendor"];
   spaces: VendorSpace[];
   categoryKeys: readonly (string | null | undefined)[];
+  categories?: VendorProfileDTO['breadcrumbs']['categories'];
 };
 
 function fill(template: string, values: Record<string, string | number>) {
@@ -26,36 +32,40 @@ function renderParagraphs(text: string | null) {
   ));
 }
 
-export default function VendorAbout({ vendor, spaces, categoryKeys }: VendorAboutProps) {
-  const { dictionary } = useLanguage();
+export default function VendorAbout({ vendor, spaces, categoryKeys, categories = [] }: VendorAboutProps) {
+  const { dictionary, language } = useLanguage();
+  const [failedLogo, setFailedLogo] = useState<string | null>(null);
   const labels = dictionary.vendorPublic.about;
   const headerLabels = dictionary.vendorPublic.header;
   const serviceProfile = getVendorServiceProfile(categoryKeys);
   const serviceDetailHeadings = labels.serviceDetailHeadings as Record<string, string>;
   const detailsHeading = serviceDetailHeadings[serviceProfile.key] ?? labels.spacesHeading;
+  const initials = vendor.name.trim().split(/\s+/).slice(0, 2).map(word => Array.from(word)[0]).join('').toLocaleUpperCase(language);
+  const hasFacts = vendor.teamSizeRange || vendor.yearsInBusiness || vendor.languages.length > 0 || vendor.eventTypes.length > 0;
 
   return (
-    <div className="wm-profile-about">
-      <div className="wm-profile-section-heading d-flex justify-content-between align-items-start mb-4">
-        <div>
-          <h2 className="h3">{fill(labels.heading, { vendor: vendor.name })}</h2>
-          {vendor.teamSizeRange ? (
-            <div className="text-muted small">{fill(labels.teamSize, { size: vendor.teamSizeRange })}</div>
-          ) : null}
+    <div className="wm-profile-about wm-profile-about--signature">
+      <div className="wm-profile-about__signature">
+        <div className="wm-profile-about__logo">
+          {vendor.logoUrl && failedLogo !== vendor.logoUrl ? <img src={resolveMediaUrl(vendor.logoUrl)} alt={fill(headerLabels.logoAlt, { vendor: vendor.name })} width={112} height={112} loading="lazy" onError={() => setFailedLogo(vendor.logoUrl)}/> : <span aria-hidden="true">{initials}</span>}
         </div>
+        <p className="wm-profile-eyebrow">{dictionary.vendorPublic.editorial.story}</p>
+        <h2>{fill(labels.heading, { vendor: vendor.name })}</h2>
+        {categories.length > 0 && <p className="wm-profile-about__category">{categories.map(category => localizeVendorCategory(category, dictionary.home.categories.items, dictionary.vendorPublic.categoryLabels)).join(' · ')}</p>}
         {vendor.websiteUrl ? (
-          <a href={vendor.websiteUrl} className="btn btn-outline-primary" target="_blank" rel="noreferrer">
-            {fill(labels.visitWebsite, { vendor: vendor.name })}
+          <a href={vendor.websiteUrl} className="wm-profile-about__website" target="_blank" rel="noreferrer">
+            {fill(labels.visitWebsite, { vendor: vendor.name })}<HeaderIcon name="arrow"/>
           </a>
         ) : null}
       </div>
-      {(vendor.yearsInBusiness || vendor.languages.length > 0 || vendor.eventTypes.length > 0) && <div className="wm-profile-about__facts" role="group" aria-label={dictionary.vendorPublic.editorial.atAGlance}>
-        {vendor.yearsInBusiness ? <span>{fill(headerLabels.yearsInBusiness, { years: vendor.yearsInBusiness })}</span> : null}
-        {vendor.languages.length > 0 && <span>{fill(headerLabels.languages, { languages: vendor.languages.join(', ') })}</span>}
-        {vendor.eventTypes.length > 0 && <span>{vendor.eventTypes.join(' · ')}</span>}
+      {hasFacts && <div className="wm-profile-about__facts" role="group" aria-label={dictionary.vendorPublic.editorial.atAGlance}>
+        {vendor.teamSizeRange && <span><HeaderIcon name="users"/><span>{fill(labels.teamSize, { size: vendor.teamSizeRange })}</span></span>}
+        {vendor.yearsInBusiness ? <span><HeaderIcon name="calendar"/><span>{fill(headerLabels.yearsInBusiness, { years: vendor.yearsInBusiness })}</span></span> : null}
+        {vendor.languages.length > 0 && <span><HeaderIcon name="globe"/><span>{fill(headerLabels.languages, { languages: vendor.languages.join(', ') })}</span></span>}
+        {vendor.eventTypes.length > 0 && <span><HeaderIcon name="rings"/><span>{vendor.eventTypes.join(' · ')}</span></span>}
       </div>}
       <div className="wm-profile-about__description">
-        {vendor.summary ? <div className="lead text-body-secondary">{renderParagraphs(vendor.summary)}</div> : null}
+        {vendor.summary ? <div className="lead">{renderParagraphs(vendor.summary)}</div> : null}
         {vendor.description ? <div>{renderParagraphs(vendor.description)}</div> : null}
       </div>
 

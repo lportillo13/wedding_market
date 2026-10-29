@@ -188,11 +188,31 @@
   .wm-profile-hero__hint { color: #fffdf9cc; font-size: .75rem; margin: .8rem 0 0; }
   .wm-profile-about__facts {
     display: flex;
+    justify-content: center;
     flex-wrap: wrap;
-    gap: .4rem 1rem;
-    margin-bottom: 1.5rem;
+    gap: 1rem 1.5rem;
+    margin: 2rem 0;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--lx-border);
     color: var(--lx-muted);
-    font-size: .75rem;
+    font-size: .875rem;
+    > span { display: flex; align-items: center; gap: .65rem; min-width: 0; }
+    > span + span { border-left: 1px solid var(--lx-border); padding-left: 1.5rem; }
+    svg { flex: 0 0 22px; width: 22px; height: 22px; color: var(--lx-gold); }
+    @media (max-width: 991.98px) {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      max-width: 42rem;
+      margin-inline: auto;
+      > span + span { border-left: 0; padding-left: 0; }
+    }
+    @media (max-width: 767.98px) {
+      grid-template-columns: minmax(0, 1fr);
+      max-width: 24rem;
+      gap: .9rem;
+      padding-bottom: 1.5rem;
+      margin-block: 1.75rem;
+    }
   }
   .wm-profile-hero__visual { position: absolute; inset: 0; min-width: 0; }
   .wm-profile-hero__cover { position: relative; display: block; width: 100%; height: 100%; min-height: 0; background: var(--lx-bg-2); overflow: hidden; }
@@ -436,6 +456,49 @@
   .wm-profile-about .lead p {
     font-size: inherit;
     line-height: 1.45;
+  }
+  .wm-profile-about__signature { text-align: center; }
+  .wm-profile-about__logo {
+    display: grid;
+    place-items: center;
+    width: 112px;
+    height: 112px;
+    margin: 0 auto 1.5rem;
+    padding: 18px;
+    border: 1px solid var(--lx-gold);
+    border-radius: 50%;
+    color: var(--lx-gold);
+    background: transparent;
+    img { display: block; width: 100%; height: 100%; object-fit: contain; }
+    > span { font: 300 3.25rem/1 var(--profile-serif); letter-spacing: -.12em; padding-right: .12em; white-space: nowrap; overflow-wrap: normal; }
+  }
+  .wm-profile-about__signature > .wm-profile-eyebrow { font-size: .65rem; line-height: 1.6; margin-bottom: .75rem; }
+  .wm-profile-about--signature h2 { font-size: clamp(2rem, 3.5vw, 2.75rem); line-height: 1.15; margin: 0; }
+  .wm-profile-about__signature > .wm-profile-about__category {
+    margin: .5rem 0 0;
+    color: var(--profile-accent);
+    font: 400 clamp(1.5rem, 2.6vw, 2rem)/1.15 var(--wm-font-script);
+  }
+  .wm-profile-about__website {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    min-height: 44px;
+    margin-top: .5rem;
+    font-size: .8125rem;
+    text-underline-offset: 5px;
+    svg { width: 16px; height: 16px; transform: rotate(-45deg); }
+  }
+  .wm-profile-about--signature .wm-profile-about__description { max-width: 52rem; margin-inline: auto; }
+  .wm-profile-about--signature .wm-profile-about__description .lead {
+    max-width: 46rem;
+    margin: 0 auto 1.5rem;
+    font-size: clamp(1.4rem, 2.4vw, 1.8rem);
+    text-align: center;
+  }
+  @media (max-width: 767.98px) {
+    .wm-profile-about__logo { width: 96px; height: 96px; padding: 14px; margin-bottom: 1.25rem; > span { font-size: 2.75rem; } }
   }
   .wm-profile-services .card {
     background: var(--lx-surface) !important;

@@ -1,0 +1,439 @@
+{
+  "checkedAt": "2026-10-29T19:16:28.225Z",
+  "checks": [
+    {
+      "body": {
+        "bottom": 808.828125,
+        "height": 188,
+        "left": 151.5,
+        "right": 983.5,
+        "top": 620.828125,
+        "width": 832,
+        "x": 151.5,
+        "y": 620.828125
+      },
+      "bodyAlignment": "start",
+      "category": "Música y entretenimiento",
+      "eyebrowFont": "10.4px",
+      "facts": [
+        "Tamaño del equipo: 2–4",
+        "6+ años de experiencia",
+        "Idiomas: English, Español",
+        "Bodas"
+      ],
+      "factsLayout": "flex",
+      "heading": "Sobre Ritmo Atardecer",
+      "heroHeight": 900,
+      "logo": {
+        "bottom": 348.125,
+        "height": 112,
+        "left": 511.5,
+        "right": 623.5,
+        "top": 236.125,
+        "width": 112,
+        "x": 511.5,
+        "y": 236.125
+      },
+      "logoText": {
+        "bottom": 318.125,
+        "height": 52,
+        "left": 535,
+        "right": 600,
+        "top": 266.125,
+        "width": 65,
+        "x": 535,
+        "y": 266.125
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "signature": {
+        "bottom": 501.4375,
+        "height": 265.3125,
+        "left": 67.5,
+        "right": 1067.5,
+        "top": 236.125,
+        "width": 1000,
+        "x": 67.5,
+        "y": 236.125
+      },
+      "summaryAlignment": "center",
+      "viewport": [
+        1150,
+        900
+      ]
+    },
+    {
+      "body": {
+        "bottom": 967.78125,
+        "height": 289.453125,
+        "left": 12,
+        "right": 363,
+        "top": 678.328125,
+        "width": 351,
+        "x": 12,
+        "y": 678.328125
+      },
+      "bodyAlignment": "start",
+      "category": "Música y entretenimiento",
+      "eyebrowFont": "11.2px",
+      "facts": [
+        "Tamaño del equipo: 2–4",
+        "6+ años de experiencia",
+        "Idiomas: English, Español",
+        "Bodas"
+      ],
+      "factsLayout": "grid",
+      "heading": "Sobre Ritmo Atardecer",
+      "heroHeight": 844,
+      "logo": {
+        "bottom": 333.96875,
+        "height": 96,
+        "left": 139.5,
+        "right": 235.5,
+        "top": 237.96875,
+        "width": 96,
+        "x": 139.5,
+        "y": 237.96875
+      },
+      "logoText": {
+        "bottom": 307.96875,
+        "height": 44,
+        "left": 160,
+        "right": 215,
+        "top": 263.96875,
+        "width": 55,
+        "x": 160,
+        "y": 263.96875
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "signature": {
+        "bottom": 464.59375,
+        "height": 226.625,
+        "left": 12,
+        "right": 363,
+        "top": 237.96875,
+        "width": 351,
+        "x": 12,
+        "y": 237.96875
+      },
+      "summaryAlignment": "center",
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "body": {
+        "bottom": 909.703125,
+        "height": 317.453125,
+        "left": 12,
+        "right": 293,
+        "top": 592.25,
+        "width": 281,
+        "x": 12,
+        "y": 592.25
+      },
+      "bodyAlignment": "start",
+      "category": "Música y entretenimiento",
+      "eyebrowFont": "11.2px",
+      "facts": [
+        "Tamaño del equipo: 2–4",
+        "6+ años de experiencia",
+        "Idiomas: English, Español",
+        "Bodas"
+      ],
+      "factsLayout": "grid",
+      "heading": "Sobre Ritmo Atardecer",
+      "heroHeight": 740,
+      "logo": {
+        "bottom": 229.96875,
+        "height": 96,
+        "left": 104.5,
+        "right": 200.5,
+        "top": 133.96875,
+        "width": 96,
+        "x": 104.5,
+        "y": 133.96875
+      },
+      "logoText": {
+        "bottom": 203.96875,
+        "height": 44,
+        "left": 125,
+        "right": 180,
+        "top": 159.96875,
+        "width": 55,
+        "x": 125,
+        "y": 159.96875
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "signature": {
+        "bottom": 378.515625,
+        "height": 244.546875,
+        "left": 12,
+        "right": 293,
+        "top": 133.96875,
+        "width": 281,
+        "x": 12,
+        "y": 133.96875
+      },
+      "summaryAlignment": "center",
+      "viewport": [
+        320,
+        740
+      ]
+    },
+    {
+      "body": {
+        "bottom": 891.046875,
+        "height": 191.5,
+        "left": 216.5,
+        "right": 1048.5,
+        "top": 699.546875,
+        "width": 832,
+        "x": 216.5,
+        "y": 699.546875
+      },
+      "bodyAlignment": "start",
+      "category": "Music & entertainment",
+      "eyebrowFont": "10.4px",
+      "facts": [
+        "Team size: 2–4",
+        "6+ years in business",
+        "Languages: English, Español",
+        "Bodas"
+      ],
+      "factsLayout": "flex",
+      "heading": "About Ritmo Atardecer",
+      "heroHeight": 900,
+      "logo": {
+        "bottom": 420.125,
+        "height": 112,
+        "left": 576.5,
+        "right": 688.5,
+        "top": 308.125,
+        "width": 112,
+        "x": 576.5,
+        "y": 308.125
+      },
+      "logoText": {
+        "bottom": 390.125,
+        "height": 52,
+        "left": 600,
+        "right": 665,
+        "top": 338.125,
+        "width": 65,
+        "x": 600,
+        "y": 338.125
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "signature": {
+        "bottom": 580.15625,
+        "height": 272.03125,
+        "left": 66.5,
+        "right": 1198.5,
+        "top": 308.125,
+        "width": 1132,
+        "x": 66.5,
+        "y": 308.125
+      },
+      "summaryAlignment": "center",
+      "viewport": [
+        1280,
+        900
+      ]
+    },
+    {
+      "body": {
+        "bottom": 871.90625,
+        "height": 172.96875,
+        "left": 70.5,
+        "right": 814.5,
+        "top": 698.9375,
+        "width": 744,
+        "x": 70.5,
+        "y": 698.9375
+      },
+      "bodyAlignment": "start",
+      "category": "Música y entretenimiento",
+      "eyebrowFont": "10.4px",
+      "facts": [
+        "Tamaño del equipo: 2–4",
+        "6+ años de experiencia",
+        "Idiomas: English, Español",
+        "Bodas"
+      ],
+      "factsLayout": "grid",
+      "heading": "Sobre Ritmo Atardecer",
+      "heroHeight": 900,
+      "logo": {
+        "bottom": 404.125,
+        "height": 112,
+        "left": 386.5,
+        "right": 498.5,
+        "top": 292.125,
+        "width": 112,
+        "x": 386.5,
+        "y": 292.125
+      },
+      "logoText": {
+        "bottom": 374.125,
+        "height": 52,
+        "left": 410,
+        "right": 475,
+        "top": 322.125,
+        "width": 65,
+        "x": 410,
+        "y": 322.125
+      },
+      "overflow": false,
+      "path": "/vendors/example-ritmo-atardecer",
+      "signature": {
+        "bottom": 541.15625,
+        "height": 249.03125,
+        "left": 70.5,
+        "right": 814.5,
+        "top": 292.125,
+        "width": 744,
+        "x": 70.5,
+        "y": 292.125
+      },
+      "summaryAlignment": "center",
+      "viewport": [
+        900,
+        900
+      ]
+    },
+    {
+      "body": {
+        "bottom": 1597.90625,
+        "height": 172.96875,
+        "left": 70.5,
+        "right": 814.5,
+        "top": 1424.9375,
+        "width": 744,
+        "x": 70.5,
+        "y": 1424.9375
+      },
+      "bodyAlignment": "start",
+      "category": "Lugares",
+      "eyebrowFont": "10.4px",
+      "facts": [
+        "Tamaño del equipo: 2–4",
+        "6+ años de experiencia",
+        "Idiomas: English, Español",
+        "Bodas"
+      ],
+      "factsLayout": "grid",
+      "heading": "Sobre Villa Brisa",
+      "heroHeight": 900,
+      "logo": {
+        "bottom": 1130.125,
+        "height": 112,
+        "left": 386.5,
+        "right": 498.5,
+        "top": 1018.125,
+        "width": 112,
+        "x": 386.5,
+        "y": 1018.125
+      },
+      "logoText": {
+        "bottom": 1100.125,
+        "height": 52,
+        "left": 412.4375,
+        "right": 472.546875,
+        "top": 1048.125,
+        "width": 60.109375,
+        "x": 412.4375,
+        "y": 1048.125
+      },
+      "overflow": false,
+      "path": "/vendors/example-villa-brisa",
+      "signature": {
+        "bottom": 1267.15625,
+        "height": 249.03125,
+        "left": 70.5,
+        "right": 814.5,
+        "top": 1018.125,
+        "width": 744,
+        "x": 70.5,
+        "y": 1018.125
+      },
+      "summaryAlignment": "center",
+      "viewport": [
+        900,
+        900
+      ]
+    },
+    {
+      "body": {
+        "bottom": 1597.90625,
+        "height": 172.96875,
+        "left": 70.5,
+        "right": 814.5,
+        "top": 1424.9375,
+        "width": 744,
+        "x": 70.5,
+        "y": 1424.9375
+      },
+      "bodyAlignment": "start",
+      "category": "Fotografía",
+      "eyebrowFont": "10.4px",
+      "facts": [
+        "Tamaño del equipo: 2–4",
+        "6+ años de experiencia",
+        "Idiomas: English, Español",
+        "Bodas"
+      ],
+      "factsLayout": "grid",
+      "heading": "Sobre Luz de Abril",
+      "heroHeight": 900,
+      "logo": {
+        "bottom": 1130.125,
+        "height": 112,
+        "left": 386.5,
+        "right": 498.5,
+        "top": 1018.125,
+        "width": 112,
+        "x": 386.5,
+        "y": 1018.125
+      },
+      "logoText": {
+        "bottom": 1100.125,
+        "height": 52,
+        "left": 413.5625,
+        "right": 471.4375,
+        "top": 1048.125,
+        "width": 57.875,
+        "x": 413.5625,
+        "y": 1048.125
+      },
+      "overflow": false,
+      "path": "/vendors/example-luz-de-abril",
+      "signature": {
+        "bottom": 1267.15625,
+        "height": 249.03125,
+        "left": 70.5,
+        "right": 814.5,
+        "top": 1018.125,
+        "width": 744,
+        "x": 70.5,
+        "y": 1018.125
+      },
+      "summaryAlignment": "center",
+      "viewport": [
+        900,
+        900
+      ]
+    }
+  ],
+  "interactions": {
+    "musicCategorySwitchesToEnglish": true,
+    "spanishRestored": true,
+    "venueServiceCardsRetained": 2,
+    "logoFallbackContained": true
+  },
+  "consoleErrors": []
+}

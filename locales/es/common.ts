@@ -476,6 +476,16 @@ const common = {
     }
   },
   "vendorPublic": {
+    "categoryLabels": {
+      "music": "Música y entretenimiento",
+      "planners": "Organizadores de bodas",
+      "videography": "Videografía",
+      "flowers": "Flores y decoración",
+      "transport": "Transporte",
+      "rentals": "Alquileres para eventos",
+      "officiants": "Oficiantes",
+      "cakes": "Pasteles de boda"
+    },
     "breadcrumbHome": "Inicio",
     "editorial": {
       "navigation": "Explora este proveedor",

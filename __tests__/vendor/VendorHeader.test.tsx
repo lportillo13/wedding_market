@@ -18,4 +18,6 @@ test('hero category uses the selected UI language even when profile props came f
 test('category translation accepts a canonical slug and preserves an unknown custom category', () => {
   assert.equal(localizeVendorCategory({ key: 'old-id', slug: ' PHOTOGRAPHY ', label: 'Fotografía' }, dictionaries.en.home.categories.items), 'Photography');
   assert.equal(localizeVendorCategory({ key: 'custom', label: 'Custom service' }, dictionaries.es.home.categories.items), 'Custom service');
+  assert.equal(localizeVendorCategory({ key: 'music', label: 'Música y entretenimiento' }, dictionaries.en.home.categories.items, dictionaries.en.vendorPublic.categoryLabels), 'Music & entertainment');
+  assert.equal(localizeVendorCategory({ key: 'constructor', label: 'Custom service' }, dictionaries.en.home.categories.items, dictionaries.en.vendorPublic.categoryLabels), 'Custom service');
 });
