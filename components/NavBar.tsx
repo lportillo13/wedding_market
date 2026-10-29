@@ -16,6 +16,7 @@ import HeaderSignOutButton from "./HeaderSignOutButton";
 import HeaderIcon from "./HeaderIcon";
 import HeaderLanguageSwitch from "./HeaderLanguageSwitch";
 import HeaderAccountRetry from "./HeaderAccountRetry";
+import BrowserThemeColor from "./BrowserThemeColor";
 import VendorsMegaMenu, { type HeaderVendorCategory } from "./VendorsMegaMenu";
 
 type NavBarProps = {
@@ -143,6 +144,7 @@ export default function NavBar({
       className={`wm-site-header${pathname === "/" ? " wm-site-header--home" : ""}${isVendorProfile ? " wm-site-header--vendor-profile" : ""}${isBoutiqueStore ? " wm-site-header--boutique" : ""}`}
       data-scrolled={isCoverPage && hasScrolled ? "true" : undefined}
     >
+      <BrowserThemeColor pathname={pathname} isCoverPage={isCoverPage} menuOpen={menuOpen}/>
       <div className="container wm-site-header__inner">
         <Link href="/" className="wm-site-header__brand">
           {brand}

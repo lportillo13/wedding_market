@@ -1,0 +1,153 @@
+{
+  "checks": [
+    {
+      "case": "content-page",
+      "color": "#faf8f4",
+      "path": "/about",
+      "tags": 1,
+      "expected": "#faf8f4",
+      "passed": true
+    },
+    {
+      "case": "SPA-home-cover",
+      "color": "#332d27",
+      "path": "/",
+      "tags": 1,
+      "expected": "#332d27",
+      "passed": true
+    },
+    {
+      "case": "scrolled-cover",
+      "color": "#332d27",
+      "path": "/",
+      "tags": 1,
+      "expected": "#332d27",
+      "passed": true
+    },
+    {
+      "case": "open-mobile-menu",
+      "color": "#faf8f4",
+      "path": "/",
+      "tags": 1,
+      "expected": "#faf8f4",
+      "passed": true
+    },
+    {
+      "case": "closed-mobile-menu",
+      "color": "#332d27",
+      "path": "/",
+      "tags": 1,
+      "expected": "#332d27",
+      "passed": true
+    },
+    {
+      "case": "mobile-search",
+      "color": "#faf8f4",
+      "path": "/",
+      "tags": 1,
+      "expected": "#faf8f4",
+      "passed": true
+    },
+    {
+      "case": "SPA-menu-to-content",
+      "color": "#faf8f4",
+      "path": "/about",
+      "tags": 1,
+      "expected": "#faf8f4",
+      "passed": true
+    },
+    {
+      "case": "boutique-cover",
+      "color": "#332d27",
+      "path": "/boutiques/example-atelier-alba",
+      "tags": 1,
+      "expected": "#332d27",
+      "passed": true
+    },
+    {
+      "case": "same-path-outfit-details",
+      "color": "#faf8f4",
+      "path": "/boutiques/example-atelier-alba",
+      "tags": 1,
+      "expected": "#faf8f4",
+      "passed": true
+    },
+    {
+      "case": "same-path-return-to-cover",
+      "color": "#332d27",
+      "path": "/boutiques/example-atelier-alba",
+      "tags": 1,
+      "expected": "#332d27",
+      "passed": true
+    },
+    {
+      "case": "same-path-fitting-form",
+      "color": "#faf8f4",
+      "path": "/boutiques/example-atelier-alba",
+      "tags": 1,
+      "expected": "#faf8f4",
+      "passed": true
+    },
+    {
+      "case": "same-path-form-return",
+      "color": "#332d27",
+      "path": "/boutiques/example-atelier-alba",
+      "tags": 1,
+      "expected": "#332d27",
+      "passed": true
+    },
+    {
+      "case": "saved-outfits",
+      "color": "#faf8f4",
+      "path": "/boutiques/favorites",
+      "tags": 1,
+      "expected": "#faf8f4",
+      "passed": true
+    },
+    {
+      "case": "vendor-cover",
+      "color": "#faf8f4",
+      "path": "/vendors/example-villa-brisa",
+      "tags": 1,
+      "expected": "#332d27",
+      "passed": false
+    },
+    {
+      "case": "missing-page-fallback",
+      "color": "#faf8f4",
+      "path": "/preview-missing-browser-theme",
+      "tags": 1,
+      "expected": "#faf8f4",
+      "passed": true
+    },
+    {
+      "case": "vendor-cover-after-loading",
+      "color": "#332d27",
+      "path": "/vendors/example-villa-brisa",
+      "tags": 1,
+      "expected": "#332d27",
+      "passed": true
+    },
+    {
+      "case": "vendor-to-content-SPA",
+      "color": "#faf8f4",
+      "path": "/about",
+      "tags": 1,
+      "expected": "#faf8f4",
+      "passed": true
+    },
+    {
+      "case": "back-to-loaded-vendor",
+      "color": "#332d27",
+      "path": "/vendors/example-villa-brisa",
+      "tags": 1,
+      "expected": "#332d27",
+      "passed": true
+    }
+  ],
+  "notes": [
+    "The first vendor measurement happened before its cover rendered and correctly retained the ivory fallback; the loaded vendor cover and return-navigation measurements are brown."
+  ],
+  "viewportReset": true,
+  "scope": "Standard theme-color metadata behavior; no physical mobile browser chrome painting is claimed."
+}

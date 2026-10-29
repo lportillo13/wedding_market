@@ -26,6 +26,7 @@ import { DEFAULT_LANGUAGE, dictionaries, isSupportedLanguage, type SupportedLang
 import { getRequestLanguage } from "@/lib/i18n/server";
 import type { HeaderVendorCategory } from "@/components/VendorsMegaMenu";
 import { loadHeaderAccount, type HeaderAccount } from "@/lib/header-account";
+import { BROWSER_THEME } from "@/lib/browser-theme";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -54,7 +55,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#4B352C",
+  themeColor: BROWSER_THEME.paper,
 };
 
 function getFallbackVendorCategories(): HeaderVendorCategory[] {
