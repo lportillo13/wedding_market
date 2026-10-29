@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import OutfitDetails from './OutfitDetails';
 import OutfitCard from './OutfitCard';
 import BoutiqueAbout from './BoutiqueAbout';
+import BoutiqueToolbar from './BoutiqueToolbar';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -135,12 +136,12 @@ export default function BoutiqueExperience({ initial, store = null, favorites = 
   </section> : null}
   {shop && !detail && !booking ? <nav className="wm-boutique-tabs" aria-label={t.about}><a href="#boutique-collection">{t.collection}</a><a href="#boutique-about">{t.about}</a><button onClick={() => setBooking(true)}>{t.visit}</button></nav> : null}
   <div className={detail && !booking ? 'container wm-boutique-detail-container' : 'container py-4 py-lg-5'}>
-   {!detail || booking ? <div className="wm-boutique-toolbar"><Link href={isExample ? "/boutiques?examples=1" : "/boutiques"}>{t.title}</Link><div><Link href={isExample ? "/boutiques/favorites?examples=1" : "/boutiques/favorites"}>♡ {t.favorites}</Link><Link href={isExample ? "/boutiques/examples/appointments" : account?.role === 'vendor' ? "/vendor/inbox/appointments" : "/account/inbox/appointments"}>{t.appointments}</Link></div></div> : null}
+   {!detail || booking ? <BoutiqueToolbar language={language} example={isExample} vendor={account?.role === 'vendor'}/> : null}
    {message ? <p role="alert" className="wm-boutique-notice">{message} {!account ? <Link href={`/login?next=${encodeURIComponent(favorites ? '/boutiques/favorites' : `/boutiques/${shop?.slug ?? ''}`)}`}>{t.account} →</Link> : null}</p> : null}
    {booking && shop ? <AppointmentForm shop={{ ...shop, items: detail && !shop.items.some(item => item.id === detail.id) ? [detail, ...shop.items] : shop.items }} selected={detail ? [detail.id] : []} profile={account} submission={submission} onBack={() => setBooking(false)} onSuccess={() => { setBooking(false); setMessage(t.requested); }}/> :
             detail ? <OutfitDetails outfit={detail} shop={shop} language={language} example={isExample} saved={saved.includes(detail.id)} busy={busy} onBack={() => setDetail(null)} onVisit={() => setBooking(true)} onToggle={() => void toggle(detail)}/> :
-                <>{shop ? <BoutiqueAbout key={shop.slug} shop={shop} language={language} example={isExample} onVisit={() => setBooking(true)}/> : null}<section id="boutique-collection"><p className="wm-boutique-script">{shop ? t.accent : t.boutiques}</p><h1>{shop ? t.collection : title}</h1>{!shop && !favorites ? <p className="text-muted">{t.intro}</p> : null}
-    {shop ? <div className="wm-boutique-filters">{[['', t.all], ['dress', t.dress], ['suit', t.suit]].map(([value, label]) => <button key={value} className={`btn ${kind === value ? 'btn-primary' : 'btn-outline-secondary'}`} aria-pressed={kind === value} onClick={() => { setKind(value); setPage(1); }}>{label}</button>)}</div> : null}
+                <>{shop ? <BoutiqueAbout key={shop.slug} shop={shop} language={language} example={isExample} onVisit={() => setBooking(true)}/> : null}<section id="boutique-collection"><p className="wm-boutique-script">{shop ? t.accent : t.boutiques}</p>{shop ? <h2 className="wm-boutique-collection-title">{t.collection}</h2> : <h1>{title}</h1>}{!shop && !favorites ? <p className="text-muted">{t.intro}</p> : null}
+    {shop ? <div className="wm-boutique-filters" role="group" aria-label={t.collection}>{[['', t.all], ['dress', t.dress], ['suit', t.suit]].map(([value, label]) => <button type="button" key={value} aria-pressed={kind === value} onClick={() => { setKind(value); setPage(1); }}>{label}</button>)}</div> : null}
     {loading ? <p role="status">{t.loading}</p> : null}
     <div className={list ? "wm-vendor-grid wm-boutique-grid--editorial" : "wm-boutique-grid"}>{list ? items.map(item => <OutfitCard key={item.id} outfit={item} language={language} saved={saved.includes(item.id)} busy={busy} onToggle={() => void toggle(item)} onOpen={() => {
         if (favorites) router.push(`/boutiques/${(item as Outfit & { slug: string }).slug}?outfit=${item.id}`);

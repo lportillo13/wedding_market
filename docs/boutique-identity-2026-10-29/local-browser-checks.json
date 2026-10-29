@@ -1,0 +1,395 @@
+{
+  "checkedAt": "2026-10-29T16:58:55.871Z",
+  "checks": [
+    {
+      "cards": 6,
+      "filters": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Todos",
+          "pressed": "true",
+          "underline": "matrix(1, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Vestidos",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Trajes",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        }
+      ],
+      "identity": "Atelier Alba",
+      "logo": {
+        "bottom": 351.046875,
+        "height": 112,
+        "left": 66.5,
+        "right": 178.5,
+        "top": 239.046875,
+        "width": 112,
+        "x": 66.5,
+        "y": 239.046875
+      },
+      "overflow": false,
+      "path": "/boutiques/example-atelier-alba",
+      "toolbarLinks": [
+        {
+          "height": 44,
+          "href": "/boutiques?examples=1",
+          "name": "Vestidos y trajes"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/favorites?examples=1",
+          "name": "Prendas guardadas"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/examples/appointments",
+          "name": "Citas de prueba"
+        }
+      ],
+      "viewport": [
+        1280,
+        720
+      ]
+    },
+    {
+      "cards": 2,
+      "filters": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Todos",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Vestidos",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Trajes",
+          "pressed": "true",
+          "underline": "matrix(1, 0, 0, 1, 0, 0)"
+        }
+      ],
+      "identity": "Atelier Alba",
+      "logo": {
+        "bottom": 129.046875,
+        "height": 112,
+        "left": 66.5,
+        "right": 178.5,
+        "top": 17.046875,
+        "width": 112,
+        "x": 66.5,
+        "y": 17.046875
+      },
+      "overflow": false,
+      "path": "/boutiques/example-atelier-alba",
+      "toolbarLinks": [
+        {
+          "height": 44,
+          "href": "/boutiques?examples=1",
+          "name": "Vestidos y trajes"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/favorites?examples=1",
+          "name": "Prendas guardadas"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/examples/appointments",
+          "name": "Citas de prueba"
+        }
+      ],
+      "viewport": [
+        1280,
+        720
+      ]
+    },
+    {
+      "cards": 2,
+      "filters": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Todos",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Vestidos",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Trajes",
+          "pressed": "true",
+          "underline": "matrix(1, 0, 0, 1, 0, 0)"
+        }
+      ],
+      "identity": "Atelier Alba",
+      "logo": {
+        "bottom": 302.640625,
+        "height": 72,
+        "left": 12,
+        "right": 84,
+        "top": 230.640625,
+        "width": 72,
+        "x": 12,
+        "y": 230.640625
+      },
+      "overflow": false,
+      "path": "/boutiques/example-atelier-alba",
+      "toolbarLinks": [
+        {
+          "height": 44,
+          "href": "/boutiques?examples=1",
+          "name": "Vestidos y trajes"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/favorites?examples=1",
+          "name": "Prendas guardadas"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/examples/appointments",
+          "name": "Citas de prueba"
+        }
+      ],
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "cards": 6,
+      "filters": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Todos",
+          "pressed": "true",
+          "underline": "matrix(1, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Vestidos",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Trajes",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        }
+      ],
+      "identity": "Atelier Alba",
+      "logo": {
+        "bottom": 302.640625,
+        "height": 72,
+        "left": 12,
+        "right": 84,
+        "top": 230.640625,
+        "width": 72,
+        "x": 12,
+        "y": 230.640625
+      },
+      "overflow": false,
+      "path": "/boutiques/example-atelier-alba",
+      "toolbarLinks": [
+        {
+          "height": 44,
+          "href": "/boutiques?examples=1",
+          "name": "Vestidos y trajes"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/favorites?examples=1",
+          "name": "Prendas guardadas"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/examples/appointments",
+          "name": "Citas de prueba"
+        }
+      ],
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "cards": 6,
+      "filters": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Todos",
+          "pressed": "true",
+          "underline": "matrix(1, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Vestidos",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Trajes",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        }
+      ],
+      "identity": "Atelier Alba",
+      "logo": {
+        "bottom": 646.640625,
+        "height": 72,
+        "left": 12,
+        "right": 84,
+        "top": 574.640625,
+        "width": 72,
+        "x": 12,
+        "y": 574.640625
+      },
+      "overflow": false,
+      "path": "/boutiques/example-atelier-alba",
+      "toolbarLinks": [
+        {
+          "height": 44,
+          "href": "/boutiques?examples=1",
+          "name": "Vestidos y trajes"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/favorites?examples=1",
+          "name": "Prendas guardadas"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/examples/appointments",
+          "name": "Citas de prueba"
+        }
+      ],
+      "viewport": [
+        320,
+        740
+      ]
+    },
+    {
+      "cards": 6,
+      "filters": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Todos",
+          "pressed": "true",
+          "underline": "matrix(1, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Vestidos",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Trajes",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        }
+      ],
+      "identity": "Casa Marfil",
+      "logo": {
+        "bottom": 737.046875,
+        "height": 112,
+        "left": 66.5,
+        "right": 178.5,
+        "top": 625.046875,
+        "width": 112,
+        "x": 66.5,
+        "y": 625.046875
+      },
+      "overflow": false,
+      "path": "/boutiques/example-casa-marfil",
+      "toolbarLinks": [
+        {
+          "height": 44,
+          "href": "/boutiques?examples=1",
+          "name": "Vestidos y trajes"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/favorites?examples=1",
+          "name": "Prendas guardadas"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/examples/appointments",
+          "name": "Citas de prueba"
+        }
+      ],
+      "viewport": [
+        1280,
+        900
+      ]
+    }
+  ],
+  "interactions": {
+    "suitFilterCount": 2,
+    "dressFilterCount": 4,
+    "nativeDisclosureKeyboard": true,
+    "fittingFormOpenedWithSelectedOutfit": true,
+    "noRequestSubmitted": true,
+    "compactOutfitIdentityPreserved": true,
+    "bilingualControls": true,
+    "savedLinkVerified": true,
+    "appointmentsLinkVerified": true
+  },
+  "consoleErrors": []
+}
