@@ -1,0 +1,24 @@
+{
+  "releaseCommit": "2bf448f11e701360f97fde88074002843cd61595",
+  "gatewayReceipt": "exact successful target",
+  "publicVerificationComplete": false,
+  "observations": [
+    "The first public API health check returned Cloudflare 522.",
+    "The Miami browser edge displayed 525 at 14:46:30 UTC and 520 at 14:54:42 UTC on October 29.",
+    "Separate public probes returned 200 for API health, the homepage and the Casa Marfil storefront between errors.",
+    "Three public CSS files returned 200; b71aa84b74134e52.css initially returned 522, then returned 200 with 100186 characters on a later cache miss.",
+    "The server-local application health and verified-TLS Nginx health/CSS requests all returned 200.",
+    "Public Cloudflare health and the examples directory returned 200 when checked from the server.",
+    "The full public verification script did not complete: initial health failure, a later timeout and a path-specific timeout at /boutiques?examples=1."
+  ],
+  "originHealth": {
+    "nginx": "active",
+    "applicationHealth": 200,
+    "verifiedTlsHealth": 200,
+    "verifiedTlsCss": 200,
+    "availableMemoryMb": 6500,
+    "loadAverageOneMinute": 0.02
+  },
+  "infrastructureChanges": "none; no TLS, firewall, DNS, credential or privileged helper changes",
+  "cause": "not determined; public connection behavior is intermittent"
+}
