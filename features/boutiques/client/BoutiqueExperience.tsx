@@ -1,7 +1,7 @@
 'use client';
 /* eslint-disable @next/next/no-img-element -- Reuses admitted vendor media without adding an optimizer cache. */
 import { useRouter } from 'next/navigation';
-import OutfitGallery from './OutfitGallery';
+import OutfitDetails from './OutfitDetails';
 import OutfitCard from './OutfitCard';
 import BoutiqueAbout from './BoutiqueAbout';
 import Link from 'next/link';
@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabaseBrowser } from '@/lib/supabase/client';
 import { boutiqueCopy } from '@/shared/boutiques/copy';
-import { boutiqueText, outfitDetailKeys, type Boutique, type Outfit, costaRicaDateTime } from '@/shared/boutiques/types';
+import { boutiqueText, type Boutique, type Outfit, costaRicaDateTime } from '@/shared/boutiques/types';
 import { useBoutiqueTransport } from './transport';
 type Catalog = {
     items: Boutique[];
@@ -134,11 +134,11 @@ export default function BoutiqueExperience({ initial, store = null, favorites = 
     <div>{isExample?<p className="wm-boutique-example-label">{language==='es'?'Boutique de ejemplo':'Example boutique'}</p>:null}<p className="wm-boutique-script">{t.accent}</p><h1>{shop.name}</h1><p>{[shop.city, shop.region, 'Costa Rica'].filter(Boolean).join(' · ')}</p><div className="wm-boutique-actions"><button className="btn btn-light" onClick={() => { setBooking(true); setMessage(''); }}>{t.request} →</button><a href="#boutique-collection">{t.explore}</a></div></div>
   </section> : null}
   {shop && !detail && !booking ? <nav className="wm-boutique-tabs" aria-label={t.about}><a href="#boutique-collection">{t.collection}</a><a href="#boutique-about">{t.about}</a><button onClick={() => setBooking(true)}>{t.visit}</button></nav> : null}
-  <div className="container py-4 py-lg-5">
-   <div className="wm-boutique-toolbar"><Link href={isExample ? "/boutiques?examples=1" : "/boutiques"}>{t.title}</Link><div><Link href={isExample ? "/boutiques/favorites?examples=1" : "/boutiques/favorites"}>♡ {t.favorites}</Link><Link href={isExample ? "/boutiques/examples/appointments" : account?.role === 'vendor' ? "/vendor/inbox/appointments" : "/account/inbox/appointments"}>{t.appointments}</Link></div></div>
+  <div className={detail && !booking ? 'container wm-boutique-detail-container' : 'container py-4 py-lg-5'}>
+   {!detail || booking ? <div className="wm-boutique-toolbar"><Link href={isExample ? "/boutiques?examples=1" : "/boutiques"}>{t.title}</Link><div><Link href={isExample ? "/boutiques/favorites?examples=1" : "/boutiques/favorites"}>♡ {t.favorites}</Link><Link href={isExample ? "/boutiques/examples/appointments" : account?.role === 'vendor' ? "/vendor/inbox/appointments" : "/account/inbox/appointments"}>{t.appointments}</Link></div></div> : null}
    {message ? <p role="alert" className="wm-boutique-notice">{message} {!account ? <Link href={`/login?next=${encodeURIComponent(favorites ? '/boutiques/favorites' : `/boutiques/${shop?.slug ?? ''}`)}`}>{t.account} →</Link> : null}</p> : null}
    {booking && shop ? <AppointmentForm shop={{ ...shop, items: detail && !shop.items.some(item => item.id === detail.id) ? [detail, ...shop.items] : shop.items }} selected={detail ? [detail.id] : []} profile={account} submission={submission} onBack={() => setBooking(false)} onSuccess={() => { setBooking(false); setMessage(t.requested); }}/> :
-            detail ? <section className="wm-boutique-detail"><button className="btn btn-outline-secondary mb-4" onClick={() => setDetail(null)}>← {t.back}</button><div className="wm-boutique-detail-grid"><OutfitGallery key={detail.id} outfit={detail} language={language}/><div><p className="wm-boutique-script">{detail.designer}</p><h1>{title}</h1><p>{boutiqueText(detail.description, language)}</p><p>{t[detail.offer]} · {detail.price_cents === null ? t.price : new Intl.NumberFormat(language, { style: 'currency', currency: detail.currency }).format(detail.price_cents / 100)}</p><dl>{outfitDetailKeys[detail.kind].filter(key => detail.details[key]).map(key => <div key={key}><dt>{key === 'back' ? t.backDetail : t[key]}</dt><dd>{detail.details[key]}</dd></div>)}{[[t.sample, detail.sample_sizes], [t.sizes, detail.order_sizes], [t.timeline, detail.lead_time], [t.reference, detail.reference]].filter(([, v]) => v).map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><p className="text-muted">{t.availability}</p><div className="wm-boutique-actions"><button className="btn btn-primary" onClick={() => setBooking(true)}>{t.request} →</button><button className="btn btn-outline-secondary" disabled={busy} onClick={() => void toggle(detail)}>{saved.includes(detail.id) ? '♥' : '♡'} {saved.includes(detail.id) ? t.unsave : t.save}</button></div></div></div></section> :
+            detail ? <OutfitDetails outfit={detail} shop={shop} language={language} example={isExample} saved={saved.includes(detail.id)} busy={busy} onBack={() => setDetail(null)} onVisit={() => setBooking(true)} onToggle={() => void toggle(detail)}/> :
                 <>{shop ? <BoutiqueAbout key={shop.slug} shop={shop} language={language} example={isExample} onVisit={() => setBooking(true)}/> : null}<section id="boutique-collection"><p className="wm-boutique-script">{shop ? t.accent : t.boutiques}</p><h1>{shop ? t.collection : title}</h1>{!shop && !favorites ? <p className="text-muted">{t.intro}</p> : null}
     {shop ? <div className="wm-boutique-filters">{[['', t.all], ['dress', t.dress], ['suit', t.suit]].map(([value, label]) => <button key={value} className={`btn ${kind === value ? 'btn-primary' : 'btn-outline-secondary'}`} aria-pressed={kind === value} onClick={() => { setKind(value); setPage(1); }}>{label}</button>)}</div> : null}
     {loading ? <p role="status">{t.loading}</p> : null}

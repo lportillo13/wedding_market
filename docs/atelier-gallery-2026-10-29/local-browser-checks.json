@@ -1,0 +1,89 @@
+{
+  "checks": [
+    {
+      "case": "desktop-dress",
+      "folds": [
+        false,
+        false
+      ],
+      "galleryHeight": 460.796875,
+      "overflow": false,
+      "price": "2150,00 US$",
+      "requestBottom": 811.078125,
+      "title": "Estrella · Columna bordada",
+      "viewportHeight": 720
+    },
+    {
+      "case": "keyboard-design-disclosure",
+      "open": true,
+      "referenceVisible": true,
+      "specifications": 11
+    },
+    {
+      "case": "favorite",
+      "pressed": "true"
+    },
+    {
+      "case": "selected-fitting-outfit",
+      "policies": true,
+      "selected": [
+        "Estrella · Columna bordada"
+      ]
+    },
+    {
+      "case": "example-fitting-submission",
+      "formGone": true,
+      "status": "Pendiente de confirmación ",
+      "title": "Estrella · Columna bordada"
+    },
+    {
+      "case": "saved-outfit-deep-link",
+      "saved": "true",
+      "title": "Estrella · Columna bordada",
+      "url": "http://localhost:3031/boutiques/example-casa-marfil?outfit=e0130000-0000-4000-8000-000000000124"
+    },
+    {
+      "case": "phone-dress-390",
+      "columns": "351px",
+      "expandedSizes": true,
+      "overflow": false,
+      "width": 390
+    },
+    {
+      "case": "phone-dress-320",
+      "heading": "Estrella · Columna bordada",
+      "overflow": false,
+      "width": 320
+    },
+    {
+      "case": "english-detail",
+      "facts": "SilhouetteSheathFabricBeaded tulleColorIvory",
+      "foldLabels": [
+        "Design & materials",
+        "Sizes, preparation & fitting"
+      ],
+      "overflow": false,
+      "price": "$2,150.00"
+    },
+    {
+      "case": "gallery-photo-switch",
+      "media": 4,
+      "photo": "Alba · Satén marfil · Foto 2"
+    },
+    {
+      "case": "gallery-video-playback",
+      "currentTime": 11,
+      "error": null,
+      "paused": true,
+      "preload": "none"
+    },
+    {
+      "case": "suit-specific-details",
+      "details": "Diseñador / marcaWedding Market · Sample collectionCorteEntalladoTelaLanaColorVerde bosqueSolapaMuescaNúmero de piezas3Accesorios incluidosSaco, chaleco y pantalónReferencia del modeloSAMPLE-133",
+      "facts": "CorteEntalladoTelaLanaColorVerde bosque",
+      "overflow": false,
+      "title": "Bosque · Traje de tres piezas"
+    }
+  ],
+  "viewportReset": true
+}

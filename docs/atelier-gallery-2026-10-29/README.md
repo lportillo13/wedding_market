@@ -1,0 +1,9 @@
+# Selected outfit detail design: Atelier gallery
+
+The owner selected **Option 1, Atelier gallery** after viewing the three designs as regular images. The website now uses that view for both dresses and suits: a large contained gallery, compact boutique identity/read-more strip, collection breadcrumb, smaller serif title, prominent price, three key facts, sample-size information and adjacent fitting/favorite actions. Full specifications and preparation/size information use accessible native disclosures.
+
+`OutfitDetails` owns this presentation; the existing boutique experience retains authentication changes, caller-specific prices/contact masking, favorites, deep links, pagination and appointment state. `BoutiqueAbout` supports a compact identity mode using the same permitted store information and visit policies. Existing image/video admission and lazy/preload behavior are unchanged. Real boutique free-text values remain intact; only controlled example values containing the fixture's English/Spanish separator are localized. Sample-size labels describe the supplied data and do not imply stock reservations.
+
+Architecture, TypeScript, ESLint, production build and all 109 web tests pass. Local browser checks cover Estrella's approved layout, collapsed/full specifications, keyboard activation, favorite saving/deep-link return, selected-outfit prefill and a successful in-memory fitting request pending store confirmation. Featured Alba switches between three photos and video, plays its silent film to 11 seconds without media errors, and retains `preload="none"`. Spanish 390/320px and English views fit without overflow. Suit-specific fit, lapel, pieces and included-accessory details remain available. See `local-browser-checks.json` and `desktop-preview.jpg`.
+
+This is a website presentation change. No schema, real account/appointment writes or native publication is part of the update. Release evidence will follow after deployment.

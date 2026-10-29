@@ -3,17 +3,19 @@ import ContentSafety from '@/components/safety/ContentSafety';
 import { boutiqueCopy } from '@/shared/boutiques/copy';
 import { boutiqueText, type Boutique, type BoutiqueLanguage } from '@/shared/boutiques/types';
 
-export default function BoutiqueAbout({ shop, language, example, onVisit }: {
+export default function BoutiqueAbout({ shop, language, example, compact = false, onVisit }: {
     shop: Boutique;
     language: BoutiqueLanguage;
     example: boolean;
+    compact?: boolean;
     onVisit: () => void;
 }) {
     const t = boutiqueCopy[language];
-    return <section id="boutique-about" className="wm-boutique-about" aria-labelledby="boutique-about-heading">
-        <h2 id="boutique-about-heading">{t.about}</h2>
+    return <section id="boutique-about" className={`wm-boutique-about${compact ? ' wm-boutique-about--compact' : ''}`} aria-labelledby="boutique-about-heading">
+        {!compact ? <h2 id="boutique-about-heading">{t.about}</h2> : null}
         <details>
             <summary>
+                {compact ? <span className="wm-boutique-about__identity"><strong id="boutique-about-heading">{shop.name}</strong><small>{[shop.city, shop.region].filter(Boolean).join(' · ')}</small></span> : null}
                 <span className="wm-boutique-about__bio">{boutiqueText(shop.bio, language)}</span>
                 <span className="wm-boutique-about__toggle"><span className="wm-boutique-about__more">{language === 'es' ? 'Leer más' : 'Read more'} +</span><span className="wm-boutique-about__less">{language === 'es' ? 'Leer menos' : 'Read less'} −</span></span>
             </summary>

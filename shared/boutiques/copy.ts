@@ -2,6 +2,7 @@ export const boutiqueCopy = {
     en: {
         title: 'Dresses & suits', accent: 'Find your wedding look', boutiques: 'Boutiques', collection: 'The collection',
         about: 'The boutique', visit: 'Your visit', all: 'All', dress: 'Dresses', suit: 'Suits',
+        collectionAt: 'Collection at', designMaterials: 'Design & materials', sizesFitting: 'Sizes, preparation & fitting', fittingHint: 'The boutique confirms your visit and the available samples.',
         favorites: 'Saved outfits', save: 'Save outfit', unsave: 'Remove from favorites',
         request: 'Request a try-on', explore: 'Explore collection', back: 'Back', more: 'Load more',
         empty: 'Boutiques are preparing their collections. Check back soon.', noItems: 'No outfits to show yet.',
@@ -34,6 +35,7 @@ export const boutiqueCopy = {
     es: {
         title: 'Vestidos y trajes', accent: 'Encuentra tu look de boda', boutiques: 'Boutiques', collection: 'La colección',
         about: 'La boutique', visit: 'Tu visita', all: 'Todos', dress: 'Vestidos', suit: 'Trajes',
+        collectionAt: 'La colección de', designMaterials: 'Diseño y materiales', sizesFitting: 'Tallas, tiempos y prueba', fittingHint: 'La boutique confirma tu visita y las muestras disponibles.',
         favorites: 'Prendas guardadas', save: 'Guardar prenda', unsave: 'Quitar de favoritos',
         request: 'Solicitar cita de prueba', explore: 'Explorar colección', back: 'Volver', more: 'Cargar más',
         empty: 'Las boutiques están preparando sus colecciones. Vuelve pronto.', noItems: 'Aún no hay prendas para mostrar.',
