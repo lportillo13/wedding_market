@@ -1,4 +1,5 @@
 {
+  "sourceCommit": "6f7c0b5412049a9d284b75b69f93328c56991b8e",
   "checks": {
     "architecture": "passed",
     "typescript": "passed",
@@ -15,12 +16,16 @@
     "newsletterSubmitted": false
   },
   "publication": {
-    "footerPublished": false,
-    "moreSubmenuPublished": false,
-    "verifiedLiveBase": "62c21d1810428720bef913339a837746932b2c15",
-    "availableDiskBytes": 4467671040,
+    "footerPublished": true,
+    "moreSubmenuPublished": true,
+    "releaseCommit": "6f7c0b5412049a9d284b75b69f93328c56991b8e",
+    "previousLiveBase": "62c21d1810428720bef913339a837746932b2c15",
+    "availableDiskBytesBefore": 64163590144,
+    "availableDiskBytesAfter": 62018899968,
     "requiredDiskBytes": 6442450944,
-    "jobLaunched": false
+    "jobLaunched": true,
+    "exactReceiptConfirmed": true,
+    "liveBrowserChecks": "passed"
   },
   "nativeRelease": "held"
 }

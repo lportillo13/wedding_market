@@ -1,0 +1,141 @@
+{
+  "releaseCommit": "6f7c0b5412049a9d284b75b69f93328c56991b8e",
+  "footer": {
+    "phone390": {
+      "clientWidth": 375,
+      "footerHeight": 777.265625,
+      "menus": [
+        {
+          "controlExists": true,
+          "expanded": "false",
+          "label": "Explora",
+          "panelDisplay": "none"
+        },
+        {
+          "controlExists": true,
+          "expanded": "false",
+          "label": "Para tu boda",
+          "panelDisplay": "none"
+        },
+        {
+          "controlExists": true,
+          "expanded": "false",
+          "label": "Profesionales de bodas",
+          "panelDisplay": "none"
+        }
+      ],
+      "scrollWidth": 375,
+      "width": 390
+    },
+    "independentOpening": [
+      {
+        "expanded": "true",
+        "label": "Explora",
+        "panelDisplay": "flex"
+      },
+      {
+        "expanded": "false",
+        "label": "Para tu boda",
+        "panelDisplay": "none"
+      },
+      {
+        "expanded": "false",
+        "label": "Profesionales de bodas",
+        "panelDisplay": "none"
+      }
+    ],
+    "desktop1150": {
+      "clientWidth": 1135,
+      "menus": [
+        {
+          "label": "Explora",
+          "panelDisplay": "flex",
+          "toggleDisplay": "none"
+        },
+        {
+          "label": "Para tu boda",
+          "panelDisplay": "flex",
+          "toggleDisplay": "none"
+        },
+        {
+          "label": "Profesionales de bodas",
+          "panelDisplay": "flex",
+          "toggleDisplay": "none"
+        }
+      ],
+      "scrollWidth": 1135,
+      "width": 1150
+    }
+  },
+  "profile": {
+    "phone390": {
+      "clientWidth": 375,
+      "moreText": "Más",
+      "navScrollWidth": 351,
+      "navWidth": 351,
+      "scrollWidth": 375,
+      "visibleLinks": [
+        "Información",
+        "Fotos",
+        "Precios"
+      ],
+      "width": 390
+    },
+    "menu": {
+      "bottom": 733.78125,
+      "links": [
+        "Amenidades",
+        "Equipo",
+        "Disponibilidad",
+        "Reseñas",
+        "Contacto"
+      ],
+      "open": true,
+      "top": 499,
+      "viewportHeight": 844
+    },
+    "selectedHiddenSection": {
+      "active": true,
+      "label": "Más: Disponibilidad",
+      "sectionTop": 141.609375
+    },
+    "escape": {
+      "expanded": "false",
+      "focusIsMore": true
+    },
+    "phone320": {
+      "clientWidth": 305,
+      "navScrollWidth": 281,
+      "navWidth": 281,
+      "scrollWidth": 305,
+      "visibleLinks": [
+        "Información",
+        "Fotos"
+      ],
+      "width": 320
+    },
+    "desktop1150": {
+      "moreExists": false,
+      "visibleLinks": 8,
+      "width": 1150
+    }
+  },
+  "english": {
+    "footerMenus": [
+      "Explore",
+      "For your wedding",
+      "Wedding professionals"
+    ],
+    "more": "More",
+    "navScrollWidth": 351,
+    "navWidth": 351,
+    "visibleProfileLinks": [
+      "About",
+      "Photos",
+      "Pricing"
+    ]
+  },
+  "restoredSpanish": true,
+  "profileConsoleErrors": [],
+  "newsletterSubmitted": false
+}

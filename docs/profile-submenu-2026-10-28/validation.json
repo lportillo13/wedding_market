@@ -15,16 +15,17 @@
     "browserConsoleErrors": 0
   },
   "publication": {
-    "submenuPublished": false,
-    "verifiedLiveBase": "62c21d1810428720bef913339a837746932b2c15",
+    "submenuPublished": true,
+    "releaseCommit": "6f7c0b5412049a9d284b75b69f93328c56991b8e",
+    "previousLiveBase": "62c21d1810428720bef913339a837746932b2c15",
     "earlierMobileRepairsPublished": true,
-    "availableDiskBytesAfterBaseRelease": 4467896320,
+    "availableDiskBytesBeforeCombinedRelease": 64163590144,
+    "availableDiskBytesAfterCombinedRelease": 62018899968,
     "requiredDiskBytes": 6442450944,
-    "preparedCandidate": "2fb01dda5b8e7dfebf76128dbee27ab8053cee15",
-    "preparedExpectedBase": "62c21d1810428720bef913339a837746932b2c15",
-    "manifestSha256": "c5ddea0409ac73346193aeb07de6bfbfa5a5c6b4b847dd24b789ceff7d24735b",
-    "candidateUploaded": false,
-    "candidateLaunched": false
+    "combinedFooterRelease": true,
+    "manifestSha256": "57f01724be28fed61309938f9c54af62807a84510bd227c63fff00b2c2e49469",
+    "exactReceiptConfirmed": true,
+    "liveBrowserChecks": "passed"
   },
   "nativeRelease": "held"
 }

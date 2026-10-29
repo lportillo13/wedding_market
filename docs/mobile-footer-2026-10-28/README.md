@@ -10,8 +10,8 @@ Architecture, TypeScript, ESLint and the production build pass. Browser checks v
 
 ## Publication status
 
-**This footer change is ready locally, not live.** The successful website receipt remains **62c21d1810428720bef913339a837746932b2c15**, which includes the earlier calendar/gallery/filter corrections and boutique expansion. The profile More submenu and these footer disclosures are the next pending website changes.
+**Published October 29, 2026 UTC at 6f7c0b5412049a9d284b75b69f93328c56991b8e**, together with the profile More submenu. The exact [successful receipt](deployment-success.json) confirms shadow/live checks and rollback `/var/www/wedding-market.before-20261029-010445`. [Live browser checks](live-browser-checks.json) verify closed phone menus, independent expansion, full desktop links, fitted profile labels, section selection, Escape and English/Spanish behavior. The [live phone capture](live-collapsed-footer-mobile.jpg) shows the published footer.
 
-The latest read-only check found 4,467,671,040 bytes available, below the unchanged deployment helper reserve of 6,442,450,944 bytes. No new job was launched, reserve weakened, privileged helper changed, or server/backup directory deleted. Additional server build space is needed before another release. Keep native publication held.
+The owner completed server cleanup. Read-only verification found 64,163,590,144 bytes available before deployment and 62,018,899,968 after it, clearing the previous disk-space blocker without lowering the 6 GiB reserve. This task did not delete server or backup directories or change privileged helpers. No further cleanup action is requested for this completed release. Native publication remains held.
 
-An isolated candidate can be prepared under ignored `.cache/mobile-footer/release` against live base 62c21d18. Recheck current live state and free space before publishing. The earlier `.cache/profile-submenu/release` payload contains only the More-menu candidate; it does not include this footer change.
+The isolated `.cache/mobile-footer/release` payload was published over verified base 62c21d18. Its manifest SHA-256 is `57f01724be28fed61309938f9c54af62807a84510bd227c63fff00b2c2e49469`. Earlier prepared manifests are superseded; future releases must use the newly verified live base.
