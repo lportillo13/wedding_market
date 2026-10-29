@@ -34,9 +34,8 @@ export default function BoutiqueVisitPanel({ shop, selectedOutfit, profile, subm
         if (!element) return;
         const trigger = document.activeElement instanceof HTMLElement ? document.activeElement : null;
         const root = document.documentElement;
-        const previous = { bodyOverflow: document.body.style.overflow, rootOverflow: root.style.overflow, gutter: root.style.scrollbarGutter };
+        const previous = { bodyOverflow: document.body.style.overflow, gutter: root.style.scrollbarGutter };
         root.style.scrollbarGutter = 'stable';
-        root.style.overflow = 'hidden';
         document.body.style.overflow = 'hidden';
         const onBackdrop = (event: MouseEvent) => {
             if (event.target !== element || lock.current) return;
@@ -59,7 +58,6 @@ export default function BoutiqueVisitPanel({ shop, selectedOutfit, profile, subm
             element.removeEventListener('click', onBackdrop);
             element.removeEventListener('keydown', onKeyDown);
             element.close();
-            root.style.overflow = previous.rootOverflow;
             root.style.scrollbarGutter = previous.gutter;
             document.body.style.overflow = previous.bodyOverflow;
             if (trigger?.isConnected) trigger.focus({ preventScroll: true });

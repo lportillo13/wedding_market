@@ -1,0 +1,41 @@
+[
+  {
+    "case": "before-open",
+    "result": {
+      "bodyOverflow": "",
+      "bodyY": 0,
+      "gallery": 233.0625,
+      "header": 0,
+      "modal": false,
+      "rootOverflow": "",
+      "rootY": 3,
+      "windowY": 3
+    }
+  },
+  {
+    "case": "open",
+    "result": {
+      "bodyOverflow": "hidden",
+      "bodyY": 0,
+      "gallery": -10.9375,
+      "header": 0,
+      "modal": true,
+      "rootOverflow": "",
+      "rootY": 247,
+      "windowY": 247
+    }
+  },
+  {
+    "case": "after-close",
+    "result": {
+      "bodyOverflow": "",
+      "bodyY": 0,
+      "gallery": -10.9375,
+      "header": 0,
+      "modal": false,
+      "rootOverflow": "",
+      "rootY": 247,
+      "windowY": 247
+    }
+  }
+]
