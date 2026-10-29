@@ -29,7 +29,7 @@ export default function BoutiqueExperience({ initial, store = null, favorites = 
 }) {
     const { language } = useLanguage(), t = boutiqueCopy[language];
     const router = useRouter();
-    const { api: boutiqueApi, example: isExample, controls } = useBoutiqueTransport();
+    const { api: boutiqueApi, example: isExample } = useBoutiqueTransport();
     const [authRevision, setAuthRevision] = useState(0);
     const [shops, setShops] = useState(initial?.items ?? []), [shop, setShop] = useState(store), [items, setItems] = useState<Outfit[]>(store?.items ?? []);
     const [kind, setKind] = useState(''), [page, setPage] = useState(1), [saved, setSaved] = useState<string[]>([]), [account, setAccount] = useState<State['profile']>(null);
@@ -132,7 +132,6 @@ export default function BoutiqueExperience({ initial, store = null, favorites = 
   {shop && !detail && !booking ? <section className={`wm-boutique-hero${shop.hero ? '' : ' wm-boutique-hero--empty'}`} style={shop.hero ? { backgroundImage: `linear-gradient(180deg,#17120da6 0%,#17120d40 23%,#17120d1a 36%,#17120d66 64%,#17120dcc 100%),url("${shop.hero.replaceAll('"', '%22')}")` } : undefined}>
     <div>{isExample?<p className="wm-boutique-example-label">{language==='es'?'Boutique de ejemplo':'Example boutique'}</p>:null}<p className="wm-boutique-script">{t.accent}</p><h1>{shop.name}</h1><p>{[shop.city, shop.region, 'Costa Rica'].filter(Boolean).join(' · ')}</p><div className="wm-boutique-actions"><button className="btn btn-light" onClick={() => { setBooking(true); setMessage(''); }}>{t.request} →</button><a href="#boutique-collection">{t.explore}</a></div></div>
   </section> : null}
-  {shop ? controls : null}
   {shop && !detail && !booking ? <nav className="wm-boutique-tabs" aria-label={t.about}><a href="#boutique-collection">{t.collection}</a><a href="#boutique-about">{t.about}</a><button onClick={() => setBooking(true)}>{t.visit}</button></nav> : null}
   <div className="container py-4 py-lg-5">
    <div className="wm-boutique-toolbar"><Link href={isExample ? "/boutiques?examples=1" : "/boutiques"}>{t.title}</Link><div><Link href={isExample ? "/boutiques/favorites?examples=1" : "/boutiques/favorites"}>♡ {t.favorites}</Link><Link href={isExample ? "/boutiques/examples/appointments" : account?.role === 'vendor' ? "/vendor/inbox/appointments" : "/account/inbox/appointments"}>{t.appointments}</Link></div></div>

@@ -1,0 +1,38 @@
+{
+  "checks": [
+    {
+      "case": "storefront",
+      "heroTop": 0,
+      "nextSection": "wm-boutique-tabs",
+      "panels": 0
+    },
+    {
+      "case": "outfit-details",
+      "panels": 0,
+      "photos": 4
+    },
+    {
+      "case": "favorites",
+      "panels": 0,
+      "savedOutfit": true
+    },
+    {
+      "case": "directory",
+      "panels": 0,
+      "stores": 3
+    },
+    {
+      "case": "explicit-test-workspace",
+      "panels": 1,
+      "storeSelector": true
+    },
+    {
+      "case": "phone-storefront",
+      "collectionImmediatelyAfterCover": true,
+      "headerBackground": "rgba(0, 0, 0, 0)",
+      "overflow": false,
+      "panels": 0
+    }
+  ],
+  "viewportReset": true
+}

@@ -10,13 +10,15 @@ All names, locations, sample collections, sizes and prices are fictional. Photos
 
 ## Trying both sides
 
-1. Choose **Try as couple**, open a boutique, filter dresses/suits, view an outfit, and save it with the heart. Saved outfits link back to their detail pages.
+1. Website browsing starts as a couple; open a boutique, filter dresses/suits, view an outfit, and save it with the heart. Saved outfits link back to their detail pages. Native previews retain their **Try as couple** control.
 2. Choose **Request a try-on**, enter a future date/time in Costa Rica, review policies, and submit. The example request starts as **Awaiting store confirmation**.
 3. Open **Fitting appointments**, choose **Try as boutique**, and select the matching store. Open the request, confirm or decline it, and send a message. An overlapping confirmation is rejected.
 4. Choose **Try as couple** again to see the decision and reply or cancel. Store selection isolates each boutique's inbox.
 5. In boutique mode, **Boutique collection** edits visit settings and outfits, adds items using the sample media library, and controls publication. **Reset preview** clears the session.
 
 The preview reuses the actual web/native storefront, favorites, appointment and manager components. Its injected transport is an in-memory session with no database, HTTP writes, emails or notifications. Website changes survive navigation within `/boutiques` and reset on reload. Native changes reset on leaving the preview. Exiting examples restores the authenticated production transport. Actual stores and private account screens continue using Supabase authorization and the tested database transactions.
+
+On October 29 the owner requested removal of the web example control panel from boutique browsing. Role switching and reset now appear only in the explicit appointment/management example workspaces. Storefronts, the directory, favorites, outfit details and fitting forms omit the panel. Use **Fitting appointments** from the normal boutique toolbar to reach the test workspace. See the [panel removal handoff](../boutique-header-2026-10-29/panel-removal.md).
 
 The normal directory and catalog API contain only real published vendor records. Example routes and the example query are marked noindex. No database seed or migration was added for this preview. This simulation supports product review; it does not replace the real PostgreSQL/live rollback tests documented in the feature handoff.
 
