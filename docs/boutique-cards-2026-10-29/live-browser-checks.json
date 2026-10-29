@@ -1,0 +1,26 @@
+{
+  "checks": [
+    {
+      "captionPadding": "24px",
+      "cards": 2,
+      "case": "live-desktop-suit-cards",
+      "height": 900,
+      "nameWeight": "300",
+      "overflow": false,
+      "ratio": "3 / 5",
+      "width": 1280
+    },
+    {
+      "captionPadding": "20px",
+      "cards": 2,
+      "case": "live-phone-suit-cards",
+      "height": 844,
+      "nameColor": "rgb(255, 253, 249)",
+      "overflow": false,
+      "panels": 0,
+      "ratio": "1 / 1",
+      "width": 390
+    }
+  ],
+  "viewportReset": true
+}
