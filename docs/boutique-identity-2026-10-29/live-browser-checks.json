@@ -1,0 +1,327 @@
+{
+  "checkedAt": "2026-10-29T17:04:44.429Z",
+  "releaseCommit": "bd61f1246541f1979928f545497de24c05478b1a",
+  "checks": [
+    {
+      "cards": 6,
+      "filters": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Todos",
+          "pressed": "true",
+          "underline": "matrix(1, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Vestidos",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Trajes",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        }
+      ],
+      "identity": "Casa Marfil",
+      "logo": {
+        "bottom": 343.046875,
+        "height": 112,
+        "left": 67.5,
+        "right": 179.5,
+        "top": 231.046875,
+        "width": 112,
+        "x": 67.5,
+        "y": 231.046875
+      },
+      "overflow": false,
+      "path": "/boutiques/example-casa-marfil",
+      "toolbarLinks": [
+        {
+          "height": 44,
+          "href": "/boutiques?examples=1",
+          "name": "Vestidos y trajes"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/favorites?examples=1",
+          "name": "Prendas guardadas"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/examples/appointments",
+          "name": "Citas de prueba"
+        }
+      ],
+      "viewport": [
+        1150,
+        900
+      ]
+    },
+    {
+      "cards": 6,
+      "filters": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Todos",
+          "pressed": "true",
+          "underline": "matrix(1, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Vestidos",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Trajes",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        }
+      ],
+      "identity": "Casa Marfil",
+      "logo": {
+        "bottom": 302.640625,
+        "height": 72,
+        "left": 12,
+        "right": 84,
+        "top": 230.640625,
+        "width": 72,
+        "x": 12,
+        "y": 230.640625
+      },
+      "overflow": false,
+      "path": "/boutiques/example-casa-marfil",
+      "toolbarLinks": [
+        {
+          "height": 44,
+          "href": "/boutiques?examples=1",
+          "name": "Vestidos y trajes"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/favorites?examples=1",
+          "name": "Prendas guardadas"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/examples/appointments",
+          "name": "Citas de prueba"
+        }
+      ],
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "cards": 6,
+      "filters": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Todos",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Vestidos",
+          "pressed": "true",
+          "underline": "matrix(1, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Trajes",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        }
+      ],
+      "identity": "Casa Marfil",
+      "logo": {
+        "bottom": 159.640625,
+        "height": 72,
+        "left": 12,
+        "right": 84,
+        "top": 87.640625,
+        "width": 72,
+        "x": 12,
+        "y": 87.640625
+      },
+      "overflow": false,
+      "path": "/boutiques/example-casa-marfil",
+      "toolbarLinks": [
+        {
+          "height": 44,
+          "href": "/boutiques?examples=1",
+          "name": "Vestidos y trajes"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/favorites?examples=1",
+          "name": "Prendas guardadas"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/examples/appointments",
+          "name": "Citas de prueba"
+        }
+      ],
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "cards": 6,
+      "filters": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Todos",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Vestidos",
+          "pressed": "true",
+          "underline": "matrix(1, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Trajes",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        }
+      ],
+      "identity": "Casa Marfil",
+      "logo": {
+        "bottom": 318.640625,
+        "height": 72,
+        "left": 12,
+        "right": 84,
+        "top": 246.640625,
+        "width": 72,
+        "x": 12,
+        "y": 246.640625
+      },
+      "overflow": false,
+      "path": "/boutiques/example-casa-marfil",
+      "toolbarLinks": [
+        {
+          "height": 44,
+          "href": "/boutiques?examples=1",
+          "name": "Vestidos y trajes"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/favorites?examples=1",
+          "name": "Prendas guardadas"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/examples/appointments",
+          "name": "Citas de prueba"
+        }
+      ],
+      "viewport": [
+        320,
+        740
+      ]
+    },
+    {
+      "cards": 6,
+      "filters": [
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Todos",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Vestidos",
+          "pressed": "true",
+          "underline": "matrix(1, 0, 0, 1, 0, 0)"
+        },
+        {
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px",
+          "height": 48,
+          "name": "Trajes",
+          "pressed": "false",
+          "underline": "matrix(0, 0, 0, 1, 0, 0)"
+        }
+      ],
+      "identity": "Casa Marfil",
+      "logo": {
+        "bottom": 343.046875,
+        "height": 112,
+        "left": 67.5,
+        "right": 179.5,
+        "top": 231.046875,
+        "width": 112,
+        "x": 67.5,
+        "y": 231.046875
+      },
+      "overflow": false,
+      "path": "/boutiques/example-casa-marfil",
+      "toolbarLinks": [
+        {
+          "height": 44,
+          "href": "/boutiques?examples=1",
+          "name": "Vestidos y trajes"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/favorites?examples=1",
+          "name": "Prendas guardadas"
+        },
+        {
+          "height": 44,
+          "href": "/boutiques/examples/appointments",
+          "name": "Citas de prueba"
+        }
+      ],
+      "viewport": [
+        1150,
+        900
+      ]
+    }
+  ],
+  "interactions": {
+    "activeFilterUnderline": true,
+    "keyboardDisclosure": true,
+    "logoFallbackSingleLineAt320": true
+  },
+  "consoleErrors": []
+}
