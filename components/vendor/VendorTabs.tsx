@@ -183,7 +183,7 @@ export default function VendorTabs({ sections, className }: VendorTabsProps) {
     <div className={clsx("wm-vendor-tabs", className)}>
       <nav
         ref={navigationRef}
-        className="nav nav-underline justify-content-start"
+        className="nav nav-underline justify-content-center"
         aria-label={dictionary.vendorPublic.editorial.navigation}
       >
         {visibleTabs.map((section) => (

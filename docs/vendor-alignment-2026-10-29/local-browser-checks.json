@@ -1,0 +1,257 @@
+{
+  "checks": [
+    {
+      "case": "desktop-opening",
+      "result": {
+        "clientWidth": 1425,
+        "description": {
+          "maxWidth": "none",
+          "paragraphWidths": [
+            1132,
+            1132
+          ],
+          "parentWidth": 1132,
+          "width": 1132
+        },
+        "group": {
+          "center": 712.4921875,
+          "left": 371.25,
+          "right": 1053.734375
+        },
+        "labels": [
+          "Información",
+          "Fotos",
+          "Precios",
+          "Amenidades",
+          "Equipo",
+          "Disponibilidad",
+          "Reseñas",
+          "Contacto"
+        ],
+        "nav": {
+          "bottom": 899,
+          "height": 52,
+          "left": 146.5,
+          "right": 1278.5,
+          "top": 847,
+          "width": 1132,
+          "x": 146.5,
+          "y": 847
+        },
+        "overflow": false,
+        "path": "/vendors/example-ritmo-atardecer",
+        "state": "cover",
+        "viewport": [
+          1440,
+          900
+        ]
+      }
+    },
+    {
+      "case": "desktop-sticky",
+      "result": {
+        "clientWidth": 1425,
+        "description": {
+          "maxWidth": "none",
+          "paragraphWidths": [
+            1132,
+            1132
+          ],
+          "parentWidth": 1132,
+          "width": 1132
+        },
+        "group": {
+          "center": 712.4921875,
+          "left": 371.25,
+          "right": 1053.734375
+        },
+        "labels": [
+          "Información",
+          "Fotos",
+          "Precios",
+          "Amenidades",
+          "Equipo",
+          "Disponibilidad",
+          "Reseñas",
+          "Contacto"
+        ],
+        "nav": {
+          "bottom": 129,
+          "height": 52,
+          "left": 146.5,
+          "right": 1278.5,
+          "top": 77,
+          "width": 1132,
+          "x": 146.5,
+          "y": 77
+        },
+        "overflow": false,
+        "path": "/vendors/example-ritmo-atardecer",
+        "state": "solid",
+        "viewport": [
+          1440,
+          900
+        ]
+      }
+    },
+    {
+      "case": "phone-more",
+      "result": {
+        "clientWidth": 375,
+        "description": {
+          "maxWidth": "none",
+          "paragraphWidths": [
+            351,
+            351
+          ],
+          "parentWidth": 351,
+          "width": 351
+        },
+        "group": {
+          "center": 187.4921875,
+          "left": 35.421875,
+          "right": 339.5625
+        },
+        "labels": [
+          "Información",
+          "Fotos",
+          "Precios",
+          "MásAmenidadesEquipoDisponibilidadReseñasContacto"
+        ],
+        "nav": {
+          "bottom": 423,
+          "height": 52,
+          "left": 12,
+          "right": 363,
+          "top": 371,
+          "width": 351,
+          "x": 12,
+          "y": 371
+        },
+        "overflow": false,
+        "path": "/vendors/example-ritmo-atardecer",
+        "state": "cover",
+        "viewport": [
+          390,
+          844
+        ]
+      },
+      "menu": {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "rgba(0, 0, 0, 0)",
+        "header": {
+          "bottom": 68,
+          "height": 68,
+          "left": 0,
+          "right": 375,
+          "top": 0,
+          "width": 375,
+          "x": 0,
+          "y": 0
+        },
+        "links": [
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(255, 253, 249)",
+            "text": "Información"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.85)",
+            "text": "Fotos"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.85)",
+            "text": "Precios"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(255, 253, 249)",
+            "text": "Más"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.85)",
+            "text": "Más"
+          }
+        ],
+        "menu": {
+          "background": "rgb(255, 253, 249)",
+          "firstColor": "rgb(114, 104, 94)",
+          "rect": {
+            "bottom": 665.78125,
+            "height": 234.78125,
+            "left": 119.5625,
+            "right": 339.5625,
+            "top": 431,
+            "width": 220,
+            "x": 119.5625,
+            "y": 431
+          }
+        },
+        "nav": {
+          "bottom": 424,
+          "height": 54,
+          "left": 0,
+          "right": 375,
+          "top": 370,
+          "width": 375,
+          "x": 0,
+          "y": 370
+        },
+        "overflow": false,
+        "path": "/vendors/example-ritmo-atardecer",
+        "scrollY": 420,
+        "state": "cover",
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    },
+    {
+      "case": "small-phone",
+      "result": {
+        "clientWidth": 305,
+        "description": {
+          "maxWidth": "none",
+          "paragraphWidths": [
+            281,
+            281
+          ],
+          "parentWidth": 281,
+          "width": 281
+        },
+        "group": {
+          "center": 152.4921875,
+          "left": 37.28125,
+          "right": 267.703125
+        },
+        "labels": [
+          "Información",
+          "Fotos",
+          "MásPreciosAmenidadesEquipoDisponibilidadReseñasContacto"
+        ],
+        "nav": {
+          "bottom": 177,
+          "height": 52,
+          "left": 12,
+          "right": 293,
+          "top": 125,
+          "width": 281,
+          "x": 12,
+          "y": 125
+        },
+        "overflow": false,
+        "path": "/vendors/example-ritmo-atardecer",
+        "state": "cover",
+        "viewport": [
+          320,
+          568
+        ]
+      }
+    }
+  ],
+  "errors": []
+}

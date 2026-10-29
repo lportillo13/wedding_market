@@ -1,0 +1,717 @@
+{
+  "commit": "ba689b190e62dd43ee02f196490c1a6c2712847e",
+  "checks": [
+    {
+      "case": "vendor-opening-desktop",
+      "result": {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "rgba(0, 0, 0, 0)",
+        "header": {
+          "bottom": 68,
+          "height": 68,
+          "left": 0,
+          "right": 1135,
+          "top": 0,
+          "width": 1135,
+          "x": 0,
+          "y": 0
+        },
+        "links": [
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(255, 253, 249)",
+            "text": "Información"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.85)",
+            "text": "Fotos"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.85)",
+            "text": "Precios"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.85)",
+            "text": "Amenidades"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.85)",
+            "text": "Equipo"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.85)",
+            "text": "Disponibilidad"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.85)",
+            "text": "Reseñas"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.85)",
+            "text": "Contacto"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.85)",
+            "text": "Más"
+          }
+        ],
+        "menu": null,
+        "nav": {
+          "bottom": 900,
+          "height": 54,
+          "left": 0,
+          "right": 1135,
+          "top": 846,
+          "width": 1135,
+          "x": 0,
+          "y": 846
+        },
+        "overflow": false,
+        "path": "/vendors/example-ritmo-atardecer",
+        "scrollY": 0,
+        "state": "cover",
+        "viewport": [
+          1150,
+          900
+        ]
+      }
+    },
+    {
+      "case": "vendor-sticky-desktop",
+      "result": {
+        "background": "rgb(250, 248, 244)",
+        "border": "rgb(222, 217, 207) rgb(51, 45, 39)",
+        "header": {
+          "bottom": 68,
+          "height": 68,
+          "left": 0,
+          "right": 1135,
+          "top": 0,
+          "width": 1135,
+          "x": 0,
+          "y": 0
+        },
+        "links": [
+          {
+            "background": "rgb(238, 236, 229)",
+            "color": "rgb(51, 45, 39)",
+            "text": "Información"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(114, 104, 94)",
+            "text": "Fotos"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(114, 104, 94)",
+            "text": "Precios"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(114, 104, 94)",
+            "text": "Amenidades"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(114, 104, 94)",
+            "text": "Equipo"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(114, 104, 94)",
+            "text": "Disponibilidad"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(114, 104, 94)",
+            "text": "Reseñas"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(114, 104, 94)",
+            "text": "Contacto"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(114, 104, 94)",
+            "text": "Más"
+          }
+        ],
+        "menu": null,
+        "nav": {
+          "bottom": 122,
+          "height": 54,
+          "left": 0,
+          "right": 1135,
+          "top": 68,
+          "width": 1135,
+          "x": 0,
+          "y": 68
+        },
+        "overflow": false,
+        "path": "/vendors/example-ritmo-atardecer",
+        "scrollY": 798,
+        "state": "solid",
+        "viewport": [
+          1150,
+          900
+        ]
+      }
+    },
+    {
+      "case": "editorial-desktop",
+      "result": {
+        "category": "Música y entretenimiento",
+        "factsLayout": "flex",
+        "heading": {
+          "bottom": 449.4375,
+          "height": 129.3125,
+          "left": 211.5,
+          "right": 1067.5,
+          "top": 320.125,
+          "width": 856,
+          "x": 211.5,
+          "y": 320.125
+        },
+        "headingAlignment": "left",
+        "headingText": "Sobre Ritmo Atardecer",
+        "identity": {
+          "bottom": 449.4375,
+          "height": 129.3125,
+          "left": 67.5,
+          "right": 1067.5,
+          "top": 320.125,
+          "width": 1000,
+          "x": 67.5,
+          "y": 320.125
+        },
+        "logo": {
+          "bottom": 440.78125,
+          "height": 112,
+          "left": 67.5,
+          "right": 179.5,
+          "top": 328.78125,
+          "width": 112,
+          "x": 67.5,
+          "y": 328.78125
+        },
+        "logoBackground": "rgb(245, 239, 230)",
+        "logoRadius": "7px",
+        "logoText": {
+          "bottom": 410.78125,
+          "height": 52,
+          "left": 91,
+          "right": 156,
+          "top": 358.78125,
+          "width": 65,
+          "x": 91,
+          "y": 358.78125
+        },
+        "overflow": false,
+        "path": "/vendors/example-ritmo-atardecer",
+        "serviceCards": 0,
+        "summaryAlignment": "left",
+        "viewport": [
+          1150,
+          900
+        ]
+      }
+    },
+    {
+      "case": "vendor-phone-reverse-cover",
+      "result": {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "rgba(0, 0, 0, 0)",
+        "header": {
+          "bottom": 68,
+          "height": 68,
+          "left": 0,
+          "right": 375,
+          "top": 0,
+          "width": 375,
+          "x": 0,
+          "y": 0
+        },
+        "links": [
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(255, 253, 249)",
+            "text": "Información"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.85)",
+            "text": "Fotos"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.85)",
+            "text": "Precios"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.85)",
+            "text": "Más"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.85)",
+            "text": "Más"
+          }
+        ],
+        "menu": null,
+        "nav": {
+          "bottom": 844,
+          "height": 54,
+          "left": 0,
+          "right": 375,
+          "top": 790,
+          "width": 375,
+          "x": 0,
+          "y": 790
+        },
+        "overflow": false,
+        "path": "/vendors/example-ritmo-atardecer",
+        "scrollY": 0,
+        "state": "cover",
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    },
+    {
+      "case": "vendor-phone-more-cover",
+      "result": {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "rgba(0, 0, 0, 0)",
+        "header": {
+          "bottom": 68,
+          "height": 68,
+          "left": 0,
+          "right": 375,
+          "top": 0,
+          "width": 375,
+          "x": 0,
+          "y": 0
+        },
+        "links": [
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(255, 253, 249)",
+            "text": "Información"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.85)",
+            "text": "Fotos"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.85)",
+            "text": "Precios"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(255, 253, 249)",
+            "text": "Más"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.85)",
+            "text": "Más"
+          }
+        ],
+        "menu": {
+          "background": "rgb(255, 253, 249)",
+          "firstColor": "rgb(114, 104, 94)",
+          "rect": {
+            "bottom": 733.78125,
+            "height": 234.78125,
+            "left": 143,
+            "right": 363,
+            "top": 499,
+            "width": 220,
+            "x": 143,
+            "y": 499
+          }
+        },
+        "nav": {
+          "bottom": 492,
+          "height": 54,
+          "left": 0,
+          "right": 375,
+          "top": 438,
+          "width": 375,
+          "x": 0,
+          "y": 438
+        },
+        "overflow": false,
+        "path": "/vendors/example-ritmo-atardecer",
+        "scrollY": 352,
+        "state": "cover",
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    },
+    {
+      "case": "vendor-phone-more-solid",
+      "result": {
+        "background": "rgb(250, 248, 244)",
+        "border": "rgb(222, 217, 207) rgb(51, 45, 39)",
+        "header": {
+          "bottom": 68,
+          "height": 68,
+          "left": 0,
+          "right": 375,
+          "top": 0,
+          "width": 375,
+          "x": 0,
+          "y": 0
+        },
+        "links": [
+          {
+            "background": "rgb(238, 236, 229)",
+            "color": "rgb(51, 45, 39)",
+            "text": "Información"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(114, 104, 94)",
+            "text": "Fotos"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(114, 104, 94)",
+            "text": "Precios"
+          },
+          {
+            "background": "rgb(238, 236, 229)",
+            "color": "rgb(51, 45, 39)",
+            "text": "Más"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(114, 104, 94)",
+            "text": "Más"
+          }
+        ],
+        "menu": {
+          "background": "rgb(255, 253, 249)",
+          "firstColor": "rgb(114, 104, 94)",
+          "rect": {
+            "bottom": 363.78125,
+            "height": 234.78125,
+            "left": 143,
+            "right": 363,
+            "top": 129,
+            "width": 220,
+            "x": 143,
+            "y": 129
+          }
+        },
+        "nav": {
+          "bottom": 122,
+          "height": 54,
+          "left": 0,
+          "right": 375,
+          "top": 68,
+          "width": 375,
+          "x": 0,
+          "y": 68
+        },
+        "overflow": false,
+        "path": "/vendors/example-ritmo-atardecer",
+        "scrollY": 1015,
+        "state": "solid",
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    },
+    {
+      "case": "editorial-phone",
+      "result": {
+        "category": "Música y entretenimiento",
+        "factsLayout": "grid",
+        "heading": {
+          "bottom": 399.625,
+          "height": 161.65625,
+          "left": 108,
+          "right": 363,
+          "top": 237.96875,
+          "width": 255,
+          "x": 108,
+          "y": 237.96875
+        },
+        "headingAlignment": "left",
+        "headingText": "Sobre Ritmo Atardecer",
+        "identity": {
+          "bottom": 399.625,
+          "height": 161.65625,
+          "left": 12,
+          "right": 363,
+          "top": 237.96875,
+          "width": 351,
+          "x": 12,
+          "y": 237.96875
+        },
+        "logo": {
+          "bottom": 317.96875,
+          "height": 80,
+          "left": 12,
+          "right": 92,
+          "top": 237.96875,
+          "width": 80,
+          "x": 12,
+          "y": 237.96875
+        },
+        "logoBackground": "rgb(245, 239, 230)",
+        "logoRadius": "7px",
+        "logoText": {
+          "bottom": 297.96875,
+          "height": 40,
+          "left": 27,
+          "right": 77,
+          "top": 257.96875,
+          "width": 50,
+          "x": 27,
+          "y": 257.96875
+        },
+        "overflow": false,
+        "path": "/vendors/example-ritmo-atardecer",
+        "serviceCards": 0,
+        "summaryAlignment": "left",
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    },
+    {
+      "case": "boutique-desktop-opening",
+      "result": {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "rgba(0, 0, 0, 0)",
+        "header": {
+          "bottom": 68,
+          "height": 68,
+          "left": 0,
+          "right": 1135,
+          "top": 0,
+          "width": 1135,
+          "x": 0,
+          "y": 0
+        },
+        "links": [
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(255, 253, 249)",
+            "text": "La colección"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.9)",
+            "text": "La boutique"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.9)",
+            "text": "Tu visita"
+          }
+        ],
+        "menu": null,
+        "nav": {
+          "bottom": 900,
+          "height": 54,
+          "left": 0,
+          "right": 1135,
+          "top": 846,
+          "width": 1135,
+          "x": 0,
+          "y": 846
+        },
+        "overflow": false,
+        "path": "/boutiques/example-casa-marfil",
+        "scrollY": 0,
+        "state": "cover",
+        "viewport": [
+          1150,
+          900
+        ]
+      }
+    },
+    {
+      "case": "boutique-desktop-sticky",
+      "result": {
+        "background": "rgb(255, 253, 249)",
+        "border": "rgb(51, 45, 39) rgb(51, 45, 39) rgb(222, 217, 207)",
+        "header": {
+          "bottom": 68,
+          "height": 68,
+          "left": 0,
+          "right": 1135,
+          "top": 0,
+          "width": 1135,
+          "x": 0,
+          "y": 0
+        },
+        "links": [
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(51, 45, 39)",
+            "text": "La colección"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(51, 45, 39)",
+            "text": "La boutique"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(51, 45, 39)",
+            "text": "Tu visita"
+          }
+        ],
+        "menu": null,
+        "nav": {
+          "bottom": 122,
+          "height": 54,
+          "left": 0,
+          "right": 1135,
+          "top": 68,
+          "width": 1135,
+          "x": 0,
+          "y": 68
+        },
+        "overflow": false,
+        "path": "/boutiques/example-casa-marfil",
+        "scrollY": 1422,
+        "state": "solid",
+        "viewport": [
+          1150,
+          900
+        ]
+      }
+    },
+    {
+      "case": "boutique-phone-opening-reverse",
+      "result": {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "rgba(0, 0, 0, 0)",
+        "header": {
+          "bottom": 68,
+          "height": 68,
+          "left": 0,
+          "right": 305,
+          "top": 0,
+          "width": 305,
+          "x": 0,
+          "y": 0
+        },
+        "links": [
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(255, 253, 249)",
+            "text": "La colección"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.9)",
+            "text": "La boutique"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.9)",
+            "text": "Tu visita"
+          }
+        ],
+        "menu": null,
+        "nav": {
+          "bottom": 568,
+          "height": 54,
+          "left": 0,
+          "right": 305,
+          "top": 514,
+          "width": 305,
+          "x": 0,
+          "y": 514
+        },
+        "overflow": false,
+        "path": "/boutiques/example-casa-marfil",
+        "scrollY": 0,
+        "state": "cover",
+        "viewport": [
+          320,
+          568
+        ]
+      }
+    },
+    {
+      "case": "boutique-phone-sticky",
+      "result": {
+        "background": "rgba(0, 0, 0, 0)",
+        "border": "rgba(0, 0, 0, 0)",
+        "header": {
+          "bottom": 68,
+          "height": 68,
+          "left": 0,
+          "right": 305,
+          "top": 0,
+          "width": 305,
+          "x": 0,
+          "y": 0
+        },
+        "links": [
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(255, 253, 249)",
+            "text": "La colección"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgb(255, 253, 249)",
+            "text": "La boutique"
+          },
+          {
+            "background": "rgba(0, 0, 0, 0)",
+            "color": "rgba(255, 253, 249, 0.9)",
+            "text": "Tu visita"
+          }
+        ],
+        "menu": null,
+        "nav": {
+          "bottom": 144,
+          "height": 54,
+          "left": 0,
+          "right": 305,
+          "top": 90,
+          "width": 305,
+          "x": 0,
+          "y": 90
+        },
+        "overflow": false,
+        "path": "/boutiques/example-casa-marfil",
+        "scrollY": 424,
+        "state": "cover",
+        "viewport": [
+          320,
+          568
+        ]
+      }
+    }
+  ],
+  "errors": []
+}

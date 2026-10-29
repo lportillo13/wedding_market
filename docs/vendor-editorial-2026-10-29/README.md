@@ -10,4 +10,6 @@ Existing category translations, breadcrumbs, service-specific details, optional 
 
 `npm run check` passes architecture, TypeScript, lint and the production build; all 109 existing web tests pass. Local browser checks confirm desktop, 390px and 320px layouts, English/Spanish identity text, retained venue service cards and no horizontal overflow or browser errors. Measurements are in `local-browser-checks.json`.
 
-Published together with the approved [transparent cover navigation](../cover-navigation-2026-10-29/README.md). Exact deployment and live evidence will be added after publication.
+Published together with the approved [transparent cover navigation](../cover-navigation-2026-10-29/README.md) as **ba689b190e62dd43ee02f196490c1a6c2712847e**. The exact receipt is `deployment-success.json`; all 12 public checks pass. Actual desktop and phone identity screenshots are in this folder, with measurements in the cover-navigation live checks. Rollback is `/var/www/wedding-market.before-20261029-200102`.
+
+The subsequent [alignment follow-up](../vendor-alignment-2026-10-29/README.md) removes the story width cap at the owner's request while retaining the A identity.
