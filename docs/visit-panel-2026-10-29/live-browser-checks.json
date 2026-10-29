@@ -1,0 +1,189 @@
+{
+  "commit": "82d76018fba8b306ebf454a6a00f5838032498d4",
+  "checks": [
+    {
+      "case": "outfit-desktop-final",
+      "result": {
+        "body": {
+          "clientHeight": 667,
+          "horizontalOverflow": false,
+          "scrollHeight": 845
+        },
+        "bodyLocked": true,
+        "dateVisible": true,
+        "dialog": {
+          "bottom": 900,
+          "height": 900,
+          "left": 655,
+          "right": 1135,
+          "top": 0,
+          "width": 480,
+          "x": 655,
+          "y": 0
+        },
+        "focusInside": true,
+        "footer": {
+          "bottom": 900,
+          "height": 128.96875,
+          "left": 655,
+          "right": 1135,
+          "top": 771.03125,
+          "width": 480,
+          "x": 655,
+          "y": 771.03125
+        },
+        "headerTop": 0,
+        "images": [
+          {
+            "loaded": true
+          },
+          {
+            "loaded": true
+          }
+        ],
+        "modal": true,
+        "pageOverflow": false,
+        "path": "/boutiques/example-casa-marfil",
+        "rootOverflow": "",
+        "selected": [
+          "e0130000-0000-4000-8000-000000000103"
+        ],
+        "viewport": [
+          1150,
+          900
+        ],
+        "windowY": 247
+      }
+    },
+    {
+      "case": "phone-390-final",
+      "result": {
+        "body": {
+          "clientHeight": 588,
+          "horizontalOverflow": false,
+          "scrollHeight": 935
+        },
+        "bodyLocked": true,
+        "dateVisible": true,
+        "dialog": {
+          "bottom": 844,
+          "height": 793.359375,
+          "left": 0,
+          "right": 375,
+          "top": 50.640625,
+          "width": 375,
+          "x": 0,
+          "y": 50.640625
+        },
+        "focusInside": true,
+        "footer": {
+          "bottom": 844,
+          "height": 128.96875,
+          "left": 0,
+          "right": 375,
+          "top": 715.03125,
+          "width": 375,
+          "x": 0,
+          "y": 715.03125
+        },
+        "headerTop": 0,
+        "images": [
+          {
+            "loaded": true
+          },
+          {
+            "loaded": true
+          }
+        ],
+        "modal": true,
+        "pageOverflow": false,
+        "path": "/boutiques/example-casa-marfil",
+        "rootOverflow": "",
+        "selected": [
+          "e0130000-0000-4000-8000-000000000103"
+        ],
+        "viewport": [
+          390,
+          844
+        ],
+        "windowY": 247
+      }
+    },
+    {
+      "case": "phone-320-final",
+      "result": {
+        "body": {
+          "clientHeight": 349,
+          "horizontalOverflow": false,
+          "scrollHeight": 912
+        },
+        "bodyLocked": true,
+        "dateVisible": true,
+        "dialog": {
+          "bottom": 568,
+          "height": 533.90625,
+          "left": 0,
+          "right": 305,
+          "top": 34.09375,
+          "width": 305,
+          "x": 0,
+          "y": 34.09375
+        },
+        "focusInside": true,
+        "footer": {
+          "bottom": 568,
+          "height": 128.96875,
+          "left": 0,
+          "right": 305,
+          "top": 439.03125,
+          "width": 305,
+          "x": 0,
+          "y": 439.03125
+        },
+        "headerTop": 0,
+        "images": [
+          {
+            "loaded": true
+          },
+          {
+            "loaded": true
+          }
+        ],
+        "modal": true,
+        "pageOverflow": false,
+        "path": "/boutiques/example-casa-marfil",
+        "rootOverflow": "",
+        "selected": [
+          "e0130000-0000-4000-8000-000000000103"
+        ],
+        "viewport": [
+          320,
+          568
+        ],
+        "windowY": 247
+      }
+    },
+    {
+      "case": "phone-dismissal-final",
+      "result": {
+        "body": null,
+        "bodyLocked": false,
+        "dateVisible": null,
+        "focusInside": false,
+        "headerTop": 0,
+        "images": [],
+        "modal": false,
+        "pageOverflow": false,
+        "path": "/boutiques/example-casa-marfil",
+        "rootOverflow": "",
+        "selected": [],
+        "viewport": [
+          320,
+          568
+        ],
+        "windowY": 247
+      }
+    }
+  ],
+  "errors": []
+}
