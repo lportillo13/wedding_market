@@ -21,4 +21,4 @@ The video playback control is a 44px circular translucent button at bottom-left.
 
 ## Release
 
-Prepared against verified website `694e808bf9de6280b2c4bfd783a8661da1c8dc02`. Publication and live proof will be recorded after the fixed gateway completes.
+Website **9e71a33f84d0bbd0c5c274cf034bc4118da5a690** is deployed and verified, prepared against `694e808bf9de6280b2c4bfd783a8661da1c8dc02`. The exact successful gateway receipt is `deployment-success.json`; rollback is `/var/www/wedding-market.before-20261029-163917`. All 13 effective public checks pass, including the five CSS files with no BOM. Initial smoke-script URL/method mistakes are preserved separately and corrected without creating a request. Direct live desktop/phone geometry, playback and submenu checks pass with no console errors. See `live-browser-checks.json`, `live-video-hero-desktop.jpg` and `live-video-hero-mobile.jpg`. Native publication remains held.

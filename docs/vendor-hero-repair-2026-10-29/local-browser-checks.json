@@ -1,0 +1,342 @@
+{
+  "checkedAt": "2026-10-29T16:39:27.834Z",
+  "checks": [
+    {
+      "copy": {
+        "bottom": 402,
+        "height": 301.734375,
+        "right": 281,
+        "width": 257,
+        "x": 24,
+        "y": 100.265625
+      },
+      "copyGap": 112,
+      "hero": {
+        "bottom": 568,
+        "height": 568,
+        "right": 305,
+        "width": 305,
+        "x": 0,
+        "y": 0
+      },
+      "iframe": "https://www.youtube-nocookie.com/embed/JgzkqjnsIvM?autoplay=1&mute=1&playsinline=1&loop=1&playlist=JgzkqjnsIvM&controls=0&rel=0",
+      "links": {
+        "bottom": 498,
+        "height": 44,
+        "right": 285,
+        "width": 200.515625,
+        "x": 84.484375,
+        "y": 454
+      },
+      "overflow": false,
+      "scrollY": 0,
+      "styles": {
+        "padding": "100px 24px 166px",
+        "tabsVar": "54px"
+      },
+      "tabLinks": [],
+      "tabs": {
+        "bottom": 568,
+        "height": 54,
+        "right": 305,
+        "width": 305,
+        "x": 0,
+        "y": 514
+      },
+      "toggle": {
+        "bottom": 498,
+        "height": 44,
+        "right": 64,
+        "width": 44,
+        "x": 20,
+        "y": 454
+      },
+      "url": "http://localhost:3101/vendors/example-ritmo-atardecer",
+      "viewport": [
+        320,
+        568
+      ]
+    },
+    {
+      "copy": {
+        "bottom": 678,
+        "height": 263.890625,
+        "right": 351,
+        "width": 327,
+        "x": 24,
+        "y": 414.109375
+      },
+      "copyGap": 112,
+      "hero": {
+        "bottom": 844,
+        "height": 844,
+        "right": 375,
+        "width": 375,
+        "x": 0,
+        "y": 0
+      },
+      "iframe": "https://www.youtube-nocookie.com/embed/JgzkqjnsIvM?autoplay=1&mute=1&playsinline=1&loop=1&playlist=JgzkqjnsIvM&controls=0&rel=0",
+      "links": {
+        "bottom": 774,
+        "height": 44,
+        "right": 355,
+        "width": 200.515625,
+        "x": 154.484375,
+        "y": 730
+      },
+      "overflow": false,
+      "scrollY": 0,
+      "styles": {
+        "padding": "100px 24px 166px",
+        "tabsVar": "54px"
+      },
+      "tabLinks": [],
+      "tabs": {
+        "bottom": 844,
+        "height": 54,
+        "right": 375,
+        "width": 375,
+        "x": 0,
+        "y": 790
+      },
+      "toggle": {
+        "bottom": 774,
+        "height": 44,
+        "right": 64,
+        "width": 44,
+        "x": 20,
+        "y": 730
+      },
+      "url": "http://localhost:3101/vendors/example-ritmo-atardecer",
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "copy": {
+        "bottom": 678,
+        "height": 263.890625,
+        "right": 351,
+        "width": 327,
+        "x": 24,
+        "y": 414.109375
+      },
+      "copyGap": 112,
+      "hero": {
+        "bottom": 844,
+        "height": 844,
+        "right": 375,
+        "width": 375,
+        "x": 0,
+        "y": 0
+      },
+      "iframe": null,
+      "links": {
+        "bottom": 774,
+        "height": 44,
+        "right": 355,
+        "width": 88.328125,
+        "x": 266.671875,
+        "y": 730
+      },
+      "overflow": false,
+      "scrollY": 0,
+      "styles": {
+        "padding": "100px 24px 166px",
+        "tabsVar": "54px"
+      },
+      "tabLinks": [],
+      "tabs": {
+        "bottom": 844,
+        "height": 54,
+        "right": 375,
+        "width": 375,
+        "x": 0,
+        "y": 790
+      },
+      "toggle": null,
+      "url": "http://localhost:3101/vendors/example-luz-de-abril",
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "copy": {
+        "bottom": 554,
+        "height": 242.203125,
+        "right": 1012.5,
+        "width": 760,
+        "x": 252.5,
+        "y": 311.796875
+      },
+      "copyGap": 112,
+      "hero": {
+        "bottom": 720,
+        "height": 720,
+        "right": 1265,
+        "width": 1265,
+        "x": 0,
+        "y": 0
+      },
+      "iframe": null,
+      "links": {
+        "bottom": 650,
+        "height": 44,
+        "right": 1226.609375,
+        "width": 154.140625,
+        "x": 1072.46875,
+        "y": 606
+      },
+      "overflow": false,
+      "scrollY": 0,
+      "styles": {
+        "padding": "108px 24px 166px",
+        "tabsVar": "54px"
+      },
+      "tabLinks": [],
+      "tabs": {
+        "bottom": 720,
+        "height": 54,
+        "right": 1265,
+        "width": 1265,
+        "x": 0,
+        "y": 666
+      },
+      "toggle": null,
+      "url": "http://localhost:3101/vendors/example-luz-de-abril",
+      "viewport": [
+        1280,
+        720
+      ]
+    },
+    {
+      "copy": {
+        "bottom": 554,
+        "height": 242.203125,
+        "right": 1012.5,
+        "width": 760,
+        "x": 252.5,
+        "y": 311.796875
+      },
+      "copyGap": 112,
+      "hero": {
+        "bottom": 720,
+        "height": 720,
+        "right": 1265,
+        "width": 1265,
+        "x": 0,
+        "y": 0
+      },
+      "iframe": "https://www.youtube-nocookie.com/embed/JgzkqjnsIvM?autoplay=1&mute=1&playsinline=1&loop=1&playlist=JgzkqjnsIvM&controls=0&rel=0",
+      "links": {
+        "bottom": 650,
+        "height": 44,
+        "right": 1226.609375,
+        "width": 266.328125,
+        "x": 960.28125,
+        "y": 606
+      },
+      "overflow": false,
+      "scrollY": 0,
+      "styles": {
+        "padding": "108px 24px 166px",
+        "tabsVar": "54px"
+      },
+      "tabLinks": [],
+      "tabs": {
+        "bottom": 720,
+        "height": 54,
+        "right": 1265,
+        "width": 1265,
+        "x": 0,
+        "y": 666
+      },
+      "toggle": {
+        "bottom": 650,
+        "height": 44,
+        "right": 82.390625,
+        "width": 44,
+        "x": 38.390625,
+        "y": 606
+      },
+      "url": "http://localhost:3101/vendors/example-ritmo-atardecer",
+      "viewport": [
+        1280,
+        720
+      ]
+    },
+    {
+      "copy": {
+        "bottom": 914,
+        "height": 252.140625,
+        "right": 1332.5,
+        "width": 760,
+        "x": 572.5,
+        "y": 661.859375
+      },
+      "copyGap": 112,
+      "hero": {
+        "bottom": 1080,
+        "height": 1080,
+        "right": 1905,
+        "width": 1905,
+        "x": 0,
+        "y": 0
+      },
+      "iframe": "https://www.youtube-nocookie.com/embed/JgzkqjnsIvM?autoplay=1&mute=1&playsinline=1&loop=1&playlist=JgzkqjnsIvM&controls=0&rel=0",
+      "links": {
+        "bottom": 1010,
+        "height": 44,
+        "right": 1857,
+        "width": 274.671875,
+        "x": 1582.328125,
+        "y": 966
+      },
+      "overflow": false,
+      "scrollY": 0,
+      "styles": {
+        "padding": "108px 24px 166px",
+        "tabsVar": "54px"
+      },
+      "tabLinks": [],
+      "tabs": {
+        "bottom": 1080,
+        "height": 54,
+        "right": 1905,
+        "width": 1905,
+        "x": 0,
+        "y": 1026
+      },
+      "toggle": {
+        "bottom": 1010,
+        "height": 44,
+        "right": 92,
+        "width": 44,
+        "x": 48,
+        "y": 966
+      },
+      "url": "http://localhost:3101/vendors/example-ritmo-atardecer",
+      "viewport": [
+        1920,
+        1080
+      ]
+    }
+  ],
+  "interactions": {
+    "pauseClick": true,
+    "keyboardResume": true,
+    "sourceVisibleWhilePaused": true,
+    "galleryNavigation": true,
+    "stickySubmenuTop": 68,
+    "stickyHeaderBottom": 68,
+    "bilingualMediaLabels": true
+  },
+  "smokeRoutes": [
+    "/",
+    "/about",
+    "/vendors?examples=1",
+    "/boutiques/example-atelier-alba"
+  ]
+}

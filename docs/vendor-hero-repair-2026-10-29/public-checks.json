@@ -1,0 +1,73 @@
+{
+  "checkedAt": "2026-10-29T16:43:04.247Z",
+  "base": "https://thewedmarket.com",
+  "checks": [
+    {
+      "path": "/about",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/api/health",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-atelier-alba",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/vendors?examples=1",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/vendors/example-ritmo-atardecer",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/vendors/example-luz-de-abril",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/69306cf384f55cca.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/dd5d352a082118c1.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/04f3b1b6f6913f20.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/c5c5e2269cdb62d9.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/112e9bdb4474b22f.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/api/mobile/quotes",
+      "method": "POST",
+      "status": 401,
+      "passed": true
+    }
+  ],
+  "note": "The initial smoke script used a nonexistent route (404), then GET on the POST-only quotes route (405). After inspecting the route, an anonymous empty POST correctly returned 401. Both initial check outputs are preserved; no request was created."
+}

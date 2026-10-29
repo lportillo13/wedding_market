@@ -1,0 +1,338 @@
+{
+  "checkedAt": "2026-10-29T16:47:40.488Z",
+  "releaseCommit": "9e71a33f84d0bbd0c5c274cf034bc4118da5a690",
+  "checks": [
+    {
+      "copy": {
+        "bottom": 554,
+        "height": 242.203125,
+        "right": 1012.5,
+        "width": 760,
+        "x": 252.5,
+        "y": 311.796875
+      },
+      "copyGap": 112,
+      "hero": {
+        "bottom": 720,
+        "height": 720,
+        "right": 1265,
+        "width": 1265,
+        "x": 0,
+        "y": 0
+      },
+      "iframe": "https://www.youtube-nocookie.com/embed/JgzkqjnsIvM?autoplay=1&mute=1&playsinline=1&loop=1&playlist=JgzkqjnsIvM&controls=0&rel=0",
+      "links": {
+        "bottom": 650,
+        "height": 44,
+        "right": 1226.609375,
+        "width": 266.328125,
+        "x": 960.28125,
+        "y": 606
+      },
+      "overflow": false,
+      "scrollY": 0,
+      "styles": {
+        "padding": "108px 24px 166px",
+        "tabsVar": "54px"
+      },
+      "tabs": {
+        "bottom": 720,
+        "height": 54,
+        "right": 1265,
+        "width": 1265,
+        "x": 0,
+        "y": 666
+      },
+      "toggle": {
+        "bottom": 650,
+        "height": 44,
+        "right": 82.390625,
+        "width": 44,
+        "x": 38.390625,
+        "y": 606
+      },
+      "url": "https://thewedmarket.com/vendors/example-ritmo-atardecer",
+      "viewport": [
+        1280,
+        720
+      ]
+    },
+    {
+      "copy": {
+        "bottom": 678,
+        "height": 263.890625,
+        "right": 351,
+        "width": 327,
+        "x": 24,
+        "y": 414.109375
+      },
+      "copyGap": 112,
+      "hero": {
+        "bottom": 844,
+        "height": 844,
+        "right": 375,
+        "width": 375,
+        "x": 0,
+        "y": 0
+      },
+      "iframe": "https://www.youtube-nocookie.com/embed/JgzkqjnsIvM?autoplay=1&mute=1&playsinline=1&loop=1&playlist=JgzkqjnsIvM&controls=0&rel=0",
+      "links": {
+        "bottom": 774,
+        "height": 44,
+        "right": 355,
+        "width": 200.515625,
+        "x": 154.484375,
+        "y": 730
+      },
+      "overflow": false,
+      "scrollY": 0,
+      "styles": {
+        "padding": "100px 24px 166px",
+        "tabsVar": "54px"
+      },
+      "tabs": {
+        "bottom": 844,
+        "height": 54,
+        "right": 375,
+        "width": 375,
+        "x": 0,
+        "y": 790
+      },
+      "toggle": {
+        "bottom": 774,
+        "height": 44,
+        "right": 64,
+        "width": 44,
+        "x": 20,
+        "y": 730
+      },
+      "url": "https://thewedmarket.com/vendors/example-ritmo-atardecer",
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "copy": {
+        "bottom": 734,
+        "height": 232.015625,
+        "right": 947.5,
+        "width": 760,
+        "x": 187.5,
+        "y": 501.984375
+      },
+      "copyGap": 112,
+      "hero": {
+        "bottom": 900,
+        "height": 900,
+        "right": 1135,
+        "width": 1135,
+        "x": 0,
+        "y": 0
+      },
+      "iframe": "https://www.youtube-nocookie.com/embed/JgzkqjnsIvM?autoplay=1&mute=1&playsinline=1&loop=1&playlist=JgzkqjnsIvM&controls=0&rel=0",
+      "links": {
+        "bottom": 830,
+        "height": 44,
+        "right": 1100.5,
+        "width": 266.328125,
+        "x": 834.171875,
+        "y": 786
+      },
+      "overflow": false,
+      "scrollY": 0,
+      "styles": {
+        "padding": "100px 24px 166px",
+        "tabsVar": "54px"
+      },
+      "tabs": {
+        "bottom": 900,
+        "height": 54,
+        "right": 1135,
+        "width": 1135,
+        "x": 0,
+        "y": 846
+      },
+      "toggle": {
+        "bottom": 830,
+        "height": 44,
+        "right": 78.5,
+        "width": 44,
+        "x": 34.5,
+        "y": 786
+      },
+      "url": "https://thewedmarket.com/vendors/example-ritmo-atardecer",
+      "viewport": [
+        1150,
+        900
+      ]
+    },
+    {
+      "copy": {
+        "bottom": 678,
+        "height": 263.890625,
+        "right": 351,
+        "width": 327,
+        "x": 24,
+        "y": 414.109375
+      },
+      "copyGap": 112,
+      "hero": {
+        "bottom": 844,
+        "height": 844,
+        "right": 375,
+        "width": 375,
+        "x": 0,
+        "y": 0
+      },
+      "iframe": "https://www.youtube-nocookie.com/embed/JgzkqjnsIvM?autoplay=1&mute=1&playsinline=1&loop=1&playlist=JgzkqjnsIvM&controls=0&rel=0",
+      "links": {
+        "bottom": 774,
+        "height": 44,
+        "right": 355,
+        "width": 200.515625,
+        "x": 154.484375,
+        "y": 730
+      },
+      "overflow": false,
+      "scrollY": 0,
+      "styles": {
+        "padding": "100px 24px 166px",
+        "tabsVar": "54px"
+      },
+      "tabs": {
+        "bottom": 844,
+        "height": 54,
+        "right": 375,
+        "width": 375,
+        "x": 0,
+        "y": 790
+      },
+      "toggle": {
+        "bottom": 774,
+        "height": 44,
+        "right": 64,
+        "width": 44,
+        "x": 20,
+        "y": 730
+      },
+      "url": "https://thewedmarket.com/vendors/example-ritmo-atardecer",
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "copy": {
+        "bottom": 402,
+        "height": 301.734375,
+        "right": 281,
+        "width": 257,
+        "x": 24,
+        "y": 100.265625
+      },
+      "copyGap": 112,
+      "hero": {
+        "bottom": 568,
+        "height": 568,
+        "right": 305,
+        "width": 305,
+        "x": 0,
+        "y": 0
+      },
+      "iframe": "https://www.youtube-nocookie.com/embed/JgzkqjnsIvM?autoplay=1&mute=1&playsinline=1&loop=1&playlist=JgzkqjnsIvM&controls=0&rel=0",
+      "links": {
+        "bottom": 498,
+        "height": 44,
+        "right": 285,
+        "width": 200.515625,
+        "x": 84.484375,
+        "y": 454
+      },
+      "overflow": false,
+      "scrollY": 0,
+      "styles": {
+        "padding": "100px 24px 166px",
+        "tabsVar": "54px"
+      },
+      "tabs": {
+        "bottom": 568,
+        "height": 54,
+        "right": 305,
+        "width": 305,
+        "x": 0,
+        "y": 514
+      },
+      "toggle": {
+        "bottom": 498,
+        "height": 44,
+        "right": 64,
+        "width": 44,
+        "x": 20,
+        "y": 454
+      },
+      "url": "https://thewedmarket.com/vendors/example-ritmo-atardecer",
+      "viewport": [
+        320,
+        568
+      ]
+    },
+    {
+      "copy": {
+        "bottom": 402,
+        "height": 260.9375,
+        "right": 281,
+        "width": 257,
+        "x": 24,
+        "y": 141.0625
+      },
+      "copyGap": 112,
+      "hero": {
+        "bottom": 568,
+        "height": 568,
+        "right": 305,
+        "width": 305,
+        "x": 0,
+        "y": 0
+      },
+      "iframe": null,
+      "links": {
+        "bottom": 498,
+        "height": 44,
+        "right": 285,
+        "width": 88.328125,
+        "x": 196.671875,
+        "y": 454
+      },
+      "overflow": false,
+      "scrollY": 0,
+      "styles": {
+        "padding": "100px 24px 166px",
+        "tabsVar": "54px"
+      },
+      "tabs": {
+        "bottom": 568,
+        "height": 54,
+        "right": 305,
+        "width": 305,
+        "x": 0,
+        "y": 514
+      },
+      "toggle": null,
+      "url": "https://thewedmarket.com/vendors/example-luz-de-abril",
+      "viewport": [
+        320,
+        568
+      ]
+    }
+  ],
+  "interactions": {
+    "autoplayAdmitted": true,
+    "pause": true,
+    "keyboardResume": true,
+    "sourceAndGalleryRemainWhilePaused": true,
+    "bottomMoreMenuOpensUpward": true,
+    "escapeClosesMenu": true
+  },
+  "consoleErrors": []
+}

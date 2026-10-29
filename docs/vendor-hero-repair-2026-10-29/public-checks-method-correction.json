@@ -1,0 +1,72 @@
+{
+  "checkedAt": "2026-10-29T16:42:08.365Z",
+  "base": "https://thewedmarket.com",
+  "checks": [
+    {
+      "path": "/about",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/api/health",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-atelier-alba",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/vendors?examples=1",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/vendors/example-ritmo-atardecer",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/vendors/example-luz-de-abril",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/69306cf384f55cca.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/dd5d352a082118c1.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/04f3b1b6f6913f20.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/c5c5e2269cdb62d9.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/112e9bdb4474b22f.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/api/mobile/quotes",
+      "status": 405,
+      "passed": false
+    }
+  ],
+  "note": "The initial script incorrectly targeted nonexistent /api/mobile/inquiries (404). Its existing-route replacement was checked separately; the original output is preserved."
+}
