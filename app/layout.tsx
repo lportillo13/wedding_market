@@ -16,6 +16,7 @@ import "../styles/navigation-editorial.scss";
 import "../styles/about-editorial.scss";
 import "../styles/boutiques.scss";
 import "../styles/boutique-directory.scss";
+import "../styles/boutique-visit.scss";
 import NavBarContainer from "@/components/NavBarContainer";
 import AuthStateSync from "@/components/AuthStateSync";
 import PwaServiceWorkerRegistration from "@/components/PwaServiceWorkerRegistration";
