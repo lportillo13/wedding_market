@@ -913,8 +913,9 @@
 }
 .wm-example-entry { color: #805a40; text-underline-offset: .3rem; }
 
-// Approved directory B: immersive photography and compact overlay captions.
-.wm-vendors-shell {
+// Approved directory B: shared by vendor listings and boutique outfits.
+.wm-vendors-shell,
+.wm-boutique-grid--editorial {
   background: var(--wm-bg-primary);
   .wm-vendor-card {
     border: 0;
@@ -1004,6 +1005,8 @@
     padding: 0;
     img { padding: 0; }
   }
+}
+.wm-vendors-shell {
   .wm-vendors-filters__toggle, .wm-vendors-filters__summary { display: none; }
   .wm-vendors-search {
     display: grid;

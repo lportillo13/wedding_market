@@ -15,10 +15,9 @@
 .wm-boutique-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2.3rem 1.5rem;margin-top:2rem;}
 .wm-boutique-card{position:relative;aspect-ratio:3/4;background:var(--wm-cream);border-radius:10px;overflow:hidden;text-decoration:none;color:var(--wm-paper);>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}>div{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:2rem;background:linear-gradient(transparent,#211a13b8);h2{font-size:2.5rem;}p{margin:.5rem 0;}}}
 .wm-boutique-card h2,.wm-boutique-hero h1{color:inherit;}
-.wm-outfit{min-width:0;p{font-size:.9rem;color:var(--wm-muted);margin:.4rem 0;}}
-.wm-outfit-photo{position:relative;aspect-ratio:3/4;>button:first-child{display:block;width:100%;height:100%;padding:0;background:var(--wm-cream);border:0;border-radius:10px;overflow:hidden;color:var(--wm-ink);img{width:100%;height:100%;object-fit:cover;}}}
-.wm-outfit-heart{position:absolute;top:12px;right:12px;width:44px;height:44px;border-radius:50%;border:1px solid var(--wm-outline);background:var(--wm-paper);color:var(--wm-ink);font-size:1.4rem!important;}
-.wm-outfit-name{font-family:"GT Super",Georgia,serif!important;font-size:1.65rem!important;font-weight:300;border:0;background:none;text-align:left;padding:1rem 0 .2rem;color:var(--wm-ink);}
+.wm-boutique-grid--editorial{margin-top:2rem;row-gap:2.5rem;}
+.wm-outfit-card{min-width:0;}
+.wm-outfit-card__open{border:0;background:transparent;padding:0;text-align:left;}
 .wm-boutique-filters{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.5rem;}
 .wm-boutique-empty{padding:4rem 0;color:var(--wm-muted);}
 .wm-boutique-about{border-top:1px solid var(--wm-outline);margin-top:4rem;padding:3rem 0;max-width:780px;h3{margin-top:2rem;}}
@@ -36,4 +35,4 @@
 .wm-boutique-settings{padding:1.2rem 0;border-block:1px solid var(--wm-outline);margin:1.5rem 0;summary{min-height:44px;}}
 .wm-boutique-media-picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:1rem;label{display:flex;align-items:center;gap:.4rem;min-width:0;}img{width:70px;height:85px;object-fit:cover;border-radius:7px;}}
 .wm-boutique-request-details{>div{display:grid;grid-template-columns:1fr 1.5fr;gap:1rem;margin:.7rem 0;}dt{font-weight:400;color:var(--wm-muted);}}
-@media(max-width:767px){.wm-boutique-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6rem 1rem;}.wm-boutique-card{grid-column:1/-1;aspect-ratio:1/1;}.wm-boutique-detail-grid,.wm-boutique-form{grid-template-columns:1fr;}.wm-boutique-hero{padding-bottom:65px;}.wm-boutique-actions .btn{min-height:48px;}.wm-boutique-appointment-row{align-items:flex-start;}.wm-outfit-name{font-size:1.35rem!important;}.wm-boutique-tabs{top:var(--wm-header-height,66px);gap:1.4rem;padding:0 12px;}.wm-boutique-toolbar>div{gap:1rem;}}
+@media(max-width:767px){.wm-boutique-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6rem 1rem;}.wm-boutique-card{grid-column:1/-1;aspect-ratio:1/1;}.wm-boutique-detail-grid,.wm-boutique-form{grid-template-columns:1fr;}.wm-boutique-hero{padding-bottom:65px;}.wm-boutique-actions .btn{min-height:48px;}.wm-boutique-appointment-row{align-items:flex-start;}.wm-boutique-tabs{top:var(--wm-header-height,66px);gap:1.4rem;padding:0 12px;}.wm-boutique-toolbar>div{gap:1rem;}}

@@ -6,4 +6,4 @@ Role switching, boutique selection and reset remain available only in the explic
 
 Architecture check, TypeScript, lint, production build and all 109 web tests pass. Local browser checks confirm zero panels on the storefront, outfit details, favorites and directory, with saved-outfit persistence and four gallery media thumbnails. The collection tabs immediately follow the cover. A 390px phone has no overflow and keeps its transparent header. Explicit test-workspace role switching remains functional. See `panel-removal-local-checks.json`.
 
-Live release evidence will be added after completion.
+Release **0019515f67a10cb3826a73fbc37b2a24b8198a37** completed through the fixed gateway with its exact-target successful receipt. Direct live browser verification confirms zero example panels and collection tabs immediately following the cover. See `panel-removal-deployment-success.json` and `panel-removal-live-checks.json`. Rollback is `/var/www/wedding-market.before-20261029-141102`. The owner subsequently requested vendor-style outfit cards; that follow-up retains this removal.

@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element -- Reuses admitted vendor media without adding an optimizer cache. */
 import { useRouter } from 'next/navigation';
 import OutfitGallery from './OutfitGallery';
+import OutfitCard from './OutfitCard';
 import ContentSafety from '@/components/safety/ContentSafety';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
@@ -141,21 +142,10 @@ export default function BoutiqueExperience({ initial, store = null, favorites = 
                 <><section id="boutique-collection"><p className="wm-boutique-script">{shop ? t.accent : t.boutiques}</p><h1>{shop ? t.collection : title}</h1>{!shop && !favorites ? <p className="text-muted">{t.intro}</p> : null}
     {shop ? <div className="wm-boutique-filters">{[['', t.all], ['dress', t.dress], ['suit', t.suit]].map(([value, label]) => <button key={value} className={`btn ${kind === value ? 'btn-primary' : 'btn-outline-secondary'}`} aria-pressed={kind === value} onClick={() => { setKind(value); setPage(1); }}>{label}</button>)}</div> : null}
     {loading ? <p role="status">{t.loading}</p> : null}
-    <div className="wm-boutique-grid">{list ? items.map(item => <article className="wm-outfit" key={item.id}><div className="wm-outfit-photo"><button onClick={() => {
-                            if (favorites)
-                                router.push(`/boutiques/${(item as Outfit & {
-                                    slug: string;
-                                }).slug}?outfit=${item.id}`);
-                            else
-                                setDetail(item);
-                        }} aria-label={boutiqueText(item.name, language)}>{item.images[0] ? <img src={item.images[0]} alt={boutiqueText(item.name, language)} loading="lazy"/> : <span>{t[item.kind]}</span>}</button><button className="wm-outfit-heart" disabled={busy} aria-label={saved.includes(item.id) ? t.unsave : t.save} aria-pressed={saved.includes(item.id)} onClick={() => void toggle(item)}>{saved.includes(item.id) ? '♥' : '♡'}</button></div><button className="wm-outfit-name" onClick={() => {
-                            if (favorites)
-                                router.push(`/boutiques/${(item as Outfit & {
-                                    slug: string;
-                                }).slug}?outfit=${item.id}`);
-                            else
-                                setDetail(item);
-                        }}>{boutiqueText(item.name, language)}</button><p>{t[item.offer]} · {item.designer}</p><p>{item.price_cents === null ? t.price : new Intl.NumberFormat(language, { style: 'currency', currency: item.currency }).format(item.price_cents / 100)}</p></article>) : shops.map(s => <Link href={`/boutiques/${s.slug}`} className="wm-boutique-card" key={s.vendor_id} prefetch={false}>{s.hero ? <img src={s.hero} alt={s.name} loading="lazy"/> : null}<div><span className="wm-boutique-script">{t.boutiques}</span><h2>{s.name}</h2><p>{[s.city, s.region].filter(Boolean).join(' · ')}</p><span>{t.explore} ↗</span></div></Link>)}</div>
+    <div className={list ? "wm-vendor-grid wm-boutique-grid--editorial" : "wm-boutique-grid"}>{list ? items.map(item => <OutfitCard key={item.id} outfit={item} language={language} saved={saved.includes(item.id)} busy={busy} onToggle={() => void toggle(item)} onOpen={() => {
+        if (favorites) router.push(`/boutiques/${(item as Outfit & { slug: string }).slug}?outfit=${item.id}`);
+        else setDetail(item);
+    }}/>) : shops.map(s => <Link href={`/boutiques/${s.slug}`} className="wm-boutique-card" key={s.vendor_id} prefetch={false}>{s.hero ? <img src={s.hero} alt={s.name} loading="lazy"/> : null}<div><span className="wm-boutique-script">{t.boutiques}</span><h2>{s.name}</h2><p>{[s.city, s.region].filter(Boolean).join(' · ')}</p><span>{t.explore} ↗</span></div></Link>)}</div>
     {!isExample && !shop && !favorites ? <p className="mt-3"><Link href="/boutiques?examples=1">{language === 'es' ? 'Ver boutiques de ejemplo' : 'View example boutiques'} →</Link></p> : null}{!loading && !(list ? items : shops).length ? <p className="wm-boutique-empty">{favorites ? t.noFavorites : shop ? t.noItems : t.empty}</p> : null}
     <div className="wm-boutique-actions mt-4">{page > 1 ? <button className="btn btn-outline-secondary" disabled={loading} onClick={() => setPage(p => p - 1)}>{t.previous}</button> : null}{(list ? items : shops).length === 12 ? <button className="btn btn-outline-secondary" disabled={loading} onClick={() => setPage(p => p + 1)}>{t.next}</button> : null}</div>
    </section>{shop ? <section id="boutique-about" className="wm-boutique-about"><h2>{t.about}</h2><p>{boutiqueText(shop.bio, language)}</p><p>{shop.languages?.join(' · ')}</p>{shop.address ? <p>{shop.address}</p> : null}{shop.map_url && /^https:\/\//.test(shop.map_url) ? <a href={shop.map_url} target="_blank" rel="noopener noreferrer">{shop.city} ↗</a> : null}{!isExample ? <ContentSafety kind="vendor" targetId={shop.vendor_id} language={language}/> : null}<h3>{t.policies}</h3><p>{boutiqueText(shop.policies, language)}</p><p>{shop.duration_minutes} min · {shop.companions_max} {t.companions.toLowerCase()} · {shop.visit_fee_cents ? new Intl.NumberFormat(language, { style: 'currency', currency: shop.currency }).format(shop.visit_fee_cents / 100) : t.free}</p><button className="btn btn-primary" onClick={() => setBooking(true)}>{t.request} →</button></section> : null}</>}

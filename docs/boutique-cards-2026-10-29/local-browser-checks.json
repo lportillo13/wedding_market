@@ -1,0 +1,66 @@
+{
+  "checks": [
+    {
+      "captionPadding": "24px",
+      "cards": 6,
+      "case": "desktop-outfit-cards",
+      "gradient": "linear-gradient(rgba(0, 0, 0, 0) 38%, rgba(23, 18, 13, 0.15) 55%, rgba(23, 18, 13, 0.7) 78%, rgba(23, 18, 13, 0.93))",
+      "nameColor": "rgb(255, 253, 249)",
+      "nameFont": "\"GT Super\", Georgia, serif",
+      "nameWeight": "300",
+      "overflow": false,
+      "radius": "10px",
+      "ratio": "3 / 5",
+      "saveBackground": "rgba(51, 45, 39, 0.6)",
+      "saveSize": 44
+    },
+    {
+      "case": "save-heart",
+      "fill": "rgb(255, 253, 249)",
+      "pressed": "true"
+    },
+    {
+      "case": "keyboard-arrow-opens-gallery",
+      "media": 4,
+      "title": "Alba · Satén marfil"
+    },
+    {
+      "cards": 1,
+      "case": "favorites-reuses-card",
+      "panels": 0
+    },
+    {
+      "case": "favorite-opens-outfit-deep-link",
+      "media": 4,
+      "url": "http://localhost:3026/boutiques/example-atelier-alba?outfit=e0130000-0000-4000-8000-000000000101"
+    },
+    {
+      "captionPadding": "20px",
+      "captionsFit": true,
+      "case": "phone-390",
+      "columns": "351px",
+      "overflow": false,
+      "ratio": "1 / 1"
+    },
+    {
+      "captionsFit": true,
+      "case": "phone-320",
+      "overflow": false
+    },
+    {
+      "case": "english-cards",
+      "category": "Dresses",
+      "overflow": false,
+      "price": "Purchase · $1,450.00"
+    }
+  ],
+  "vendorComparison": {
+    "ratio": "3 / 5",
+    "radius": "10px",
+    "captionPadding": "24px",
+    "nameColor": "rgb(255, 253, 249)",
+    "nameFont": "\"GT Super\", Georgia, serif",
+    "nameWeight": "300",
+    "gradientMatches": true
+  }
+}
