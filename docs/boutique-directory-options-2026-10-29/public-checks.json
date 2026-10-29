@@ -1,0 +1,96 @@
+{
+  "checkedAt": "2026-10-29T20:40:23.010Z",
+  "base": "https://thewedmarket.com",
+  "checks": [
+    {
+      "path": "/api/ready",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/health",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-casa-marfil",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/vendors?examples=1",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/vendors/example-villa-brisa",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/vendors/example-luz-de-abril",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/vendors/example-ritmo-atardecer",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?kind=invalid",
+      "status": 400,
+      "passed": true
+    },
+    {
+      "path": "/boutiques",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques?examples=1",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?kind=suit",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?kind=dress",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/images/boutique-directory-atelier.webp",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/69306cf384f55cca.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/dd5d352a082118c1.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/112e9bdb4474b22f.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/3cc1368d1743ab72.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/4155f304d88a8e4f.css",
+      "status": 200,
+      "passed": true
+    }
+  ]
+}

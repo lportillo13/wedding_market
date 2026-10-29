@@ -1,0 +1,330 @@
+{
+  "commit": "8e64979ffb1cf1796b356f02db2bf57b9f7f984e",
+  "checks": [
+    {
+      "case": "desktop-spanish-all",
+      "result": {
+        "cards": [
+          {
+            "logo": "AA",
+            "name": "Atelier Alba",
+            "rect": {
+              "bottom": 1104.546875,
+              "height": 506,
+              "left": 67.5,
+              "right": 442.875,
+              "top": 598.546875,
+              "width": 375.375,
+              "x": 67.5,
+              "y": 598.546875
+            }
+          },
+          {
+            "logo": "CM",
+            "name": "Casa Marfil",
+            "rect": {
+              "bottom": 1104.546875,
+              "height": 506,
+              "left": 454.875,
+              "right": 755.1875,
+              "top": 598.546875,
+              "width": 300.3125,
+              "x": 454.875,
+              "y": 598.546875
+            }
+          },
+          {
+            "logo": "SR",
+            "name": "Sastrería Roble",
+            "rect": {
+              "bottom": 1104.546875,
+              "height": 506,
+              "left": 767.1875,
+              "right": 1067.484375,
+              "top": 598.546875,
+              "width": 300.296875,
+              "x": 767.1875,
+              "y": 598.546875
+            }
+          }
+        ],
+        "columns": "375.375px 300.312px 300.297px",
+        "filters": [
+          {
+            "label": "Todos",
+            "pressed": "true"
+          },
+          {
+            "label": "Vestidos",
+            "pressed": "false"
+          },
+          {
+            "label": "Trajes",
+            "pressed": "false"
+          }
+        ],
+        "font": "\"GT Super\", Georgia, serif",
+        "heading": "Encuentra tu look de boda",
+        "images": [
+          {
+            "loaded": true,
+            "src": "/images/boutique-directory-atelier.webp"
+          },
+          {
+            "loaded": true,
+            "src": "/boutique-examples/alba.jpg"
+          },
+          {
+            "loaded": true,
+            "src": "/boutique-examples/marfil.jpg"
+          },
+          {
+            "loaded": true,
+            "src": "/boutique-examples/roble.jpg"
+          }
+        ],
+        "overflow": false,
+        "scrollY": 0,
+        "viewport": [
+          1150,
+          1200
+        ]
+      }
+    },
+    {
+      "case": "live-suit-filter",
+      "result": {
+        "cards": [
+          {
+            "logo": "AA",
+            "name": "Atelier Alba",
+            "rect": {
+              "bottom": 1104.546875,
+              "height": 506,
+              "left": 67.5,
+              "right": 442.875,
+              "top": 598.546875,
+              "width": 375.375,
+              "x": 67.5,
+              "y": 598.546875
+            }
+          },
+          {
+            "logo": "SR",
+            "name": "Sastrería Roble",
+            "rect": {
+              "bottom": 1104.546875,
+              "height": 506,
+              "left": 454.875,
+              "right": 755.1875,
+              "top": 598.546875,
+              "width": 300.3125,
+              "x": 454.875,
+              "y": 598.546875
+            }
+          }
+        ],
+        "columns": "375.375px 300.312px 300.297px",
+        "filters": [
+          {
+            "label": "Todos",
+            "pressed": "false"
+          },
+          {
+            "label": "Vestidos",
+            "pressed": "false"
+          },
+          {
+            "label": "Trajes",
+            "pressed": "true"
+          }
+        ],
+        "font": "\"GT Super\", Georgia, serif",
+        "heading": "Encuentra tu look de boda",
+        "images": [
+          {
+            "loaded": true,
+            "src": "/images/boutique-directory-atelier.webp"
+          },
+          {
+            "loaded": true,
+            "src": "/boutique-examples/alba.jpg"
+          },
+          {
+            "loaded": true,
+            "src": "/boutique-examples/roble.jpg"
+          }
+        ],
+        "overflow": false,
+        "scrollY": 0,
+        "viewport": [
+          1150,
+          1200
+        ]
+      }
+    },
+    {
+      "case": "live-phone-active-all",
+      "result": {
+        "cards": [
+          {
+            "logo": "AA",
+            "name": "Atelier Alba",
+            "rect": {
+              "bottom": 890.9375,
+              "height": 438.75,
+              "left": 12,
+              "right": 363,
+              "top": 452.1875,
+              "width": 351,
+              "x": 12,
+              "y": 452.1875
+            }
+          },
+          {
+            "logo": "CM",
+            "name": "Casa Marfil",
+            "rect": {
+              "bottom": 1341.6875,
+              "height": 438.75,
+              "left": 12,
+              "right": 363,
+              "top": 902.9375,
+              "width": 351,
+              "x": 12,
+              "y": 902.9375
+            }
+          },
+          {
+            "logo": "SR",
+            "name": "Sastrería Roble",
+            "rect": {
+              "bottom": 1792.4375,
+              "height": 438.75,
+              "left": 12,
+              "right": 363,
+              "top": 1353.6875,
+              "width": 351,
+              "x": 12,
+              "y": 1353.6875
+            }
+          }
+        ],
+        "columns": "351px",
+        "filters": [
+          {
+            "label": "Todos",
+            "pressed": "true"
+          },
+          {
+            "label": "Vestidos",
+            "pressed": "false"
+          },
+          {
+            "label": "Trajes",
+            "pressed": "false"
+          }
+        ],
+        "font": "\"GT Super\", Georgia, serif",
+        "heading": "Encuentra tu look de boda",
+        "images": [
+          {
+            "loaded": true,
+            "src": "/images/boutique-directory-atelier.webp"
+          },
+          {
+            "loaded": true,
+            "src": "/boutique-examples/alba.jpg"
+          },
+          {
+            "loaded": true,
+            "src": "/boutique-examples/marfil.jpg"
+          },
+          {
+            "loaded": true,
+            "src": "/boutique-examples/roble.jpg"
+          }
+        ],
+        "overflow": false,
+        "scrollY": 0,
+        "viewport": [
+          390,
+          844
+        ]
+      }
+    },
+    {
+      "case": "live-small-phone-dresses",
+      "result": {
+        "cards": [
+          {
+            "logo": "AA",
+            "name": "Atelier Alba",
+            "rect": {
+              "bottom": 715.4375,
+              "height": 351.25,
+              "left": 12,
+              "right": 293,
+              "top": 364.1875,
+              "width": 281,
+              "x": 12,
+              "y": 364.1875
+            }
+          },
+          {
+            "logo": "CM",
+            "name": "Casa Marfil",
+            "rect": {
+              "bottom": 1078.6875,
+              "height": 351.25,
+              "left": 12,
+              "right": 293,
+              "top": 727.4375,
+              "width": 281,
+              "x": 12,
+              "y": 727.4375
+            }
+          }
+        ],
+        "columns": "281px",
+        "filters": [
+          {
+            "label": "Todos",
+            "pressed": "false"
+          },
+          {
+            "label": "Vestidos",
+            "pressed": "true"
+          },
+          {
+            "label": "Trajes",
+            "pressed": "false"
+          }
+        ],
+        "font": "\"GT Super\", Georgia, serif",
+        "heading": "Encuentra tu look de boda",
+        "images": [
+          {
+            "loaded": true,
+            "src": "/images/boutique-directory-atelier.webp"
+          },
+          {
+            "loaded": true,
+            "src": "/boutique-examples/alba.jpg"
+          },
+          {
+            "loaded": true,
+            "src": "/boutique-examples/marfil.jpg"
+          }
+        ],
+        "overflow": false,
+        "scrollY": 88,
+        "viewport": [
+          320,
+          568
+        ]
+      }
+    }
+  ],
+  "errors": []
+}
