@@ -1,0 +1,252 @@
+{
+  "checkedAt": "2026-10-29T15:23:29.231Z",
+  "base": "https://thewedmarket.com",
+  "checks": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques?examples=1",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-casa-marfil?outfit=e0130000-0000-4000-8000-000000000124",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-atelier-alba?outfit=e0130000-0000-4000-8000-000000000101",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-sastreria-roble?outfit=e0130000-0000-4000-8000-000000000133",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?page=1",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?slug=example-casa-marfil",
+      "status": 404,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account?mode=state",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account?mode=favorites",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account?mode=appointments",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account?mode=workspace",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account",
+      "status": 403,
+      "passed": true
+    },
+    {
+      "path": "/vendor/boutique",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/account/inbox/appointments",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/vendor/inbox/appointments",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/69306cf384f55cca.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/f8c4cd2c1db9f848.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/b71aa84b74134e52.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/08ad4d0318da38c3.css",
+      "passed": false,
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "path": "selected-layout-styles",
+      "passed": false
+    }
+  ],
+  "followUpChecks": [
+    {
+      "path": "/_next/static/css/08ad4d0318da38c3.css",
+      "status": 200,
+      "bytes": 48323,
+      "selectedStyle": true,
+      "passed": true,
+      "checkedAt": "2026-10-29T15:27:14.305Z"
+    },
+    {
+      "path": "selected-layout-styles",
+      "passed": true,
+      "checkedAt": "2026-10-29T15:27:14.305Z"
+    }
+  ],
+  "effectiveResults": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques?examples=1",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-casa-marfil?outfit=e0130000-0000-4000-8000-000000000124",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-atelier-alba?outfit=e0130000-0000-4000-8000-000000000101",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-sastreria-roble?outfit=e0130000-0000-4000-8000-000000000133",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?page=1",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?slug=example-casa-marfil",
+      "status": 404,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account?mode=state",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account?mode=favorites",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account?mode=appointments",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account?mode=workspace",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account",
+      "status": 403,
+      "passed": true
+    },
+    {
+      "path": "/vendor/boutique",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/account/inbox/appointments",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/vendor/inbox/appointments",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/69306cf384f55cca.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/f8c4cd2c1db9f848.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/b71aa84b74134e52.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/08ad4d0318da38c3.css",
+      "passed": true,
+      "error": "The operation was aborted due to timeout",
+      "status": 200,
+      "bytes": 48323,
+      "selectedStyle": true,
+      "checkedAt": "2026-10-29T15:27:14.305Z",
+      "initialError": "The operation was aborted due to timeout"
+    },
+    {
+      "path": "selected-layout-styles",
+      "passed": true,
+      "checkedAt": "2026-10-29T15:27:14.305Z",
+      "initialError": null
+    }
+  ],
+  "summary": {
+    "passed": 22,
+    "failed": 0
+  }
+}

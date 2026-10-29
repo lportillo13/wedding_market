@@ -1,0 +1,32 @@
+{
+  "checks": [
+    {
+      "case": "live-desktop-layout",
+      "columns": "611.516px 480.484px",
+      "galleryHeight": 576,
+      "headingSize": "47.36px",
+      "overflow": false,
+      "photoLoaded": true,
+      "ready": true,
+      "requestBottom": 811.078125,
+      "title": "Estrella · Columna bordada",
+      "viewport": 900
+    },
+    {
+      "case": "live-phone-layout",
+      "columns": "351px",
+      "overflow": false,
+      "width": 390
+    },
+    {
+      "case": "live-keyboard-details",
+      "expanded": true,
+      "reference": true
+    },
+    {
+      "case": "live-example-favorite",
+      "pressed": "true"
+    }
+  ],
+  "viewportReset": true
+}
