@@ -1,0 +1,71 @@
+{
+  "checkedAt": "2026-10-29T17:40:06.367Z",
+  "base": "https://thewedmarket.com",
+  "checks": [
+    {
+      "path": "/boutiques?examples=1",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-atelier-alba",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-atelier-alba?outfit=e0130000-0000-4000-8000-000000000101",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-casa-marfil",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/api/health",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/vendors/example-ritmo-atardecer",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/vendors/example-luz-de-abril",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/favorites?examples=1",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-sastreria-roble",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/04f3b1b6f6913f20.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/69306cf384f55cca.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/112e9bdb4474b22f.css",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/e0c1dc215b014d53.css",
+      "status": 200,
+      "passed": true
+    }
+  ]
+}

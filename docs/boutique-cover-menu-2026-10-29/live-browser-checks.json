@@ -1,0 +1,263 @@
+{
+  "checkedAt": "2026-10-29T17:41:02.363Z",
+  "releaseCommit": "7d35a4214cd73e113a1290b49aeb975dfa8c38d8",
+  "checks": [
+    {
+      "copy": {
+        "bottom": 766,
+        "height": 296.875,
+        "left": 378.671875,
+        "right": 756.3125,
+        "top": 469.125,
+        "width": 377.640625,
+        "x": 378.671875,
+        "y": 469.125
+      },
+      "copyClearance": 80,
+      "header": {
+        "bottom": 68,
+        "height": 68,
+        "left": 0,
+        "right": 1135,
+        "top": 0,
+        "width": 1135,
+        "x": 0,
+        "y": 0
+      },
+      "hero": {
+        "bottom": 900,
+        "height": 900,
+        "left": 0,
+        "right": 1135,
+        "top": 0,
+        "width": 1135,
+        "x": 0,
+        "y": 0
+      },
+      "menuLinks": [
+        {
+          "height": 53,
+          "text": "La colección"
+        },
+        {
+          "height": 53,
+          "text": "La boutique"
+        },
+        {
+          "height": 53,
+          "text": "Tu visita"
+        }
+      ],
+      "overflow": false,
+      "path": "/boutiques/example-casa-marfil",
+      "scrollY": 0,
+      "tabs": {
+        "bottom": 900,
+        "height": 54,
+        "left": 0,
+        "right": 1135,
+        "top": 846,
+        "width": 1135,
+        "x": 0,
+        "y": 846
+      },
+      "viewport": [
+        1150,
+        900
+      ]
+    },
+    {
+      "copy": {
+        "bottom": 725,
+        "height": 286.5625,
+        "left": 24,
+        "right": 351,
+        "top": 438.4375,
+        "width": 327,
+        "x": 24,
+        "y": 438.4375
+      },
+      "copyClearance": 65,
+      "header": {
+        "bottom": 68,
+        "height": 68,
+        "left": 0,
+        "right": 375,
+        "top": 0,
+        "width": 375,
+        "x": 0,
+        "y": 0
+      },
+      "hero": {
+        "bottom": 844,
+        "height": 844,
+        "left": 0,
+        "right": 375,
+        "top": 0,
+        "width": 375,
+        "x": 0,
+        "y": 0
+      },
+      "menuLinks": [
+        {
+          "height": 53,
+          "text": "La colección"
+        },
+        {
+          "height": 53,
+          "text": "La boutique"
+        },
+        {
+          "height": 53,
+          "text": "Tu visita"
+        }
+      ],
+      "overflow": false,
+      "path": "/boutiques/example-casa-marfil",
+      "scrollY": 0,
+      "tabs": {
+        "bottom": 844,
+        "height": 54,
+        "left": 0,
+        "right": 375,
+        "top": 790,
+        "width": 375,
+        "x": 0,
+        "y": 790
+      },
+      "viewport": [
+        390,
+        844
+      ]
+    },
+    {
+      "copy": {
+        "bottom": 449,
+        "height": 338.390625,
+        "left": 24,
+        "right": 281,
+        "top": 110.609375,
+        "width": 257,
+        "x": 24,
+        "y": 110.609375
+      },
+      "copyClearance": 65,
+      "header": {
+        "bottom": 68,
+        "height": 68,
+        "left": 0,
+        "right": 305,
+        "top": 0,
+        "width": 305,
+        "x": 0,
+        "y": 0
+      },
+      "hero": {
+        "bottom": 568,
+        "height": 568,
+        "left": 0,
+        "right": 305,
+        "top": 0,
+        "width": 305,
+        "x": 0,
+        "y": 0
+      },
+      "menuLinks": [
+        {
+          "height": 53,
+          "text": "La colección"
+        },
+        {
+          "height": 53,
+          "text": "La boutique"
+        },
+        {
+          "height": 53,
+          "text": "Tu visita"
+        }
+      ],
+      "overflow": false,
+      "path": "/boutiques/example-sastreria-roble",
+      "scrollY": 0,
+      "tabs": {
+        "bottom": 568,
+        "height": 54,
+        "left": 0,
+        "right": 305,
+        "top": 514,
+        "width": 305,
+        "x": 0,
+        "y": 514
+      },
+      "viewport": [
+        320,
+        568
+      ]
+    }
+  ],
+  "sticky": {
+    "copy": {
+      "bottom": -22,
+      "height": 338.390625,
+      "left": 24,
+      "right": 281,
+      "top": -360.390625,
+      "width": 257,
+      "x": 24,
+      "y": -360.390625
+    },
+    "copyClearance": 90,
+    "header": {
+      "bottom": 68,
+      "height": 68,
+      "left": 0,
+      "right": 305,
+      "top": 0,
+      "width": 305,
+      "x": 0,
+      "y": 0
+    },
+    "hero": {
+      "bottom": 97,
+      "height": 568,
+      "left": 0,
+      "right": 305,
+      "top": -471,
+      "width": 305,
+      "x": 0,
+      "y": -471
+    },
+    "menuLinks": [
+      {
+        "height": 53,
+        "text": "La colección"
+      },
+      {
+        "height": 53,
+        "text": "La boutique"
+      },
+      {
+        "height": 53,
+        "text": "Tu visita"
+      }
+    ],
+    "overflow": false,
+    "path": "/boutiques/example-sastreria-roble",
+    "scrollY": 471,
+    "tabs": {
+      "bottom": 122,
+      "height": 54,
+      "left": 0,
+      "right": 305,
+      "top": 68,
+      "width": 305,
+      "x": 0,
+      "y": 68
+    },
+    "viewport": [
+      320,
+      568
+    ]
+  },
+  "consoleErrors": []
+}
