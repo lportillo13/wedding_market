@@ -1,0 +1,78 @@
+{
+  "environment": "Local production build",
+  "phone390": {
+    "clientWidth": 375,
+    "more": "Más",
+    "navScrollWidth": 351,
+    "navWidth": 351,
+    "scrollWidth": 375,
+    "visibleLinks": [
+      {
+        "fits": true,
+        "label": "Información",
+        "left": 12,
+        "right": 101.359375
+      },
+      {
+        "fits": true,
+        "label": "Fotos",
+        "left": 113.359375,
+        "right": 163.765625
+      },
+      {
+        "fits": true,
+        "label": "Precios",
+        "left": 175.765625,
+        "right": 237.484375
+      }
+    ],
+    "width": 390
+  },
+  "phone320": {
+    "clientWidth": 305,
+    "navScrollWidth": 281,
+    "navWidth": 281,
+    "scrollWidth": 305,
+    "visible": [
+      "Información",
+      "Fotos"
+    ],
+    "width": 320
+  },
+  "desktop1150": {
+    "moreExists": false,
+    "navScrollWidth": 1000,
+    "navWidth": 1000,
+    "visible": 8,
+    "width": 1150
+  },
+  "english": {
+    "moreLabel": "More",
+    "navScrollWidth": 351,
+    "navWidth": 351,
+    "visible": [
+      "About",
+      "Photos",
+      "Pricing"
+    ],
+    "width": 390
+  },
+  "upwardMenu": {
+    "bottom": 837,
+    "open": true,
+    "top": 602.21875,
+    "up": true,
+    "viewportHeight": 844
+  },
+  "escape": {
+    "focusIsMore": true,
+    "open": "false"
+  },
+  "interactions": {
+    "hiddenSectionSelection": true,
+    "activeHiddenSectionMarksMore": true,
+    "outsideTapCloses": true,
+    "allSectionLinksRemainReachable": true
+  },
+  "notes": "Width checks were collected after the ResizeObserver settled. Scroll tracking follows the section actually at the activation line."
+}

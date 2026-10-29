@@ -508,7 +508,8 @@ const common = {
       "team": "Team",
       "availability": "Availability",
       "reviews": "Reviews",
-      "contact": "Contact"
+      "contact": "Contact",
+      "more": "More"
     },
     "header": {
       "logoAlt": "Logo of {vendor}",
