@@ -1,5 +1,8 @@
 # Collapsible phone directory filters
 
+**Publication update — October 29, 2026 UTC:** This completed source is included in the verified website release **62c21d1810428720bef913339a837746932b2c15**, together with the boutique gallery expansion. The prior disk-space blocker is resolved. [Exact successful gateway receipt](../boutiques-2026-10-28/expanded-gallery-deployment-success.json). The publication/blocker notes below record the earlier state; native publication remains held.
+
+
 The owner requested a smaller filter area on the mobile vendor directory so the photo cards are visible sooner.
 
 - Below 768px, **Search & filters / Búsqueda y filtros** starts collapsed and toggles the existing keyword/category form. The button exposes its expanded state and controlled form for assistive technology and supports keyboard activation.

@@ -1,0 +1,303 @@
+{
+  "checkedAt": "2026-10-29T00:11:27.635Z",
+  "base": "https://thewedmarket.com",
+  "checks": [
+    {
+      "path": "/api/health",
+      "status": 200,
+      "cache": "no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/boutiques",
+      "status": 200,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/favorites",
+      "status": 200,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/boutiques?examples=1",
+      "status": 200,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-atelier-alba",
+      "status": 200,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?slug=example-atelier-alba",
+      "status": 404,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-casa-marfil",
+      "status": 200,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?slug=example-casa-marfil",
+      "status": 404,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/example-sastreria-roble",
+      "status": 200,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?slug=example-sastreria-roble",
+      "status": 404,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/examples/appointments",
+      "status": 200,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/boutiques/examples/manage",
+      "status": 200,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/alba.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/marfil.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/roble.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/alba-photo-film.mp4",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/alba-back.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/alba-detail.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/marfil-back.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/marfil-detail.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/crepe-column.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/organza-a-line.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/mikado-square.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/champagne-ballgown.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/blush-tulle.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/beaded-sheath.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/sand-linen.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/black-tuxedo.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/forest-three-piece.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/pearl-double-breasted.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/roble-back.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/roble-detail.jpg",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/alba-gallery-film.mp4",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/marfil-gallery-film.mp4",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/boutique-examples/roble-gallery-film.mp4",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?page=1",
+      "status": 200,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?page=1001",
+      "status": 400,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?kind=invalid",
+      "status": 400,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques?slug=wm-never-published-boutique",
+      "status": 404,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account?mode=state",
+      "status": 401,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account?mode=favorites",
+      "status": 401,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account?mode=workspace",
+      "status": 401,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account?mode=appointments",
+      "status": 401,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account",
+      "status": 401,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/api/boutiques/account",
+      "status": 403,
+      "cache": "private, no-store",
+      "location": null,
+      "passed": true
+    },
+    {
+      "path": "/vendor/boutique",
+      "status": 307,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": "/signup/vendor",
+      "passed": true
+    },
+    {
+      "path": "/account/inbox/appointments",
+      "status": 307,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": "/signup",
+      "passed": true
+    },
+    {
+      "path": "/vendor/inbox/appointments",
+      "status": 307,
+      "cache": "private, no-cache, no-store, max-age=0, must-revalidate",
+      "location": "/signup/vendor",
+      "passed": true
+    },
+    {
+      "path": "/api/vendors?page=1&pageSize=1",
+      "status": 200,
+      "cache": "public, s-maxage=30, stale-while-revalidate=60",
+      "location": null,
+      "passed": true
+    }
+  ]
+}

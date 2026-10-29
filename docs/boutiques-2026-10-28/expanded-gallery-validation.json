@@ -59,17 +59,30 @@
     "Preview interactions use the isolated in-memory transport; production writes were not submitted"
   ],
   "deployment": {
-    "target": "a9bdf8cdfaa5f7a6acb9e8cd98b3cc68880666a3",
+    "target": "62c21d1810428720bef913339a837746932b2c15",
     "expectedBase": "3c74fd44298b0ea85069a0d500d4f14f58ea6d84",
     "accepted": true,
-    "exactSuccessReceipt": false,
-    "liveSourceUnchanged": true,
-    "preflight": {
-      "freeDiskBytes": 6265036800,
-      "requiredFreeDiskBytes": 6442450944,
-      "additionalBytesNeeded": 177414144,
-      "availableMemoryMiB": 6395
-    },
-    "administratorCacheCleanupRequested": true
+    "exactSuccessReceipt": true,
+    "applicationDeployed": true,
+    "ownerReportedCleanupComplete": true,
+    "verifiedFreeBytesBeforeRetry": 6594441216,
+    "requiredFreeBytes": 6442450944,
+    "rollbackCopy": "/var/www/wedding-market.before-20261029-000851",
+    "publicChecks": 49,
+    "liveBrowserChecks": "expanded-gallery-live-checks.json",
+    "initialAttempt": {
+      "target": "a9bdf8cdfaa5f7a6acb9e8cd98b3cc68880666a3",
+      "expectedBase": "3c74fd44298b0ea85069a0d500d4f14f58ea6d84",
+      "accepted": true,
+      "exactSuccessReceipt": false,
+      "liveSourceUnchanged": true,
+      "preflight": {
+        "freeDiskBytes": 6265036800,
+        "requiredFreeDiskBytes": 6442450944,
+        "additionalBytesNeeded": 177414144,
+        "availableMemoryMiB": 6395
+      },
+      "administratorCacheCleanupRequested": true
+    }
   }
 }

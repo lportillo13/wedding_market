@@ -1,5 +1,8 @@
 # Phone gallery thumbnail visibility repair
 
+**Publication update — October 29, 2026 UTC:** This completed source is included in the verified website release **62c21d1810428720bef913339a837746932b2c15**, together with the boutique gallery expansion. The prior disk-space blocker is resolved. [Exact successful gateway receipt](../boutiques-2026-10-28/expanded-gallery-deployment-success.json). The publication/blocker notes below record the earlier state; native publication remains held.
+
+
 The owner reported blank thumbnail boxes below the main photo on the Villa Brisa profile. Live phone inspection reproduced the problem: each thumbnail button had a real 98 × 74px box, while its image wrapper computed to `display: none` and zero dimensions.
 
 An obsolete mobile rule in `app/globals.css` hides every direct `span` inside a gallery thumbnail button. The current component uses that span for its image wrapper, not a text caption. The repair removes that rule and the unused caption typography rules in the global/profile styles. Image URLs, lazy loading, media access and gallery behavior are unchanged.

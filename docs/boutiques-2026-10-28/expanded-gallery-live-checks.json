@@ -1,0 +1,42 @@
+{
+  "checkedAt": "2026-10-29T00:18:28.531Z",
+  "releaseCommit": "62c21d1810428720bef913339a837746932b2c15",
+  "base": "https://thewedmarket.com",
+  "collections": [
+    {
+      "slug": "example-atelier-alba",
+      "count": 6
+    },
+    {
+      "slug": "example-casa-marfil",
+      "count": 6
+    },
+    {
+      "slug": "example-sastreria-roble",
+      "count": 6
+    }
+  ],
+  "photoSelection": true,
+  "videoPlayback": {
+    "durationSeconds": 11,
+    "observedTime": 11,
+    "ended": true,
+    "error": null
+  },
+  "layout": {
+    "clientWidth": 659,
+    "mainPhotoLoaded": true,
+    "photo": "Foto 2 · 2 / 4",
+    "scrollWidth": 659,
+    "thumbnailImages": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "width": 674
+  },
+  "screenshot": "expanded-gallery-live.jpg",
+  "publicChecks": 49,
+  "nativePublicationHeld": true
+}

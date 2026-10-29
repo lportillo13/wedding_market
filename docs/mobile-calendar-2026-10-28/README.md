@@ -1,5 +1,8 @@
 # One-month phone availability calendar
 
+**Publication update — October 29, 2026 UTC:** This completed source is included in the verified website release **62c21d1810428720bef913339a837746932b2c15**, together with the boutique gallery expansion. The prior disk-space blocker is resolved. [Exact successful gateway receipt](../boutiques-2026-10-28/expanded-gallery-deployment-success.json). The publication/blocker notes below record the earlier state; native publication remains held.
+
+
 The owner requested one visible month on phones with arrows to move between months. Below 768px, the vendor's public availability calendar now renders one month and hides the three-month slider. Previous/next controls sit beside the month name, with 44px touch targets, localized accessible labels and a live month announcement. Stable month slots preserve keyboard focus when the month changes. CSS also hides extra server-rendered months before hydration.
 
 Desktop retains three months and the slider. Both layouts stay within the same 24-month window; switching from the last mobile month to desktop shows the final three months. Weekday labels now follow English or Spanish. Existing availability status rules, guest restrictions and vendor data are unchanged. No native application release or database changes are included.
