@@ -9,6 +9,7 @@ import { getShortlistCount } from "@/lib/shortlist";
 import {
   getHeaderAccountLinks,
   isHeaderLinkCurrent,
+  isBoutiqueStorePath,
 } from "@/lib/header-navigation";
 import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
 import HeaderSignOutButton from "./HeaderSignOutButton";
@@ -37,6 +38,8 @@ export default function NavBar({
 }: NavBarProps) {
   const pathname = usePathname() ?? "/";
   const isVendorProfile = /^\/vendors\/[^/]+\/?$/.test(pathname);
+  const isBoutiqueStore = isBoutiqueStorePath(pathname);
+  const isCoverPage = pathname === "/" || isVendorProfile || isBoutiqueStore;
   const { language, dictionary } = useLanguage();
   const t = useTranslation();
   const labels = dictionary.header;
@@ -58,7 +61,7 @@ export default function NavBar({
   const accountLinks = getHeaderAccountLinks(isVendor);
 
   useEffect(() => {
-    if (pathname !== "/" && !isVendorProfile) return;
+    if (!isCoverPage) return;
     let frame = requestAnimationFrame(sync);
     function sync() {
       frame = 0;
@@ -72,7 +75,7 @@ export default function NavBar({
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", onScroll);
     };
-  }, [pathname, isVendorProfile]);
+  }, [pathname, isCoverPage]);
 
   useEffect(() => {
     const sync = () => setCount(getShortlistCount());
@@ -137,8 +140,8 @@ export default function NavBar({
   );
   return (
     <header
-      className={`wm-site-header${pathname === "/" ? " wm-site-header--home" : ""}${isVendorProfile ? " wm-site-header--vendor-profile" : ""}`}
-      data-scrolled={(pathname === "/" || isVendorProfile) && hasScrolled ? "true" : undefined}
+      className={`wm-site-header${pathname === "/" ? " wm-site-header--home" : ""}${isVendorProfile ? " wm-site-header--vendor-profile" : ""}${isBoutiqueStore ? " wm-site-header--boutique" : ""}`}
+      data-scrolled={isCoverPage && hasScrolled ? "true" : undefined}
     >
       <div className="container wm-site-header__inner">
         <Link href="/" className="wm-site-header__brand">

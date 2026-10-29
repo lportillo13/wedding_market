@@ -37,6 +37,11 @@ export function isHeaderLinkCurrent(pathname: string, href: string) {
   );
 }
 
+export function isBoutiqueStorePath(pathname: string) {
+  const slug = /^\/boutiques\/([^/]+)\/?$/.exec(pathname)?.[1];
+  return !!slug && !["favorites", "examples"].includes(slug);
+}
+
 // Workspace chrome includes nested routes even though the overview nav item
 // intentionally matches only its exact destination.
 export function usesWorkspaceFooter(pathname: string) {

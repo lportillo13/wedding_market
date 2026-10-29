@@ -54,9 +54,10 @@
 }
 .wm-site-header--home .wm-site-header__cta:hover { background: #eee9df; border-color: #eee9df; color: #332d27; }
 
-// Profile covers share the cinematic menu treatment, without a floating frame.
-// Require an actual profile so missing vendor URLs retain the normal header.
-.wm-site-shell:has(.wm-profile-editorial) > .wm-site-header--vendor-profile {
+// Vendor and boutique covers share the same menu treatment. An actual cover
+// must be present; outfit details, fitting forms and missing pages stay on paper.
+.wm-site-shell:has(.wm-profile-editorial) > .wm-site-header--vendor-profile,
+.wm-site-shell:has(.wm-boutique-hero:not(.wm-boutique-hero--empty)) > .wm-site-header--boutique {
   position: fixed;
   inset: 0 0 auto;
   background: transparent;

@@ -6,7 +6,8 @@
  p,dd{white-space:pre-wrap;}button{font:inherit;}section[id]{scroll-margin-top:145px;}
 }
 .wm-boutique-script{font-family:"Lucia BT",cursive!important;font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:.2rem;}
-.wm-boutique-hero{min-height:calc(100svh - 54px);background-size:cover;background-position:center;display:grid;place-items:end center;text-align:center;padding:140px 24px 80px;color:var(--wm-paper);>div{position:relative;max-width:900px;}h1{font-size:clamp(3rem,7vw,6rem);margin:.25rem 0 1.2rem;}a{color:inherit;text-underline-offset:5px;}.wm-boutique-actions{justify-content:center;}}
+.wm-boutique-hero{min-height:100vh;min-height:100svh;background-size:cover;background-position:center;display:grid;place-items:end center;text-align:center;padding:140px 24px 80px;color:var(--wm-paper);>div{position:relative;max-width:900px;}h1{font-size:clamp(3rem,7vw,6rem);margin:.25rem 0 1.2rem;}a{color:inherit;text-underline-offset:5px;}.wm-boutique-actions{justify-content:center;}}
+.wm-boutique-example-label{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;opacity:.85;}
 .wm-boutique-hero--empty{min-height:440px;background:var(--wm-cream);color:var(--wm-ink);}
 .wm-boutique-actions{display:flex;align-items:center;flex-wrap:wrap;gap:1rem;}
 .wm-boutique-tabs{display:flex;justify-content:center;gap:clamp(1rem,5vw,4rem);background:var(--wm-paper);position:sticky;top:var(--wm-header-height,76px);z-index:12;border-bottom:1px solid var(--wm-outline);a,button{padding:1rem 0;min-height:54px;color:var(--wm-ink);background:none;border:0;text-decoration:none;font:inherit;font-size:.9rem;}a:hover,button:hover{box-shadow:inset 0 -2px var(--wm-accent);}}

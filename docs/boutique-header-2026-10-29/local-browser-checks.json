@@ -1,0 +1,67 @@
+{
+  "checks": [
+    {
+      "case": "desktop-cover",
+      "controlsTop": 720,
+      "headerBackground": "rgba(0, 0, 0, 0)",
+      "headerColor": "rgb(255, 253, 249)",
+      "headerPosition": "fixed",
+      "heroHeight": 720,
+      "heroTop": 0,
+      "overflow": false,
+      "scrollY": 0
+    },
+    {
+      "background": "rgba(51, 45, 39, 0.96)",
+      "case": "desktop-scrolled",
+      "scrollY": 547,
+      "scrolled": "true"
+    },
+    {
+      "case": "outfit-details",
+      "headerBackground": "rgba(250, 248, 244, 0.96)",
+      "headerColor": "rgb(73, 56, 45)",
+      "headerPosition": "sticky",
+      "hero": false
+    },
+    {
+      "background": "rgba(250, 248, 244, 0.96)",
+      "case": "appointment-request",
+      "hero": false
+    },
+    {
+      "background": "rgba(0, 0, 0, 0)",
+      "case": "phone-cover-390",
+      "heroHeight": 844,
+      "heroTop": 0,
+      "overflow": false,
+      "scrollY": 0,
+      "width": 390
+    },
+    {
+      "case": "small-phone-320",
+      "headerBackground": "rgba(0, 0, 0, 0)",
+      "overflow": false,
+      "width": 320
+    },
+    {
+      "background": "rgba(250, 248, 244, 0.96)",
+      "case": "boutique-directory",
+      "hero": false
+    },
+    {
+      "background": "rgba(250, 248, 244, 0.96)",
+      "case": "favorites-SPA-persistence",
+      "controls": 1,
+      "savedOutfit": true
+    },
+    {
+      "background": "rgba(0, 0, 0, 0)",
+      "case": "existing-vendor-cover",
+      "hero": true,
+      "position": "fixed"
+    }
+  ],
+  "mobileMenu": "opened and closed with readable ivory drawer",
+  "viewportReset": true
+}
