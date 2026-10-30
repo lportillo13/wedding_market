@@ -11,12 +11,12 @@ const templates = [
   ["email-change.html", ".ConfirmationURL"],
   ["reauthentication.html", ".Token"],
   ["password-changed.html", ".SiteURL"],
-  ["email-changed.html", ".SiteURL"],
-  ["phone-changed.html", ".SiteURL"],
-  ["identity-linked.html", ".SiteURL"],
-  ["identity-unlinked.html", ".SiteURL"],
-  ["mfa-factor-enrolled.html", ".SiteURL"],
-  ["mfa-factor-unenrolled.html", ".SiteURL"],
+  ["email-changed.html", ".OldEmail"],
+  ["phone-changed.html", ".OldPhone"],
+  ["identity-linked.html", ".Provider"],
+  ["identity-unlinked.html", ".Provider"],
+  ["mfa-factor-enrolled.html", ".FactorType"],
+  ["mfa-factor-unenrolled.html", ".FactorType"],
 ] as const;
 
 test("all Supabase Auth emails use the branded responsive template", () => {

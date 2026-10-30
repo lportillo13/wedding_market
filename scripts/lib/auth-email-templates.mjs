@@ -4,6 +4,14 @@ const localized = (en, es) => `{{ if eq .Data.language "es" }}${es}{{ else }}${e
 const confirmation = '{{ .ConfirmationURL }}';
 const recovery = '{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=recovery&amp;next=/reset-password';
 const securityNote = localized('If you did not make this change, reset your password and contact hello@thewedmarket.com.', 'Si no hiciste este cambio, restablece tu contrase&ntilde;a y contacta a hello@thewedmarket.com.');
+const securityDetails = {
+  email_changed: `${localized('Previous email','Correo anterior')}: {{ .OldEmail }}<br>${localized('Current email','Correo actual')}: {{ .Email }}`,
+  phone_changed: `${localized('Previous phone','Tel&eacute;fono anterior')}: {{ .OldPhone }}<br>${localized('Current phone','Tel&eacute;fono actual')}: {{ .Phone }}`,
+  identity_linked: '{{ .Provider }}',
+  identity_unlinked: '{{ .Provider }}',
+  mfa_factor_enrolled: '{{ .FactorType }}',
+  mfa_factor_unenrolled: '{{ .FactorType }}',
+};
 
 // Keep notification enablement separate: publishing appearance must not change delivery policy.
 export const authEmailDefinitions = [
@@ -45,7 +53,7 @@ export const authEmailDefinitions = [
     ['identity_unlinked','A sign-in method was removed','Se elimin&oacute; un m&eacute;todo de acceso','A sign-in method was removed from your Wedding Market account.','Se elimin&oacute; un m&eacute;todo de acceso de tu cuenta de Wedding Market.'],
     ['mfa_factor_enrolled','A verification method was added','Se a&ntilde;adi&oacute; un m&eacute;todo de verificaci&oacute;n','A verification method was added to your Wedding Market account.','Se a&ntilde;adi&oacute; un m&eacute;todo de verificaci&oacute;n a tu cuenta de Wedding Market.'],
     ['mfa_factor_unenrolled','A verification method was removed','Se elimin&oacute; un m&eacute;todo de verificaci&oacute;n','A verification method was removed from your Wedding Market account.','Se elimin&oacute; un m&eacute;todo de verificaci&oacute;n de tu cuenta de Wedding Market.'],
-  ].map(([type,title,titleEs,body,bodyEs]) => ({type:`${type}_notification`,file:`${type.replaceAll('_','-')}.html`, subject:title, title:localized(title,titleEs), body:localized(body,bodyEs), note:securityNote,
+  ].map(([type,title,titleEs,body,bodyEs]) => ({type:`${type}_notification`,file:`${type.replaceAll('_','-')}.html`, subject:title, title:localized(title,titleEs), body:localized(body,bodyEs), detail:securityDetails[type], note:securityNote,
     action:localized('Secure my account','Proteger mi cuenta'),url:'{{ .SiteURL }}/forgot-password'})),
 ];
 

@@ -1,0 +1,125 @@
+{
+  "recordedAt": "2026-10-30T03:09:05.905Z",
+  "project": "aousexbvujjnvbudpsmz",
+  "method": "Existing authenticated ChatGPT browser, native cua controls",
+  "templates": [
+    {
+      "type": "confirmation",
+      "file": "confirmation.html",
+      "subject": "Confirm your email | Wedding Market",
+      "localHtmlSha256": "36ae41b09ac1b9681ba828ea63cb2f2c8ddec986f48ffb33c398d078a01c516b",
+      "contentSaveVerified": true,
+      "reopenedAndVerified": true
+    },
+    {
+      "type": "recovery",
+      "file": "recovery.html",
+      "subject": "Reset your password | Wedding Market",
+      "localHtmlSha256": "6dcfac29cdf3be86c4e94561fa6b851ef2b3ed0244b3395a532ee551d50d8100",
+      "contentSaveVerified": true,
+      "reopenedAndVerified": true
+    },
+    {
+      "type": "invite",
+      "file": "invite.html",
+      "subject": "You are invited | Wedding Market",
+      "localHtmlSha256": "40b0dc0bced97deeaad2b4f6459274f6b71571e16a1e2934e1042d6b9e721f14",
+      "contentSaveVerified": true,
+      "reopenedAndVerified": false
+    },
+    {
+      "type": "magic_link",
+      "file": "magic-link.html",
+      "subject": "Your secure sign-in link | Wedding Market",
+      "localHtmlSha256": "6020160dc2df78344d50872fa995bc771b118fdaef8be244c6b78d2afb0a0a22",
+      "contentSaveVerified": true,
+      "reopenedAndVerified": false
+    },
+    {
+      "type": "email_change",
+      "file": "email-change.html",
+      "subject": "Confirm your new email | Wedding Market",
+      "localHtmlSha256": "e7aedcc7acc6203a1f646b3923c50e1d7fb63691e7e5a6cb8e00e02170342c71",
+      "contentSaveVerified": true,
+      "reopenedAndVerified": false
+    },
+    {
+      "type": "reauthentication",
+      "file": "reauthentication.html",
+      "subject": "Your verification code | Wedding Market",
+      "localHtmlSha256": "76edc755ed063eff38bbc47b9e26671ca4175b91e343c7299f069416759957e6",
+      "contentSaveVerified": true,
+      "reopenedAndVerified": false
+    },
+    {
+      "type": "password_changed_notification",
+      "file": "password-changed.html",
+      "subject": "Your password was changed | Wedding Market",
+      "localHtmlSha256": "e06d06edaa1b3a399d4d3f3733412048bfd3fe61c4df68465743954f12d5e642",
+      "contentSaveVerified": true,
+      "reopenedAndVerified": false
+    },
+    {
+      "type": "email_changed_notification",
+      "file": "email-changed.html",
+      "subject": "Your email was changed | Wedding Market",
+      "localHtmlSha256": "be1982ea6dd56a8b4fa4fb9bfa38a3d4e6c7c6e92a5f714012091f54ec2aeba7",
+      "contentSaveVerified": true,
+      "reopenedAndVerified": false
+    },
+    {
+      "type": "phone_changed_notification",
+      "file": "phone-changed.html",
+      "subject": "Your phone number was changed | Wedding Market",
+      "localHtmlSha256": "22800a9d1e73d32b5551ae65179a70be0846cdecf02531f06c51565c9e16aafb",
+      "contentSaveVerified": true,
+      "reopenedAndVerified": false
+    },
+    {
+      "type": "identity_linked_notification",
+      "file": "identity-linked.html",
+      "subject": "A sign-in method was added | Wedding Market",
+      "localHtmlSha256": "8cb5a7063920f46d0acec16bb691951d2e7a5e844129da5384939596734ed0cf",
+      "contentSaveVerified": true,
+      "reopenedAndVerified": false
+    },
+    {
+      "type": "identity_unlinked_notification",
+      "file": "identity-unlinked.html",
+      "subject": "A sign-in method was removed | Wedding Market",
+      "localHtmlSha256": "1fa8b3c022bcc98c1252502d281c5b326d1c95d54e750251b85cef492fb0bf28",
+      "contentSaveVerified": true,
+      "reopenedAndVerified": false
+    },
+    {
+      "type": "mfa_factor_enrolled_notification",
+      "file": "mfa-factor-enrolled.html",
+      "subject": "A verification method was added | Wedding Market",
+      "localHtmlSha256": "2ba37e9023463864e38fc454e8243638d7d9bfacfc22289aff87a524bfa74152",
+      "contentSaveVerified": true,
+      "reopenedAndVerified": false
+    },
+    {
+      "type": "mfa_factor_unenrolled_notification",
+      "file": "mfa-factor-unenrolled.html",
+      "subject": "A verification method was removed | Wedding Market",
+      "localHtmlSha256": "df486c8dd5144b02c5e93fe26c71511fe98c90bb8a420c09f3660f7993cb53ab",
+      "contentSaveVerified": true,
+      "reopenedAndVerified": false
+    }
+  ],
+  "hostedCryptographicReadback": false,
+  "securityNotificationEnablement": "All seven observed disabled; unchanged",
+  "siteUrl": "https://thewedmarket.com",
+  "smtp": {
+    "enabled": true,
+    "from": "accounts@mail.thewedmarket.com",
+    "senderName": "Wedding Market",
+    "host": "smtp.resend.com",
+    "port": 465,
+    "username": "resend",
+    "credentialsReadOrChanged": false
+  },
+  "realEmailSent": false,
+  "realNewSignupDeliveryTest": false
+}
