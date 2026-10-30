@@ -4,6 +4,9 @@ import {renderToStaticMarkup} from 'react-dom/server';
 import type {User} from '@supabase/supabase-js';
 import {loadPersonalProfile} from '../features/accounts/server/personal-profile';
 import {AccountHeaderContent} from '../app/account/AccountLayoutHeader';
+import ProfilePageContent from '../app/account/profile/ProfilePageContent';
+import {LanguageProvider} from '../contexts/LanguageContext';
+import {AppRouterContext} from 'next/dist/shared/lib/app-router-context.shared-runtime';
 
 const user = {id:'verified-account',email:'account@example.invalid'} as User;
 const profile = {role:'admin',full_name:'Example Account',phone:null,country:'Costa Rica',tentative_wedding_date:null,guest_count:null,wedding_budget:null,wedding_theme:null,language:'es'};
@@ -48,4 +51,31 @@ test('personal profile access exposes couple workspace links only to client acco
   const client = renderToStaticMarkup(<AccountHeaderContent pathname="/account/profile" labels={labels}/>);
   assert.match(client,/href="\/account\/inbox"/);
   assert.match(client,/href="\/account\/reviews"/);
+});
+
+test('the bilingual personal editor preserves credential email and optional planning fields', () => {
+  for (const language of ['en', 'es'] as const) {
+    const markup = renderToStaticMarkup(
+      <AppRouterContext.Provider value={{refresh() {}} as never}>
+        <LanguageProvider initialLanguage={language}>
+          <ProfilePageContent initial={{full_name:'Example Couple',phone:'',email:'couple@example.invalid',country:'Canada',tentative_wedding_date:'',guest_count:null,wedding_budget:null,wedding_theme:'',language}} avatarImage={null} />
+        </LanguageProvider>
+      </AppRouterContext.Provider>,
+    );
+    const inputs = [...markup.matchAll(/<(?:input|select)\b[^>]*>/g)].map(match => match[0]);
+    const email = inputs.find(tag => tag.includes('id="profile-email"'))!;
+    assert.match(email, /disabled=""/);
+    assert.match(email, /readOnly=""/);
+    assert.doesNotMatch(email, /\bname=/);
+    for (const name of ['full_name','phone','country','language','tentative_wedding_date','guest_count','wedding_budget','wedding_theme']) {
+      assert.ok(inputs.some(tag => tag.includes(`name="${name}"`)), `Missing submitted field ${name}`);
+    }
+    for (const name of ['guest_count','wedding_budget']) {
+      assert.doesNotMatch(inputs.find(tag => tag.includes(`name="${name}"`))!, /required/);
+    }
+    assert.match(markup, language === 'en' ? /Contact country/ : /País de contacto/);
+    assert.match(markup, /Costa Rica/);
+    assert.match(markup, language === 'en' ? /Choose photo/ : /Elegir foto/);
+    assert.doesNotMatch(markup, /type="submit"[^>]*>Upload photo|type="submit"[^>]*>Subir foto/);
+  }
 });

@@ -1,0 +1,197 @@
+// Profile A uses the same outer grid for navigation, photo and every form section.
+// Other account workspaces keep their compact inbox layouts.
+.wm-site-shell:has(.wm-account-workspace--profile) {
+  --wm-profile-gutter: clamp(1rem, 3.75vw, 3rem);
+
+  > .wm-site-header .wm-site-header__inner,
+  .wm-account-workspace--profile .wm-account-header > .container,
+  .wm-account-workspace--profile .wm-account-profile {
+    width: calc(100% - var(--wm-profile-gutter) * 2);
+    max-width: 1280px;
+    padding-inline: 0;
+    margin-inline: auto;
+  }
+
+  @media (max-width: 359.98px) { --wm-profile-gutter: .75rem; }
+}
+
+.wm-account-workspace--profile {
+  --wm-profile-ink: #44392e;
+  --wm-profile-muted: #786653;
+  --wm-profile-line: #dacdbb;
+  background: #faf7f0;
+  color: var(--wm-profile-ink);
+  font-family: var(--wm-font-body);
+
+  .wm-account-header {
+    padding: 0;
+    background: transparent;
+    border-color: var(--wm-profile-line);
+
+    > .container {
+      min-height: 56px;
+      flex-direction: row;
+      align-items: center;
+      gap: .75rem;
+    }
+  }
+
+  .wm-account-header__eyebrow { font-size: .65rem; letter-spacing: .12em; }
+  .wm-account-tabs { background: none; border: 0; border-radius: 0; padding: 0; gap: 1.5rem; }
+  .wm-account-tab a {
+    min-height: 56px;
+    padding: .9rem 0;
+    border-radius: 0;
+    border-bottom: 2px solid transparent;
+    font-size: .78rem;
+  }
+  .wm-account-tab a:hover { background: none; color: #6e503a; }
+  .wm-account-tab.is-active a {
+    background: none;
+    box-shadow: none;
+    border-bottom: 2px solid #7b5b3e;
+  }
+
+  .wm-personal-profile { padding-block: clamp(1.5rem, 3vw, 2.75rem) 3.5rem; }
+  .wm-personal-profile__heading { margin-bottom: 1.25rem; }
+  .wm-personal-profile__eyebrow {
+    color: #866b4f;
+    font-size: .65rem;
+    letter-spacing: .13em;
+    margin-bottom: .65rem;
+  }
+  .wm-personal-profile__heading h1 {
+    margin: 0 0 .65rem;
+    font: 300 clamp(2.4rem, 4vw, 3.25rem)/1.08 var(--wm-font-display);
+    letter-spacing: -.025em;
+  }
+  .wm-personal-profile__heading > p:last-child { color: var(--wm-profile-muted); font-size: .95rem; margin: 0; }
+
+  .wm-profile-photo {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding-block: .75rem 1.25rem;
+    border-bottom: 1px solid var(--wm-profile-line);
+  }
+  .wm-profile-photo__avatar {
+    flex-shrink: 0;
+    background: #e3d5c1 !important;
+    border: 1px solid #d3bfa4;
+    color: #786044 !important;
+    font-family: var(--wm-font-display);
+    font-weight: 300 !important;
+  }
+  .wm-profile-photo__content { min-width: 0; flex: 1; }
+  .wm-profile-photo h2 { font: 300 1.55rem/1.2 var(--wm-font-display); margin: 0 0 .2rem; }
+  .wm-profile-photo p { font-size: .8rem; color: var(--wm-profile-muted); margin: 0; }
+  .wm-profile-photo__input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
+  .wm-profile-photo__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0 1rem; }
+  .wm-profile-photo__actions > span { color: var(--wm-profile-muted); font-size: .7rem; }
+  .wm-profile-photo__choose {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    min-height: 44px;
+    border: 0;
+    padding: .5rem 0;
+    background: transparent;
+    color: #694b34;
+    font: 400 .8rem/1.3 var(--wm-font-body);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .wm-profile-photo__selection {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .5rem 1rem;
+    margin-top: .5rem;
+    > span { font-size: .8rem; overflow-wrap: anywhere; }
+    > p { flex-basis: 100%; }
+  }
+
+  .wm-personal-profile-form { width: 100%; margin: 0; padding: 0; }
+  .wm-profile-section {
+    display: grid;
+    grid-template-columns: 210px minmax(0, 1fr);
+    gap: 2rem;
+    padding-block: 1.6rem;
+    border-bottom: 1px solid var(--wm-profile-line);
+  }
+  .wm-profile-section__heading {
+    > span { color: #866b4f; font-size: .65rem; letter-spacing: .12em; }
+    h2 { font: 300 2rem/1.15 var(--wm-font-display); margin: .35rem 0 .5rem; }
+    p { color: var(--wm-profile-muted); font-size: .8rem; line-height: 1.5; max-width: 180px; margin: 0; }
+  }
+  .wm-profile-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 1.5rem;
+    > div { min-width: 0; }
+  }
+  .form-label { font: 400 .8rem/1.4 var(--wm-font-body); color: #705c48; margin-bottom: .4rem; text-transform: none; letter-spacing: 0; }
+  .form-control, .form-select {
+    min-height: 46px;
+    width: 100%;
+    min-width: 0;
+    // The legacy global form skin declares these properties important.
+    border: 1px solid #cdbca5 !important;
+    border-radius: 4px !important;
+    padding: .65rem .8rem;
+    background-color: #fffdf8 !important;
+    color: #44392e !important;
+    font: 400 .9rem/1.4 var(--wm-font-body);
+    box-shadow: none;
+    &:focus { border-color: #805c3b !important; box-shadow: 0 0 0 3px #805c3b20 !important; }
+    &:disabled { background-color: #f0e9de !important; color: #786653 !important; opacity: 1; }
+  }
+  .form-select { padding-right: 2.25rem; }
+  .form-text, .wm-profile-wedding-note { color: var(--wm-profile-muted); font-size: .72rem; line-height: 1.5; }
+  .form-text { margin-top: .4rem; }
+  .wm-profile-optional { font-size: .67rem; color: var(--wm-profile-muted); margin-left: .35rem; }
+  .wm-profile-wedding-note { margin: 1rem 0 0; }
+  .wm-personal-profile-form > .alert { margin-top: 1rem; }
+  .wm-profile-save {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-top: 1.5rem;
+    > p { color: var(--wm-profile-muted); font-size: .8rem; margin: 0; }
+  }
+  .wm-profile-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    min-height: 46px;
+    padding: .7rem 1.2rem;
+    border: 1px solid #6e503a;
+    border-radius: 5px;
+    background: #6e503a;
+    color: #fffaf1;
+    font: 400 .8rem/1.4 var(--wm-font-body);
+    white-space: nowrap;
+    &:hover { background: #593e2a; }
+    &:disabled { opacity: .6; cursor: wait; }
+    &--outline { background: transparent; color: #6e503a; &:hover { background: #eee4d5; } }
+  }
+  :is(button, input, select):focus-visible { outline: 2px solid #805c3b; outline-offset: 3px; }
+
+  @media (max-width: 767.98px) {
+    .wm-profile-section { grid-template-columns: minmax(0, 1fr); gap: 1.25rem; }
+    .wm-profile-section__heading p { max-width: none; }
+  }
+  @media (max-width: 575.98px) {
+    .wm-account-header > .container { flex-wrap: wrap; gap: 0 .75rem; }
+    .wm-account-tabs { gap: 1rem; }
+    .wm-account-tab a { font-size: .72rem; min-height: 48px; padding-block: .75rem; }
+    .wm-profile-fields { grid-template-columns: minmax(0, 1fr); }
+    .form-control, .form-select { font-size: 1rem; }
+    .wm-profile-photo { align-items: flex-start; gap: 1rem; }
+    .wm-profile-photo__actions { align-items: flex-start; flex-direction: column; }
+    .wm-profile-save { align-items: stretch; flex-direction: column; gap: 1rem; }
+    .wm-profile-button { min-height: 48px; }
+  }
+}

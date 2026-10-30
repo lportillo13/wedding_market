@@ -180,9 +180,25 @@ const common = {
       "title": "Profile",
       "loginRequired": "Please log in to view your profile.",
       "intro": "Update your contact information and wedding preferences.",
+      "editorial": {
+        "eyebrow": "A SPACE OF YOUR OWN",
+        "title": "Your account, your way.",
+        "intro": "The details that help us guide you, together in one place.",
+        "contactTitle": "Your details",
+        "contactDescription": "How we can keep in touch.",
+        "contactCountryLabel": "Contact country",
+        "weddingTitle": "Your wedding",
+        "weddingDescription": "A little of what you imagine.",
+        "weddingLocationNote": "Your wedding takes place in Costa Rica. These preferences help us guide you.",
+        "optional": "Optional",
+        "saveNote": "You can update these details whenever you like.",
+        "saveLabel": "Save changes"
+      },
       "avatar": {
-        "heading": "Profile photo",
-        "description": "Add a profile photo so vendors recognize you across the site.",
+        "heading": "Your profile photo",
+        "description": "A photo to help people recognize you.",
+        "chooseLabel": "Choose photo",
+        "optionalHint": "Your photo is optional",
         "fileLabel": "Profile image",
         "messages": {
           "storageNotConfigured": "Image storage is not configured.",

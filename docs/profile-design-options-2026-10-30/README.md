@@ -3,8 +3,9 @@
 The owner reported mixed widths and a profile style inconsistent with the rest of
 Wedding Market, then requested alternatives. These new profile options all use the
 selected **header A**, the supplied GT Super/Acumin typography, warm ivory/champagne
-and brown, thin dividers and consistent outer alignment. No profile style has been
-selected or published.
+and brown, thin dividers and consistent outer alignment. The owner selected
+**Profile A — Editorial sections** on October 30. Its implementation and release
+evidence are recorded in [the selected design handoff](../profile-a-2026-10-30/README.md).
 
 - **Profile A — Editorial sections (recommended):** a small integrated photo row,
   light numbered sections, headings at left and fields at right, without separate

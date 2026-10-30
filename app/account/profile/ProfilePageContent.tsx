@@ -25,9 +25,13 @@ export default function ProfilePageContent({ initial, avatarImage }: ProfilePage
   }
 
   return (
-    <div className="wm-page-content">
+    <main className="wm-page-content wm-personal-profile" aria-labelledby="personal-profile-heading">
       <div className="container wm-account-profile">
-        <p className="text-secondary mb-4">{labels.intro}</p>
+        <div className="wm-personal-profile__heading">
+          <p className="wm-personal-profile__eyebrow">{labels.editorial.eyebrow}</p>
+          <h1 id="personal-profile-heading">{labels.editorial.title}</h1>
+          <p>{labels.editorial.intro}</p>
+        </div>
         <AvatarForm
           image={avatarImage}
           name={initial.full_name || initial.email}
@@ -35,6 +39,6 @@ export default function ProfilePageContent({ initial, avatarImage }: ProfilePage
         />
         <ProfileForm initial={initial} />
       </div>
-    </div>
+    </main>
   );
 }

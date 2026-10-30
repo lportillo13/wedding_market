@@ -37,7 +37,7 @@ export default async function AccountProfilePage() {
 
   const avatarImage = parseCloudinaryImage(user.user_metadata?.avatar_image);
 
-  return <div className="wm-account-workspace">
+  return <div className="wm-account-workspace wm-account-workspace--profile">
     <AccountLayoutHeader clientWorkspace={profile.role === 'user'} />
     <ProfilePageContent initial={initial} avatarImage={avatarImage} />
   </div>;

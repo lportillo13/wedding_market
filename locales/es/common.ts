@@ -180,9 +180,25 @@ const common = {
       "title": "Perfil",
       "loginRequired": "Inicia sesión para ver tu perfil.",
       "intro": "Actualiza tu información de contacto y preferencias de boda.",
+      "editorial": {
+        "eyebrow": "UN ESPACIO MUY TUYO",
+        "title": "Tu cuenta, a tu manera.",
+        "intro": "Los detalles que nos ayudan a acompañarte, en un solo lugar.",
+        "contactTitle": "Tus datos",
+        "contactDescription": "Cómo podemos estar en contacto.",
+        "contactCountryLabel": "País de contacto",
+        "weddingTitle": "Tu boda",
+        "weddingDescription": "Un poco de lo que imaginas.",
+        "weddingLocationNote": "Tu boda se celebra en Costa Rica. Estas preferencias nos ayudan a acompañarte.",
+        "optional": "Opcional",
+        "saveNote": "Puedes actualizar estos datos cuando quieras.",
+        "saveLabel": "Guardar cambios"
+      },
       "avatar": {
-        "heading": "Foto de perfil",
-        "description": "Añade una foto para que los proveedores te reconozcan en el sitio.",
+        "heading": "Tu foto de perfil",
+        "description": "Una imagen para que te reconozcan.",
+        "chooseLabel": "Elegir foto",
+        "optionalHint": "La foto es opcional",
         "fileLabel": "Imagen de perfil",
         "messages": {
           "storageNotConfigured": "El almacenamiento de imágenes no está configurado.",
