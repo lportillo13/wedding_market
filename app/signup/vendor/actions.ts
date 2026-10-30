@@ -5,6 +5,7 @@ import { parseMediaAsset } from '@/lib/images';
 import { buildStorageKey, processCarouselLogoUpload, processImageUpload, validateImageUpload } from '@/features/media/server/processing';
 import { deleteFromR2, getOwnedR2ObjectKey, isR2Configured, uploadToR2 } from '@/lib/r2';
 import { registerVendorAccount } from '@/features/auth/server/vendor-account';
+import {checkSignupEmail} from '../email-actions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { slugify } from '@/lib/slugify';
 import type { authFeedbackKey } from '@/lib/auth-feedback';
@@ -270,6 +271,10 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
       return { ok: false, message: 'Password is required.' };
     }
 
+    const availability = await checkSignupEmail(email);
+    if (!availability.ok) return {ok: false, message: availability.feedback === 'emailTaken'
+      ? (account_language === 'es' ? 'Este correo ya está registrado. Inicia sesión o restablece tu contraseña.' : 'This email is already registered. Sign in or reset your password.')
+      : (account_language === 'es' ? 'No pudimos comprobar el correo. Inténtalo de nuevo.' : 'We could not check that email. Please try again.')};
     const { data: signUpData, error: signUpErr } = await registerVendorAccount(supabase, {
       fullName: owner_name, email, password, language: account_language, phone, country,
     });

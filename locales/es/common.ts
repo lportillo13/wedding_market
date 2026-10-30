@@ -403,6 +403,7 @@ const common = {
           "languageLabel": "Idioma"
       },
       "feedback": {
+          "emailTaken": "Este correo ya está registrado. Inicia sesión en tu cuenta o restablece tu contraseña.",
           "invalidCredentials": "El correo o la contraseña no coinciden. Inténtalo de nuevo o restablece tu contraseña.",
           "emailUnconfirmed": "Revisa tu correo y confirma tu cuenta antes de iniciar sesión.",
           "rateLimited": "Demasiados intentos. Espera un momento y vuelve a intentarlo.",
@@ -1280,6 +1281,7 @@ const common = {
       "verifyBody": "Abre el correo de confirmación para verificar tu cuenta. Revisa también la carpeta de correo no deseado.",
       "confirmationHelp": "¿Ya confirmaste tu correo? Inicia sesión arriba. Si no puedes acceder a tu cuenta,",
       "recoverAccess": "restablece tu contraseña.",
+      "checkingEmail": "Comprobando correo…",
       "vendorVerifyBody": "Primero verifica tu correo. Después podrás añadir los datos y las fotos de tu negocio.",
       "verifyNext": "Continuar con mi negocio",
       "resend": "¿Necesitas otro enlace de confirmación?",

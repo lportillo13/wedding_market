@@ -1,0 +1,14 @@
+{
+  "version": "202610300015",
+  "project": "aousexbvujjnvbudpsmz",
+  "applied": true,
+  "sourceMatchesAfterLineEndings": true,
+  "functionBodyMatchesAfterLineEndings": true,
+  "anonymousExecute": false,
+  "authenticatedExecute": false,
+  "serverExecute": true,
+  "settings": [
+    "search_path=pg_catalog",
+    "statement_timeout=3s"
+  ]
+}

@@ -403,6 +403,7 @@ const common = {
           "languageLabel": "Language"
       },
       "feedback": {
+          "emailTaken": "This email is already registered. Sign in to your account or reset your password.",
           "invalidCredentials": "The email or password doesn’t match. Try again or reset your password.",
           "emailUnconfirmed": "Check your inbox to confirm your email before signing in.",
           "rateLimited": "Too many attempts. Please wait a moment and try again.",
@@ -1280,6 +1281,7 @@ const common = {
       "verifyBody": "Open the confirmation email to verify your account. Check your spam folder if you don’t see it.",
       "confirmationHelp": "Already confirmed your email? Sign in above. If you cannot access your account,",
       "recoverAccess": "reset your password.",
+      "checkingEmail": "Checking email…",
       "vendorVerifyBody": "Verify your email first. Then return to add your business details and photos.",
       "verifyNext": "Continue to business setup",
       "resend": "Need another confirmation link?",

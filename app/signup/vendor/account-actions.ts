@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { authFeedbackKey } from '@/lib/auth-feedback';
 import { registerVendorAccount } from '@/features/auth/server/vendor-account';
+import {checkSignupEmail} from '../email-actions';
 
 export type VendorAccountState = { ok: false; feedback?: ReturnType<typeof authFeedbackKey> } | { ok: true; redirectTo: string };
 
@@ -17,6 +18,8 @@ export async function createVendorSignupAccount(_: VendorAccountState, formData:
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError && userError.name !== 'AuthSessionMissingError') throw userError;
     if (user) return { ok: true, redirectTo: '/signup/vendor' };
+    const availability = await checkSignupEmail(parsed.data.email);
+    if (!availability.ok) return availability;
     const { data, error } = await registerVendorAccount(supabase, parsed.data);
     if (error) throw error;
     return { ok: true, redirectTo: data.session ? '/signup/vendor' : '/signup/check-email?lang=' + parsed.data.language + '&vendor=1' };

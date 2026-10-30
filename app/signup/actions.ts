@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { getSiteUrl } from '@/lib/site-url';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { authFeedbackKey } from '@/lib/auth-feedback';
+import {checkSignupEmail} from './email-actions';
+import {isExistingSignupResponse} from '@/features/auth/domain/signup-response';
 
 const weddingThemeValues = ['classic', 'boho', 'rustic', 'beach', 'garden', 'modern', 'vintage'] as const;
 const planningStageValues = ['just-starting', 'venue-booked', 'shortlisting', 'ready-to-book'] as const;
@@ -11,7 +13,7 @@ const priorityServiceValues = ['venue', 'photography', 'planner', 'beauty', 'dec
 
 const SignUpSchema = z.object({
   full_name: z.string().trim().min(1, 'Name is required.').max(200, 'Name is too long.'),
-  email: z.string().trim().email('Enter a valid email address.'),
+  email: z.string().trim().max(254).email('Enter a valid email address.').transform(value => value.toLowerCase()),
   password: z.string().min(8, 'Password must be at least 8 characters.'),
   phone: z.string().trim().max(40, 'Phone number is too long.').optional(),
   celebration_city: z.string().trim().max(120, 'City is too long.').optional(),
@@ -82,6 +84,8 @@ export async function signUp(_: SignUpState, formData: FormData): Promise<SignUp
     language,
     priority_services,
   } = parsed.data;
+  const availability = await checkSignupEmail(email);
+  if (!availability.ok) return availability;
   const supabase = await createSupabaseServerClient();
 
   const emailRedirectTo = new URL('/auth/callback?next=/account/profile', getSiteUrl()).toString();
@@ -104,6 +108,7 @@ export async function signUp(_: SignUpState, formData: FormData): Promise<SignUp
   if (error) {
     return { ok: false, feedback: authFeedbackKey(error) };
   }
+  if (isExistingSignupResponse(data)) return {ok: false, feedback: 'emailTaken'};
 
   // A database Auth trigger creates the safe default profile. Email ownership
   // must be confirmed by the user before any authenticated onboarding work.

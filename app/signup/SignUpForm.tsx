@@ -9,6 +9,8 @@ import { buildCountryOptions } from '@/lib/countries';
 import { authFeedbackKey } from '@/lib/auth-feedback';
 import { coupleSignupIssue, coupleSignupPayload, type CoupleOnboardingData } from '@/features/auth/domain/couple-onboarding';
 import { signUp, type SignUpState } from './actions';
+import {checkSignupEmail} from './email-actions';
+import SignupEmailFeedback from '@/components/auth/SignupEmailFeedback';
 
 type WeddingThemeValue = 'classic' | 'boho' | 'modern' | 'garden' | 'beach' | 'rustic' | 'vintage';
 
@@ -53,6 +55,9 @@ export default function SignUpForm({ closeHref = '/login' }: { closeHref?: strin
   const copy = dictionary.signup.journey;
   const [step, setStep] = useState(0);
   const [localError, setLocalError] = useState<string | null>(null);
+  const [checkingEmail, setCheckingEmail] = useState(false);
+  const [emailTaken, setEmailTaken] = useState(false);
+  const emailCheckFlight = useRef(false);
   const [form, setForm] = useState<CoupleOnboardingData>({
     full_name: '', email: '', password: '', phone: '', country: '',
     wedding_theme: '', tentative_wedding_date: '', guest_count: '', wedding_budget: '',
@@ -68,7 +73,7 @@ export default function SignUpForm({ closeHref = '/login' }: { closeHref?: strin
     try { return await signUp(previous, data); }
     catch (error) { return { ok: false, feedback: authFeedbackKey(error) }; }
   }, initialState);
-  const busy = pending || state.ok;
+  const busy = pending || state.ok || checkingEmail;
   const steps = [copy.account, copy.contact, copy.style, copy.date, copy.details, copy.review];
   const titles = [copy.accountTitle, copy.contactTitle, modal.style.title, modal.date.title, copy.extrasTitle, copy.reviewTitle];
   const bodies = [copy.accountBody, copy.contactBody, modal.style.body, modal.date.body, copy.extrasBody, copy.reviewBody];
@@ -79,10 +84,11 @@ export default function SignUpForm({ closeHref = '/login' }: { closeHref?: strin
   const calendarDays = [...Array.from({ length: month.getDay() }, () => 0), ...Array.from({ length: dayCount }, (_, i) => i + 1)];
   const selectedDate = form.tentative_wedding_date
     ? new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(form.tentative_wedding_date + 'T12:00:00')) : copy.notAdded;
-  const errorMessage = localError ?? (!state.ok ? state.feedback ? dictionary.login.feedback[state.feedback] : state.message : null);
+  const errorMessage = localError ?? (!state.ok ? state.feedback ? state.feedback === 'emailTaken' ? null : dictionary.login.feedback[state.feedback] : state.message : null);
 
   useEffect(() => {
     if (state.ok) window.location.replace(state.redirectTo);
+    if (!state.ok && state.feedback === 'emailTaken') {setStep(0); setEmailTaken(true);}
     if (!pending) inFlight.current = false;
   }, [state, pending]);
 
@@ -96,6 +102,7 @@ export default function SignUpForm({ closeHref = '/login' }: { closeHref?: strin
   }
   function update(name: keyof CoupleOnboardingData, value: string) {
     setLocalError(null);
+    if (name === 'email') setEmailTaken(false);
     setForm(current => ({ ...current, [name]: value }));
   }
   function validate(index: number) {
@@ -112,7 +119,24 @@ export default function SignUpForm({ closeHref = '/login' }: { closeHref?: strin
     if (invalid) { requestAnimationFrame(() => invalid.reportValidity()); return false; }
     return true;
   }
-  function nextStep() { if (!busy && validate(step)) changeStep(step + 1); }
+  async function nextStep() {
+    if (busy || emailCheckFlight.current || !validate(step)) return;
+    if (step === 0) {
+      emailCheckFlight.current = true;
+      setCheckingEmail(true);
+      setEmailTaken(false);
+      try {
+        const result = await checkSignupEmail(form.email);
+        if (!result.ok) {
+          if (result.feedback === 'emailTaken') setEmailTaken(true);
+          else setLocalError(dictionary.login.feedback[result.feedback]);
+          return;
+        }
+      } catch (error) {setLocalError(dictionary.login.feedback[authFeedbackKey(error)]); return;}
+      finally {emailCheckFlight.current = false; setCheckingEmail(false);}
+    }
+    changeStep(step + 1);
+  }
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     if (busy || inFlight.current) { event.preventDefault(); return; }
     if (step < 5) { event.preventDefault(); nextStep(); return; }
@@ -146,7 +170,8 @@ export default function SignUpForm({ closeHref = '/login' }: { closeHref?: strin
           <label className="form-label" htmlFor="signup-full-name">{labels.fields.fullNameLabel}</label>
           <input id="signup-full-name" className="form-control" name="full_name" autoComplete="name" required maxLength={200} value={form.full_name} onChange={e => update('full_name', e.target.value)} />
           <label className="form-label" htmlFor="signup-email">{labels.emailLabel}</label>
-          <input id="signup-email" className="form-control" type="email" name="email" autoComplete="email" autoCapitalize="none" spellCheck={false} required value={form.email} onChange={e => update('email', e.target.value)} />
+          <input id="signup-email" className="form-control" type="email" name="email" autoComplete="email" autoCapitalize="none" spellCheck={false} required maxLength={254} aria-invalid={emailTaken || undefined} aria-describedby={emailTaken ? 'signup-email-feedback' : undefined} value={form.email} onChange={e => update('email', e.target.value)} />
+          {emailTaken && <SignupEmailFeedback id="signup-email-feedback" />}
           <label className="form-label" htmlFor="signup-password">{labels.passwordLabel}</label>
           <PasswordInput id="signup-password" className="form-control" name="password" autoComplete="new-password" required minLength={8} value={form.password} onChange={e => update('password', e.target.value)} />
           <p className="form-text">{copy.passwordHint}</p>
@@ -224,7 +249,7 @@ export default function SignUpForm({ closeHref = '/login' }: { closeHref?: strin
       <footer className="wm-auth-journey__actions">
         {step > 0 && <button className="btn btn-outline-secondary" type="button" onClick={() => changeStep(step - 1)} disabled={busy}>{labels.actions.back}</button>}
         {step < 5
-          ? <button className="btn btn-primary" type="button" onClick={nextStep} disabled={busy}>{labels.actions.next}</button>
+          ? <button className="btn btn-primary" type="button" onClick={nextStep} disabled={busy}>{checkingEmail ? copy.checkingEmail : labels.actions.next}</button>
           : <button className="btn btn-primary" type="submit" disabled={busy}>{busy ? labels.submitting : labels.submit}</button>}
       </footer>
       <div className="wm-auth-journey__links">

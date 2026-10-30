@@ -5,6 +5,7 @@ export function authFeedbackKey(error: unknown) {
     : {};
   if (value.status === 429 || value.code === 'over_request_rate_limit' || value.code === 'over_email_send_rate_limit') return 'rateLimited';
   if (value.code === 'invalid_credentials') return 'invalidCredentials';
+  if (value.code === 'user_already_exists' || value.code === 'email_exists') return 'emailTaken';
   if (value.code === 'email_not_confirmed') return 'emailUnconfirmed';
   if (value.code === 'same_password') return 'samePassword';
   if (value.code === 'weak_password') return 'weakPassword';

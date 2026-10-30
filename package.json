@@ -18,7 +18,7 @@
     "test": "npm run test:build && npm run test:run",
     "test:build": "tsc -p tsconfig.test.json",
     "test:run": "node ./scripts/run-tests.mjs",
-    "test:database": "node --test scripts/test-database-security.mjs scripts/test-boutiques.mjs",
+    "test:database": "node --test scripts/test-database-security.mjs scripts/test-boutiques.mjs scripts/test-signup-email.mjs",
     "db:inspect": "node scripts/database/inspect.mjs",
     "architecture:check": "node scripts/check-architecture.mjs",
     "test:tooling": "node --test scripts/database/connection.test.mjs scripts/database/catalog.test.mjs scripts/database/local-fixture-target.test.mjs scripts/audit-mobile-launch.test.mjs scripts/audit-mobile-source-archive.test.mjs scripts/test-service-worker.mjs"
