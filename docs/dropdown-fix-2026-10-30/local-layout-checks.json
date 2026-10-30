@@ -1,0 +1,46 @@
+{
+  "checkedAt": "2026-10-30T15:19:22.534Z",
+  "checks": [
+    {
+      "client": 1280,
+      "contained": true,
+      "menu": {
+        "bottom": 487.515625,
+        "left": 965,
+        "right": 1235,
+        "top": 93.59375
+      },
+      "scenario": "couple-home-spanish",
+      "triggerRight": 1235,
+      "viewport": 1280
+    },
+    {
+      "client": 1265,
+      "contained": true,
+      "menu": {
+        "bottom": 451.328125,
+        "left": 928.5,
+        "right": 1198.5,
+        "top": 69.59375
+      },
+      "scenario": "vendor-interior-english",
+      "viewport": 1280
+    },
+    {
+      "client": 1265,
+      "clientHeight": 234,
+      "contained": true,
+      "height": 360,
+      "internalScrolling": true,
+      "menu": {
+        "bottom": 305.59375,
+        "left": 928.5,
+        "right": 1198.5,
+        "top": 69.59375
+      },
+      "scenario": "vendor-short-window",
+      "scrollHeight": 406,
+      "width": 1280
+    }
+  ]
+}
