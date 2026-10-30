@@ -1,5 +1,5 @@
 {
-  "productionApplication": "cdcf970505dad696e5fd764be876e3b3030712e2",
+  "productionApplication": "efa5bfbe2bcc62bdbdd7ee684ad3da21ea1bcca3",
   "rootProxyRepair": {
     "confirmedCallbackHeaderOverflow": 1,
     "headerBuffer": "32k",
@@ -39,8 +39,6 @@
     "Apple real sign-in/signup",
     "Google new signup requires unused Google identity",
     "email vendor signup",
-    "email returning sign-in",
-    "new social wedding-routing deployment",
     "Google brand ownership and verification"
   ],
   "secretsInEvidence": false,
@@ -61,6 +59,13 @@
     "vendorBusinessSetupRetained": true,
     "englishAndSpanish": true,
     "isolatedProfileWrites": 0,
-    "deployed": false
+    "deployed": true
+  },
+  "emailReturning": {
+    "realInboxDelivery": true,
+    "codeLength": 8,
+    "requestedInboxReached": true,
+    "sessionRetainedAfterReleaseReload": true,
+    "transient502DuringDeployment": true
   }
 }

@@ -16,9 +16,22 @@ Real Google login to the owner's existing personal profile and reload now pass.
 A separate email-code QA couple signup also passes real Gmail Inbox delivery,
 invalid-code rejection, verification, all six steps, review editing and explicit
 profile save with optional guest count omitted and budget zero. Posting terms
-were not accepted. Apple/vendor live cases and returning email-code login remain
-pending. A verified-review copy correction passed architecture/types/lint/build
-and EN/ES isolated UI checks but is not deployed yet.
+were not accepted. Returning email-code login also reaches the requested inbox
+and survives a post-deployment reload. Apple/vendor live cases remain pending.
+The verified-review copy correction is deployed in `cdcf9705`. On October 30 the
+owner clarified that new Google/Apple couple accounts must enter wedding setup
+directly. Release **efa5bfbe2bcc62bdbdd7ee684ad3da21ea1bcca3** now routes incomplete
+couples to the first missing required step, retains known name/email and explicit
+return paths, and preserves vendor business onboarding. Architecture/types/lint/
+build, 159 application tests, isolated EN/ES routing checks and 48 public checks
+pass. Rollback is `/var/www/wedding-market.before-20261030-191230`.
+Google audience remains in production, but brand verification separately rejected
+homepage ownership and the monogram-only logo. The approved SVG masters now
+generate a full-name square Google logo. After reviewing the prepared ownership
+screen, the owner specifically approved publishing Google's HTML verification
+file and claiming `https://thewedmarket.com/` for `lportillo1313@gmail.com`.
+The proof publication/ownership claim and replacement logo save are in progress;
+Google says ownership propagation requires 24 hours before brand re-verification.
 [Current full-test matrix and repair receipt](auth-full-journey-2026-10-30/README.md).
 
 Current verified website: **76bc5eb844aeb4283815bbd8b5cc85a817a29762** (October 30, 2026). The owner approved Google/Apple sign-in/signup, email-code fallback and persistent valid sessions for couples and vendors. Shared branded EN/ES controls, PKCE account intent/return paths, verified couple setup without another password, vendor continuation with a required owner-name fallback, explicit final review, code retry/resend and bounded server/browser session refresh are deployed. Website visits on www redirect to the canonical host with path/query retained so login cookies and PKCE stay on one host; previous www-only sessions may need one canonical sign-in. Confirmation and OTP templates with codes are published separately. Architecture/types/lint/build, 157 web tests, 49 isolated database tests, two Apple-secret signature/validation tests and 48 local/public HTTP checks pass; live owner sessions through www and explicit personal/default vendor returns pass without customer writes. [Authentication implementation and evidence](auth-access-2026-10-30/README.md). Rollback is `/var/www/wedding-market.before-20261030-173123`.

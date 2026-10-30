@@ -38,6 +38,11 @@ unless recent matching callback header-overflow errors are confirmed.
   contact country, style, calendar navigation, optional-field skipping and review
   edits worked. The profile remained unchanged until explicit final submission;
   the saved profile retained a real zero budget and omitted guest estimate.
+- Returning email-code login: the same private QA account received the branded
+  sign-in-code message in Gmail Inbox and reached its requested account inbox.
+  A reload during the application release briefly received 502; after the exact
+  successful release receipt, reload restored the signed-in inbox without
+  another code. The public post-release checks also pass.
 - All 159 application and 49 isolated database regressions pass.
 
 The QA profile is named `WM QA Email Couple 20261030`. Its reserved example
@@ -71,7 +76,9 @@ verified an incomplete account's inbox return being preserved, missing-name
 entry, contact-first entry when the name is known, contact-to-wedding-style
 progression in EN/ES, and vendor login entering business setup. No local fixture
 profile writes, messages or external provider calls were made. Deployment of
-this routing correction is being prepared.
+this routing correction completed as `efa5bfbe2bcc62bdbdd7ee684ad3da21ea1bcca3`.
+All 48 public checks pass; rollback is
+`/var/www/wedding-market.before-20261030-191230`.
 
 ## Google account-chooser branding
 
@@ -85,13 +92,20 @@ page subsequently crashed before save could be confirmed. Homepage ownership,
 branding verification/publication and a branded chooser are not yet confirmed.
 No paid Supabase custom-domain upgrade was purchased.
 
+The owner approved publishing Google's generated HTML ownership proof and
+verifying `https://thewedmarket.com/` for `lportillo1313@gmail.com` after reviewing
+the prepared Search Console screen. The downloaded file's exact expected
+contents were checked before copying it to `public`. Publication and the
+ownership claim are in progress; Google reports a 24-hour propagation wait
+before retrying branding verification.
+
 ## Remaining live cases
 
 Fresh Google signup needs a Google identity not already registered with Wedding
 Market. The owner has only the existing administrator identity available; that
 production account is being preserved, including its profile and admin access.
-Apple consent/signup/sign-in, vendor onboarding, returning email-code
-login, and Apple relay code delivery remain to be exercised. Source/unit or
+Apple consent/signup/sign-in, vendor onboarding and Apple relay code delivery
+remain to be exercised. Source/unit or
 isolated fixture coverage does not claim these live journeys have passed.
 
 [Current matrix](results.json) contains only pass states and non-secret metadata.
