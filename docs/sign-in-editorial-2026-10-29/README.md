@@ -58,4 +58,6 @@ Regression tests cover complete couple serialization, optional estimates, edits/
 
 ## Publication
 
-Pending the final checks and restricted-gateway release. Require an exact target-commit success receipt and public asset/route verification before recording completion here.
+Website **cea94bc52ee2dc63fcad52b0860c05874abf5147** is deployed through the restricted gateway. The detached job finished inactive/successfully and [the exact receipt](deployment-success.json) confirms that commit, passing shadow/live probes and rollback at `/var/www/wedding-market.before-20261030-015040`. **All 29 independent public checks pass**: bilingual account pages, account-first vendor markup, confirmation/resend, recovery and callback returns, private auth caching, matching photograph/font hashes, compiled styles and the removed fixture's 404. See [public checks](public-checks.json). No native release or real account/email/upload submission occurred.
+
+Direct live Chrome checks also confirm the actual 1150×900 couple signup and 390×844 vendor account screen in Spanish, including loaded images/fonts, complete progress, readable controls and the verification-before-business message. [Live observations](live-browser-checks.json), [live desktop](live-signup-desktop.png), [live phone](live-vendor-mobile.png). The native app remains held, and physical-device keyboard/autofill or real provider email completion is not claimed.

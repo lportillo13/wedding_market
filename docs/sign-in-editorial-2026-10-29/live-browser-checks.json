@@ -1,0 +1,9 @@
+{
+  "releaseCommit": "cea94bc52ee2dc63fcad52b0860c05874abf5147",
+  "method": "Read-only native Chrome UI on public URLs; no forms submitted",
+  "checks": [
+    { "url": "https://thewedmarket.com/signup", "viewport": "1150x900", "language": "es", "observed": ["Editorial A photo/form split", "complete six-step progress", "name/email/password fields", "serif and script captions", "clear continue and account links"], "screenshot": "live-signup-desktop.png" },
+    { "url": "https://thewedmarket.com/signup/vendor", "viewport": "390x844", "language": "es", "observed": ["small wedding photo strip", "account-first three-stage overview", "verification-before-business explanation", "48px account controls", "visible account action", "no business/media collection before verification"], "screenshot": "live-vendor-mobile.png" }
+  ],
+  "limits": ["Phone view uses browser emulation", "No real signup, confirmation/reset email, OAuth authorization or profile publication was performed"]
+}
