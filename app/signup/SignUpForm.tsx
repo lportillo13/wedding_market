@@ -8,7 +8,9 @@ import JourneyProgress from '@/components/auth/JourneyProgress';
 import { buildCountryOptions } from '@/lib/countries';
 import { authFeedbackKey } from '@/lib/auth-feedback';
 import { coupleSignupIssue, coupleSignupPayload, type CoupleOnboardingData } from '@/features/auth/domain/couple-onboarding';
-import { signUp, type SignUpState } from './actions';
+import { signUp,completeCoupleSignup, type SignUpState } from './actions';
+import AuthenticationMethods from '@/components/auth/AuthenticationMethods';
+import {accessCopy} from '@/features/auth/presentation/access-copy';
 import {checkSignupEmail} from './email-actions';
 import SignupEmailFeedback from '@/components/auth/SignupEmailFeedback';
 
@@ -48,7 +50,7 @@ const weddingStyleCards: Array<{ value: WeddingThemeValue; image: string }> = [
 
 const initialState: SignUpState = { ok: false };
 
-export default function SignUpForm({ closeHref = '/login' }: { closeHref?: string }) {
+export default function SignUpForm({ closeHref = '/login',verifiedAccount,nextPath='/account/profile' }: { closeHref?: string;verifiedAccount?:Omit<CoupleOnboardingData,'password'>;nextPath?:string }) {
   const { dictionary, language } = useLanguage();
   const labels = dictionary.signup.form;
   const modal = labels.modal;
@@ -56,11 +58,13 @@ export default function SignUpForm({ closeHref = '/login' }: { closeHref?: strin
   const [step, setStep] = useState(0);
   const [localError, setLocalError] = useState<string | null>(null);
   const [checkingEmail, setCheckingEmail] = useState(false);
+  const [accessBusy,setAccessBusy]=useState(false);
   const [emailTaken, setEmailTaken] = useState(false);
   const emailCheckFlight = useRef(false);
   const [form, setForm] = useState<CoupleOnboardingData>({
     full_name: '', email: '', password: '', phone: '', country: '',
     wedding_theme: '', tentative_wedding_date: '', guest_count: '', wedding_budget: '',
+    ...verifiedAccount,
   });
   const [month, setMonth] = useState(() => new Date(new Date().getFullYear(), new Date().getMonth(), 1));
   const formRef = useRef<HTMLFormElement>(null);
@@ -70,10 +74,11 @@ export default function SignUpForm({ closeHref = '/login' }: { closeHref?: strin
   const [state, action, pending] = useActionState(async (previous: SignUpState, data: FormData): Promise<SignUpState> => {
     // React submits the complete state, even if a future layout unmounts a panel.
     for (const [name, value] of Object.entries(coupleSignupPayload(form, language))) data.set(name, value);
-    try { return await signUp(previous, data); }
+    data.set('next',nextPath);
+    try { return await (verifiedAccount?completeCoupleSignup:signUp)(previous, data); }
     catch (error) { return { ok: false, feedback: authFeedbackKey(error) }; }
   }, initialState);
-  const busy = pending || state.ok || checkingEmail;
+  const busy = pending || state.ok || checkingEmail || accessBusy;
   const steps = [copy.account, copy.contact, copy.style, copy.date, copy.details, copy.review];
   const titles = [copy.accountTitle, copy.contactTitle, modal.style.title, modal.date.title, copy.extrasTitle, copy.reviewTitle];
   const bodies = [copy.accountBody, copy.contactBody, modal.style.body, modal.date.body, copy.extrasBody, copy.reviewBody];
@@ -106,7 +111,7 @@ export default function SignUpForm({ closeHref = '/login' }: { closeHref?: strin
     setForm(current => ({ ...current, [name]: value }));
   }
   function validate(index: number) {
-    const issue = coupleSignupIssue(form, index);
+    const issue = coupleSignupIssue(form, index,Boolean(verifiedAccount));
     if (issue) {
       const messages = { ...labels.validation, phoneRequired: modal.phoneRequired, styleRequired: modal.styleRequired,
         invalidGuestCount: dictionary.account.profile.form.validation.invalidGuestCount,
@@ -115,13 +120,13 @@ export default function SignUpForm({ closeHref = '/login' }: { closeHref?: strin
       return false;
     }
     const panel = formRef.current?.querySelector('[data-step="' + index + '"]');
-    const invalid = Array.from(panel?.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input,select') ?? []).find(input => !input.checkValidity());
+    const invalid = Array.from(panel?.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input,select') ?? []).find(input => !input.closest('[data-auth-alternative]') && !input.checkValidity());
     if (invalid) { requestAnimationFrame(() => invalid.reportValidity()); return false; }
     return true;
   }
   async function nextStep() {
     if (busy || emailCheckFlight.current || !validate(step)) return;
-    if (step === 0) {
+    if (step === 0 && !verifiedAccount) {
       emailCheckFlight.current = true;
       setCheckingEmail(true);
       setEmailTaken(false);
@@ -162,19 +167,21 @@ export default function SignUpForm({ closeHref = '/login' }: { closeHref?: strin
       <JourneyProgress steps={steps} current={step} onBack={changeStep} disabled={busy} label={copy.stepLabel} />
       <header className="wm-auth-editorial__heading">
         <p className="wm-auth-editorial__eyebrow">{copy.coupleEyebrow}</p>
-        <h1 tabIndex={-1} ref={headingRef}>{titles[step]}</h1>
-        <p>{bodies[step]}</p>
+        <h1 tabIndex={-1} ref={headingRef}>{step===0&&verifiedAccount?accessCopy[language].finishTitle:titles[step]}</h1>
+        <p>{step===0&&verifiedAccount?accessCopy[language].finishBody:bodies[step]}</p>
       </header>
       <fieldset disabled={busy} className="wm-auth-journey__panels">
         <section hidden={step !== 0} data-step="0" className="wm-auth-journey__panel">
+          {!verifiedAccount&&<AuthenticationMethods intent="couple" nextPath={nextPath} disabled={pending||state.ok||checkingEmail} onBusyChange={setAccessBusy}/>}
           <label className="form-label" htmlFor="signup-full-name">{labels.fields.fullNameLabel}</label>
           <input id="signup-full-name" className="form-control" name="full_name" autoComplete="name" required maxLength={200} value={form.full_name} onChange={e => update('full_name', e.target.value)} />
           <label className="form-label" htmlFor="signup-email">{labels.emailLabel}</label>
-          <input id="signup-email" className="form-control" type="email" name="email" autoComplete="email" autoCapitalize="none" spellCheck={false} required maxLength={254} aria-invalid={emailTaken || undefined} aria-describedby={emailTaken ? 'signup-email-feedback' : undefined} value={form.email} onChange={e => update('email', e.target.value)} />
+          <input id="signup-email" className="form-control" type="email" name="email" autoComplete="email" autoCapitalize="none" spellCheck={false} required readOnly={Boolean(verifiedAccount)} maxLength={254} aria-invalid={emailTaken || undefined} aria-describedby={emailTaken ? 'signup-email-feedback' : undefined} value={form.email} onChange={e => update('email', e.target.value)} />
+          {verifiedAccount&&<p className="form-text">{accessCopy[language].verified}</p>}
           {emailTaken && <SignupEmailFeedback id="signup-email-feedback" />}
-          <label className="form-label" htmlFor="signup-password">{labels.passwordLabel}</label>
+          {!verifiedAccount&&<><label className="form-label" htmlFor="signup-password">{labels.passwordLabel}</label>
           <PasswordInput id="signup-password" className="form-control" name="password" autoComplete="new-password" required minLength={8} value={form.password} onChange={e => update('password', e.target.value)} />
-          <p className="form-text">{copy.passwordHint}</p>
+          <p className="form-text">{copy.passwordHint}</p></>}
         </section>
         <section hidden={step !== 1} data-step="1" className="wm-auth-journey__panel">
           <label className="form-label" htmlFor="signup-phone">{labels.fields.phoneLabel}</label>
@@ -249,8 +256,8 @@ export default function SignUpForm({ closeHref = '/login' }: { closeHref?: strin
       <footer className="wm-auth-journey__actions">
         {step > 0 && <button className="btn btn-outline-secondary" type="button" onClick={() => changeStep(step - 1)} disabled={busy}>{labels.actions.back}</button>}
         {step < 5
-          ? <button className="btn btn-primary" type="button" onClick={nextStep} disabled={busy}>{checkingEmail ? copy.checkingEmail : labels.actions.next}</button>
-          : <button className="btn btn-primary" type="submit" disabled={busy}>{busy ? labels.submitting : labels.submit}</button>}
+          ? <button key="continue" className="btn btn-primary" type="button" onClick={event=>{event.preventDefault();void nextStep();}} disabled={busy}>{checkingEmail ? copy.checkingEmail : labels.actions.next}</button>
+          : <button key="submit" className="btn btn-primary" type="submit" disabled={busy}>{busy ? labels.submitting : labels.submit}</button>}
       </footer>
       <div className="wm-auth-journey__links">
         <p>{copy.alreadyAccount} <button type="button" disabled={busy} onClick={() => exitRef.current?.showModal()}>{dictionary.login.editorial.submit}</button></p>

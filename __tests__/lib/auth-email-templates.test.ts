@@ -47,3 +47,12 @@ test("password recovery always opens the web reset flow", () => {
   );
   assert.doesNotMatch(html, /\.ConfirmationURL/);
 });
+
+test('new and returning email-code accounts receive branded codes without losing their confirmation links',()=>{
+  for(const file of ['confirmation.html','magic-link.html']){
+    const html=readFileSync(path.join(process.cwd(),'supabase','templates',file),'utf8');
+    assert.ok(html.includes('{{ .Token }}'));
+    assert.ok(html.includes('{{ .ConfirmationURL }}'));
+    assert.match(html,/font-size:32px/);
+  }
+});

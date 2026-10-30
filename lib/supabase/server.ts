@@ -1,52 +1,21 @@
 // lib/supabase/server.ts
 import { cookies } from 'next/headers';
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { createServerClient } from '@supabase/ssr';
+import {sessionCookieOptions} from './session-options';
 import { getSupabasePublicKey, getSupabaseUrl } from '@/lib/supabase/config';
 
 export async function createSupabaseServerClient() {
   const cookieStore = await cookies(); // Next 15: await
-  const isProd = process.env.NODE_ENV === 'production';
 
   return createServerClient(
     getSupabaseUrl()!,
     getSupabasePublicKey()!,
     {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
-        },
-        set(name: string, value: string, options: CookieOptions) {
-          const sameSite = options?.sameSite ?? 'lax';
-          try {
-            cookieStore.set({
-              name,
-              value,
-              ...options,
-              path: options?.path ?? '/',
-              sameSite,
-              secure: isProd, // ⬅️ critical: false on localhost
-            });
-          } catch {
-            // Intentionally ignore cookie write errors: fall back to stateless auth.
-          }
-        },
-        remove(name: string, options: CookieOptions) {
-          const sameSite = options?.sameSite ?? 'lax';
-          try {
-            cookieStore.set({
-              name,
-              value: '',
-              ...options,
-              path: options?.path ?? '/',
-              sameSite,
-              secure: isProd, // ⬅️ critical
-              maxAge: 0,
-            });
-          } catch {
-            // Intentionally ignore cookie removal errors: session cleanup isn't critical.
-          }
-        },
-      },
+      cookieOptions:sessionCookieOptions,
+      cookies:{getAll:()=>cookieStore.getAll(),setAll(values){
+        try{for(const {name,value,options} of values)cookieStore.set(name,value,{...sessionCookieOptions,...options,secure:sessionCookieOptions.secure});}
+        catch{/* Server Components are read-only; proxy.ts persists refreshes before rendering. */}
+      }},
     }
   );
 }

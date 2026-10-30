@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname,useRouter } from "next/navigation";
+import {isAccountEntry} from '@/features/auth/domain/access';
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { safetyCopy } from "@/shared/safety/copy";
@@ -12,6 +13,7 @@ export default function CommunityConsent() {
   const { language } = useLanguage();
   const labels = safetyCopy[language];
   const router = useRouter();
+  const pathname=usePathname();
   const id = useId();
   const [accepted, setAccepted] = useState(false);
   const [expanded, setExpanded] = useState(true);
@@ -50,7 +52,8 @@ export default function CommunityConsent() {
     }
   }
 
-  if (accepted) return null;
+  // Account setup stays uninterrupted. Posting/contact APIs still require recorded consent.
+  if (accepted || isAccountEntry(pathname)) return null;
 
   return (
     <aside className="wm-community-notice" aria-label={language === "es" ? "Términos de la comunidad" : "Community terms"}>

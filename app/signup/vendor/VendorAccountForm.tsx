@@ -8,6 +8,7 @@ import JourneyProgress from '@/components/auth/JourneyProgress';
 import { createVendorSignupAccount, type VendorAccountState } from './account-actions';
 import { vendorOnboardingCopy } from './presentation';
 import SignupEmailFeedback from '@/components/auth/SignupEmailFeedback';
+import AuthenticationMethods from '@/components/auth/AuthenticationMethods';
 
 const initialState: VendorAccountState = { ok: false };
 
@@ -18,12 +19,14 @@ export default function VendorAccountForm() {
   const [details, setDetails] = useState({ name: '', email: '', password: '' });
   const inFlight = useRef(false);
   const [submittedEmail, setSubmittedEmail] = useState('');
-  const busy = pending || state.ok;
+  const [accessBusy,setAccessBusy]=useState(false);
+  const busy = pending || state.ok || accessBusy;
   const emailTaken = !pending && !state.ok && state.feedback === 'emailTaken' && details.email.trim().toLowerCase() === submittedEmail;
   useEffect(() => { if (state.ok) window.location.replace(state.redirectTo); if (!pending) inFlight.current = false; }, [state, pending]);
   return <form action={action} className="wm-auth-journey" aria-busy={busy} onSubmit={event => { if (inFlight.current || busy) event.preventDefault(); else {inFlight.current = true; setSubmittedEmail(details.email.trim().toLowerCase());} }}>
     <JourneyProgress steps={[copy.account, copy.confirmEmail, copy.vendorProfileLabel]} current={0} label={copy.stageLabel} />
     <header className="wm-auth-editorial__heading"><p className="wm-auth-editorial__eyebrow">{vendorOnboardingCopy[language].eyebrow}</p><h1>{copy.vendorAccountTitle}</h1><p>{copy.vendorAccountNote}</p></header>
+    <AuthenticationMethods intent="vendor" nextPath="/signup/vendor" disabled={pending||state.ok} onBusyChange={setAccessBusy}/>
     {!state.ok && state.feedback && state.feedback !== 'emailTaken' && <div className="wm-auth-error" role="alert">{dictionary.login.feedback[state.feedback]}</div>}
     <fieldset disabled={busy} className="wm-auth-journey__panel wm-auth-journey__panels">
       <label className="form-label" htmlFor="vendor-owner-name">{dictionary.signup.vendor.form.fields.ownerNameLabel}</label>

@@ -14,12 +14,12 @@ export function coupleSignupPayload(form: CoupleOnboardingData, language: 'en' |
   };
 }
 
-export function coupleSignupIssue(form: CoupleOnboardingData, step: number) {
+export function coupleSignupIssue(form: CoupleOnboardingData, step: number, verifiedEmail=false) {
   if (step === 0) {
     if (!form.full_name.trim()) return 'fullNameRequired';
     if (!form.email.trim()) return 'emailRequired';
-    if (!form.password) return 'passwordRequired';
-    if (form.password.length < 8) return 'passwordTooShort';
+    if (!verifiedEmail && !form.password) return 'passwordRequired';
+    if (!verifiedEmail && form.password.length < 8) return 'passwordTooShort';
   }
   if (step === 1) {
     if (!form.phone.trim()) return 'phoneRequired';

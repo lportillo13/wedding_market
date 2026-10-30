@@ -18,6 +18,7 @@ import "../styles/boutiques.scss";
 import "../styles/boutique-directory.scss";
 import "../styles/boutique-visit.scss";
 import "../styles/auth-editorial.scss";
+import "../styles/auth-access.scss";
 import "../styles/profile-editorial.scss";
 import "../styles/vendor-studio.scss";
 import NavBarContainer from "@/components/NavBarContainer";

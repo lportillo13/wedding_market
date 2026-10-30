@@ -1,0 +1,274 @@
+{
+  "checkedAt": "2026-10-30T16:31:42.878Z",
+  "base": "http://127.0.0.1:3240",
+  "checks": [
+    {
+      "path": "/api/auth/providers",
+      "language": "en",
+      "status": 503,
+      "passed": true
+    },
+    {
+      "path": "/auth/continue?intent=vendor&next=%2Fvendor%2Finbox",
+      "language": "en",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/signup/choose",
+      "language": "en",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/signup",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/login",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/signup/vendor",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/login?next=%2Fsignup%2Fvendor",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/signup/check-email?lang=en&vendor=1",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/forgot-password?next=%2Fvendor%2Finbox",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/login?error=auth_callback",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/login",
+      "language": "es",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/signup",
+      "language": "es",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/signup/vendor",
+      "language": "es",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/login?next=%2Fsignup%2Fvendor",
+      "language": "es",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/signup/check-email?lang=es&vendor=1",
+      "language": "es",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/forgot-password?next=%2Fvendor%2Finbox",
+      "language": "es",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/login?error=auth_callback",
+      "language": "es",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/auth/callback",
+      "language": "en",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/auth/callback?next=%2Fvendor%2Finbox",
+      "language": "en",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/auth/confirm?type=recovery&next=%2Freset-password%3Fnext%3D%252Faccount%252Finbox",
+      "language": "en",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/api/health",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/api/ready",
+      "language": "en",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/account/profile",
+      "language": "en",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/account/inbox",
+      "language": "en",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/account/notifications",
+      "language": "en",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/account/notifications/deleted",
+      "language": "en",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/rfq/new",
+      "language": "en",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/shortlist",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/vendor/preview",
+      "language": "en",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/studio-local-preview",
+      "language": "en",
+      "status": 404,
+      "passed": true
+    },
+    {
+      "path": "/login?password_updated=1",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/reset-password?next=%2Fvendor%2Finbox",
+      "language": "en",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/signup/vendor/design-preview",
+      "language": "en",
+      "status": 404,
+      "passed": true
+    },
+    {
+      "path": "/images/auth-editorial-welcome-mobile.webp",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/fonts/editorial/GT-Super-Display-Light.woff2",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/fonts/editorial/Acumin-Pro-Regular.woff2",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/images/auth-editorial-welcome.webp",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/1644a0f926e2763f.css",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/e523bf5607b64c85.css",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/a3d9869bdb15d8a4.css",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/2989757a74c92b81.css",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/112e9bdb4474b22f.css",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "editorial-and-complete-journey-styles",
+      "passed": true
+    },
+    {
+      "path": "selected-profile-a-and-phone-gutter-styles",
+      "passed": true
+    },
+    {
+      "path": "account-dropdown-explicit-end-position-and-scroll-styles",
+      "passed": true
+    },
+    {
+      "path": "vendor-studio-grouped-navigation-and-save-styles",
+      "passed": true
+    }
+  ]
+}
