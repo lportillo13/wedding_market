@@ -1,5 +1,5 @@
 {
-  "productionApplication": "9ac22fd9b9127be449c92265fff6fc8f34ae6965",
+  "productionApplication": "ff43b847fedae5a498bfe716a02c552c6bb7ac9e",
   "rootProxyRepair": {
     "confirmedCallbackHeaderOverflow": 1,
     "headerBuffer": "32k",
@@ -36,12 +36,13 @@
     "profileSaved": true
   },
   "pending": [
-    "Apple new/returning/vendor round trips and relay email fallback await owner identity verification",
+    "Apple vendor agreement/final creation and vendor SSO",
+    "Apple further relay Inbox delivery after marking the first test not spam",
     "Google new/vendor signup requires unused Google identity",
     "Google branding re-verification after ownership propagation"
   ],
   "secretsInEvidence": false,
-  "checkedAt": "2026-10-30 19:33:36 UTC",
+  "checkedAt": "2026-10-30 19:45:00 UTC",
   "status": "in_progress",
   "localVerifiedReview": {
     "english": true,
@@ -100,7 +101,46 @@
     "realAuthorizationPageReached": true,
     "correctWebsiteLabel": true,
     "coupleSignupIntent": true,
-    "awaitingOwnerIdentityVerification": true,
-    "newIdentityRoundTrip": false
+    "awaitingOwnerIdentityVerification": false,
+    "newIdentityRoundTrip": true
+  },
+  "appleCouple": {
+    "realNewIdentityRoundTrip": true,
+    "hideMyEmailConfirmedInReview": true,
+    "directMissingContactStep": true,
+    "nameAndVerifiedEmailRetained": true,
+    "noPassword": true,
+    "allWeddingSteps": true,
+    "optionalEstimatesSkipped": true,
+    "explicitReviewSave": true,
+    "profileSaved": true,
+    "sessionRetainedAfterReload": true,
+    "returningAppleLogin": true,
+    "returningRequestedInbox": true,
+    "returningSessionAfterReload": true,
+    "communityTermsAccepted": false
+  },
+  "appleRelayFallback": {
+    "realForwardedDelivery": true,
+    "initialFolder": "Spam",
+    "gmailReason": "Similar to messages previously classified as spam",
+    "relayMailedAndSigned": true,
+    "tls": true,
+    "reportedKnownTestNotSpam": true,
+    "movedToInbox": true,
+    "deliveredCodeLength": 8,
+    "requestedInboxReached": true,
+    "sameQaProfileAndDateRetained": true,
+    "cleanInitialInboxPlacement": false
+  },
+  "appleVendor": {
+    "reusesIsolatedAppleCoupleIdentity": true,
+    "allSixReviewSteps": true,
+    "ownerNameReused": true,
+    "passwordNotRequested": true,
+    "qaMediaRetained": true,
+    "termsApprovalPending": true,
+    "businessCreated": false,
+    "vendorSsoVerified": false
   }
 }

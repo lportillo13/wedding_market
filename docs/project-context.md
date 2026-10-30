@@ -90,10 +90,26 @@ and the editor retained its biography, USD 250 price and optimized 1600×1000
 WEBP cover. Main administrator and couple QA profiles were not changed, and no
 business has been published. Returning vendor email-code login also passed real
 Gmail delivery, the explicit `/vendor/inbox` return and remembered session after
-reload. That QA session was signed out normally. The real Apple page, reached
-from couple signup and correctly identifying Wedding Market website, is ready
-in the ChatGPT browser for the owner's credentials/device verification. Apple
-new/returning/vendor and relay-code cases remain unverified; fresh Google/vendor
+reload. That QA session was signed out normally.
+
+On the next owner handoff, real Apple Hide My Email signup returned directly to
+the missing contact step with name/email verified and no password. The isolated
+`WM QA Apple Couple 20261030` completed wedding style/date, skipped both optional
+estimates and saved its profile; reload retained it. A deliberate sign-out and
+fresh Apple login, with the owner entering Apple's password again, returned to
+the requested `/account/inbox` and survived reload. These cases ran on the
+independently confirmed `ff43b847` vendor-page refinement, which includes the
+authentication repair. Its private-relay fallback email also arrived in Gmail,
+initially in Spam; Gmail cited similarity to previously classified spam. The
+forwarded sender was mailed/signed by `privaterelay.appleid.com` with TLS.
+The known test message was reported not spam and moved to Inbox; its delivered
+eight-digit code reopened the same QA profile with its wedding date retained.
+This does not establish clean Inbox placement for all recipients.
+
+The same isolated Apple identity is now being reused for vendor setup. All six
+business steps reached review with retained QA images, and its final agreement
+and private business creation await explicit owner approval. Apple vendor SSO
+and a further relay Inbox delivery check remain pending. Fresh Google/vendor
 identity coverage still needs an unused Google identity. The main administrator
 was preserved rather than deleted for testing.
 [Current full-test matrix and repair receipt](auth-full-journey-2026-10-30/README.md).

@@ -144,18 +144,55 @@ explicit `/vendor/inbox` destination, and reload retained that session and the
 private-draft status. The QA session was then signed out normally to prepare
 the Apple test. No inquiries, proposals, bookings or publications were made.
 
+## Apple couple signup and returning login
+
+After the owner completed Apple's identity verification, a real new Apple
+identity returned directly to `/signup?complete=1` at the missing contact step.
+Apple's name and verified email were retained; no password or extra verification
+email was required. The review visibly confirmed an Apple private-relay email.
+The authentication input's value was redacted by the browser, so its initial
+masked value was not evidence of the email-sharing choice; only the review's
+visible address established Hide My Email.
+
+The isolated profile was labeled `WM QA Apple Couple 20261030` and completed
+contact, garden style, calendar selection of April 12, 2027, optional estimate
+skipping and explicit final review/save. Its own personal profile retained those
+values and the session after reload. No community agreement was accepted for
+this Apple identity at this stage.
+
+A deliberate sign-out and fresh Apple login then requested `/account/inbox`.
+Apple required its password again; the owner completed that step, and the
+already-authorized Continue confirmation returned to the requested inbox.
+Reload retained the session. These checks ran on production
+`ff43b847fedae5a498bfe716a02c552c6bb7ac9e`, independently confirmed by the release
+receipt; that vendor-page refinement includes the auth repair above.
+
+Apple private-relay email fallback also passes. Its real eight-digit code was
+forwarded to the owner's Gmail, initially in Spam. Gmail reported similarity to
+messages classified as spam in the past; the visible details showed relay
+mailed-by/signed-by and TLS. The known test message was reported not spam and
+Gmail confirmed moving it to Inbox. Its code reached `/account/inbox` and the
+profile retained the exact QA name and wedding date, confirming the existing
+Apple identity was reused. This is not evidence of clean first-delivery Inbox
+placement or of a global deliverability repair.
+
+The same isolated Apple identity is being reused for business setup rather than
+claiming a second unused Apple account. Verified vendor entry retained its saved
+owner name, asked for no password, and reached all six review steps with QA
+images, coverage, contact, languages and USD 250 starting price. Explicit owner
+approval is pending for its own agreement acceptance and conversion to an
+unpublished vendor profile. The earlier agreement approval applied only to the
+separate email-code QA vendor identity.
+
 ## Remaining live cases
 
 Fresh Google signup needs a Google identity not already registered with Wedding
 Market. The owner has only the existing administrator identity available; that
 production account is being preserved, including its profile and admin access.
-Apple consent/signup/sign-in, Apple vendor identity and Apple relay code delivery
-remain to be exercised. The real Apple authorization page was opened from
-couple signup and identifies Wedding Market website; the owner handoff awaits
-Apple credentials/device verification, with Hide My Email requested if offered
-to exercise a fresh identity. Google new/vendor identity coverage still needs
-an unused Google account. Source/unit or isolated fixture coverage does not
-claim those real provider journeys have passed.
+Apple vendor final creation/SSO and another relay Inbox delivery remain to be
+exercised. Google new/vendor identity
+coverage still needs an unused Google account. Source/unit or isolated fixture
+coverage does not claim those real provider journeys have passed.
 
 [Current matrix](results.json) contains only pass states and non-secret metadata.
 Private keys, JWTs, verification codes, raw callback URLs and email screenshots
