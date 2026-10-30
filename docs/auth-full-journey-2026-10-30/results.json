@@ -1,5 +1,5 @@
 {
-  "productionApplication": "4f1ea63144e1901dcfb7fea79410f1e5188457b6",
+  "productionApplication": "9ac22fd9b9127be449c92265fff6fc8f34ae6965",
   "rootProxyRepair": {
     "confirmedCallbackHeaderOverflow": 1,
     "headerBuffer": "32k",
@@ -36,13 +36,12 @@
     "profileSaved": true
   },
   "pending": [
-    "Apple real sign-in/signup",
-    "Google new signup requires unused Google identity",
-    "vendor consent repair deployment and owner-approved live acceptance/final save",
+    "Apple new/returning/vendor round trips and relay email fallback await owner identity verification",
+    "Google new/vendor signup requires unused Google identity",
     "Google branding re-verification after ownership propagation"
   ],
   "secretsInEvidence": false,
-  "checkedAt": "2026-10-30 18:35:18 UTC",
+  "checkedAt": "2026-10-30 19:33:36 UTC",
   "status": "in_progress",
   "localVerifiedReview": {
     "english": true,
@@ -83,8 +82,25 @@
     "allSixReviewSteps": true,
     "mediaRetainedAcrossOwnProfileTab": true,
     "finalSaveBlockedByMissingTerms": true,
-    "businessProfileCreated": false,
+    "businessProfileCreated": true,
     "repairValidated": true,
-    "repairDeployed": false
+    "repairDeployed": true,
+    "ownerApprovedTermsAcceptance": true,
+    "realConsentRecorded": true,
+    "reviewAndImagesRetainedAfterConsent": true,
+    "unpublished": true,
+    "sessionRetainedAfterReload": true,
+    "savedStartingPrice": "USD 250",
+    "savedHeroLoaded": true,
+    "returningEmailCodeInboxDelivery": true,
+    "returningEmailCodeVendorInbox": true,
+    "returningSessionAfterReload": true
+  },
+  "appleHandoff": {
+    "realAuthorizationPageReached": true,
+    "correctWebsiteLabel": true,
+    "coupleSignupIntent": true,
+    "awaitingOwnerIdentityVerification": true,
+    "newIdentityRoundTrip": false
   }
 }

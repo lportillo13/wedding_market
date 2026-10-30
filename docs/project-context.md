@@ -6,7 +6,14 @@ The Wedding Market connects couples planning weddings in Costa Rica with wedding
 
 ## Current verified deployment state
 
-Current verified website: **d969a533ad79a6af6c7b1202faa0b46502757938**
+Latest vendor-page decision (October 30, 2026): the owner clarified that the
+platform will not be free and requested removal of free-pricing promises from
+the vendor page, removal of its animation pause button, and the same scroll
+mouse used on the homepage. This supersedes the earlier vendor launch-pricing
+copy. No rate, billing model or checkout implementation was specified. Keep
+automatic reduced-motion support and record the completed refinement below.
+
+Included vendor introduction release: **d969a533ad79a6af6c7b1202faa0b46502757938**
 (October 30, 2026). The owner requested a dedicated vendor benefits page inspired
 by the animation and feel of FoundersCard Network. `/for-vendors` is now live in
 EN/ES with a cinematic photographic hero, scroll reveals, four interactive
@@ -48,8 +55,34 @@ homepage ownership and the monogram-only logo. The approved SVG masters now
 generate a full-name square Google logo. After reviewing the prepared ownership
 screen, the owner specifically approved publishing Google's HTML verification
 file and claiming `https://thewedmarket.com/` for `lportillo1313@gmail.com`.
-The proof publication/ownership claim and replacement logo save are in progress;
-Google says ownership propagation requires 24 hours before brand re-verification.
+The exact downloaded proof is published in `4f1ea631`; Google Search Console
+confirmed ownership via HTML file, and the full-name logo is saved in Google.
+Branding is still unverified: Google requires a 24-hour ownership propagation
+wait before re-verification. No paid custom auth domain was purchased.
+
+New vendor email-code signup reached all six business steps using a separate
+private QA identity, but its final save exposed a real blocker: recorded
+community terms were required while signup hid the acceptance control. The
+review now reuses the existing consent control inline, and the server checks
+the verified own profile's current version before uploading media. Architecture/
+types/lint/build, 160 application tests, 49 database tests and isolated EN/ES
+review/failure-retention checks pass. Current verified website is
+**9ac22fd9b9127be449c92265fff6fc8f34ae6965**, with 48 public checks and rollback
+`/var/www/wedding-market.before-20261030-192524`. After reviewing the live final
+step, the owner explicitly approved the current Terms/Community Guidelines for
+the isolated vendor QA identity and creation of its private business. Recorded
+consent retained its review/images; final save reached the vendor workspace as
+`WM QA Private Draft 20261030`, still unpublished. Reload retained the session,
+and the editor retained its biography, USD 250 price and optimized 1600×1000
+WEBP cover. Main administrator and couple QA profiles were not changed, and no
+business has been published. Returning vendor email-code login also passed real
+Gmail delivery, the explicit `/vendor/inbox` return and remembered session after
+reload. That QA session was signed out normally. The real Apple page, reached
+from couple signup and correctly identifying Wedding Market website, is ready
+in the ChatGPT browser for the owner's credentials/device verification. Apple
+new/returning/vendor and relay-code cases remain unverified; fresh Google/vendor
+identity coverage still needs an unused Google identity. The main administrator
+was preserved rather than deleted for testing.
 [Current full-test matrix and repair receipt](auth-full-journey-2026-10-30/README.md).
 
 Included authentication release: **76bc5eb844aeb4283815bbd8b5cc85a817a29762** (October 30, 2026). The owner approved Google/Apple sign-in/signup, email-code fallback and persistent valid sessions for couples and vendors. Shared branded EN/ES controls, PKCE account intent/return paths, verified couple setup without another password, vendor continuation with a required owner-name fallback, explicit final review, code retry/resend and bounded server/browser session refresh are deployed. Website visits on www redirect to the canonical host with path/query retained so login cookies and PKCE stay on one host; previous www-only sessions may need one canonical sign-in. Confirmation and OTP templates with codes are published separately. Architecture/types/lint/build, 157 web tests, 49 isolated database tests, two Apple-secret signature/validation tests and 48 local/public HTTP checks pass; live owner sessions through www and explicit personal/default vendor returns pass without customer writes. [Authentication implementation and evidence](auth-access-2026-10-30/README.md). Rollback is `/var/www/wedding-market.before-20261030-173123`.
