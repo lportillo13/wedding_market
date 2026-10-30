@@ -2,11 +2,14 @@
 
 import Image from 'next/image';
 import PasswordInput from '@/components/PasswordInput';
+import JourneyProgress from '@/components/auth/JourneyProgress';
 import { type ChangeEvent, type FormEvent, useActionState, useEffect, useMemo, useRef, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { buildCountryOptions } from '@/lib/countries';
 import { vendorOnboardingCopy } from './presentation';
 import { createVendor, type VendorSignUpState } from './actions';
+import { authFeedbackKey } from '@/lib/auth-feedback';
+import { attachVendorSignupImages } from '@/features/auth/client/vendor-submission';
 
 type CategoryOption = {
   key: string;
@@ -76,11 +79,12 @@ function resolveCategoryLabel(option: CategoryOption, language: 'en' | 'es') {
   return option.key;
 }
 
-function SummaryRow({ label, value }: { label: string; value: string }) {
+function SummaryRow({ label, value, onEdit, editLabel }: { label: string; value: string; onEdit: () => void; editLabel: string }) {
   return (
     <div className="wm-onboarding-summary__row">
       <dt>{label}</dt>
       <dd>{value}</dd>
+      <button type="button" className="wm-auth-journey__text-button" onClick={onEdit} aria-label={editLabel + ': ' + label}>{editLabel}</button>
     </div>
   );
 }
@@ -92,13 +96,17 @@ export default function VendorSignUpForm({
   categories: CategoryOption[];
   requiresAccount: boolean;
 }) {
-  const [state, action, pending] = useActionState(createVendor, initialState);
+  const [uploadFiles, setUploadFiles] = useState<{ logo: File | null; hero: File | null }>({ logo: null, hero: null });
+  const [state, action, pending] = useActionState(async (previous: VendorSignUpState, data: FormData): Promise<VendorSignUpState> => {
+    try { return await createVendor(previous, attachVendorSignupImages(data, uploadFiles)); }
+    catch (error) { return { ok: false, feedback: authFeedbackKey(error) }; }
+  }, initialState);
+  const submitInFlight = useRef(false);
   const { dictionary, language } = useLanguage();
   const labels = dictionary.signup.vendor.form;
   const signupLabels = dictionary.signup.form;
   const dashboard = dictionary.vendorDashboard;
   const [step, setStep] = useState(0);
-  const [furthestStep, setFurthestStep] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const copy = vendorOnboardingCopy[language];
@@ -152,26 +160,25 @@ export default function VendorSignUpForm({
     ...(requiresAccount ? [{ id: 'account', ...copy.account }] : []),
     { id: 'brand', ...copy.brand }, { id: 'media', ...copy.media },
     { id: 'coverage', ...copy.coverage }, { id: 'contact', ...copy.contact },
-    { id: 'pricing', ...copy.pricing },
+    { id: 'pricing', ...copy.pricing }, { id: 'review', ...copy.reviewStep },
   ];
   const activeStep = steps[step].id;
   function changeStep(next: number) {
     setLocalError(null);
     setStep(next);
-    setFurthestStep(current => Math.max(current, next));
     requestAnimationFrame(() => {
       headingRef.current?.focus({ preventScroll: true });
-      headingRef.current?.scrollIntoView({ block: 'start', behavior: 'instant' });
+      formRef.current?.scrollIntoView({ block: 'start', behavior: 'instant' });
     });
   }
-  const progress = ((step + 1) / steps.length) * 100;
   const countryOptions = useMemo(() => buildCountryOptions(form.country), [form.country]);
 
   useEffect(() => {
     if (state.ok && state.redirectTo) {
       window.location.replace(state.redirectTo);
     }
-  }, [state]);
+    if (!pending) submitInFlight.current = false;
+  }, [state, pending]);
 
   useEffect(() => {
     uploadPreviewsRef.current = uploadPreviews;
@@ -256,6 +263,7 @@ export default function VendorSignUpForm({
   function updateUploadPreview(field: 'hero' | 'logo', event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0] ?? null;
     setLocalError(null);
+    setUploadFiles(current => ({ ...current, [field]: file }));
     setUploadPreviews((current) => {
       if (current[field]?.url) {
         URL.revokeObjectURL(current[field].url);
@@ -279,8 +287,8 @@ export default function VendorSignUpForm({
     let error: string | null = null;
     if (stepId === 'brand' && localizedCategories.length > 0 && !form.categories.length) return labels.validation.categoriesRequired;
     if (stepId === 'brand' && form.categories.length > 12) return language === 'es' ? 'Selecciona hasta 12 servicios.' : 'Choose up to 12 services.';
-    if (stepId === 'media' && !logoInputRef.current?.files?.[0]) return labels.validation.logoRequired;
-    if (stepId === 'media' && !heroInputRef.current?.files?.[0]) return labels.validation.heroRequired;
+    if (stepId === 'media' && !uploadFiles.logo) return labels.validation.logoRequired;
+    if (stepId === 'media' && !uploadFiles.hero) return labels.validation.heroRequired;
     if (stepId === 'contact' && !form.phone.trim() && !form.website_url.trim()) return labels.validation.contactRequired;
     if (stepId === 'contact' && !form.languages.length && !form.other_languages.trim()) error = labels.validation.languagesRequired;
     return error;
@@ -308,7 +316,7 @@ export default function VendorSignUpForm({
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    if (pending) { event.preventDefault(); return; }
+    if (pending || submitInFlight.current) { event.preventDefault(); return; }
     if (step < steps.length - 1) { event.preventDefault(); goNext(); return; }
     if (!validateCurrentStep()) { event.preventDefault(); return; }
     const incomplete = steps.findIndex(item => stepError(item.id));
@@ -333,7 +341,9 @@ export default function VendorSignUpForm({
         }
         invalid.reportValidity();
       });
+      return;
     }
+    submitInFlight.current = true;
   }
 
   const selectedCategoryLabels =
@@ -355,40 +365,24 @@ export default function VendorSignUpForm({
     form.peak_seasons.map((value) => seasonLabels[value]).join(', ') || labels.summary.pending;
   const selectedLogo = uploadPreviews.logo?.name || labels.summary.pending;
   const selectedHero = uploadPreviews.hero?.name || labels.summary.pending;
-  const actionMessage = state.ok ? undefined : state.message;
+  const actionMessage = state.ok ? undefined : state.feedback ? dictionary.login.feedback[state.feedback] : state.message;
 
   return (
-    <form ref={formRef} action={action} onSubmit={handleSubmit} noValidate className="wm-onboarding-card wm-vendor-onboarding__form" aria-busy={pending}>
+    <form ref={formRef} action={action} onSubmit={handleSubmit} noValidate className="wm-onboarding-card wm-vendor-onboarding__form wm-auth-journey" aria-busy={pending}>
+      <JourneyProgress steps={steps.map(item => item.shortLabel)} current={step} onBack={changeStep} disabled={pending} label={dictionary.signup.journey.stepLabel} />
       <div className="wm-onboarding-card__header">
         <div>
           <p className="wm-onboarding-card__eyebrow">
-            {labels.progressLabel} {step + 1} / {steps.length}
+            {dictionary.signup.journey.vendorProfileLabel}
           </p>
-          <h2 ref={headingRef} tabIndex={-1} className="wm-onboarding-card__title">{steps[step].title}</h2>
+          <h1 ref={headingRef} tabIndex={-1} className="wm-onboarding-card__title">{steps[step].title}</h1>
           <p className="wm-onboarding-card__description">{steps[step].description}</p>
-        </div>
-        <div className="wm-onboarding-meter" aria-hidden="true">
-          <span style={{ width: `${progress}%` }} />
         </div>
       </div>
 
-      <nav className="wm-onboarding-stepper" aria-label={labels.progressLabel}>
-        {steps.map((item, index) => (
-          <button
-            key={item.title}
-            type="button"
-            className={`wm-onboarding-stepper__item${index === step ? ' is-active' : ''}${index < step ? ' is-complete' : ''}`}
-            disabled={pending || index > furthestStep}
-            aria-current={index === step ? 'step' : undefined}
-            onClick={() => changeStep(index)}
-          >
-            <span className="wm-onboarding-stepper__index">{index + 1}</span>
-            <span>{item.shortLabel}</span>
-          </button>
-        ))}
-      </nav>
       <p className="wm-vendor-onboarding__required">{copy.required}</p>
 
+      <fieldset disabled={pending} className="wm-auth-journey__panels">
       <section hidden={activeStep !== 'account'} data-step="account" className="wm-onboarding-panel">
         <div className="row g-4">
           {requiresAccount ? (
@@ -514,89 +508,21 @@ export default function VendorSignUpForm({
 
       </section>
       <section hidden={activeStep !== 'media'} data-step="media" className="wm-onboarding-panel">
-        <div className="wm-onboarding-fieldset">
-          <div className="wm-onboarding-upload-grid">
-            <div className="wm-onboarding-upload-field">
-              <label className="wm-onboarding-upload-card" htmlFor="vendor-logo-file">
-                <span className="wm-onboarding-upload-card__preview">
-                  {uploadPreviews.logo ? (
-                    <Image
-                      src={uploadPreviews.logo.url}
-                      alt={labels.fields.logoPreviewAlt}
-                      width={1200}
-                      height={750}
-                      unoptimized
-                    />
-                  ) : (
-                    <span className="wm-onboarding-upload-card__placeholder">{labels.fields.logoPlaceholder}</span>
-                  )}
-                </span>
-                <span className="wm-onboarding-upload-card__body">
-                  <span className="wm-onboarding-upload-card__eyebrow">{labels.fields.logoLabel}</span>
-                  <strong className="wm-onboarding-upload-card__title">{labels.fields.logoTitle} <span aria-hidden="true">*</span></strong>
-                  <span className="wm-onboarding-upload-card__copy">{labels.fields.logoHelp}</span>
-                  <span className="wm-onboarding-upload-card__meta">
-                    {uploadPreviews.logo?.name ?? labels.fields.logoEmpty}
-                  </span>
-                  <span className="wm-onboarding-upload-card__cta">
-                    {uploadPreviews.logo ? labels.fields.replaceUploadCta : labels.fields.uploadCta}
-                  </span>
-                </span>
-              </label>
-              <input
-                id="vendor-logo-file"
-                ref={logoInputRef}
-                className="wm-onboarding-upload-input"
-                type="file"
-                name="logo_file"
-                accept="image/*"
-                required
-                onChange={(event) => updateUploadPreview('logo', event)}
-              />
+        <div className="wm-auth-journey__upload-grid">
+          {(['logo', 'hero'] as const).map(kind => <div className="wm-auth-journey__upload" key={kind}>
+            <div className={'wm-auth-journey__upload-preview wm-auth-journey__upload-preview--' + kind}>
+              {uploadPreviews[kind]
+                ? <Image src={uploadPreviews[kind].url} alt={kind === 'logo' ? labels.fields.logoPreviewAlt : labels.fields.heroPreviewAlt} width={600} height={400} unoptimized />
+                : <span>{kind === 'logo' ? labels.fields.logoLabel : labels.fields.heroLabel}</span>}
             </div>
-
-            <div className="wm-onboarding-upload-field">
-              <label className="wm-onboarding-upload-card" htmlFor="vendor-hero-file">
-                <span className="wm-onboarding-upload-card__preview">
-                  {uploadPreviews.hero ? (
-                    <Image
-                      src={uploadPreviews.hero.url}
-                      alt={labels.fields.heroPreviewAlt}
-                      width={1200}
-                      height={750}
-                      unoptimized
-                    />
-                  ) : (
-                    <span className="wm-onboarding-upload-card__placeholder">{labels.fields.heroPlaceholder}</span>
-                  )}
-                </span>
-                <span className="wm-onboarding-upload-card__body">
-                  <span className="wm-onboarding-upload-card__eyebrow">{labels.fields.heroLabel}</span>
-                  <strong className="wm-onboarding-upload-card__title">{labels.fields.heroTitle} <span aria-hidden="true">*</span></strong>
-                  <span className="wm-onboarding-upload-card__copy">{labels.fields.heroHelp}</span>
-                  <span className="wm-onboarding-upload-card__meta">
-                    {uploadPreviews.hero?.name ?? labels.fields.heroEmpty}
-                  </span>
-                  <span className="wm-onboarding-upload-card__cta">
-                    {uploadPreviews.hero ? labels.fields.replaceUploadCta : labels.fields.uploadCta}
-                  </span>
-                </span>
-              </label>
-              <input
-                id="vendor-hero-file"
-                ref={heroInputRef}
-                className="wm-onboarding-upload-input"
-                type="file"
-                name="hero_file"
-                accept="image/*"
-                required
-                onChange={(event) => updateUploadPreview('hero', event)}
-              />
-            </div>
-          </div>
+            <label className="form-label" htmlFor={'vendor-' + kind + '-file'}>{kind === 'logo' ? labels.fields.logoTitle : labels.fields.heroTitle} <span aria-hidden="true">*</span></label>
+            <p className="form-text">{kind === 'logo' ? labels.fields.logoHelp : labels.fields.heroHelp}</p>
+            <input id={'vendor-' + kind + '-file'} ref={kind === 'logo' ? logoInputRef : heroInputRef} className="form-control"
+              type="file" name={kind + '_file'} accept="image/jpeg,image/png,image/webp,image/gif,image/avif" required={!uploadFiles[kind]}
+              onChange={event => updateUploadPreview(kind, event)} />
+            {uploadPreviews[kind] && <p className="form-text">{uploadPreviews[kind].name}</p>}
+          </div>)}
         </div>
-
-
       </section>
 
       <section hidden={activeStep !== 'coverage'} data-step="coverage" className="wm-onboarding-panel">
@@ -904,26 +830,34 @@ export default function VendorSignUpForm({
         </div>
 
         </details>
-        <details className="wm-editorial-details"><summary>{copy.review}</summary><dl className="wm-onboarding-summary mt-4">
-          <SummaryRow label={labels.summary.businessLabel} value={form.business_name || labels.summary.pending} />
-          <SummaryRow label={labels.summary.logoLabel} value={selectedLogo} />
-          <SummaryRow label={labels.summary.heroLabel} value={selectedHero} />
-          <SummaryRow label={labels.summary.categoriesLabel} value={selectedCategoryLabels} />
+      </section>
+      <section hidden={activeStep !== 'review'} data-step="review" className="wm-onboarding-panel">
+        <div className="wm-auth-journey__review-images">
+          {uploadPreviews.logo && <Image src={uploadPreviews.logo.url} alt={labels.fields.logoPreviewAlt} width={160} height={160} unoptimized />}
+          {uploadPreviews.hero && <Image src={uploadPreviews.hero.url} alt={labels.fields.heroPreviewAlt} width={600} height={300} unoptimized />}
+        </div>
+        <dl className="wm-onboarding-summary">
+          <SummaryRow label={labels.summary.businessLabel} value={form.business_name || labels.summary.pending} onEdit={() => changeStep(steps.findIndex(item => item.id === 'brand'))} editLabel={dictionary.signup.journey.edit} />
+          <SummaryRow label={labels.summary.logoLabel} value={selectedLogo} onEdit={() => changeStep(steps.findIndex(item => item.id === 'media'))} editLabel={dictionary.signup.journey.edit} />
+          <SummaryRow label={labels.summary.heroLabel} value={selectedHero} onEdit={() => changeStep(steps.findIndex(item => item.id === 'media'))} editLabel={dictionary.signup.journey.edit} />
+          <SummaryRow label={labels.summary.categoriesLabel} value={selectedCategoryLabels} onEdit={() => changeStep(steps.findIndex(item => item.id === 'brand'))} editLabel={dictionary.signup.journey.edit} />
           <SummaryRow
             label={labels.summary.coverageLabel}
             value={[form.city, form.state, form.country].filter(Boolean).join(', ') || labels.summary.pending}
+            onEdit={() => changeStep(steps.findIndex(item => item.id === 'coverage'))} editLabel={dictionary.signup.journey.edit}
           />
-          <SummaryRow label={labels.summary.contactLabel} value={form.website_url || form.phone || labels.summary.pending} />
-          <SummaryRow label={labels.summary.languagesLabel} value={selectedLanguages} />
+          <SummaryRow label={labels.summary.contactLabel} value={form.website_url || form.phone || labels.summary.pending} onEdit={() => changeStep(steps.findIndex(item => item.id === 'contact'))} editLabel={dictionary.signup.journey.edit} />
+          <SummaryRow label={labels.summary.languagesLabel} value={selectedLanguages} onEdit={() => changeStep(steps.findIndex(item => item.id === 'contact'))} editLabel={dictionary.signup.journey.edit} />
           <SummaryRow
             label={labels.summary.pricingLabel}
+            onEdit={() => changeStep(steps.findIndex(item => item.id === 'pricing'))} editLabel={dictionary.signup.journey.edit}
             value={
               [form.starting_price ? `${form.starting_price_currency} ${form.starting_price}` : '', selectedSeasons]
                 .filter((value) => value && value !== labels.summary.pending)
                 .join(' - ') || labels.summary.pending
             }
           />
-        </dl></details>
+        </dl>
 
         <div className="wm-onboarding-note">
           <strong>{labels.finishCard.title}</strong>
@@ -945,6 +879,7 @@ export default function VendorSignUpForm({
         <input key={value} type="hidden" name="peak_seasons" value={value} />
       ))}
       <input type="hidden" name="account_language" value={language} />
+      </fieldset>
 
       {(localError || actionMessage) && (
         <div role="alert" className="alert alert-danger mt-3">{localError ?? actionMessage}</div>

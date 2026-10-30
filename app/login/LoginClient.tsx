@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import PasswordInput from '@/components/PasswordInput';
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabaseBrowser } from "@/lib/supabase/client";
+import EditorialAuthLayout from "@/components/auth/EditorialAuthLayout";
+import { authFeedbackKey } from "@/lib/auth-feedback";
 
 async function resolveLoginDestination(nextPath: string, userId?: string) {
   if (nextPath !== "/account/profile") {
@@ -22,56 +24,79 @@ async function resolveLoginDestination(nextPath: string, userId?: string) {
 export default function LoginClient({
   nextPath,
   passwordUpdated = false,
+  callbackError = false,
 }: {
   nextPath: string;
   passwordUpdated?: boolean;
+  callbackError?: boolean;
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState<string | null>(null);
-  const { dictionary, language } = useLanguage();
+  const [pending, setPending] = useState<"password" | "google" | null>(null);
+  const inFlight = useRef(false);
+  const [errorKey, setErrorKey] = useState<ReturnType<typeof authFeedbackKey> | "callbackError" | null>(callbackError ? "callbackError" : null);
+  const { dictionary } = useLanguage();
   const labels = dictionary.login;
+  const copy = labels.editorial;
+  const recoveryHref = `/forgot-password?${new URLSearchParams({ next: nextPath })}`;
+
+  useEffect(() => {
+    const restoreFromHistory = (event: PageTransitionEvent) => {
+      if (!event.persisted) return;
+      inFlight.current = false;
+      setPending(null);
+    };
+    window.addEventListener("pageshow", restoreFromHistory);
+    return () => window.removeEventListener("pageshow", restoreFromHistory);
+  }, []);
 
   async function onEmailPassword(event: React.FormEvent) {
     event.preventDefault();
-    setLoading(true);
-    setErr(null);
-    const { data, error } = await supabaseBrowser.auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (error) {
-      setErr(error.message);
-      return;
+    if (inFlight.current) return;
+    inFlight.current = true;
+    setPending("password");
+    setErrorKey(null);
+    try {
+      const { data, error } = await supabaseBrowser.auth.signInWithPassword({ email: email.trim(), password });
+      if (error) throw error;
+      const destination = await resolveLoginDestination(nextPath, data.user?.id);
+      window.location.replace(destination);
+    } catch (error) {
+      setErrorKey(authFeedbackKey(error));
+      inFlight.current = false;
+      setPending(null);
     }
-
-    const destination = await resolveLoginDestination(nextPath, data.user?.id);
-    window.location.replace(destination);
   }
 
   async function onGoogle() {
-    setErr(null);
-    await supabaseBrowser.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
-      },
-    });
+    if (inFlight.current) return;
+    inFlight.current = true;
+    setPending("google");
+    setErrorKey(null);
+    try {
+      const { error } = await supabaseBrowser.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: `${location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}` },
+      });
+      if (error) throw error;
+    } catch (error) {
+      setErrorKey(authFeedbackKey(error));
+      inFlight.current = false;
+      setPending(null);
+    }
   }
 
   return (
-    <main className="wm-auth-shell">
-      <div className="wm-auth-card">
-        <div className="wm-auth-card__header">
-          <Link href="/" className="wm-auth-card__brand">Wedding Market</Link>
-          <p className="wm-auth-card__eyebrow">{language === 'es' ? 'Te damos la bienvenida' : 'Welcome back'}</p>
-          <h1 className="wm-auth-card__title">{labels.title}</h1>
-        </div>
+    <EditorialAuthLayout>
+        <header className="wm-auth-editorial__heading">
+          <p className="wm-auth-editorial__eyebrow">{copy.eyebrow}</p>
+          <h1>{copy.title}</h1>
+          <p>{copy.description}</p>
+        </header>
+          {passwordUpdated && <div className="wm-auth-success" role="status">{labels.passwordUpdated}</div>}
+          {errorKey && <div className="wm-auth-error" role="alert">{labels.feedback[errorKey]}</div>}
 
-        <div className="wm-auth-card__body">
-          {passwordUpdated && <div className="wm-auth-success">{labels.passwordUpdated}</div>}
-          {err && <div className="wm-auth-error">{err}</div>}
-
-          <form onSubmit={onEmailPassword}>
+          <form onSubmit={onEmailPassword} aria-busy={pending !== null}>
             <div className="wm-auth-form-group">
               <label htmlFor="login-email">{labels.emailLabel}</label>
               <input
@@ -81,6 +106,10 @@ export default function LoginClient({
                 onChange={(event) => setEmail(event.target.value)}
                 required
                 autoComplete="email"
+                name="email"
+                autoCapitalize="none"
+                spellCheck={false}
+                disabled={pending !== null}
               />
             </div>
             <div className="wm-auth-form-group">
@@ -91,34 +120,38 @@ export default function LoginClient({
                 onChange={(event) => setPassword(event.target.value)}
                 required
                 autoComplete="current-password"
+                name="password"
+                disabled={pending !== null}
               />
               <div className="wm-auth-field-action">
-                <Link href="/forgot-password">{labels.forgotPassword}</Link>
+                <Link href={recoveryHref}>{labels.forgotPassword}</Link>
               </div>
             </div>
-            <button className="wm-auth-btn" type="submit" disabled={loading}>
-              {loading ? labels.submitting : labels.submit}
+            <button className="wm-auth-btn" type="submit" disabled={pending !== null}>
+              {pending === "password" ? labels.submitting : copy.submit}
             </button>
           </form>
 
-          <div className="wm-auth-divider">{language === 'es' ? 'o' : 'or'}</div>
+          <div className="wm-auth-divider">{copy.divider}</div>
 
-          <button className="wm-auth-btn wm-auth-btn--ghost" type="button" onClick={onGoogle}>
+          <button className="wm-auth-btn wm-auth-btn--ghost" type="button" onClick={onGoogle} disabled={pending !== null}>
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
               <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615Z" fill="#4285F4"/>
               <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18Z" fill="#34A853"/>
               <path d="M3.964 10.706A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.038l3.007-2.332Z" fill="#FBBC05"/>
               <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.964L3.964 7.3C4.672 5.163 6.656 3.58 9 3.58Z" fill="#EA4335"/>
             </svg>
-            {labels.google}
+            {pending === "google" ? copy.googlePending : labels.google}
           </button>
-        </div>
 
-        <div className="wm-auth-footer">
-          {labels.registerPrompt}{" "}
-          <Link href="/signup?modal=create-account">{labels.registerLink}</Link>
+        <div className="wm-auth-editorial__register">
+          <p>{labels.registerPrompt}</p>
+          <div>
+            <Link href="/signup?modal=create-account">{copy.coupleSignup}</Link>
+            <Link href="/signup/vendor">{copy.vendorSignup}</Link>
+          </div>
+          <p className="wm-auth-editorial__free">{copy.free}</p>
         </div>
-      </div>
-    </main>
+    </EditorialAuthLayout>
   );
 }

@@ -1,0 +1,25 @@
+{
+  "environment": "Local native Chrome UI; fictional data; submissions not performed",
+  "viewports": ["1150x900", "390x844", "320x568"],
+  "languages": ["en", "es"],
+  "couple": {
+    "screens": ["account", "contact", "style", "date", "optional estimates", "review", "email confirmation"],
+    "reviewRetainedAccountContactCountryStyleDate": true,
+    "optionalEstimatesSkipped": true,
+    "languageSwitchRetainedReviewValues": true,
+    "shortPhoneReviewActionsVisible": true,
+    "accountSubmitted": false
+  },
+  "vendor": {
+    "accountBeforeBusinessAndPhotos": true,
+    "verificationContinuationShown": true,
+    "profileScreens": ["business", "photos", "location", "contact and languages", "pricing", "review"],
+    "profileFixture": "Temporary local route; source capture prevented submissions; removed before final production build",
+    "reviewRetainedBusinessLocationLanguagesPricing": true,
+    "reviewEditRetainedBothFilesAndPreviews": true,
+    "shortSpanishPhoneRetainedFilesAndActions": true,
+    "profileSubmitted": false,
+    "productionObjectsUploaded": false
+  },
+  "limitations": ["No real account creation, email delivery or provider OAuth completion tested", "Phone views are browser emulation, not physical-device keyboard/autofill acceptance", "Local Chrome extension added unrelated html attributes during development hydration; production styling and HTTP checks were verified separately"]
+}

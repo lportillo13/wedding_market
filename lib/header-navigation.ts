@@ -45,7 +45,7 @@ export function isBoutiqueStorePath(pathname: string) {
 // Workspace chrome includes nested routes even though the overview nav item
 // intentionally matches only its exact destination.
 export function usesWorkspaceFooter(pathname: string) {
-  return ['/account', '/vendor', '/signup', '/login', '/rfq'].some(root =>
+  return ['/account', '/vendor', '/signup', '/login', '/forgot-password', '/reset-password', '/rfq'].some(root =>
     pathname === root || pathname.startsWith(`${root}/`),
   );
 }

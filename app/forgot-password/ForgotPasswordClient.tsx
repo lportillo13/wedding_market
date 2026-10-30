@@ -1,55 +1,55 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabaseBrowser } from "@/lib/supabase/client";
+import EditorialAuthLayout from "@/components/auth/EditorialAuthLayout";
+import { authFeedbackKey } from "@/lib/auth-feedback";
 
-export default function ForgotPasswordClient({ recoveryError = false }: { recoveryError?: boolean }) {
+export default function ForgotPasswordClient({ recoveryError = false, nextPath = "/account/profile" }: { recoveryError?: boolean; nextPath?: string }) {
   const { dictionary } = useLanguage();
   const labels = dictionary.login;
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(recoveryError ? labels.recoveryExpired : null);
+  const [errorKey, setErrorKey] = useState<ReturnType<typeof authFeedbackKey> | null>(recoveryError ? "recoveryExpired" : null);
   const [sent, setSent] = useState(false);
+  const inFlight = useRef(false);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (inFlight.current) return;
+    inFlight.current = true;
     setLoading(true);
-    setError(null);
+    setErrorKey(null);
     setSent(false);
 
-    const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent("/reset-password")}`;
-    const { error: resetError } = await supabaseBrowser.auth.resetPasswordForEmail(
-      email.trim().toLowerCase(),
-      { redirectTo },
-    );
-
-    setLoading(false);
-    if (resetError) {
-      setError(resetError.message);
-      return;
+    try {
+      const resetPath = `/reset-password?${new URLSearchParams({ next: nextPath })}`;
+      const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(resetPath)}`;
+      const { error: resetError } = await supabaseBrowser.auth.resetPasswordForEmail(email.trim().toLowerCase(), { redirectTo });
+      if (resetError) throw resetError;
+      setSent(true);
+    } catch (error) {
+      setErrorKey(authFeedbackKey(error));
+    } finally {
+      setLoading(false);
+      inFlight.current = false;
     }
-
-    setSent(true);
   }
 
   return (
-    <main className="wm-auth-shell">
-      <div className="wm-auth-card">
-        <div className="wm-auth-card__header">
-          <Link href="/" className="wm-auth-card__brand">Wedding Market</Link>
-          <p className="wm-auth-card__eyebrow">{labels.resetEyebrow}</p>
-          <h1 className="wm-auth-card__title">{labels.resetTitle}</h1>
-        </div>
-
-        <div className="wm-auth-card__body">
-          <p className="wm-auth-description">{labels.resetDescription}</p>
-          {error && <div className="wm-auth-error" role="alert">{error}</div>}
+    <EditorialAuthLayout>
+        <header className="wm-auth-editorial__heading">
+          <p className="wm-auth-editorial__eyebrow">{labels.resetEyebrow}</p>
+          <h1>{labels.resetTitle}</h1>
+          <p>{labels.resetDescription}</p>
+        </header>
+          {errorKey && <div className="wm-auth-error" role="alert">{labels.feedback[errorKey]}</div>}
           {sent && <div className="wm-auth-success" role="status">{labels.resetSent}</div>}
 
           {!sent && (
-            <form onSubmit={onSubmit}>
+            <form onSubmit={onSubmit} aria-busy={loading}>
               <div className="wm-auth-form-group">
                 <label htmlFor="recovery-email">{labels.emailLabel}</label>
                 <input
@@ -59,6 +59,10 @@ export default function ForgotPasswordClient({ recoveryError = false }: { recove
                   onChange={(event) => setEmail(event.target.value)}
                   required
                   autoComplete="email"
+                  name="email"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  disabled={loading}
                 />
               </div>
               <button className="wm-auth-btn" type="submit" disabled={loading}>
@@ -68,10 +72,8 @@ export default function ForgotPasswordClient({ recoveryError = false }: { recove
           )}
 
           <div className="wm-auth-back">
-            <Link className="wm-auth-text-link" href="/login">{labels.resetBack}</Link>
+            <Link className="wm-auth-text-link" href={`/login?${new URLSearchParams({ next: nextPath })}`}>{labels.resetBack}</Link>
           </div>
-        </div>
-      </div>
-    </main>
+    </EditorialAuthLayout>
   );
 }

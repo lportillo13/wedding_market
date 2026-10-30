@@ -1,44 +1,18 @@
 'use server';
 import { revalidatePath } from 'next/cache';
-import { z } from 'zod';
+import { vendorSignupSchema as VendorSignupSchema } from '@/features/auth/domain/vendor-onboarding';
 import { parseMediaAsset } from '@/lib/images';
 import { buildStorageKey, processCarouselLogoUpload, processImageUpload, validateImageUpload } from '@/features/media/server/processing';
 import { deleteFromR2, getOwnedR2ObjectKey, isR2Configured, uploadToR2 } from '@/lib/r2';
-import { getSiteUrl } from '@/lib/site-url';
+import { registerVendorAccount } from '@/features/auth/server/vendor-account';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { slugify } from '@/lib/slugify';
+import type { authFeedbackKey } from '@/lib/auth-feedback';
 import type { MediaAsset } from '@/types/images';
 
-const VendorSignupSchema = z.object({
-  owner_name: z.string().trim().max(200, 'Name is too long.').optional(),
-  email: z.string().trim().email('Enter a valid email address.').optional(),
-  password: z.string().min(8, 'Password must be at least 8 characters.').optional(),
-  account_language: z.enum(['en', 'es']).optional().default('en'),
-  business_name: z.string().trim().min(2, 'Business name is required.').max(120, 'Business name is too long.'),
-  tagline: z.string().trim().min(12, 'Add a short intro for couples.').max(320, 'Intro is too long.'),
-  categories: z.array(z.string().trim().min(1)).max(12),
-  city: z.string().trim().max(120, 'City is too long.').optional(),
-  state: z.string().trim().max(120, 'State is too long.').optional(),
-  country: z.string().trim().min(1, 'Country is required.').max(120, 'Country is too long.'),
-  service_radius_km: z.number().int().min(1, 'Service radius must be at least 1 km.').max(500, 'Service radius is too large.'),
-  event_types: z.array(z.string().trim().min(1).max(60)).max(8),
-  service_style: z.string().trim().max(160, 'Service style is too long.').optional(),
-  phone: z.string().trim().max(40, 'Phone number is too long.').optional(),
-  website_url: z.string().trim().max(200, 'Website URL is too long.').optional(),
-  address_label: z.string().trim().max(200, 'Address is too long.').optional(),
-  languages: z.array(z.string().trim().min(1).max(60)).max(8),
-  years_in_business: z.number().int().min(0, 'Years in business must be 0 or more.').max(80, 'Years in business is too large.').nullable(),
-  team_size_range: z.string().trim().max(80, 'Team size is too long.').optional(),
-  starting_price: z.number().min(0, 'Starting price must be 0 or more.').nullable(),
-  starting_price_currency: z.string().trim().min(3).max(3),
-  typical_spend: z.number().min(0, 'Typical spend must be 0 or more.').nullable(),
-  peak_seasons: z.array(z.string().trim().min(1).max(40)).max(4),
-  booking_lead_time: z.string().trim().max(120, 'Booking lead time is too long.').optional(),
-  instagram_handle: z.string().trim().max(100, 'Instagram handle is too long.').optional(),
-});
 
 export type VendorSignUpState =
-  | { ok: false; message?: string }
+  | { ok: false; message?: string; feedback?: ReturnType<typeof authFeedbackKey> }
   | { ok: true; redirectTo: string };
 
 type UploadedVendorAssets = {
@@ -296,18 +270,8 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
       return { ok: false, message: 'Password is required.' };
     }
 
-    const emailRedirectTo = new URL('/auth/callback?next=/signup/vendor', getSiteUrl()).toString();
-
-    const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo,
-        data: {
-          full_name: owner_name, phone: phone || null, country: country || null,
-          language: account_language,
-        },
-      },
+    const { data: signUpData, error: signUpErr } = await registerVendorAccount(supabase, {
+      fullName: owner_name, email, password, language: account_language, phone, country,
     });
 
     if (signUpErr) {

@@ -10,7 +10,8 @@ export const vendorOnboardingCopy = {
     media: { shortLabel: 'Photos', title: 'Let your work make an impression.', description: 'Add your logo and one beautiful cover photo. You can build your full gallery later.' },
     coverage: { shortLabel: 'Location', title: 'Where do you work?', description: 'Help couples find you and understand the area you serve.' },
     contact: { shortLabel: 'Contact', title: 'Keep the conversation easy.', description: 'Add a phone number or website, and the languages you work in.' },
-    pricing: { shortLabel: 'Finish', title: 'A few finishing touches.', description: 'Set your starting price and check your details before creating your profile.' },
+    pricing: { shortLabel: 'Pricing', title: 'A few finishing touches.', description: 'Set a starting price that fits your service. You can refine your packages later.' },
+    reviewStep: { shortLabel: 'Review', title: 'Your business, beautifully presented.', description: 'Review your information and photos. Your profile stays unpublished until you choose to publish it.' },
   },
   es: {
     eyebrow: 'Para profesionales de bodas', title: 'Un espacio para tu negocio de bodas.',
@@ -23,6 +24,7 @@ export const vendorOnboardingCopy = {
     media: { shortLabel: 'Fotos', title: 'Deja que tu trabajo hable por ti.', description: 'Añade tu logo y una foto de portada. Podrás completar tu galería después.' },
     coverage: { shortLabel: 'Ubicación', title: '¿Dónde trabajas?', description: 'Ayuda a las parejas a encontrarte y conocer tu zona de servicio.' },
     contact: { shortLabel: 'Contacto', title: 'Conectar empieza aquí.', description: 'Añade un teléfono o sitio web y los idiomas en los que trabajas.' },
-    pricing: { shortLabel: 'Finalizar', title: 'Los últimos detalles.', description: 'Indica tu precio inicial y revisa la información antes de crear tu perfil.' },
+    pricing: { shortLabel: 'Precios', title: 'Los últimos detalles.', description: 'Indica un precio inicial adecuado para tu servicio. Podrás ajustar tus paquetes después.' },
+    reviewStep: { shortLabel: 'Revisar', title: 'Tu negocio, presentado con estilo.', description: 'Revisa tus datos y tus fotos. Tu perfil seguirá sin publicar hasta que decidas hacerlo.' },
   },
 };

@@ -1,87 +1,96 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabaseBrowser } from "@/lib/supabase/client";
+import EditorialAuthLayout from "@/components/auth/EditorialAuthLayout";
+import PasswordInput from "@/components/PasswordInput";
+import { authFeedbackKey } from "@/lib/auth-feedback";
 
-export default function ResetPasswordClient() {
+export default function ResetPasswordClient({ nextPath = "/account/profile" }: { nextPath?: string }) {
   const { dictionary } = useLanguage();
   const labels = dictionary.login;
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [errorKey, setErrorKey] = useState<ReturnType<typeof authFeedbackKey> | "passwordTooShort" | "passwordMismatch" | null>(null);
+  const inFlight = useRef(false);
+  const error = errorKey === "passwordTooShort" || errorKey === "passwordMismatch"
+    ? labels[errorKey] : errorKey ? labels.feedback[errorKey] : null;
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setError(null);
+    if (inFlight.current) return;
+    setErrorKey(null);
 
     if (password.length < 8) {
-      setError(labels.passwordTooShort);
+      setErrorKey("passwordTooShort");
       return;
     }
     if (password !== confirmation) {
-      setError(labels.passwordMismatch);
+      setErrorKey("passwordMismatch");
       return;
     }
 
+    inFlight.current = true;
     setLoading(true);
-    const { error: updateError } = await supabaseBrowser.auth.updateUser({ password });
-    if (updateError) {
+    try {
+      const { error: updateError } = await supabaseBrowser.auth.updateUser({ password });
+      if (updateError) throw updateError;
+      const { error: signOutError } = await supabaseBrowser.auth.signOut();
+      if (signOutError) throw signOutError;
+      window.location.replace(`/login?${new URLSearchParams({ password_updated: "1", next: nextPath })}`);
+    } catch (error) {
       setLoading(false);
-      setError(updateError.message);
-      return;
+      inFlight.current = false;
+      setErrorKey(authFeedbackKey(error));
     }
-
-    await supabaseBrowser.auth.signOut();
-    window.location.replace("/login?password_updated=1");
   }
 
   return (
-    <main className="wm-auth-shell">
-      <div className="wm-auth-card">
-        <div className="wm-auth-card__header">
-          <Link href="/" className="wm-auth-card__brand">Wedding Market</Link>
-          <p className="wm-auth-card__eyebrow">{labels.resetEyebrow}</p>
-          <h1 className="wm-auth-card__title">{labels.newPasswordTitle}</h1>
-        </div>
-
-        <div className="wm-auth-card__body">
-          <p className="wm-auth-description">{labels.newPasswordDescription}</p>
+    <EditorialAuthLayout>
+        <header className="wm-auth-editorial__heading">
+          <p className="wm-auth-editorial__eyebrow">{labels.resetEyebrow}</p>
+          <h1>{labels.newPasswordTitle}</h1>
+          <p>{labels.newPasswordDescription}</p>
+        </header>
           {error && <div className="wm-auth-error" role="alert">{error}</div>}
 
-          <form onSubmit={onSubmit}>
+          <form onSubmit={onSubmit} aria-busy={loading}>
             <div className="wm-auth-form-group">
               <label htmlFor="new-password">{labels.newPasswordLabel}</label>
-              <input
+              <PasswordInput
                 id="new-password"
-                type="password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 required
                 minLength={8}
                 autoComplete="new-password"
+                name="password"
+                disabled={loading}
               />
             </div>
             <div className="wm-auth-form-group">
               <label htmlFor="confirm-password">{labels.confirmPasswordLabel}</label>
-              <input
+              <PasswordInput
                 id="confirm-password"
-                type="password"
                 value={confirmation}
                 onChange={(event) => setConfirmation(event.target.value)}
                 required
                 minLength={8}
                 autoComplete="new-password"
+                name="confirmation"
+                disabled={loading}
               />
             </div>
             <button className="wm-auth-btn" type="submit" disabled={loading}>
               {loading ? labels.updatingPassword : labels.updatePassword}
             </button>
           </form>
-        </div>
-      </div>
-    </main>
+          <div className="wm-auth-back">
+            <Link className="wm-auth-text-link" href={`/forgot-password?${new URLSearchParams({ next: nextPath })}`}>{labels.resetSubmit}</Link>
+          </div>
+    </EditorialAuthLayout>
   );
 }

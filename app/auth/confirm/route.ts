@@ -2,16 +2,14 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { authRedirectUrl, safeAuthNextPath } from '@/lib/auth-redirect';
+import { authCallbackFailurePath, authRedirectUrl, safeAuthNextPath } from '@/lib/auth-redirect';
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const tokenHash = requestUrl.searchParams.get("token_hash");
   const type = requestUrl.searchParams.get("type") as EmailOtpType | null;
   const next = safeAuthNextPath(requestUrl.searchParams.get("next"), type === 'recovery' ? '/reset-password' : '/');
-  const fallbackPath = type === "recovery"
-    ? "/forgot-password?error=recovery"
-    : "/login?error=auth_callback";
+  const fallbackPath = authCallbackFailurePath(type === 'recovery' && !next.startsWith('/reset-password') ? '/reset-password' : next);
 
   if (!tokenHash || !type) {
     return NextResponse.redirect(authRedirectUrl(fallbackPath));

@@ -2,14 +2,14 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import { authRedirectUrl, safeAuthNextPath } from '@/lib/auth-redirect';
+import { authCallbackFailurePath, authRedirectUrl, safeAuthNextPath } from '@/lib/auth-redirect';
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
   const next = safeAuthNextPath(requestUrl.searchParams.get("next"));
   const res = NextResponse.redirect(authRedirectUrl(next));
-  if (!code) return res;
+  if (!code) return NextResponse.redirect(authRedirectUrl(authCallbackFailurePath(next)));
 
   const cookieStore = await cookies(); // Next 15: await
   const isProd = process.env.NODE_ENV === "production";
@@ -49,12 +49,13 @@ export async function GET(request: Request) {
     }
   );
 
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) {
-    const fallbackPath = next === "/reset-password"
-      ? "/forgot-password?error=recovery"
-      : "/login?error=auth_callback";
-    return NextResponse.redirect(authRedirectUrl(fallbackPath));
+    return NextResponse.redirect(authRedirectUrl(authCallbackFailurePath(next)));
+  }
+  if (next === "/account/profile" && data.user) {
+    const { data: isVendor } = await supabase.rpc("is_vendor", { _uid: data.user.id });
+    if (isVendor) res.headers.set("Location", authRedirectUrl("/vendor/profile").href);
   }
   return res;
 }

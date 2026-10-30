@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { usesWorkspaceFooter } from '../lib/header-navigation';
 
 test('workspace footer includes nested vendor, account and onboarding routes', () => {
-  for (const path of ['/vendor', '/vendor/profile', '/vendor/location', '/vendor/inbox/request__vendor', '/vendor/notifications/deleted', '/account/profile', '/account/inbox/request__vendor', '/signup/vendor', '/signup/check-email', '/login', '/rfq/new']) {
+  for (const path of ['/vendor', '/vendor/profile', '/vendor/location', '/vendor/inbox/request__vendor', '/vendor/notifications/deleted', '/account/profile', '/account/inbox/request__vendor', '/signup/vendor', '/signup/check-email', '/login', '/forgot-password', '/reset-password', '/rfq/new']) {
     assert.equal(usesWorkspaceFooter(path), true, path);
   }
 });
