@@ -1,6 +1,15 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { authCallbackFailurePath, authRedirectUrl, safeAuthNextPath } from '../../lib/auth-redirect';
+import {canonicalSiteRedirect} from '../../lib/site-url';
+
+test('www browser entry stays on the configured canonical host and preserves OAuth return parameters',()=>{
+  const request={pathname:'/login',search:'?next=%2Fvendor%2Finbox'};
+  assert.equal(canonicalSiteRedirect(request,'www.thewedmarket.com','https://thewedmarket.com')?.href,'https://thewedmarket.com/login?next=%2Fvendor%2Finbox');
+  assert.equal(canonicalSiteRedirect(request,'WWW.thewedmarket.com:443','https://thewedmarket.com')?.hostname,'thewedmarket.com');
+  for(const host of ['thewedmarket.com','localhost:3240','evil.invalid','www.thewedmarket.com.evil.invalid'])assert.equal(canonicalSiteRedirect(request,host,'https://thewedmarket.com'),null);
+  assert.equal(canonicalSiteRedirect({pathname:'//evil.invalid',search:'?code=synthetic'},'www.thewedmarket.com','https://thewedmarket.com')?.origin,'https://thewedmarket.com');
+});
 
 test('auth redirects use the configured public origin behind a localhost reverse proxy', () => {
   const previous = process.env.NEXT_PUBLIC_SITE_URL;

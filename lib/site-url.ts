@@ -10,3 +10,13 @@ export function getSiteUrl() {
   }
   return process.env.NODE_ENV === 'production' ? 'https://thewedmarket.com' : 'http://localhost:3000';
 }
+
+/** Keep browser sessions on the configured origin; Host is only compared, never trusted as a target. */
+export function canonicalSiteRedirect(request:{pathname:string;search:string},host:string|null,origin=getSiteUrl()) {
+  const canonical=new URL(origin);
+  if(!host||host.toLowerCase().replace(/:443$/,'')!==`www.${canonical.hostname}`)return null;
+  const target=new URL(canonical.origin);
+  target.pathname=request.pathname;
+  target.search=request.search;
+  return target;
+}
