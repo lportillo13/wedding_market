@@ -1,0 +1,108 @@
+{
+  "checkedAt": "2026-10-30T19:38:07.967Z",
+  "base": "http://127.0.0.1:3257",
+  "checks": [
+    {
+      "path": "/for-vendors",
+      "language": "en",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/",
+      "language": "en",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/for-vendors",
+      "language": "es",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/",
+      "language": "es",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/950b9a950bd2b331.css",
+      "language": "en",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/112e9bdb4474b22f.css",
+      "language": "en",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/e523bf5607b64c85.css",
+      "language": "en",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/46576255ca835bf8.css",
+      "language": "en",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/1644a0f926e2763f.css",
+      "language": "en",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/a5c630def3da9cb2.css",
+      "language": "en",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "check": "reduced-motion and cinematic hero styles delivered",
+      "passed": true
+    },
+    {
+      "path": "/api/ready",
+      "language": "en",
+      "method": "GET",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/admin/blog-posts",
+      "language": "en",
+      "method": "GET",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/uploads",
+      "language": "en",
+      "method": "POST",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/mobile/quotes",
+      "language": "en",
+      "method": "POST",
+      "status": 401,
+      "passed": true
+    }
+  ]
+}

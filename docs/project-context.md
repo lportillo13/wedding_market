@@ -11,7 +11,20 @@ platform will not be free and requested removal of free-pricing promises from
 the vendor page, removal of its animation pause button, and the same scroll
 mouse used on the homepage. This supersedes the earlier vendor launch-pricing
 copy. No rate, billing model or checkout implementation was specified. Keep
-automatic reduced-motion support and record the completed refinement below.
+automatic reduced-motion support. The owner subsequently supplied hero,
+“Your business / Beautifully connected” and closing headline references with
+serif first lines, Lucia script second lines and compact leading; apply that
+treatment to all three headlines. Other headings keep their existing typography.
+
+Vendor pricing/control release **ff43b847fedae5a498bfe716a02c552c6bb7ac9e**
+is verified live. Typography commit **4cbc0f9441be7962130199d0e9294e956f7577bb**
+is built but not deployed: free disk was 5,341,536,256 bytes, below the fixed
+6 GiB deployment reserve. The owner has been asked to start the installed
+`wedding-market-retention.service` from the root terminal. Preserve the live
+release/rollback and reserve; no cleanup or privilege change has been performed.
+After space is restored, retry the existing typography manifest and verify its
+exact receipt plus live EN/ES desktop/phone rendering.
+[Vendor page refinement status](vendor-landing-2026-10-30/README.md).
 
 Included vendor introduction release: **d969a533ad79a6af6c7b1202faa0b46502757938**
 (October 30, 2026). The owner requested a dedicated vendor benefits page inspired

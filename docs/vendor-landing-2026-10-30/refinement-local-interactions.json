@@ -1,0 +1,77 @@
+{
+  "checkedAt": "2026-10-30T19:31:04.749Z",
+  "checks": [
+    {
+      "animationButton": false,
+      "centerOffset": 0,
+      "freeClaim": false,
+      "language": "en",
+      "mouseHeight": 33,
+      "mouseWidth": 21,
+      "scrollWidth": 1425,
+      "touchHeight": 48,
+      "wheelAnimation": "wm-scroll-wheel",
+      "width": 1425
+    },
+    {
+      "animationButton": false,
+      "centerOffset": 0,
+      "freeClaim": false,
+      "language": "en",
+      "mouseHeight": 33,
+      "mouseWidth": 21,
+      "scrollWidth": 375,
+      "touchHeight": 48,
+      "width": 375
+    },
+    {
+      "animationButton": false,
+      "centerOffset": 0,
+      "freeClaim": false,
+      "language": "en",
+      "mouseHeight": 33,
+      "mouseWidth": 21,
+      "scrollWidth": 305,
+      "touchHeight": 48,
+      "width": 305
+    },
+    {
+      "animationButton": false,
+      "centerOffset": 0,
+      "freeClaim": false,
+      "language": "es",
+      "mouseHeight": 33,
+      "mouseWidth": 21,
+      "scrollWidth": 1425,
+      "touchHeight": 48,
+      "width": 1425
+    },
+    {
+      "animationButton": false,
+      "centerOffset": 0,
+      "freeClaim": false,
+      "language": "es",
+      "mouseHeight": 33,
+      "mouseWidth": 21,
+      "scrollWidth": 375,
+      "touchHeight": 48,
+      "width": 375
+    },
+    {
+      "animationButton": false,
+      "centerOffset": 0,
+      "freeClaim": false,
+      "language": "es",
+      "mouseHeight": 33,
+      "mouseWidth": 21,
+      "scrollWidth": 305,
+      "touchHeight": 48,
+      "width": 305
+    }
+  ],
+  "keyboardScroll": {
+    "focusedDestination": "vendor-possibilities",
+    "clearOfHeader": true
+  },
+  "noCustomerWrites": true
+}
