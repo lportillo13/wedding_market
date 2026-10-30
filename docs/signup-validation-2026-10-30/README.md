@@ -31,8 +31,23 @@ inspection pass. The live migration source and function body match after normali
 browser CRLF line endings, with server-only execution independently verified.
 See [source digest](migration-source.json) and [live receipt](migration-live-receipt.json).
 
-Production application publication and live UI verification are recorded below
-after deployment. Existing unrelated working changes and the held native release
-are preserved.
+Application **fa0d65aedd3061da105fe1a780432d753010c2eb** is verified live by
+the exact [gateway receipt](deployment-success.json) and all **31 public checks**
+in [the report](public-checks.json). Rollback is
+`/var/www/wedding-market.before-20261030-140737`.
+
+A temporary anonymous preview forwarded the actual live page/assets and only the
+read-only email-check action. It stripped authentication cookies and rejected
+account-creation submissions. The owner's existing address, including an uppercase
+variant, remained on step1 with inline EN/ES feedback and correct recovery links.
+An unused reserved-domain address cleared the feedback and advanced to step2;
+returning and re-entering the existing address blocked again. Exactly three lookup
+requests returned200, with duplicate results true/false/true. There was one header
+language group and zero account-layout language controls. At a390px viewport,
+document client/scroll widths both measured375px. The viewport was restored and
+the temporary preview stopped. No account was created, no profile was changed and
+no mail was sent. Private screenshots remain in ignored cache.
+
+Existing unrelated working changes and the held native release are preserved.
 
 Provider reference: [Supabase signup behavior](https://supabase.com/docs/reference/javascript/auth-signup).

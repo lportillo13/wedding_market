@@ -1,5 +1,6 @@
 /* Account navigation and the shared client/vendor conversation list. */
 .wm-account-workspace {
+  --wm-account-content-width: 1040px;
   background: #fcf8f1;
   min-height: calc(100svh - var(--wm-header-height) - 90px);
   .wm-account-header {
@@ -11,8 +12,11 @@
       display: flex;
       gap: 1rem;
       justify-content: space-between;
-      max-width: 1040px;
+      max-width: var(--wm-account-content-width);
     }
+  }
+  .wm-account-profile {
+    max-width: var(--wm-account-content-width);
   }
   .wm-account-header__eyebrow {
     color: #74604f;

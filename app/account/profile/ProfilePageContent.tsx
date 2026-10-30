@@ -26,7 +26,7 @@ export default function ProfilePageContent({ initial, avatarImage }: ProfilePage
 
   return (
     <div className="wm-page-content">
-      <div className="container" style={{ maxWidth: "52rem" }}>
+      <div className="container wm-account-profile">
         <p className="text-secondary mb-4">{labels.intro}</p>
         <AvatarForm
           image={avatarImage}
