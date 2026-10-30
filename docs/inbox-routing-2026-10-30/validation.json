@@ -1,0 +1,14 @@
+{
+  "applicationCommit": "a0b0713aafc58444468c50c2baeeed7ec8298876",
+  "architecture": "passed",
+  "typecheck": "passed",
+  "lint": "passed",
+  "productionBuild": "passed",
+  "applicationTests": {"passed": 136, "failed": 0},
+  "publicChecks": {"passed": 32, "failed": 0},
+  "verifiedLegacyInboxRedirect": "/account/inbox -> /vendor/inbox",
+  "roleOrDatabasePolicyChanges": false,
+  "conversationDataModified": false,
+  "headerDesignSelected": false,
+  "nativeRelease": false
+}
