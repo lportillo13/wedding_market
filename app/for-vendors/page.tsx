@@ -7,8 +7,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: es ? "Para profesionales de bodas | Wedding Market" : "For wedding professionals | Wedding Market",
     description: es
-      ? "Presenta tu negocio, recibe solicitudes y organiza tus conversaciones y cotizaciones para bodas en Costa Rica. Crea tu cuenta gratuita."
-      : "Showcase your business, receive wedding inquiries and keep conversations and proposals together. Join Wedding Market for weddings in Costa Rica. Free to get started.",
+      ? "Presenta tu negocio, recibe solicitudes y organiza tus conversaciones y cotizaciones para bodas en Costa Rica."
+      : "Showcase your business, receive wedding inquiries and keep conversations and proposals together. Join Wedding Market for weddings in Costa Rica.",
     alternates: { canonical: "https://thewedmarket.com/for-vendors" },
   };
 }

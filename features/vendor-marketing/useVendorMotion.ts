@@ -4,13 +4,13 @@ import { useEffect, type RefObject } from "react";
 
 // Content stays visible without JavaScript. Only nearby, offscreen elements
 // become reveal targets; long sections and the sticky studio never transform.
-export function useVendorMotion(root: RefObject<HTMLElement | null>, paused: boolean) {
+export function useVendorMotion(root: RefObject<HTMLElement | null>, reducedMotion: boolean) {
   useEffect(() => {
     const page = root.current;
     if (!page) return;
     const targets = Array.from(page.querySelectorAll<HTMLElement>("[data-vendor-reveal]"));
     const show = (target: HTMLElement) => { target.dataset.reveal = "visible"; };
-    if (paused) {
+    if (reducedMotion) {
       targets.forEach((target) => { target.removeAttribute("data-reveal"); });
       return;
     }
@@ -41,5 +41,5 @@ export function useVendorMotion(root: RefObject<HTMLElement | null>, paused: boo
     };
     page.addEventListener("focusin", onFocus);
     return () => { observer.disconnect(); page.removeEventListener("focusin", onFocus); };
-  }, [root, paused]);
+  }, [root, reducedMotion]);
 }

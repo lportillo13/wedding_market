@@ -16,17 +16,17 @@ export default function VendorLanding() {
   const { language } = useLanguage();
   const copy = vendorLandingCopy[language];
   const root = useRef<HTMLElement>(null);
-  const [paused, setPaused] = useState(true);
+  const [reducedMotion, setReducedMotion] = useState(true);
   const [active, setActive] = useState(0);
   const tabs = useRef<Array<HTMLButtonElement | null>>([]);
   const id = useId();
   const feature = copy.features[active];
-  useVendorMotion(root, paused);
+  useVendorMotion(root, reducedMotion);
 
   useEffect(() => {
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const frame = requestAnimationFrame(() => setPaused(motion.matches));
-    const onChange = (event: MediaQueryListEvent) => setPaused(event.matches);
+    const frame = requestAnimationFrame(() => setReducedMotion(motion.matches));
+    const onChange = (event: MediaQueryListEvent) => setReducedMotion(event.matches);
     motion.addEventListener("change", onChange);
     return () => { cancelAnimationFrame(frame); motion.removeEventListener("change", onChange); };
   }, []);
@@ -36,10 +36,14 @@ export default function VendorLanding() {
     if (!destination) return;
     event.preventDefault();
     destination.focus({ preventScroll: true });
-    destination.scrollIntoView({ behavior: paused ? "instant" : "smooth", block: "start" });
+    const headerBottom = document.querySelector(".wm-site-header")?.getBoundingClientRect().bottom ?? 0;
+    window.scrollTo({
+      top: Math.max(0, destination.offsetTop - headerBottom - 16),
+      behavior: reducedMotion ? "auto" : "smooth",
+    });
   }
 
-  return <main ref={root} className={`wm-vendor-landing ${s.page}`} data-motion={paused ? "paused" : "active"}>
+  return <main ref={root} className={`wm-vendor-landing ${s.page}`} data-motion={reducedMotion ? "paused" : "active"}>
     <section className={s.hero} aria-labelledby="vendor-hero-title">
       <div className={s.heroImage}><Image src="/images/auth-editorial-welcome.webp" alt="" fill sizes="100vw" priority /></div>
       <div className={s.heroShade} />
@@ -48,9 +52,12 @@ export default function VendorLanding() {
         <h1 id="vendor-hero-title"><span>{copy.title}</span><em>{copy.titleAccent}</em></h1>
         <p className={s.heroDescription}>{copy.description}</p>
         <Link href="/signup/vendor" className={`${s.cta} ${s.ctaLight}`}>{copy.join}<Arrow /></Link>
-        <p className={s.heroNote}>{copy.free}</p>
+        <p className={s.heroNote}>{copy.audience}</p>
       </div>
-      <div className={s.heroBottom}><span className={s.heroLocation}>Costa Rica <span aria-hidden="true">—</span> Wedding Market</span><a className={s.explore} href="#vendor-possibilities" onClick={explore}><span>{copy.explore}</span><span className={s.scrollArrow} aria-hidden="true">↓</span></a><button type="button" className={s.motion} onClick={() => setPaused((value) => !value)} aria-label={paused ? copy.play : copy.pause} aria-pressed={!paused}><HeaderIcon name={paused ? "play" : "pause"} /><span>{paused ? copy.play : copy.pause}</span></button></div>
+      <div className={s.heroBottom}><span className={s.heroLocation}>Costa Rica <span aria-hidden="true">—</span> Wedding Market</span></div>
+      <a href="#vendor-possibilities" className="wm-founders-hero__scroll-cue" onClick={explore} aria-label={copy.explore}>
+        <span className="wm-founders-hero__scroll-mouse" aria-hidden="true"><span className="wm-founders-hero__scroll-wheel" /></span>
+      </a>
     </section>
 
     <section id="vendor-possibilities" tabIndex={-1} className={`${s.section} ${s.intro}`} aria-labelledby="vendor-intro-title">
@@ -94,6 +101,6 @@ export default function VendorLanding() {
 
     <section className={`${s.section} ${s.faqSection}`} aria-labelledby="vendor-faq-title"><div data-vendor-reveal><p className={s.eyebrow}>{copy.faqLabel}</p><h2 id="vendor-faq-title">{copy.faqTitle}</h2><Link href="/support" className={s.textLink}>{copy.help}<HeaderIcon name="arrow" aria-hidden="true" /></Link></div><div className={s.faqs} data-vendor-reveal>{copy.questions.map((item, index) => <details key={index}><summary>{item.q}<span aria-hidden="true">+</span></summary><p>{item.a}</p></details>)}</div></section>
 
-    <section className={s.closing} aria-labelledby="vendor-closing-title"><div data-vendor-reveal><p className={s.eyebrow}>{copy.closingLabel}</p><h2 id="vendor-closing-title">{copy.closingTitle}<em>{copy.closingAccent}</em></h2><p>{copy.closingBody}</p><Link href="/signup/vendor" className={`${s.cta} ${s.ctaLight}`}>{copy.join}<Arrow /></Link><p className={s.closingNote}>{copy.free}</p><Link href="/login?next=%2Fvendor" className={s.login}>{copy.login}</Link></div><span className={s.closingMark} aria-hidden="true">WM</span></section>
+    <section className={s.closing} aria-labelledby="vendor-closing-title"><div data-vendor-reveal><p className={s.eyebrow}>{copy.closingLabel}</p><h2 id="vendor-closing-title">{copy.closingTitle}<em>{copy.closingAccent}</em></h2><p>{copy.closingBody}</p><Link href="/signup/vendor" className={`${s.cta} ${s.ctaLight}`}>{copy.join}<Arrow /></Link><p className={s.closingNote}>{copy.audience}</p><Link href="/login?next=%2Fvendor" className={s.login}>{copy.login}</Link></div><span className={s.closingMark} aria-hidden="true">WM</span></section>
   </main>;
 }
