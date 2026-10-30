@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-10-30T15:28:05.349Z",
+  "checks": [
+    {
+      "documentWidth": 1265,
+      "exampleDataLabel": true,
+      "footerTop": 654,
+      "saveBottom": 635.640625,
+      "scrollWidth": 1265,
+      "title": "Panel del proveedor · Opción A",
+      "viewport": 1280
+    },
+    {
+      "documentWidth": 1265,
+      "exampleDataLabel": true,
+      "footerTop": 654,
+      "saveBottom": 653.125,
+      "scrollWidth": 1265,
+      "title": "Panel del proveedor · Opción B",
+      "viewport": 1280
+    },
+    {
+      "documentWidth": 1265,
+      "exampleDataLabel": true,
+      "footerTop": 654,
+      "saveBottom": 643.125,
+      "scrollWidth": 1265,
+      "title": "Panel del proveedor · Opción C",
+      "viewport": 1280
+    }
+  ]
+}

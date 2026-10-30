@@ -1,0 +1,38 @@
+{
+  "checkedAt": "2026-10-30T15:24:40.898Z",
+  "releaseCommit": "facdeecbb1550dd86c82d99a5e911c84993b66e6",
+  "desktop": {
+    "client": 1265,
+    "contained": true,
+    "menu": {
+      "bottom": 449.5625,
+      "left": 950,
+      "right": 1220,
+      "top": 93.59375,
+      "width": 270
+    },
+    "triggerRight": 1220,
+    "width": 1280
+  },
+  "shortWindow": {
+    "clientHeight": 234,
+    "contained": true,
+    "height": 360,
+    "lastActionVisible": true,
+    "menu": {
+      "bottom": 329.59375,
+      "left": 950,
+      "right": 1220,
+      "top": 93.59375,
+      "width": 270
+    },
+    "scrollHeight": 354,
+    "width": 1280
+  },
+  "escape": {
+    "closed": true,
+    "focusReturned": true
+  },
+  "outsideClickCloses": true,
+  "noAccountOrCustomerDataWritten": true
+}
