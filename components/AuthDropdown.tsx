@@ -170,6 +170,9 @@ export default function AuthDropdown({ user, isVendor }: AuthDropdownProps) {
             {t("auth.profile")}
           </Link>
         </li>
+        {isVendor && <li>
+          <Link className="dropdown-item" href="/account/profile">{t("auth.personalProfile")}</Link>
+        </li>}
         <li>
           <Link
             className="dropdown-item"

@@ -3,11 +3,12 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { authCallbackFailurePath, authRedirectUrl, safeAuthNextPath } from '@/lib/auth-redirect';
+import {resolveLoginDestination} from '@/features/auth/domain/login-destination';
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const next = safeAuthNextPath(requestUrl.searchParams.get("next"));
+  const next = safeAuthNextPath(requestUrl.searchParams.get("next"), '/account/profile');
   const res = NextResponse.redirect(authRedirectUrl(next));
   if (!code) return NextResponse.redirect(authRedirectUrl(authCallbackFailurePath(next)));
 
@@ -53,9 +54,13 @@ export async function GET(request: Request) {
   if (error) {
     return NextResponse.redirect(authRedirectUrl(authCallbackFailurePath(next)));
   }
-  if (next === "/account/profile" && data.user) {
-    const { data: isVendor } = await supabase.rpc("is_vendor", { _uid: data.user.id });
-    if (isVendor) res.headers.set("Location", authRedirectUrl("/vendor/profile").href);
-  }
+  const destination = await resolveLoginDestination(
+    {nextPath: next, defaultWorkspace: !requestUrl.searchParams.has('next'), userId: data.user?.id},
+    async userId => {
+      const {data: isVendor} = await supabase.rpc('is_vendor', {_uid: userId});
+      return Boolean(isVendor);
+    },
+  );
+  res.headers.set('Location', authRedirectUrl(destination).href);
   return res;
 }

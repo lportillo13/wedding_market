@@ -7,28 +7,18 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import EditorialAuthLayout from "@/components/auth/EditorialAuthLayout";
 import { authFeedbackKey } from "@/lib/auth-feedback";
-
-async function resolveLoginDestination(nextPath: string, userId?: string) {
-  if (nextPath !== "/account/profile") {
-    return nextPath;
-  }
-
-  if (!userId) {
-    return nextPath;
-  }
-
-  const { data: isVendor } = await supabaseBrowser.rpc("is_vendor", { _uid: userId });
-  return isVendor ? "/vendor/profile" : "/account/profile";
-}
+import {loginCallbackPath, resolveLoginDestination} from '@/features/auth/domain/login-destination';
 
 export default function LoginClient({
   nextPath,
   passwordUpdated = false,
   callbackError = false,
+  defaultWorkspace = true,
 }: {
   nextPath: string;
   passwordUpdated?: boolean;
   callbackError?: boolean;
+  defaultWorkspace?: boolean;
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -59,7 +49,13 @@ export default function LoginClient({
     try {
       const { data, error } = await supabaseBrowser.auth.signInWithPassword({ email: email.trim(), password });
       if (error) throw error;
-      const destination = await resolveLoginDestination(nextPath, data.user?.id);
+      const destination = await resolveLoginDestination(
+        {nextPath, defaultWorkspace, userId: data.user?.id},
+        async userId => {
+          const {data: isVendor} = await supabaseBrowser.rpc('is_vendor', {_uid: userId});
+          return Boolean(isVendor);
+        },
+      );
       window.location.replace(destination);
     } catch (error) {
       setErrorKey(authFeedbackKey(error));
@@ -76,7 +72,7 @@ export default function LoginClient({
     try {
       const { error } = await supabaseBrowser.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: `${location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}` },
+        options: { redirectTo: location.origin + loginCallbackPath(nextPath, defaultWorkspace) },
       });
       if (error) throw error;
     } catch (error) {

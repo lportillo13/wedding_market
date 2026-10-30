@@ -102,6 +102,7 @@ const common = {
   "auth": {
     "account": "Account",
     "profile": "Profile",
+    "personalProfile": "Personal profile",
     "notifications": "Notifications",
     "vendorRfqs": "Customer requests",
     "createVendorProfile": "Create vendor profile",

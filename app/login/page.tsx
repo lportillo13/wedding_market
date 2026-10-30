@@ -25,5 +25,5 @@ export default async function Page({
   // If already logged in, go straight to target
   if (user) redirect(nextPath);
 
-  return <LoginClient nextPath={nextPath} passwordUpdated={sp.password_updated === "1"} callbackError={sp.error === "auth_callback"} />;
+  return <LoginClient nextPath={nextPath} defaultWorkspace={!sp.next} passwordUpdated={sp.password_updated === "1"} callbackError={sp.error === "auth_callback"} />;
 }

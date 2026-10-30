@@ -9,7 +9,9 @@ test("vendor navigation retains the unified vendor inbox and owned workspace des
   const links = getHeaderAccountLinks(true);
   assert.ok(links.some((link) => link.href === "/vendor/inbox"));
   assert.ok(links.some((link) => link.href === "/vendor/profile"));
-  assert.ok(links.every((link) => link.href.startsWith("/vendor")));
+  assert.ok(links.some((link) => link.href === "/account/profile" && link.label === 'auth.personalProfile'));
+  assert.ok(links.every((link) => link.href.startsWith("/vendor") || link.href === '/account/profile'));
+  assert.ok(!links.some(link => link.href === '/account/inbox' || link.href === '/account/reviews'));
 });
 test("client navigation retains the independent client inbox and profile", () => {
   const links = getHeaderAccountLinks(false);

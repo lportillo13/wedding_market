@@ -15,6 +15,7 @@ export function getHeaderAccountLinks(isVendor: boolean): HeaderAccountLink[] {
         },
         { href: "/vendor/inbox", label: "auth.vendorRfqs", icon: "inbox" },
         { href: "/vendor/profile", label: "auth.profile", icon: "user" },
+        { href: "/account/profile", label: "auth.personalProfile", icon: "user" },
         {
           href: "/vendor/notifications",
           label: "auth.notifications",
