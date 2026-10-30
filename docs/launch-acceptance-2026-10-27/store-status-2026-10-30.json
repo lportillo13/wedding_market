@@ -1,0 +1,44 @@
+{
+  "checkedAt": "2026-10-30T14:00:26Z",
+  "timeZone": "America/New_York",
+  "google": {
+    "package": "com.theweddingmarket.app",
+    "version": "1.0.0",
+    "versionCode": 10,
+    "track": "Production",
+    "observedStatus": "Active",
+    "lastPublishedDateShown": "October 30, 2026",
+    "selectedCountryCount": 176,
+    "managedPublishing": "off",
+    "unpublishedChanges": false,
+    "publicUrl": "https://play.google.com/store/apps/details?id=com.theweddingmarket.app",
+    "publicListingVerified": true,
+    "publicInstallButtonVisible": true,
+    "publicDeveloperDisplayName": "Digital Wedding",
+    "screenshot": "google-public-live-2026-10-30.png",
+    "productionFollowup": {
+      "observedIssue": "DEX code optimization is below our threshold",
+      "obfuscationPercentShown": 1,
+      "fixByShown": "Feb 2027",
+      "recommendedActions": [
+        "Your app uses deprecated APIs or parameters for edge-to-edge",
+        "Remove resizability and orientation restrictions in your app to support large screen devices"
+      ],
+      "runtimeChangeMade": false
+    }
+  },
+  "apple": {
+    "appId": "6827392554",
+    "version": "1.0.0",
+    "buildNumber": 7,
+    "currentStatusVerified": false,
+    "currentCheckResult": "App Store Connect redirected to sign-in; session expired",
+    "lastConfirmedStatus": "Waiting for Review",
+    "lastConfirmedDate": "2026-10-28",
+    "submissionId": "507aef95-a97f-4e47-84db-f761068a0a5f",
+    "manualReleaseControlChanged": false
+  },
+  "newBuildUploadOrReleaseActionPerformed": false,
+  "newServiceKeyOrChargeCreated": false,
+  "ongoingMonitorCreated": false
+}
