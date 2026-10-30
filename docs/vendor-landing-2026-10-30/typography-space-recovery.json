@@ -1,0 +1,10 @@
+{
+  "recordedAt": "2026-10-30T19:57:43.578Z",
+  "ownerReportedCleanupComplete": true,
+  "availableBytesAfterCleanup": 66661548032,
+  "requiredBuildReserveBytes": 6442450944,
+  "typographyCommit": "4cbc0f9441be7962130199d0e9294e956f7577bb",
+  "existingManifestRetried": true,
+  "deploymentGuardsUnchanged": true,
+  "privilegesUnchanged": true
+}

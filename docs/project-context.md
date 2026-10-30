@@ -16,14 +16,18 @@ automatic reduced-motion support. The owner subsequently supplied hero,
 serif first lines, Lucia script second lines and compact leading; apply that
 treatment to all three headlines. Other headings keep their existing typography.
 
-Vendor pricing/control release **ff43b847fedae5a498bfe716a02c552c6bb7ac9e**
-is verified live. Typography commit **4cbc0f9441be7962130199d0e9294e956f7577bb**
-is built but not deployed: free disk was 5,341,536,256 bytes, below the fixed
-6 GiB deployment reserve. The owner has been asked to start the installed
-`wedding-market-retention.service` from the root terminal. Preserve the live
-release/rollback and reserve; no cleanup or privilege change has been performed.
-After space is restored, retry the existing typography manifest and verify its
-exact receipt plus live EN/ES desktop/phone rendering.
+Current verified website: **4cbc0f9441be7962130199d0e9294e956f7577bb**.
+The hero, business-section and closing headlines now use GT Super first lines
+and Lucia script accents with the reference's compact leading. Free-pricing
+promises and the animation button are absent, and the homepage scroll mouse is
+retained. The first typography attempt stopped below the fixed 6 GiB reserve.
+The owner reported running `wedding-market-retention.service`; independent
+readback found 66,661,548,032 available bytes. The same release manifest then
+completed with its exact receipt, 15 public HTTP checks and live EN/ES checks
+of all three headings at desktop, 390px and 320px widths. Screenshots confirm
+the reference typography. Rollback is
+`/var/www/wedding-market.before-20261030-195507`. Reserve, gateway privileges,
+customer data, DW and native releases remain unchanged by this refinement.
 [Vendor page refinement status](vendor-landing-2026-10-30/README.md).
 
 Included vendor introduction release: **d969a533ad79a6af6c7b1202faa0b46502757938**

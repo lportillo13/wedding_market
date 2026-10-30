@@ -1,0 +1,309 @@
+{
+  "checkedAt": "2026-10-30T19:59:52.813Z",
+  "releaseCommit": "4cbc0f9441be7962130199d0e9294e956f7577bb",
+  "cases": [
+    {
+      "headings": [
+        {
+          "accentFont": "\"Lucia BT\", cursive",
+          "accentLineHeight": "135.706px",
+          "accentMargin": "-39.9974px",
+          "accentSize": "142.848px",
+          "accentStyle": "normal",
+          "contentWidth": 676,
+          "font": "\"GT Super\", Georgia, serif",
+          "height": 241.515625,
+          "id": "vendor-hero-title",
+          "scrollWidth": 676,
+          "size": "148.8px",
+          "text": "Tú lo hacesinolvidable."
+        },
+        {
+          "accentFont": "\"Lucia BT\", cursive",
+          "accentLineHeight": "74.4192px",
+          "accentMargin": "-21.9341px",
+          "accentSize": "78.336px",
+          "accentStyle": "normal",
+          "contentWidth": 1344,
+          "font": "\"GT Super\", Georgia, serif",
+          "height": 137.34375,
+          "id": "vendor-studio-title",
+          "scrollWidth": 1344,
+          "size": "81.6px",
+          "text": "Tu negocio.Todo conectado."
+        },
+        {
+          "accentFont": "\"Lucia BT\", cursive",
+          "accentLineHeight": "94.848px",
+          "accentMargin": "-27.9552px",
+          "accentSize": "99.84px",
+          "accentStyle": "normal",
+          "contentWidth": 1787,
+          "font": "\"GT Super\", Georgia, serif",
+          "height": 175.046875,
+          "id": "vendor-closing-title",
+          "scrollWidth": 1787,
+          "size": "104px",
+          "text": "Tu próxima etapaempieza con un hola."
+        }
+      ],
+      "language": "es",
+      "scrollWidth": 1835,
+      "width": 1835
+    },
+    {
+      "headings": [
+        {
+          "accentFont": "\"Lucia BT\", cursive",
+          "accentLineHeight": "53.9904px",
+          "accentMargin": "-15.913px",
+          "accentSize": "56.832px",
+          "accentStyle": "normal",
+          "contentWidth": 335,
+          "font": "\"GT Super\", Georgia, serif",
+          "height": 96.09375,
+          "id": "vendor-hero-title",
+          "scrollWidth": 335,
+          "size": "59.2px",
+          "text": "Tú lo hacesinolvidable."
+        },
+        {
+          "accentFont": "\"Lucia BT\", cursive",
+          "accentLineHeight": "36.48px",
+          "accentMargin": "-10.752px",
+          "accentSize": "38.4px",
+          "accentStyle": "normal",
+          "contentWidth": 328,
+          "font": "\"GT Super\", Georgia, serif",
+          "height": 67.328125,
+          "id": "vendor-studio-title",
+          "scrollWidth": 328,
+          "size": "40px",
+          "text": "Tu negocio.Todo conectado."
+        },
+        {
+          "accentFont": "\"Lucia BT\", cursive",
+          "accentLineHeight": "40.8576px",
+          "accentMargin": "-12.0422px",
+          "accentSize": "43.008px",
+          "accentStyle": "normal",
+          "contentWidth": 335,
+          "font": "\"GT Super\", Georgia, serif",
+          "height": 75.40625,
+          "id": "vendor-closing-title",
+          "scrollWidth": 335,
+          "size": "44.8px",
+          "text": "Tu próxima etapaempieza con un hola."
+        }
+      ],
+      "language": "es",
+      "scrollWidth": 375,
+      "width": 375
+    },
+    {
+      "headings": [
+        {
+          "accentFont": "\"Lucia BT\", cursive",
+          "accentLineHeight": "50.3424px",
+          "accentMargin": "-14.8378px",
+          "accentSize": "52.992px",
+          "accentStyle": "normal",
+          "contentWidth": 265,
+          "font": "\"GT Super\", Georgia, serif",
+          "height": 89.59375,
+          "id": "vendor-hero-title",
+          "scrollWidth": 265,
+          "size": "55.2px",
+          "text": "Tú lo hacesinolvidable."
+        },
+        {
+          "accentFont": "\"Lucia BT\", cursive",
+          "accentLineHeight": "36.48px",
+          "accentMargin": "-10.752px",
+          "accentSize": "38.4px",
+          "accentStyle": "normal",
+          "contentWidth": 265,
+          "font": "\"GT Super\", Georgia, serif",
+          "height": 67.328125,
+          "id": "vendor-studio-title",
+          "scrollWidth": 265,
+          "size": "40px",
+          "text": "Tu negocio.Todo conectado."
+        },
+        {
+          "accentFont": "\"Lucia BT\", cursive",
+          "accentLineHeight": "40.8576px",
+          "accentMargin": "-12.0422px",
+          "accentSize": "43.008px",
+          "accentStyle": "normal",
+          "contentWidth": 265,
+          "font": "\"GT Super\", Georgia, serif",
+          "height": 121.984375,
+          "id": "vendor-closing-title",
+          "scrollWidth": 265,
+          "size": "44.8px",
+          "text": "Tu próxima etapaempieza con un hola."
+        }
+      ],
+      "language": "es",
+      "scrollWidth": 305,
+      "width": 305
+    },
+    {
+      "headings": [
+        {
+          "accentFont": "\"Lucia BT\", cursive",
+          "accentLineHeight": "135.706px",
+          "accentMargin": "-39.9974px",
+          "accentSize": "142.848px",
+          "accentStyle": "normal",
+          "contentWidth": 696,
+          "font": "\"GT Super\", Georgia, serif",
+          "height": 241.515625,
+          "id": "vendor-hero-title",
+          "scrollWidth": 696,
+          "size": "148.8px",
+          "text": "You make itunforgettable."
+        },
+        {
+          "accentFont": "\"Lucia BT\", cursive",
+          "accentLineHeight": "74.4192px",
+          "accentMargin": "-21.9341px",
+          "accentSize": "78.336px",
+          "accentStyle": "normal",
+          "contentWidth": 1344,
+          "font": "\"GT Super\", Georgia, serif",
+          "height": 137.34375,
+          "id": "vendor-studio-title",
+          "scrollWidth": 1344,
+          "size": "81.6px",
+          "text": "Your business.Beautifully connected."
+        },
+        {
+          "accentFont": "\"Lucia BT\", cursive",
+          "accentLineHeight": "94.848px",
+          "accentMargin": "-27.9552px",
+          "accentSize": "99.84px",
+          "accentStyle": "normal",
+          "contentWidth": 1787,
+          "font": "\"GT Super\", Georgia, serif",
+          "height": 175.046875,
+          "id": "vendor-closing-title",
+          "scrollWidth": 1787,
+          "size": "104px",
+          "text": "Your next chapterstarts with hello."
+        }
+      ],
+      "language": "en",
+      "scrollWidth": 1835,
+      "width": 1835
+    },
+    {
+      "headings": [
+        {
+          "accentFont": "\"Lucia BT\", cursive",
+          "accentLineHeight": "53.9904px",
+          "accentMargin": "-15.913px",
+          "accentSize": "56.832px",
+          "accentStyle": "normal",
+          "contentWidth": 335,
+          "font": "\"GT Super\", Georgia, serif",
+          "height": 96.09375,
+          "id": "vendor-hero-title",
+          "scrollWidth": 335,
+          "size": "59.2px",
+          "text": "You make itunforgettable."
+        },
+        {
+          "accentFont": "\"Lucia BT\", cursive",
+          "accentLineHeight": "36.48px",
+          "accentMargin": "-10.752px",
+          "accentSize": "38.4px",
+          "accentStyle": "normal",
+          "contentWidth": 328,
+          "font": "\"GT Super\", Georgia, serif",
+          "height": 67.328125,
+          "id": "vendor-studio-title",
+          "scrollWidth": 328,
+          "size": "40px",
+          "text": "Your business.Beautifully connected."
+        },
+        {
+          "accentFont": "\"Lucia BT\", cursive",
+          "accentLineHeight": "40.8576px",
+          "accentMargin": "-12.0422px",
+          "accentSize": "43.008px",
+          "accentStyle": "normal",
+          "contentWidth": 335,
+          "font": "\"GT Super\", Georgia, serif",
+          "height": 75.40625,
+          "id": "vendor-closing-title",
+          "scrollWidth": 335,
+          "size": "44.8px",
+          "text": "Your next chapterstarts with hello."
+        }
+      ],
+      "language": "en",
+      "scrollWidth": 375,
+      "width": 375
+    },
+    {
+      "headings": [
+        {
+          "accentFont": "\"Lucia BT\", cursive",
+          "accentLineHeight": "50.3424px",
+          "accentMargin": "-14.8378px",
+          "accentSize": "52.992px",
+          "accentStyle": "normal",
+          "contentWidth": 265,
+          "font": "\"GT Super\", Georgia, serif",
+          "height": 89.59375,
+          "id": "vendor-hero-title",
+          "scrollWidth": 265,
+          "size": "55.2px",
+          "text": "You make itunforgettable."
+        },
+        {
+          "accentFont": "\"Lucia BT\", cursive",
+          "accentLineHeight": "36.48px",
+          "accentMargin": "-10.752px",
+          "accentSize": "38.4px",
+          "accentStyle": "normal",
+          "contentWidth": 265,
+          "font": "\"GT Super\", Georgia, serif",
+          "height": 67.328125,
+          "id": "vendor-studio-title",
+          "scrollWidth": 265,
+          "size": "40px",
+          "text": "Your business.Beautifully connected."
+        },
+        {
+          "accentFont": "\"Lucia BT\", cursive",
+          "accentLineHeight": "40.8576px",
+          "accentMargin": "-12.0422px",
+          "accentSize": "43.008px",
+          "accentStyle": "normal",
+          "contentWidth": 265,
+          "font": "\"GT Super\", Georgia, serif",
+          "height": 121.984375,
+          "id": "vendor-closing-title",
+          "scrollWidth": 265,
+          "size": "44.8px",
+          "text": "Your next chapterstarts with hello."
+        }
+      ],
+      "language": "en",
+      "scrollWidth": 305,
+      "width": 305
+    }
+  ],
+  "finalPageChecks": {
+    "animationButton": false,
+    "freeClaim": false,
+    "language": "en",
+    "mouse": true,
+    "scrollWidth": 305,
+    "width": 305
+  },
+  "noCustomerWrites": true
+}
