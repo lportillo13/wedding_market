@@ -1,8 +1,19 @@
 # Full authentication journey tests
 
-Status: in progress. The owner requested live Google/Apple signup and sign-in for
-couples and vendors, email-code fallback and returning sessions. Passed checks
-below are separated from provider/account cases still pending.
+Status: available-account journeys verified. Fresh Google signup identities and
+Google branding re-verification remain pending. The owner requested live
+Google/Apple signup and sign-in for couples and vendors, email-code fallback
+and returning sessions. Coverage and limitations are separated below.
+
+| Journey | Verified result |
+| --- | --- |
+| Google returning owner | Real provider login and remembered session; original Luis Portillo profile restored after QA. |
+| Google fresh couple/vendor identities | Not exercised: no unused Google identity was available; the administrator was preserved. |
+| Apple new couple | Hide My Email, direct missing-details wedding setup, explicit save and remembered session. |
+| Apple returning couple | Real provider round trip to the requested couple inbox and remembered session. |
+| Apple vendor | The isolated Apple couple identity was reused: six-step business setup, separately approved terms, private business creation and a real returning Apple provider round trip to the vendor profile. |
+| Email codes | Separate couple/vendor signup and returning login; Apple relay fallback reused the same identity before and after vendor conversion. |
+| Relay placement | First relay email arrived in Spam; after reporting that known test message not spam, the next real relay email arrived directly in Inbox. This does not establish placement for all recipients. |
 
 ## Confirmed gateway failure and repair
 
@@ -176,23 +187,46 @@ profile retained the exact QA name and wedding date, confirming the existing
 Apple identity was reused. This is not evidence of clean first-delivery Inbox
 placement or of a global deliverability repair.
 
-The same isolated Apple identity is being reused for business setup rather than
+The same isolated Apple identity was reused for business setup rather than
 claiming a second unused Apple account. Verified vendor entry retained its saved
 owner name, asked for no password, and reached all six review steps with QA
-images, coverage, contact, languages and USD 250 starting price. Explicit owner
-approval is pending for its own agreement acceptance and conversion to an
-unpublished vendor profile. The earlier agreement approval applied only to the
-separate email-code QA vendor identity.
+images, coverage, contact, languages and USD 250 starting price. The owner
+separately approved its agreement acceptance and conversion to an unpublished
+vendor profile. The existing browser tab was unavailable after the handoff;
+the exact same approved draft was restored in a fresh tab, with the QA identity
+checked before acceptance. Recorded consent preserved review/images, and final
+save created `WM QA Apple Private Draft 20261030` with private-draft status.
+Reload retained the vendor session.
+
+The next real relay-code email arrived directly in Gmail Inbox. An initial
+attempt read Gmail's stale earlier message and the consumed code was correctly
+rejected. Refreshing the Gmail thread and waiting for the new message timestamp
+yielded its current code, which reached `/vendor/inbox`; reload retained the
+vendor session. No sender allowlist, spam filter bypass or DNS change was made.
+
+For the final Apple provider check, the owner completed the older Apple tab's
+password step; its existing-app Continue confirmation returned to
+`/vendor/profile` for the correct private QA business. That session survived
+reload. The redundant prepared Apple tab and completed test-mail tab were
+closed. A normal returning Google login then restored the original Luis Portillo
+profile without saving changes to it. The QA businesses remain unpublished.
+
+The successful fixed-gateway receipt observed at the end identifies production
+`4cbc0f9441be7962130199d0e9294e956f7577bb`. Its application diff from the auth repair
+changes only the public vendor marketing page, not the authentication modules.
+No new authentication source or deployment was needed for these final tests.
 
 ## Remaining live cases
 
 Fresh Google signup needs a Google identity not already registered with Wedding
 Market. The owner has only the existing administrator identity available; that
 production account is being preserved, including its profile and admin access.
-Apple vendor final creation/SSO and another relay Inbox delivery remain to be
-exercised. Google new/vendor identity
-coverage still needs an unused Google account. Source/unit or isolated fixture
-coverage does not claim those real provider journeys have passed.
+Google new/vendor identity coverage still needs an unused Google account.
+The Apple vendor test reused one isolated identity after couple setup; it does
+not claim a second fresh Apple identity was created. Google branding remains
+unverified until the ownership propagation wait and a successful re-verification/
+publication. Source/unit or isolated fixture coverage does not claim the missing
+real Google identity journeys have passed.
 
 [Current matrix](results.json) contains only pass states and non-secret metadata.
 Private keys, JWTs, verification codes, raw callback URLs and email screenshots

@@ -1,5 +1,5 @@
 {
-  "productionApplication": "ff43b847fedae5a498bfe716a02c552c6bb7ac9e",
+  "productionApplication": "4cbc0f9441be7962130199d0e9294e956f7577bb",
   "rootProxyRepair": {
     "confirmedCallbackHeaderOverflow": 1,
     "headerBuffer": "32k",
@@ -36,14 +36,12 @@
     "profileSaved": true
   },
   "pending": [
-    "Apple vendor agreement/final creation and vendor SSO",
-    "Apple further relay Inbox delivery after marking the first test not spam",
     "Google new/vendor signup requires unused Google identity",
-    "Google branding re-verification after ownership propagation"
+    "Google branding re-verification/publication after ownership propagation"
   ],
   "secretsInEvidence": false,
-  "checkedAt": "2026-10-30 19:45:00 UTC",
-  "status": "in_progress",
+  "checkedAt": "2026-10-30 20:00:39 UTC",
+  "status": "available_account_journeys_verified",
   "localVerifiedReview": {
     "english": true,
     "spanish": true,
@@ -118,7 +116,7 @@
     "returningAppleLogin": true,
     "returningRequestedInbox": true,
     "returningSessionAfterReload": true,
-    "communityTermsAccepted": false
+    "communityTermsAcceptedDuringCoupleSetup": false
   },
   "appleRelayFallback": {
     "realForwardedDelivery": true,
@@ -131,7 +129,10 @@
     "deliveredCodeLength": 8,
     "requestedInboxReached": true,
     "sameQaProfileAndDateRetained": true,
-    "cleanInitialInboxPlacement": false
+    "cleanInitialInboxPlacement": false,
+    "subsequentDeliveryFolder": "Inbox",
+    "subsequentVendorCodeVerified": true,
+    "consumedCodeRejectedAfterStaleGmailView": true
   },
   "appleVendor": {
     "reusesIsolatedAppleCoupleIdentity": true,
@@ -139,8 +140,23 @@
     "ownerNameReused": true,
     "passwordNotRequested": true,
     "qaMediaRetained": true,
-    "termsApprovalPending": true,
-    "businessCreated": false,
-    "vendorSsoVerified": false
+    "termsApprovalPending": false,
+    "businessCreated": true,
+    "vendorSsoVerified": true,
+    "ownerApprovedTermsAndConversion": true,
+    "realConsentRecorded": true,
+    "unpublished": true,
+    "sessionRetainedAfterReload": true,
+    "relayCodeVendorInbox": true,
+    "relayVendorSessionAfterReload": true,
+    "vendorSsoProfileDestination": true,
+    "vendorSsoSessionAfterReload": true
+  },
+  "authImplementationRelease": "9ac22fd9b9127be449c92265fff6fc8f34ae6965",
+  "ownerRestoration": {
+    "returningGoogleLogin": true,
+    "originalLuisPortilloProfile": true,
+    "ownerProfileSaved": false,
+    "qaBusinessesPublished": false
   }
 }

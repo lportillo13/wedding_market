@@ -83,7 +83,7 @@ community terms were required while signup hid the acceptance control. The
 review now reuses the existing consent control inline, and the server checks
 the verified own profile's current version before uploading media. Architecture/
 types/lint/build, 160 application tests, 49 database tests and isolated EN/ES
-review/failure-retention checks pass. Current verified website is
+review/failure-retention checks pass. The authentication repair release is
 **9ac22fd9b9127be449c92265fff6fc8f34ae6965**, with 48 public checks and rollback
 `/var/www/wedding-market.before-20261030-192524`. After reviewing the live final
 step, the owner explicitly approved the current Terms/Community Guidelines for
@@ -110,10 +110,21 @@ The known test message was reported not spam and moved to Inbox; its delivered
 eight-digit code reopened the same QA profile with its wedding date retained.
 This does not establish clean Inbox placement for all recipients.
 
-The same isolated Apple identity is now being reused for vendor setup. All six
-business steps reached review with retained QA images, and its final agreement
-and private business creation await explicit owner approval. Apple vendor SSO
-and a further relay Inbox delivery check remain pending. Fresh Google/vendor
+The owner subsequently approved the isolated Apple identity's own agreement and
+vendor conversion. The same approved draft was restored in a fresh browser tab
+after the old tab became unavailable, with its QA identity checked first.
+Recorded consent preserved its review/images, and final save created
+`WM QA Apple Private Draft 20261030`, still unpublished. Reload retained the
+vendor session. A second real relay-code message arrived directly in Gmail
+Inbox and reached `/vendor/inbox`; an initial stale, consumed Gmail code was
+correctly rejected before the current message was refreshed. A real returning
+Apple round trip then reached the correct `/vendor/profile` and survived reload.
+The owner had completed the older Apple tab; its final existing-app confirmation
+was completed there, and the redundant test tabs were closed. Returning Google
+login restored the original Luis Portillo profile without saving changes to it.
+The final observed successful gateway receipt identifies `4cbc0f9441be7962130199d0e9294e956f7577bb`;
+its only application differences from the auth repair are in vendor marketing.
+No new auth deployment was needed. Fresh Google/vendor
 identity coverage still needs an unused Google identity. The main administrator
 was preserved rather than deleted for testing.
 [Current full-test matrix and repair receipt](auth-full-journey-2026-10-30/README.md).
