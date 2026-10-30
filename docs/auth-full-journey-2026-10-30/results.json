@@ -1,0 +1,55 @@
+{
+  "productionApplication": "76bc5eb844aeb4283815bbd8b5cc85a817a29762",
+  "rootProxyRepair": {
+    "confirmedCallbackHeaderOverflow": 1,
+    "headerBuffer": "32k",
+    "bodyBuffers": "4 32k",
+    "busyBuffers": "64k",
+    "backup": "/var/backups/wedding-market-auth-proxy/20261030-181755",
+    "sourceSha256": "2f8622aa88a97d9dbc14f5b0ef13c2d4a1422ee40c370571a275746fab3b8dc8",
+    "independentlyVerified": true,
+    "ownerApplied": true
+  },
+  "regressions": {
+    "web": 157,
+    "database": 49,
+    "repair": 6
+  },
+  "googleExisting": {
+    "realRoundTrip": true,
+    "existingPersonalProfile": true,
+    "sessionAfterReload": true
+  },
+  "emailCouple": {
+    "newIsolatedIdentity": true,
+    "realInboxDelivery": true,
+    "codeLength": 8,
+    "wrongCodeRejected": true,
+    "correctCodeVerified": true,
+    "noPassword": true,
+    "nameRequired": true,
+    "allSixSteps": true,
+    "optionalEstimatesSkipped": true,
+    "reviewEdit": true,
+    "zeroBudgetSaved": true,
+    "noProfileWriteBeforeExplicitSubmit": true,
+    "profileSaved": true
+  },
+  "pending": [
+    "Apple real sign-in/signup",
+    "Google new signup requires unused Google identity",
+    "email vendor signup",
+    "email returning sign-in",
+    "verified completion review copy fix/deploy"
+  ],
+  "secretsInEvidence": false,
+  "checkedAt": "2026-10-30 18:35:18 UTC",
+  "status": "in_progress",
+  "localVerifiedReview": {
+    "english": true,
+    "spanish": true,
+    "languageChangeRetainsDraft": true,
+    "productionBuildPassed": true,
+    "sourceCopyFixDeployed": false
+  }
+}

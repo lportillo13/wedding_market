@@ -1,0 +1,17 @@
+{
+  "diagnosticWindowMinutes": 15,
+  "gatewayErrors": {
+    "authHeaderTooBig": 1,
+    "authTimeouts": 0,
+    "authConnectionFailures": 0
+  },
+  "changed": true,
+  "site": "thewedmarket.com",
+  "backup": "/var/backups/wedding-market-auth-proxy/20261030-181755",
+  "headerBuffer": "32k",
+  "bodyBuffers": "4 32k",
+  "siteSha256": "2f8622aa88a97d9dbc14f5b0ef13c2d4a1422ee40c370571a275746fab3b8dc8",
+  "nginxValidatedAndReloaded": true,
+  "otherSiteFilesChanged": false,
+  "independentlyReadBack": true
+}

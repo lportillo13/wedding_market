@@ -10,7 +10,7 @@ import { authFeedbackKey } from '@/lib/auth-feedback';
 import { coupleSignupIssue, coupleSignupPayload, type CoupleOnboardingData } from '@/features/auth/domain/couple-onboarding';
 import { signUp,completeCoupleSignup, type SignUpState } from './actions';
 import AuthenticationMethods from '@/components/auth/AuthenticationMethods';
-import {accessCopy} from '@/features/auth/presentation/access-copy';
+import {accessCopy,verifiedSetupCopy} from '@/features/auth/presentation/access-copy';
 import {checkSignupEmail} from './email-actions';
 import SignupEmailFeedback from '@/components/auth/SignupEmailFeedback';
 
@@ -55,6 +55,9 @@ export default function SignUpForm({ closeHref = '/login',verifiedAccount,nextPa
   const labels = dictionary.signup.form;
   const modal = labels.modal;
   const copy = dictionary.signup.journey;
+  const verifiedCopy = verifiedSetupCopy[language];
+  const submitLabel = verifiedAccount ? verifiedCopy.submit : labels.submit;
+  const submittingLabel = verifiedAccount ? verifiedCopy.submitting : labels.submitting;
   const [step, setStep] = useState(0);
   const [localError, setLocalError] = useState<string | null>(null);
   const [checkingEmail, setCheckingEmail] = useState(false);
@@ -81,7 +84,7 @@ export default function SignUpForm({ closeHref = '/login',verifiedAccount,nextPa
   const busy = pending || state.ok || checkingEmail || accessBusy;
   const steps = [copy.account, copy.contact, copy.style, copy.date, copy.details, copy.review];
   const titles = [copy.accountTitle, copy.contactTitle, modal.style.title, modal.date.title, copy.extrasTitle, copy.reviewTitle];
-  const bodies = [copy.accountBody, copy.contactBody, modal.style.body, modal.date.body, copy.extrasBody, copy.reviewBody];
+  const bodies = [copy.accountBody, copy.contactBody, modal.style.body, modal.date.body, copy.extrasBody, verifiedAccount ? verifiedCopy.reviewBody : copy.reviewBody];
   const themeLabels = dictionary.account.profile.form.weddingTheme.options;
   const locale = language === 'es' ? 'es-CR' : 'en-US';
   const monthLabel = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' }).format(month);
@@ -249,7 +252,7 @@ export default function SignUpForm({ closeHref = '/login',verifiedAccount,nextPa
             {reviewRow(modal.guestCountOptional, form.guest_count, 4)}
             {reviewRow(modal.budgetOptional, form.wedding_budget ? 'USD ' + form.wedding_budget : '', 4)}
           </dl>
-          <p className="wm-auth-journey__note">{copy.privacyNote}</p>
+          <p className="wm-auth-journey__note">{verifiedAccount ? verifiedCopy.privacyNote : copy.privacyNote}</p>
         </section>
       </fieldset>
       {errorMessage && <div className="wm-auth-error" role="alert">{errorMessage}</div>}
@@ -257,7 +260,7 @@ export default function SignUpForm({ closeHref = '/login',verifiedAccount,nextPa
         {step > 0 && <button className="btn btn-outline-secondary" type="button" onClick={() => changeStep(step - 1)} disabled={busy}>{labels.actions.back}</button>}
         {step < 5
           ? <button key="continue" className="btn btn-primary" type="button" onClick={event=>{event.preventDefault();void nextStep();}} disabled={busy}>{checkingEmail ? copy.checkingEmail : labels.actions.next}</button>
-          : <button key="submit" className="btn btn-primary" type="submit" disabled={busy}>{busy ? labels.submitting : labels.submit}</button>}
+          : <button key="submit" className="btn btn-primary" type="submit" disabled={busy}>{busy ? submittingLabel : submitLabel}</button>}
       </footer>
       <div className="wm-auth-journey__links">
         <p>{copy.alreadyAccount} <button type="button" disabled={busy} onClick={() => exitRef.current?.showModal()}>{dictionary.login.editorial.submit}</button></p>
