@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-30T17:33:28.536Z",
+  "checkedAt": "2026-10-30T17:56:55.534Z",
   "base": "https://thewedmarket.com",
   "checks": [
     {
@@ -33,6 +33,12 @@
       "passed": true
     },
     {
+      "path": "/signup",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
       "path": "/login",
       "language": "en",
       "status": 200,
@@ -45,13 +51,13 @@
       "passed": true
     },
     {
-      "path": "/signup",
+      "path": "/login?next=%2Fsignup%2Fvendor",
       "language": "en",
       "status": 200,
       "passed": true
     },
     {
-      "path": "/login?next=%2Fsignup%2Fvendor",
+      "path": "/signup/check-email?lang=en&vendor=1",
       "language": "en",
       "status": 200,
       "passed": true
@@ -69,8 +75,8 @@
       "passed": true
     },
     {
-      "path": "/signup/check-email?lang=en&vendor=1",
-      "language": "en",
+      "path": "/signup",
+      "language": "es",
       "status": 200,
       "passed": true
     },
@@ -82,12 +88,6 @@
     },
     {
       "path": "/signup/vendor",
-      "language": "es",
-      "status": 200,
-      "passed": true
-    },
-    {
-      "path": "/signup",
       "language": "es",
       "status": 200,
       "passed": true
@@ -117,7 +117,7 @@
       "passed": true
     },
     {
-      "path": "/auth/confirm?type=recovery&next=%2Freset-password%3Fnext%3D%252Faccount%252Finbox",
+      "path": "/auth/callback",
       "language": "en",
       "status": 307,
       "passed": true
@@ -135,37 +135,7 @@
       "passed": true
     },
     {
-      "path": "/auth/callback?next=%2Fvendor%2Finbox",
-      "language": "en",
-      "status": 307,
-      "passed": true
-    },
-    {
       "path": "/account/profile",
-      "language": "en",
-      "status": 307,
-      "passed": true
-    },
-    {
-      "path": "/account/notifications/deleted",
-      "language": "en",
-      "status": 307,
-      "passed": true
-    },
-    {
-      "path": "/account/notifications",
-      "language": "en",
-      "status": 307,
-      "passed": true
-    },
-    {
-      "path": "/account/inbox",
-      "language": "en",
-      "status": 307,
-      "passed": true
-    },
-    {
-      "path": "/vendor/preview",
       "language": "en",
       "status": 307,
       "passed": true
@@ -177,25 +147,37 @@
       "passed": true
     },
     {
-      "path": "/reset-password?next=%2Fvendor%2Finbox",
+      "path": "/account/notifications/deleted",
       "language": "en",
       "status": 307,
       "passed": true
     },
     {
-      "path": "/auth/callback",
+      "path": "/account/inbox",
       "language": "en",
       "status": 307,
-      "passed": true
-    },
-    {
-      "path": "/login?password_updated=1",
-      "language": "en",
-      "status": 200,
       "passed": true
     },
     {
       "path": "/rfq/new",
+      "language": "en",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/account/notifications",
+      "language": "en",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/auth/callback?next=%2Fvendor%2Finbox",
+      "language": "en",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/auth/confirm?type=recovery&next=%2Freset-password%3Fnext%3D%252Faccount%252Finbox",
       "language": "en",
       "status": 307,
       "passed": true
@@ -207,13 +189,31 @@
       "passed": true
     },
     {
+      "path": "/login?password_updated=1",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/vendor/preview",
+      "language": "en",
+      "status": 307,
+      "passed": true
+    },
+    {
       "path": "/shortlist",
       "language": "en",
       "status": 200,
       "passed": true
     },
     {
-      "path": "/fonts/editorial/GT-Super-Display-Light.woff2",
+      "path": "/reset-password?next=%2Fvendor%2Finbox",
+      "language": "en",
+      "status": 307,
+      "passed": true
+    },
+    {
+      "path": "/images/auth-editorial-welcome-mobile.webp",
       "language": "en",
       "status": 200,
       "passed": true
@@ -225,7 +225,7 @@
       "passed": true
     },
     {
-      "path": "/images/auth-editorial-welcome-mobile.webp",
+      "path": "/fonts/editorial/GT-Super-Display-Light.woff2",
       "language": "en",
       "status": 200,
       "passed": true
@@ -249,12 +249,6 @@
       "passed": true
     },
     {
-      "path": "/_next/static/css/a3d9869bdb15d8a4.css",
-      "language": "en",
-      "status": 200,
-      "passed": true
-    },
-    {
       "path": "/_next/static/css/2989757a74c92b81.css",
       "language": "en",
       "status": 200,
@@ -262,6 +256,12 @@
     },
     {
       "path": "/_next/static/css/112e9bdb4474b22f.css",
+      "language": "en",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/a3d9869bdb15d8a4.css",
       "language": "en",
       "status": 200,
       "passed": true

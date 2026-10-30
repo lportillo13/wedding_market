@@ -44,14 +44,20 @@ are saved. An attempted change to the native App ID was rejected before saving
 because it would invalidate provisioning profiles; it was cancelled and replaced
 with the isolated web primary. No native profiles were invalidated.
 
-Apple marks the approved key `96W353D7Z6` as downloaded. Its expected filename is
-`AuthKey_96W353D7Z6.p8`; the local location is awaiting the owner. It was not found
-in the standard Downloads/Desktop or OneDrive equivalents checked. Preserve it
-securely; Apple's one-time download cannot be repeated. A generated OAuth client
-secret is also needed for web authentication. The owner must handle new
-credentials securely and enter the Services ID/client secret directly in the
+The original key `96W353D7Z6` was inaccessible after its one-time download.
+The owner explicitly approved replacement and revocation. Replacement key
+`928N58B939` was saved locally in Downloads as `AuthKey_928N58B939.p8`; its ES256
+private-key format and the generated JWT signature/claims were validated without
+printing credentials. The old key was revoked only after validation. The
+production push key and native provisioning profiles are unchanged.
+
+The generated OAuth client secret expires **April 28, 2027**, and must be rotated
+before that date. Preserve the downloaded private key securely. The owner entered
+the Services ID/client secret directly in the
 [Apple provider](https://supabase.com/dashboard/project/aousexbvujjnvbudpsmz/auth/providers?provider=Apple).
-Keep the requirement for an email enabled. Generate the secret locally with:
+Apple is saved as enabled with the email requirement retained. Its read-only PKCE
+authorization handoff and the live public provider flags pass; no real identity
+sign-in or relay delivery is claimed. For future rotation, generate a secret locally with:
 
 ```powershell
 node scripts/create-apple-client-secret.mjs --key-file 'C:\path\to\downloaded-key.p8' --team-id TEAM_ID --key-id KEY_ID --client-id com.theweddingmarket.web
@@ -63,6 +69,9 @@ Only the owner should paste its contents into Supabase's **Secret Key (for OAuth
 Do not paste the `.p8` contents or JWT into chat or commit either file. The helper
 uses a verified ES256 signature and a 180-day expiry; rotate before that date.
 This setup does not publish or release the native app.
+
+[Replacement validation](apple-key-replacement-check.json) records only public
+identifiers, signature/claim checks, expiry and the approved revocation result.
 
 Apple private-relay sender registration was explicitly approved and saved for
 the existing auth sender/bounce domains. Public DNS checks show a valid DKIM public

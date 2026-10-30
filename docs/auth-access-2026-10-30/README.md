@@ -73,14 +73,21 @@ that would invalidate the existing native provisioning profiles. That change was
 cancelled. A separate primary App ID, `com.theweddingmarket.webauth`, was created
 and used instead; the existing native App ID/profiles and DW remain unchanged.
 The explicitly approved Sign in with Apple key is created and scoped only to this
-web primary. Apple marks the one-time key download complete; its local file path
-is awaiting the owner before a client secret can be generated. A local
-ES256 client-secret generator has two passing signature/validation tests and
-writes only an ignored local credential file, never the token in logs.
+web primary. The original key was marked downloaded but could not be located or
+downloaded again. After a harmless download probe verified a usable local path,
+the owner explicitly approved replacement and revocation. Replacement key
+`928N58B939` was downloaded and validated locally; inaccessible key `96W353D7Z6`
+was revoked, and the separate production push key remains present. A local ES256
+client secret was generated with expiry **April 28, 2027** and entered directly
+in Supabase by the owner. Both providers are enabled, with an email still required.
+The generator has two passing signature/validation tests
+and writes only an ignored local credential file, never the token in logs.
 
 [Provider setup handoff](PROVIDER-SETUP.md) records the public identifiers and
-remaining credential steps. Apple activation and a real external sign-in are
-not yet verified. Email access remains available. Apple email-relay source
+configuration and future rotation steps. Apple's read-only PKCE authorization
+probe reaches Apple with the correct Services ID and Supabase callback; the live
+website returns both provider flags enabled. Real external identity sign-in and
+relay delivery remain untested. Email access remains available. Apple email-relay source
 registration was explicitly approved and saved for `mail.thewedmarket.com` and
 `send.mail.thewedmarket.com` after public DKIM/SPF checks; no DNS records were
 changed. Existing verified-email identity linking is delegated to Supabase;
@@ -125,12 +132,13 @@ The verified base was `e6067d18d0ec62527a9edc3a558e2975ac09ee5d`; the
 All 48 [public HTTP checks](public-checks.json) pass, including www redirects. The
 [live owner-browser checks](live-browser-checks.json) confirm the session stays
 signed in across the www redirect, an explicit personal-profile return stays personal, and default vendor
-login returns to the vendor workspace. No owner form was submitted.
+login returns to the vendor workspace. No owner account/profile form was submitted.
 
-[Google provider handoff](google-provider-check.json) verifies the configured
-redirect without granting Google consent or linking a real identity.
+[Google provider handoff](google-provider-check.json) and
+[Apple provider handoff](apple-provider-check.json) verify configured redirects
+without granting consent or linking a real identity.
 [Mail DNS readiness](apple-mail-dns-check.json) retains only public validation
 metadata, never key values. Provider dashboards are configured independently of
 the application release. [Activation status](provider-activation.json) records
-Google enabled/in production, the retained email/nonce requirements, registered
-Apple relay sources and the remaining local-key-file handoff. The native release remains held.
+Google enabled/in production, Apple enabled, the retained email/nonce requirements,
+registered Apple relay sources and the completed owner credential entry. The native release remains held.

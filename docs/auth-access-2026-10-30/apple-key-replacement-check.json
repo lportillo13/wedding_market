@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-10-30T17:52:03.074Z",
+  "keyId": "928N58B939",
+  "privateKeySaved": true,
+  "algorithm": "ES256",
+  "signatureValid": true,
+  "clientIdMatches": true,
+  "audienceMatches": true,
+  "expiresAt": "2027-04-28T17:51:00.000Z",
+  "lifetimeDays": 180,
+  "oldKeyId": "96W353D7Z6",
+  "oldKeyRevokedInApple": true,
+  "nativePushKeyUnchanged": true,
+  "note": "Local cryptographic validation and Apple key-list evidence only. No private key, token or credential values are retained in this report."
+}
