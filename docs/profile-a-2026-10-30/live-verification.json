@@ -1,0 +1,101 @@
+{
+  "checkedAt": "2026-10-30T15:08:52.825Z",
+  "url": "https://thewedmarket.com/account/profile",
+  "verifiedRelease": "f62ff3cc650a8adcb59f66db4ce158f7e1b2c08d",
+  "desktop": {
+    "budgetOptional": true,
+    "client": 1265,
+    "edges": [
+      {
+        "left": 48,
+        "right": 1217,
+        "selector": ".wm-site-header__inner",
+        "width": 1169
+      },
+      {
+        "left": 48,
+        "right": 1217,
+        "selector": ".wm-account-header>.container",
+        "width": 1169
+      },
+      {
+        "left": 48,
+        "right": 1217,
+        "selector": ".wm-account-profile",
+        "width": 1169
+      },
+      {
+        "left": 48,
+        "right": 1217,
+        "selector": ".wm-profile-photo",
+        "width": 1169
+      },
+      {
+        "left": 48,
+        "right": 1217,
+        "selector": ".wm-personal-profile-form",
+        "width": 1169
+      }
+    ],
+    "emailLocked": true,
+    "guestsOptional": true,
+    "heading": "Tu cuenta, a tu manera.",
+    "scroll": 1265,
+    "sections": 2,
+    "width": 1280
+  },
+  "phone": {
+    "client": 305,
+    "edges": [
+      {
+        "left": 12,
+        "right": 293,
+        "selector": ".wm-site-header__inner",
+        "width": 281
+      },
+      {
+        "left": 12,
+        "right": 293,
+        "selector": ".wm-account-header>.container",
+        "width": 281
+      },
+      {
+        "left": 12,
+        "right": 293,
+        "selector": ".wm-account-profile",
+        "width": 281
+      },
+      {
+        "left": 12,
+        "right": 293,
+        "selector": ".wm-profile-photo",
+        "width": 281
+      },
+      {
+        "left": 12,
+        "right": 293,
+        "selector": ".wm-personal-profile-form",
+        "width": 281
+      }
+    ],
+    "fieldColumns": [
+      "281px",
+      "281px"
+    ],
+    "fieldFontSize": "16px",
+    "fieldMinimumHeight": 46,
+    "headerEnd": 293.109375,
+    "saveControlPresent": true,
+    "scroll": 305,
+    "sectionColumns": [
+      "281px",
+      "281px"
+    ],
+    "width": 320
+  },
+  "englishAndSpanish": true,
+  "originalSpanishRestored": true,
+  "photoChooserOpened": true,
+  "noFileSelectedOrUploaded": true,
+  "noProfileSaved": true
+}

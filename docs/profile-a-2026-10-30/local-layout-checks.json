@@ -1,0 +1,22 @@
+{
+  "source": "Actual React profile/header components rendered with fictional contact data and the final production CSS; no hydration or account writes",
+  "languages": ["en", "es"],
+  "workspacePresentations": ["couple", "vendor"],
+  "desktop": {
+    "viewportWidth": 1280,
+    "documentClientWidth": 1265,
+    "documentScrollWidth": 1265,
+    "headerAccountNavigationPhotoAndForm": {"left": 48, "right": 1217, "width": 1169}
+  },
+  "phone": {
+    "viewportWidth": 320,
+    "documentClientWidth": 305,
+    "documentScrollWidth": 305,
+    "headerAccountNavigationPhotoAndForm": {"left": 12, "right": 293, "width": 281},
+    "fieldFontSize": 16,
+    "fieldMinimumHeight": 46,
+    "choosePhotoMinimumHeight": 44,
+    "saveMinimumHeight": 48,
+    "sectionsAndFieldsStack": true
+  }
+}

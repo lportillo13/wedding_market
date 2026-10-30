@@ -21,7 +21,27 @@ The style and shared-width override apply only to the personal profile; the
 unified inboxes, role-aware header links and public pages retain their layouts.
 
 All 138 web tests pass, including the bilingual retained-field, locked-email and
-optional-estimate regression. Architecture, TypeScript, lint and production build
-pass. The exact deployment/live verification is recorded below after completion.
+optional-estimate regression. Architecture, TypeScript, lint and final production
+build pass. All 33 [local HTTP checks](local-http-checks.json) pass, including the
+new profile stylesheet and narrow-phone gutter check.
 Local component previews use fictional data and production CSS. No owner profile
 save or photo upload is used for verification. Native release remains held.
+
+Application **f62ff3cc650a8adcb59f66db4ce158f7e1b2c08d** is verified live through
+the fixed release gateway's exact [successful receipt](deployment-success.json)
+and all 33 [production checks](public-checks.json). Rollback is
+`/var/www/wedding-market.before-20261030-150545`. The separate DW application and
+database policies were not changed.
+
+The authenticated owner's live profile confirms identical header, account-nav,
+content, photo and form edges: 1169px at a 1280px desktop viewport and 281px at a
+320px phone viewport. Phone client/scroll widths both measure 305px. Both sections
+and their fields stack, controls retain a 46px minimum height and phone fields use
+16px text. The native photo-chooser event opens from the custom button; no file
+was selected or uploaded. Both languages were checked and Spanish was restored.
+[Sanitized live measurements](live-verification.json),
+[fictional local layout checks](local-layout-checks.json).
+
+No profile save, message or account change was submitted for validation. Private
+screenshots remain in ignored cache. Both temporary local servers are stopped,
+the viewport override is reset, and the deployed profile tab remains available.
