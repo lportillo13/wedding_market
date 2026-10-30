@@ -1,0 +1,30 @@
+{
+  "releaseCommit": "253d6350c070526c3c4fe559f6a1087fd0abfad0",
+  "applicationDeployed": true,
+  "rollbackCopy": "/var/www/wedding-market.before-20261030-161037",
+  "step": "complete",
+  "shadowChecks": {
+    "/api/health": 200,
+    "/": 200,
+    "/api/vendors?pageSize=1": 200,
+    "/api/uploads": 401,
+    "/api/ready": 401,
+    "/api/admin/blog-posts": 401,
+    "/api/mobile/quotes": 401,
+    "/api/mobile/quote-replies": 401,
+    "/api/mobile/quotes/accept": 401,
+    "/api/mobile/push-token": 401
+  },
+  "liveChecks": {
+    "/api/health": 200,
+    "/": 200,
+    "/api/vendors?pageSize=1": 200,
+    "/api/uploads": 401,
+    "/api/ready": 401,
+    "/api/admin/blog-posts": 401,
+    "/api/mobile/quotes": 401,
+    "/api/mobile/quote-replies": 401,
+    "/api/mobile/quotes/accept": 401,
+    "/api/mobile/push-token": 401
+  }
+}

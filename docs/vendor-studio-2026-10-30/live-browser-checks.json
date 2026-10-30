@@ -1,0 +1,126 @@
+{
+  "checkedAt": "2026-10-30T16:12:50.506Z",
+  "releaseCommit": "253d6350c070526c3c4fe559f6a1087fd0abfad0",
+  "checks": {
+    "desktop": {
+      "client": 1265,
+      "draftPreview": "Ver datos guardados ↗",
+      "editor": {
+        "left": 280,
+        "right": 1209,
+        "width": 928
+      },
+      "header": {
+        "left": 0,
+        "right": 1265,
+        "width": 1265
+      },
+      "heading": "Cuenta tu historia.",
+      "scroll": 1265,
+      "viewport": 1280,
+      "workspace": {
+        "left": 28,
+        "right": 1237,
+        "width": 1209
+      }
+    },
+    "servicesGroup": {
+      "heading": "Servicios y precios",
+      "packageForm": true,
+      "path": "/vendor/profile#pricing"
+    },
+    "startingPrice": {
+      "currency": true,
+      "field": true,
+      "path": "/vendor/profile#starting-price"
+    },
+    "categories": true,
+    "contact": {
+      "form": true,
+      "path": "/vendor/profile#contact",
+      "priceInputs": 0
+    },
+    "location": {
+      "form": true,
+      "heading": "Ubicación y cobertura",
+      "path": "/vendor/profile#location"
+    },
+    "calendar": {
+      "calendar": true,
+      "path": "/vendor/profile#availability"
+    },
+    "overview": {
+      "heading": "Tu negocio, con más claridad.",
+      "path": "/vendor"
+    },
+    "menuLinks": [
+      {
+        "heading": "Cuenta tu historia.",
+        "path": "/vendor/profile"
+      },
+      {
+        "heading": "Tu cuenta, a tu manera.",
+        "path": "/account/profile"
+      },
+      {
+        "heading": "Vendor notifications",
+        "path": "/vendor/notifications"
+      }
+    ],
+    "inbox": {
+      "path": "https://thewedmarket.com/vendor/inbox"
+    },
+    "personalDestinations": [
+      {
+        "accessNotice": false,
+        "heading": "Notificaciones",
+        "path": "/account/notifications",
+        "privatePreview": false
+      },
+      {
+        "accessNotice": false,
+        "heading": "Eliminadas",
+        "path": "/account/notifications/deleted",
+        "privatePreview": false
+      },
+      {
+        "accessNotice": false,
+        "heading": "Tus favoritos",
+        "path": "/shortlist",
+        "privatePreview": false
+      },
+      {
+        "accessNotice": true,
+        "heading": "Un espacio para cada cuenta.",
+        "path": "/rfq/new",
+        "privatePreview": false
+      },
+      {
+        "accessNotice": false,
+        "heading": "Blue Sky Photography",
+        "path": "/vendor/preview",
+        "privatePreview": true
+      }
+    ],
+    "phone": {
+      "client": 305,
+      "fieldFont": "16px",
+      "panel": 247,
+      "saveButtonHeight": 48,
+      "scroll": 305,
+      "selectHeight": 46,
+      "viewport": 320
+    },
+    "english": {
+      "descriptions": [
+        "Bio (EN)",
+        "Bio (ES)"
+      ],
+      "fieldLabel": "Business name",
+      "heading": "Tell your story."
+    },
+    "languageRestored": "es",
+    "noRealWrites": true,
+    "phoneSectionSwitch": true
+  }
+}

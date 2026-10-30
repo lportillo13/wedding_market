@@ -66,9 +66,30 @@ part of this release.
   servers stopped. No real profile save, upload, message or publication was used
   for browser verification. Native publication remains held.
 
-Deployment and live verification evidence will be recorded here after the exact
-release succeeds. The prior verified base is
-`facdeecbb1550dd86c82d99a5e911c84993b66e6`.
+## Deployment and live verification
+
+Verified live release: **253d6350c070526c3c4fe559f6a1087fd0abfad0**, through the
+existing fixed release gateway. The [successful receipt](deployment-success.json)
+names this exact target, reports `complete` and preserves rollback at
+`/var/www/wedding-market.before-20261030-161037`. The prior verified base was
+`facdeecbb1550dd86c82d99a5e911c84993b66e6`. No privileged helper, environment,
+database or separate DW application was changed.
+
+All 41 [public checks](public-checks.json) pass.
+[Signed-in browser checks](live-browser-checks.json) verify the live owner
+session's vendor profile, personal profile, vendor notifications and header
+inbox links. Direct personal notifications/deleted notifications, favorites,
+quote-access notice and private saved-details preview remain on the expected
+routes. The grouped services, independent starting price, categories,
+contact/location, calendar and overview all open correctly. EN/ES labels switch
+and the original Spanish preference is restored.
+
+At 320px, the live document client and scroll widths both measure 305px;
+the grouped selector is 46px high, fields use 16px type and Save is 48px high.
+No horizontal overflow occurs. The viewport override was reset, temporary test
+servers stopped and the live editor tab retained for the owner. Desktop/phone
+screenshots remain in ignored `.cache/vendor-studio/` rather than committing
+account screenshots. No real form values were changed or submitted.
 
 ## Authentication options discussed
 

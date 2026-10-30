@@ -6,8 +6,9 @@ platform-moderation console. The owner selected **A — Business studio**. Its
 implementation and release evidence are recorded in the
 [vendor studio handoff](../vendor-studio-2026-10-30/README.md).
 
-The current workspace has six top-level tabs, a separate boutique link, eight
-profile sections, a profile-completion strip and section-specific save controls.
+Before the redesign, the workspace had six top-level tabs, a separate boutique
+link, eight profile sections, a profile-completion strip and section-specific
+save controls.
 The main problem is the hierarchy and split information: contact/location and
 services/categories/prices occupy different destinations. The proposals keep
 Wedding Market's approved header structure, GT Super/Acumin fonts and warm
