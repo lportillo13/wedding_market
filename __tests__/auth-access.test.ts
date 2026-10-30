@@ -10,6 +10,8 @@ import {completeCoupleProfile} from '../features/auth/server/complete-couple';
 import {loadAccessAccount} from '../features/auth/server/access-account';
 import {refreshBrowserSession} from '../lib/supabase/proxy';
 import {resolveVendorOwnerName} from '../features/auth/domain/vendor-onboarding';
+import {loadVendorSetupOwner} from '../features/auth/server/vendor-account';
+import {COMMUNITY_TERMS_VERSION} from '../shared/safety/copy';
 
 const incomplete:AccessProfile={role:'user',full_name:'Example',phone:null,country:null,wedding_theme:null,tentative_wedding_date:null};
 const input={full_name:'Example Couple',phone:'+1 202 555 0100',country:'United States',wedding_theme:'garden',tentative_wedding_date:'2027-04-12',guest_count:'',wedding_budget:'0',language:'es'};
@@ -25,6 +27,20 @@ test('verified vendor signup asks for a missing Apple name and retains an existi
 test('community consent is deferred only on account-entry routes, not on posting/contact destinations',()=>{
   for(const path of ['/login','/signup','/signup/choose','/signup/vendor','/auth/continue','/forgot-password','/reset-password'])assert.equal(isAccountEntry(path),true);
   for(const path of ['/rfq/new','/vendor/profile','/account/inbox','/signup-extra','/vendors'])assert.equal(isAccountEntry(path),false);
+});
+
+test('vendor setup checks the verified own profile and current recorded consent before admitting a business save',async()=>{
+  const client=(data:unknown,error:unknown=null)=>({from:(table:string)=>{assert.equal(table,'profiles');return {select:(fields:string)=>{assert.equal(fields,'full_name,community_terms_version');return {eq:(field:string,id:string)=>{assert.equal(field,'id');assert.equal(id,'verified-own');return {maybeSingle:async()=>({data,error})};}}}};}} as unknown as SupabaseClient);
+  for(const version of [null,undefined,'2025-01-01']){
+    const result=await loadVendorSetupOwner(client({full_name:'Stored owner',community_terms_version:version}),'verified-own','Submitted owner','es');
+    assert.equal(result.ok,false);if(!result.ok)assert.match(result.message??'',/Revisa y acepta/);
+  }
+  const accepted=client({full_name:'Stored owner',community_terms_version:COMMUNITY_TERMS_VERSION});
+  assert.deepEqual(await loadVendorSetupOwner(accepted,'verified-own',null,'en'),{ok:true,fullName:'Stored owner'});
+  assert.deepEqual(await loadVendorSetupOwner(accepted,'verified-own',' Submitted owner ','en'),{ok:true,fullName:'Submitted owner'});
+  assert.equal((await loadVendorSetupOwner(client({full_name:'',community_terms_version:COMMUNITY_TERMS_VERSION}),'verified-own',' ','en')).ok,false);
+  assert.deepEqual(await loadVendorSetupOwner(client(null),'verified-own','Owner','en'),{ok:false,feedback:'unavailable'});
+  assert.deepEqual(await loadVendorSetupOwner(client(null,new Error('denied')),'verified-own','Owner','en'),{ok:false,feedback:'unavailable'});
 });
 
 test('verified social/code accounts reuse role-appropriate workspaces and explicit return destinations',()=>{

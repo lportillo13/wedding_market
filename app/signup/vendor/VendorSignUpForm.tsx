@@ -10,6 +10,7 @@ import { vendorOnboardingCopy } from './presentation';
 import { createVendor, type VendorSignUpState } from './actions';
 import { authFeedbackKey } from '@/lib/auth-feedback';
 import { attachVendorSignupImages } from '@/features/auth/client/vendor-submission';
+import CommunityConsent from '@/components/safety/CommunityConsent';
 
 type CategoryOption = {
   key: string;
@@ -93,10 +94,12 @@ export default function VendorSignUpForm({
   categories,
   requiresAccount,
   initialOwnerName='',
+  needsTermsAcceptance=false,
 }: {
   categories: CategoryOption[];
   requiresAccount: boolean;
   initialOwnerName?:string;
+  needsTermsAcceptance?:boolean;
 }) {
   const [uploadFiles, setUploadFiles] = useState<{ logo: File | null; hero: File | null }>({ logo: null, hero: null });
   const [state, action, pending] = useActionState(async (previous: VendorSignUpState, data: FormData): Promise<VendorSignUpState> => {
@@ -109,6 +112,8 @@ export default function VendorSignUpForm({
   const signupLabels = dictionary.signup.form;
   const dashboard = dictionary.vendorDashboard;
   const [step, setStep] = useState(0);
+  const [termsAccepted,setTermsAccepted]=useState(false);
+  const termsReady=!needsTermsAcceptance||termsAccepted;
   const formRef = useRef<HTMLFormElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const copy = vendorOnboardingCopy[language];
@@ -320,6 +325,7 @@ export default function VendorSignUpForm({
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     if (pending || submitInFlight.current) { event.preventDefault(); return; }
     if (step < steps.length - 1) { event.preventDefault(); goNext(); return; }
+    if(!termsReady){event.preventDefault();return;}
     if (!validateCurrentStep()) { event.preventDefault(); return; }
     const incomplete = steps.findIndex(item => stepError(item.id));
     if (incomplete >= 0) {
@@ -868,6 +874,7 @@ export default function VendorSignUpForm({
           <strong>{labels.finishCard.title}</strong>
           <p>{labels.finishCard.description}</p>
         </div>
+        {!termsReady&&<CommunityConsent inline onAccepted={()=>setTermsAccepted(true)}/>}
       </section>
 
       <input type="hidden" name="team_size_range" value={form.team_size_range} />
@@ -908,7 +915,7 @@ export default function VendorSignUpForm({
             {labels.actions.next}
           </button>
         ) : (
-          <button key="submit" type="submit" className="btn btn-primary" disabled={pending}>
+          <button key="submit" type="submit" className="btn btn-primary" disabled={pending||!termsReady}>
             {pending ? labels.submitting : labels.submit}
           </button>
         )}

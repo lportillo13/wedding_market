@@ -13,14 +13,16 @@ export default function VendorSignupPageContent({
   categories,
   requiresAccount,
   initialOwnerName='',
+  needsTermsAcceptance=false,
 }: {
   categories: CategoryOption[];
   requiresAccount: boolean;
   initialOwnerName?:string;
+  needsTermsAcceptance?:boolean;
 }) {
   return (
     <EditorialAuthLayout onboarding vendor>
-      {requiresAccount ? <VendorAccountForm /> : <VendorSignUpForm categories={categories} requiresAccount={false} initialOwnerName={initialOwnerName}/>}
+      {requiresAccount ? <VendorAccountForm /> : <VendorSignUpForm categories={categories} requiresAccount={false} initialOwnerName={initialOwnerName} needsTermsAcceptance={needsTermsAcceptance}/>}
     </EditorialAuthLayout>
   );
 }

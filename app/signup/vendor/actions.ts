@@ -1,10 +1,10 @@
 'use server';
 import { revalidatePath } from 'next/cache';
-import { vendorSignupSchema as VendorSignupSchema,resolveVendorOwnerName } from '@/features/auth/domain/vendor-onboarding';
+import { vendorSignupSchema as VendorSignupSchema } from '@/features/auth/domain/vendor-onboarding';
 import { parseMediaAsset } from '@/lib/images';
 import { buildStorageKey, processCarouselLogoUpload, processImageUpload, validateImageUpload } from '@/features/media/server/processing';
 import { deleteFromR2, getOwnedR2ObjectKey, isR2Configured, uploadToR2 } from '@/lib/r2';
-import { registerVendorAccount } from '@/features/auth/server/vendor-account';
+import { loadVendorSetupOwner,registerVendorAccount } from '@/features/auth/server/vendor-account';
 import {checkSignupEmail} from '../email-actions';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { slugify } from '@/lib/slugify';
@@ -293,10 +293,8 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
     return { ok: false, message: 'Unable to resolve your account for vendor registration.' };
   }
 
-  const {data:ownerProfile,error:ownerProfileError}=await supabase.from('profiles').select('full_name').eq('id',user.id).maybeSingle();
-  if(ownerProfileError||!ownerProfile)return {ok:false,feedback:'unavailable'};
-  const resolvedOwnerName=resolveVendorOwnerName(owner_name,ownerProfile.full_name);
-  if(!resolvedOwnerName)return {ok:false,message:account_language==='es'?'Tu nombre es obligatorio.':'Your name is required.'};
+  const setupOwner=await loadVendorSetupOwner(supabase,user.id,owner_name,account_language);
+  if(!setupOwner.ok)return setupOwner;
 
   const profilePayload: Record<string, unknown> = {
     id: user.id,
@@ -304,7 +302,7 @@ export async function createVendor(_: VendorSignUpState, formData: FormData): Pr
     country: country || null,
     language: account_language,
   };
-  profilePayload.full_name = resolvedOwnerName;
+  profilePayload.full_name = setupOwner.fullName;
 
   let slug = slugify(business_name);
   if (!slug) {

@@ -4,6 +4,7 @@ import {loadAccessAccount} from '@/features/auth/server/access-account';
 import {accessContinuation} from '@/features/auth/domain/access';
 import {resolveVendorOwnerName} from '@/features/auth/domain/vendor-onboarding';
 import VendorSignupPageContent from './VendorSignupPageContent';
+import {COMMUNITY_TERMS_VERSION} from '@/shared/safety/copy';
 
 type CategoryOption = {
   key: string;
@@ -24,5 +25,5 @@ export default async function VendorSignupPage() {
     .select('key, label')
     .order('key', { ascending: true });
 
-  return <VendorSignupPageContent categories={(data ?? []) as CategoryOption[]} requiresAccount={account.status!=='ready'} initialOwnerName={account.status==='ready'?resolveVendorOwnerName(null,account.profile.full_name):''}/>;
+  return <VendorSignupPageContent categories={(data ?? []) as CategoryOption[]} requiresAccount={account.status!=='ready'} initialOwnerName={account.status==='ready'?resolveVendorOwnerName(null,account.profile.full_name):''} needsTermsAcceptance={account.status==='ready'&&account.profile.community_terms_version!==COMMUNITY_TERMS_VERSION}/>;
 }

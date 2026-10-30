@@ -1,5 +1,5 @@
 export type AccessIntent = 'login' | 'couple' | 'vendor';
-export type AccessProfile = {role:string; full_name:string|null; phone:string|null; country:string|null; wedding_theme:string|null; tentative_wedding_date:string|null;guest_count?:number|null;wedding_budget?:number|null};
+export type AccessProfile = {role:string; full_name:string|null; phone:string|null; country:string|null; wedding_theme:string|null; tentative_wedding_date:string|null;guest_count?:number|null;wedding_budget?:number|null;community_terms_version?:string|null};
 export function isAccountEntry(path:string){return ['/signup','/auth','/login','/forgot-password','/reset-password'].some(root=>path===root||path.startsWith(root+'/'));}
 
 /** Return paths are local navigation hints, never authorization or role grants. */

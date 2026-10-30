@@ -1,7 +1,7 @@
 {
-  "releaseCommit": "efa5bfbe2bcc62bdbdd7ee684ad3da21ea1bcca3",
+  "releaseCommit": "4f1ea63144e1901dcfb7fea79410f1e5188457b6",
   "applicationDeployed": true,
-  "rollbackCopy": "/var/www/wedding-market.before-20261030-191230",
+  "rollbackCopy": "/var/www/wedding-market.before-20261030-191537",
   "step": "complete",
   "shadowChecks": {
     "/api/health": 200,

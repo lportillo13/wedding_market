@@ -1,5 +1,5 @@
 {
-  "productionApplication": "efa5bfbe2bcc62bdbdd7ee684ad3da21ea1bcca3",
+  "productionApplication": "4f1ea63144e1901dcfb7fea79410f1e5188457b6",
   "rootProxyRepair": {
     "confirmedCallbackHeaderOverflow": 1,
     "headerBuffer": "32k",
@@ -11,7 +11,7 @@
     "ownerApplied": true
   },
   "regressions": {
-    "web": 159,
+    "web": 160,
     "database": 49,
     "repair": 6
   },
@@ -38,8 +38,8 @@
   "pending": [
     "Apple real sign-in/signup",
     "Google new signup requires unused Google identity",
-    "email vendor signup",
-    "Google brand ownership and verification"
+    "vendor consent repair deployment and owner-approved live acceptance/final save",
+    "Google branding re-verification after ownership propagation"
   ],
   "secretsInEvidence": false,
   "checkedAt": "2026-10-30 18:35:18 UTC",
@@ -67,5 +67,24 @@
     "requestedInboxReached": true,
     "sessionRetainedAfterReleaseReload": true,
     "transient502DuringDeployment": true
+  },
+  "googleBranding": {
+    "fullNameLogoSaved": true,
+    "homepageOwnershipVerified": true,
+    "ownershipMethod": "HTML file",
+    "brandingVerified": false,
+    "googleRequestedPropagationHours": 24
+  },
+  "emailVendor": {
+    "newIsolatedIdentity": true,
+    "realInboxDelivery": true,
+    "correctCodeVerified": true,
+    "noPassword": true,
+    "allSixReviewSteps": true,
+    "mediaRetainedAcrossOwnProfileTab": true,
+    "finalSaveBlockedByMissingTerms": true,
+    "businessProfileCreated": false,
+    "repairValidated": true,
+    "repairDeployed": false
   }
 }

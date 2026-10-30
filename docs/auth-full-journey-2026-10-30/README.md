@@ -99,6 +99,32 @@ contents were checked before copying it to `public`. Publication and the
 ownership claim are in progress; Google reports a 24-hour propagation wait
 before retrying branding verification.
 
+## Vendor signup consent blocker
+
+The new vendor QA alias received its real branded confirmation in Gmail Inbox,
+verified the code and entered the six-step business setup without a password.
+The owner-name fallback, media selection, coverage, contact, languages, required
+starting price and explicit review all worked. Opening another own-profile tab
+after deployment preserved the review and media selections. A previous draft
+reset during concurrent deployments; it was re-entered after deployment ended.
+
+The final save was rejected because current community terms were not accepted,
+while account-entry screens hid the acceptance control. This exposed a real
+signup blocker. No vendor creation/publication is claimed. The existing failure
+path cleans up staged media. The repair adds the existing consent control inline
+at final vendor review and checks the verified own profile's recorded version
+before any image upload. The final save stays disabled until consent is
+recorded. Existing database posting rules remain in force.
+
+All 160 application and 49 database tests pass, as do architecture, types, lint
+and production build. An initial restricted build could not write a generated
+Next types directory; the complete check passed with normal build access. The
+local browser verified EN/ES labels, disabled final save, no nested forms,
+retained review/images across language changes, and recoverable consent failure.
+The fixture did not reach its simulated consent RPC, so successful acceptance
+and final business creation still require live validation and explicit owner
+approval to accept the agreement for the isolated QA identity.
+
 ## Remaining live cases
 
 Fresh Google signup needs a Google identity not already registered with Wedding

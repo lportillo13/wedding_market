@@ -7,7 +7,7 @@ export async function loadAccessAccount(supabase:SupabaseClient) {
   if(error&&!isAuthSessionMissingError(error))return {status:'unavailable' as const};
   if(!user)return {status:'guest' as const};
   const [profileResult,vendorResult]=await Promise.all([
-    supabase.from('profiles').select('role,full_name,phone,country,wedding_theme,tentative_wedding_date,guest_count,wedding_budget').eq('id',user.id).maybeSingle(),
+    supabase.from('profiles').select('role,full_name,phone,country,wedding_theme,tentative_wedding_date,guest_count,wedding_budget,community_terms_version').eq('id',user.id).maybeSingle(),
     supabase.rpc('is_vendor',{_uid:user.id}),
   ]);
   if(profileResult.error||!profileResult.data||vendorResult.error||typeof vendorResult.data!=='boolean')return {status:'unavailable' as const};
