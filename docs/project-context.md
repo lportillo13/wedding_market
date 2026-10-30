@@ -6,6 +6,24 @@ The Wedding Market connects couples planning weddings in Costa Rica with wedding
 
 ## Current verified deployment state
 
+Current verified website: **d969a533ad79a6af6c7b1202faa0b46502757938**
+(October 30, 2026). The owner requested a dedicated vendor benefits page inspired
+by the animation and feel of FoundersCard Network. `/for-vendors` is now live in
+EN/ES with a cinematic photographic hero, scroll reveals, four interactive
+illustrative product previews, practical feature coverage, setup steps, FAQs
+and existing vendor signup actions. Mobile vendor navigation, the public footer
+and the empty directory invitation lead to it; the approved header structure
+is preserved. Free launch accounts and direct vendor contracts/payments are
+explicit; there are no invented vendors, testimonials, counts or booking
+guarantees. Architecture/types/lint/build, 159 web tests, 24 desktop/phone preview
+checks and 15 local/public HTTP checks pass. Exact gateway receipt and live
+desktop/Spanish phone verification pass. Rollback is
+`/var/www/wedding-market.before-20261030-192001`.
+[Vendor page and evidence](vendor-landing-2026-10-30/README.md).
+The preceding social-onboarding and approved Google proof releases are included.
+Database/authentication rules, real account data and native releases are unchanged
+by this marketing page; concurrent uncommitted auth work remains separate.
+
 Full authentication tests are in progress on October 30. A real Google callback
 and signed-in signup requests exposed Nginx response-header overflow. The owner
 applied the reviewed, checksum-pinned, diagnostic-gated repair; independent
@@ -34,7 +52,7 @@ The proof publication/ownership claim and replacement logo save are in progress;
 Google says ownership propagation requires 24 hours before brand re-verification.
 [Current full-test matrix and repair receipt](auth-full-journey-2026-10-30/README.md).
 
-Current verified website: **76bc5eb844aeb4283815bbd8b5cc85a817a29762** (October 30, 2026). The owner approved Google/Apple sign-in/signup, email-code fallback and persistent valid sessions for couples and vendors. Shared branded EN/ES controls, PKCE account intent/return paths, verified couple setup without another password, vendor continuation with a required owner-name fallback, explicit final review, code retry/resend and bounded server/browser session refresh are deployed. Website visits on www redirect to the canonical host with path/query retained so login cookies and PKCE stay on one host; previous www-only sessions may need one canonical sign-in. Confirmation and OTP templates with codes are published separately. Architecture/types/lint/build, 157 web tests, 49 isolated database tests, two Apple-secret signature/validation tests and 48 local/public HTTP checks pass; live owner sessions through www and explicit personal/default vendor returns pass without customer writes. [Authentication implementation and evidence](auth-access-2026-10-30/README.md). Rollback is `/var/www/wedding-market.before-20261030-173123`.
+Included authentication release: **76bc5eb844aeb4283815bbd8b5cc85a817a29762** (October 30, 2026). The owner approved Google/Apple sign-in/signup, email-code fallback and persistent valid sessions for couples and vendors. Shared branded EN/ES controls, PKCE account intent/return paths, verified couple setup without another password, vendor continuation with a required owner-name fallback, explicit final review, code retry/resend and bounded server/browser session refresh are deployed. Website visits on www redirect to the canonical host with path/query retained so login cookies and PKCE stay on one host; previous www-only sessions may need one canonical sign-in. Confirmation and OTP templates with codes are published separately. Architecture/types/lint/build, 157 web tests, 49 isolated database tests, two Apple-secret signature/validation tests and 48 local/public HTTP checks pass; live owner sessions through www and explicit personal/default vendor returns pass without customer writes. [Authentication implementation and evidence](auth-access-2026-10-30/README.md). Rollback is `/var/www/wedding-market.before-20261030-173123`.
 
 Google credentials were created with action-time approval and entered directly in Supabase by the owner. Google is enabled; the configured OAuth handoff reaches Google with email/profile scopes and the correct Supabase return URI. After the owner separately approved publication, Google status is verified **In production**; skip-nonce and no-email options remain off. Apple Services ID `com.theweddingmarket.web` is configured under a separate primary App ID `com.theweddingmarket.webauth`. After the original one-time key download was inaccessible, a harmless download probe verified local saving and the owner explicitly approved replacement/revocation. Replacement `928N58B939` was saved in Downloads, its generated ES256 secret signature/claims were validated, and old key `96W353D7Z6` was revoked. The generated secret expires April 28, 2027. The owner completed secure Supabase entry after a JWT-format correction; Apple is now saved as enabled, with email required. Its read-only PKCE probe reaches Apple with the exact Services ID/Supabase callback, and the live website reports both Google and Apple enabled. Neither key nor token contents belong in chat or Git. A rejected native-capability confirmation was cancelled; the existing native App ID/provisioning profiles, production push key and DW are unchanged. After specific approval, both Apple relay sources (`mail.thewedmarket.com` and `send.mail.thewedmarket.com`) were registered with sender DKIM/bounce SPF verified and no DNS changes. [Provider status and future rotation](auth-access-2026-10-30/PROVIDER-SETUP.md). The initial activation did not test real identity sign-in or message delivery; see the current full-journey results above. Native release remains held; later local-tool/documentation commits do not change the live application revision.
 

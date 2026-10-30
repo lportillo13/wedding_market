@@ -1,0 +1,205 @@
+{
+  "checkedAt": "2026-10-30T19:21:05.672Z",
+  "base": "http://127.0.0.1:3257",
+  "checks": [
+    {
+      "language": "es",
+      "previewHeight": 490,
+      "previewScrollHeight": 490,
+      "scrollWidth": 375,
+      "selected": "01Tu perfil",
+      "width": 375
+    },
+    {
+      "language": "es",
+      "previewHeight": 490,
+      "previewScrollHeight": 490,
+      "scrollWidth": 375,
+      "selected": "02Tus solicitudes",
+      "width": 375
+    },
+    {
+      "language": "es",
+      "previewHeight": 490,
+      "previewScrollHeight": 490,
+      "scrollWidth": 375,
+      "selected": "03Tus propuestas",
+      "width": 375
+    },
+    {
+      "language": "es",
+      "previewHeight": 490,
+      "previewScrollHeight": 490,
+      "scrollWidth": 375,
+      "selected": "04Tu estudio",
+      "width": 375
+    },
+    {
+      "language": "es",
+      "previewHeight": 520,
+      "previewScrollHeight": 520,
+      "scrollWidth": 305,
+      "selected": "01Tu perfil",
+      "width": 305
+    },
+    {
+      "language": "es",
+      "previewHeight": 520,
+      "previewScrollHeight": 520,
+      "scrollWidth": 305,
+      "selected": "02Tus solicitudes",
+      "width": 305
+    },
+    {
+      "language": "es",
+      "previewHeight": 520,
+      "previewScrollHeight": 520,
+      "scrollWidth": 305,
+      "selected": "03Tus propuestas",
+      "width": 305
+    },
+    {
+      "language": "es",
+      "previewHeight": 520,
+      "previewScrollHeight": 520,
+      "scrollWidth": 305,
+      "selected": "04Tu estudio",
+      "width": 305
+    },
+    {
+      "language": "es",
+      "previewHeight": 490,
+      "previewScrollHeight": 490,
+      "scrollWidth": 1425,
+      "selected": "01Tu perfil",
+      "width": 1425
+    },
+    {
+      "language": "es",
+      "previewHeight": 490,
+      "previewScrollHeight": 490,
+      "scrollWidth": 1425,
+      "selected": "02Tus solicitudes",
+      "width": 1425
+    },
+    {
+      "language": "es",
+      "previewHeight": 490,
+      "previewScrollHeight": 490,
+      "scrollWidth": 1425,
+      "selected": "03Tus propuestas",
+      "width": 1425
+    },
+    {
+      "language": "es",
+      "previewHeight": 490,
+      "previewScrollHeight": 490,
+      "scrollWidth": 1425,
+      "selected": "04Tu estudio",
+      "width": 1425
+    },
+    {
+      "language": "en",
+      "previewHeight": 490,
+      "previewScrollHeight": 490,
+      "scrollWidth": 1425,
+      "selected": "01Your profile",
+      "width": 1425
+    },
+    {
+      "language": "en",
+      "previewHeight": 490,
+      "previewScrollHeight": 490,
+      "scrollWidth": 1425,
+      "selected": "02Your inquiries",
+      "width": 1425
+    },
+    {
+      "language": "en",
+      "previewHeight": 490,
+      "previewScrollHeight": 490,
+      "scrollWidth": 1425,
+      "selected": "03Your proposals",
+      "width": 1425
+    },
+    {
+      "language": "en",
+      "previewHeight": 490,
+      "previewScrollHeight": 490,
+      "scrollWidth": 1425,
+      "selected": "04Your studio",
+      "width": 1425
+    },
+    {
+      "language": "en",
+      "previewHeight": 490,
+      "previewScrollHeight": 490,
+      "scrollWidth": 375,
+      "selected": "01Your profile",
+      "width": 375
+    },
+    {
+      "language": "en",
+      "previewHeight": 490,
+      "previewScrollHeight": 490,
+      "scrollWidth": 375,
+      "selected": "02Your inquiries",
+      "width": 375
+    },
+    {
+      "language": "en",
+      "previewHeight": 490,
+      "previewScrollHeight": 490,
+      "scrollWidth": 375,
+      "selected": "03Your proposals",
+      "width": 375
+    },
+    {
+      "language": "en",
+      "previewHeight": 490,
+      "previewScrollHeight": 490,
+      "scrollWidth": 375,
+      "selected": "04Your studio",
+      "width": 375
+    },
+    {
+      "language": "en",
+      "previewHeight": 520,
+      "previewScrollHeight": 520,
+      "scrollWidth": 305,
+      "selected": "01Your profile",
+      "width": 305
+    },
+    {
+      "language": "en",
+      "previewHeight": 520,
+      "previewScrollHeight": 520,
+      "scrollWidth": 305,
+      "selected": "02Your inquiries",
+      "width": 305
+    },
+    {
+      "language": "en",
+      "previewHeight": 520,
+      "previewScrollHeight": 520,
+      "scrollWidth": 305,
+      "selected": "03Your proposals",
+      "width": 305
+    },
+    {
+      "language": "en",
+      "previewHeight": 520,
+      "previewScrollHeight": 520,
+      "scrollWidth": 305,
+      "selected": "04Your studio",
+      "width": 305
+    }
+  ],
+  "additional": {
+    "keyboardHome": true,
+    "faqFreeLaunch": true,
+    "languagePersistsAfterReload": true,
+    "pauseStopsHeroAnimation": true,
+    "noCustomerWrites": true
+  }
+}

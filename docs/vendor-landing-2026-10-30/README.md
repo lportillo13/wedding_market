@@ -12,10 +12,18 @@ Motion has a pause control and respects reduced-motion preferences. Content rema
 
 ## Validation
 
-- Architecture, TypeScript, ESLint and production build in an isolated snapshot, to avoid unrelated concurrent working changes.
-- Existing web regression suite and bilingual production HTTP checks.
+- Architecture, TypeScript, ESLint and production build pass under Node 24.19.0 in an isolated snapshot of baseline `4f1ea631` plus the exact page changes, avoiding unrelated concurrent working changes.
+- All 159 existing web tests and all 15 local production HTTP checks pass. No database structure changed.
 - All four product previews in both languages at 320, 390 and 1440 viewport widths; narrow Spanish preview clipping was corrected during QA.
 - Keyboard tab selection, FAQ expansion, persistent Spanish after reload, pause control and loaded images checked in the browser. Reduced-motion CSS and media-query handling are present; no operating-system motion preference was changed.
 - No business publication, account signup, profile save, message, proposal, consent acceptance or customer write was submitted during QA. Native source and store releases are outside this website change.
 
-Final release receipt and public verification will be recorded after deployment. See `local-interaction-checks.json` and `local-http-checks.json` for the collected checks.
+## Verified release
+
+Website commit **d969a533ad79a6af6c7b1202faa0b46502757938** is deployed through the fixed gateway. The successful [exact-commit receipt](deployment-success.json) includes passing shadow/live probes and rollback `/var/www/wedding-market.before-20261030-192001`.
+
+All 15 [public HTTP checks](public-checks.json) pass: EN/ES page content, existing homepage/vendor entry points, delivered CSS/motion rules, private account-aware HTML and protected API responses. All 24 [production layout checks](local-interaction-checks.json) pass for the four previews in both languages at 320, 390 and 1440 viewport widths, with no horizontal overflow or clipped preview content. [Local HTTP results](local-http-checks.json) also pass.
+
+The live browser verified the English desktop and Spanish phone hero, loaded images, pause control, focused section navigation and the Spanish inquiry preview. Captures: [desktop](live-desktop.jpg), [phone](live-phone-es.jpg). The existing QA session's terms notice was minimized for viewing; its acceptance checkbox remained false and no consent was submitted. Language was restored to Spanish. Temporary viewport overrides and owned local servers are cleaned up after verification.
+
+The release preserves the preceding social onboarding and approved Google proof file. Native source/store releases, database data, authentication, vendor publication and DW were not changed by this page. Later documentation-only commits do not imply a new application deployment.

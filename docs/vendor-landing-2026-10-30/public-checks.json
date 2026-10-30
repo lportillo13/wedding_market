@@ -1,0 +1,108 @@
+{
+  "checkedAt": "2026-10-30T19:21:58.931Z",
+  "base": "https://thewedmarket.com",
+  "checks": [
+    {
+      "path": "/for-vendors",
+      "language": "en",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/",
+      "language": "en",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/for-vendors",
+      "language": "es",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/",
+      "language": "es",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/2989757a74c92b81.css",
+      "language": "en",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/112e9bdb4474b22f.css",
+      "language": "en",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/e523bf5607b64c85.css",
+      "language": "en",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/a3d9869bdb15d8a4.css",
+      "language": "en",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/1644a0f926e2763f.css",
+      "language": "en",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "path": "/_next/static/css/95a3d9923b079c16.css",
+      "language": "en",
+      "method": "GET",
+      "status": 200,
+      "passed": true
+    },
+    {
+      "check": "reduced-motion, cinematic hero and pause styles delivered",
+      "passed": true
+    },
+    {
+      "path": "/api/ready",
+      "language": "en",
+      "method": "GET",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/admin/blog-posts",
+      "language": "en",
+      "method": "GET",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/uploads",
+      "language": "en",
+      "method": "POST",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "path": "/api/mobile/quotes",
+      "language": "en",
+      "method": "POST",
+      "status": 401,
+      "passed": true
+    }
+  ]
+}
