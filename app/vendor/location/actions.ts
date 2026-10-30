@@ -55,5 +55,6 @@ export async function saveLocation(
   revalidatePath('/vendors');
   revalidatePath(`/vendors/${vendor.slug}`);
   revalidatePath("/vendor/location");
+  revalidatePath('/vendor/profile');
   return { ok: true, message: "Location saved." };
 }

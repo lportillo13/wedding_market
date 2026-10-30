@@ -1,14 +1,15 @@
 import { ReactNode } from 'react';
-import { redirect } from 'next/navigation';
 import { getRoles } from '@/lib/auth/roles';
 import AccountLayoutHeader from './AccountLayoutHeader';
+import AccountAccessNotice from '@/components/AccountAccessNotice';
 
 export default async function AccountLayout({ children }: { children: ReactNode }) {
-  const { isUser } = await getRoles();
+  const { user, isUser, isVendor } = await getRoles();
 
-  if (!isUser) {
-    redirect('/signup');
-  }
+  // Each page preserves its own sign-in destination; legacy inbox aliases route
+  // into the separately authenticated inbox entry point.
+  if (!user) return <>{children}</>;
+  if (!isUser) return <AccountAccessNotice vendor={isVendor}/>;
 
   return (
     <div className="wm-account-workspace">

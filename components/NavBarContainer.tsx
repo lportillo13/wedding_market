@@ -16,6 +16,7 @@ export default function NavBarContainer({
 }) {
   const user = account.status === "authenticated" ? account.user : null;
   const isVendor = account.status === "authenticated" && account.isVendor;
+  const isClient = account.status === 'authenticated' && (account.isUser ?? !account.isVendor);
   const [shortlistCount, setShortlistCount] = useState(0);
   const [notificationSnapshot, setNotificationSnapshot] = useState({userId: '', count: 0});
   const notificationCount = notificationSnapshot.userId === user?.id ? notificationSnapshot.count : 0;
@@ -34,6 +35,7 @@ export default function NavBarContainer({
       accountUnavailable={account.status === "unavailable"}
       isAuthenticated={!!user}
       isVendor={isVendor}
+      isClient={isClient}
       shortlistCount={shortlistCount}
       notificationCount={notificationCount}
       vendorCategories={vendorCategories}

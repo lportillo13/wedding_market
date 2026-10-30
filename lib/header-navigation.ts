@@ -5,7 +5,7 @@ export type HeaderAccountLink = {
   label: TranslationKey;
   icon: "user" | "inbox" | "bell" | "grid";
 };
-export function getHeaderAccountLinks(isVendor: boolean): HeaderAccountLink[] {
+export function getHeaderAccountLinks(isVendor: boolean, isClient = !isVendor): HeaderAccountLink[] {
   return isVendor
     ? [
         {
@@ -23,7 +23,7 @@ export function getHeaderAccountLinks(isVendor: boolean): HeaderAccountLink[] {
         },
       ]
     : [
-        { href: "/account/inbox", label: "nav.myRequests", icon: "inbox" },
+        ...(isClient ? [{ href: '/account/inbox', label: 'nav.myRequests' as const, icon: 'inbox' as const }] : []),
         { href: "/account/profile", label: "auth.profile", icon: "user" },
         {
           href: "/account/notifications",

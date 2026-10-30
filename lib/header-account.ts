@@ -4,7 +4,7 @@ import { isAuthSessionMissingError, type User } from "@supabase/supabase-js";
 export type HeaderUser = Pick<User, "id" | "email" | "user_metadata">;
 export type HeaderAccount =
   | { status: "guest" }
-  | { status: "authenticated"; user: HeaderUser; isVendor: boolean }
+  | { status: "authenticated"; user: HeaderUser; isVendor: boolean; isUser?: boolean }
   | { status: "unavailable" };
 
 type AccountSource = {
@@ -13,6 +13,7 @@ type AccountSource = {
     userId: string,
     signal: AbortSignal,
   ) => PromiseLike<{ data: unknown; error: unknown }>;
+  isUser?: (userId: string, signal: AbortSignal) => PromiseLike<{data:unknown; error:unknown}>;
 };
 
 // Use the server-verified account, rather than asking the phone to refresh a
@@ -38,10 +39,14 @@ export async function loadHeaderAccount(
         if (!data.user) return { status: "guest" };
         // getUser cannot be cancelled. Ignore a late result after the deadline.
         if (controller.signal.aborted) return { status: "unavailable" };
-        const role = await source.isVendor(data.user.id, controller.signal);
+        const [role, clientRole] = await Promise.all([
+          source.isVendor(data.user.id, controller.signal),
+          source.isUser ? source.isUser(data.user.id, controller.signal) : Promise.resolve(null),
+        ]);
         if (role.error || typeof role.data !== "boolean") {
           return { status: "unavailable" };
         }
+        if (clientRole && (clientRole.error || typeof clientRole.data !== 'boolean')) return {status:'unavailable'};
         const { id, email, user_metadata } = data.user;
         return {
           status: "authenticated",
@@ -54,6 +59,7 @@ export async function loadHeaderAccount(
             },
           },
           isVendor: role.data,
+          ...(clientRole ? {isUser:clientRole.data as boolean} : {}),
         };
       })(),
       deadline,

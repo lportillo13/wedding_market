@@ -140,6 +140,8 @@ export async function saveCategories(formData: FormData) {
   }
 
   revalidatePath("/vendor/categories");
+  revalidatePath('/vendor/profile');
+  revalidatePath('/vendor', 'layout');
   invalidatePublicVendorCache();
   revalidatePath("/vendors");
 }

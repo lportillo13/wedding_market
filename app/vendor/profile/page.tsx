@@ -249,6 +249,12 @@ export default async function ProfilePage() {
   const categoryKeys = (categories ?? []).flatMap((row) =>
     row.category ? [row.category.key] : [],
   );
+  const [categoryOptionsResult, locationResult] = await Promise.all([
+    supabase.from('categories').select('key,label').order('key').limit(500),
+    supabase.from('vendor_locations').select('address,city,state,country,lat,lng,service_radius_km').eq('vendor_id', v.id).maybeSingle(),
+  ]);
+  if (categoryOptionsResult.error || locationResult.error) throw new Error('Unable to load your business settings. Please try again.');
+  const location = locationResult.data;
   const pricingRows = (pricingData ?? []) as PricingRow[];
   const pricingInitial = {
     items: profilePricingDrafts(
@@ -352,6 +358,8 @@ export default async function ProfilePage() {
     <VendorProfileTabs
       isPublished={v.is_published}
       categoryKeys={categoryKeys}
+      allCategories={categoryOptionsResult.data ?? []}
+      locationInitial={{address:location?.address ?? '',city:location?.city ?? '',state:location?.state ?? '',country:location?.country ?? '',lat:location?.lat ?? null,lng:location?.lng ?? null,service_radius_km:location?.service_radius_km ?? 50}}
       profileInitial={initial}
       vendorName={initial.business_name}
       heroImage={heroImage}

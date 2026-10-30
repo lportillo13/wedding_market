@@ -6,6 +6,7 @@ type SectionDraft = {
   dirty: boolean;
   saved: () => void;
   pending: (value: boolean) => void;
+  changed?: () => void;
 };
 
 export const ProfileSectionContext = createContext<SectionDraft | null>(null);

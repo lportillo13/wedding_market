@@ -6,7 +6,6 @@ import {
   useMemo,
   useRef,
   useState,
-  type KeyboardEvent,
 } from "react";
 import { useRouter } from "next/navigation";
 import { ProfileSectionContext } from "./ProfileEditorContext";
@@ -22,6 +21,12 @@ import AvailabilityForm from "./availabilityForm";
 import ReviewsForm from "./reviewsForm";
 import type { VendorImage } from "@/types/vendor";
 import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
+import { useVendorWorkspace } from '../VendorWorkspaceContext';
+import { vendorProfileSections, vendorStudioCopy, vendorBusinessGroup, type VendorProfileSection } from '../workspace-navigation';
+import ProfileEssentials from './ProfileEssentials';
+import CategoriesForm from '../categories/categoriesForm';
+import LocationSection from '../location/LocationSection';
+import StartingPriceForm from './StartingPriceForm';
 
 type ProfileInitial = {
   slug: string;
@@ -93,19 +98,13 @@ type ReviewsInitial = {
   googleBusinessProfileUrl: string;
 };
 
-type TabId =
-  | "details"
-  | "contact"
-  | "pricing"
-  | "amenities"
-  | "team"
-  | "availability"
-  | "reviews"
-  | "images";
+type TabId = VendorProfileSection;
 
 export type VendorProfileTabsProps = {
   isPublished?: boolean;
   categoryKeys?: string[];
+  allCategories?: {key:string; label?:{en?:string|null; es?:string|null}|null}[];
+  locationInitial?: {address:string; city:string; state:string; country:string; lat:number|null; lng:number|null; service_radius_km:number};
   profileInitial: ProfileInitial;
   vendorName: string;
   heroImage: VendorImage | null;
@@ -124,6 +123,8 @@ export type VendorProfileTabsProps = {
 export default function VendorProfileTabs({
   isPublished = false,
   categoryKeys = [],
+  allCategories = [],
+  locationInitial = {address:'',city:'',state:'',country:'',lat:null,lng:null,service_radius_km:50},
   profileInitial,
   vendorName,
   heroImage,
@@ -142,40 +143,19 @@ export default function VendorProfileTabs({
   const { language } = useLanguage();
   const es = language === "es";
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<TabId>("details");
-  const [visited, setVisited] = useState<TabId[]>(["details"]);
+  const {activeSection: activeTab, visited, chooseSection: chooseTab, setDirtySections} = useVendorWorkspace();
+  const studioLabels = vendorStudioCopy[language];
   const [dirty, setDirty] = useState<Partial<Record<TabId, boolean>>>({});
   const [saving, setSaving] = useState<Partial<Record<TabId, boolean>>>({});
   const [leaveHref, setLeaveHref] = useState<string | null>(null);
   const leaveDialog = useRef<HTMLDialogElement>(null);
   const revisions = useRef<Partial<Record<TabId, number>>>({});
   const submissions = useRef<Partial<Record<TabId, number>>>({});
-  const tabButtons = useRef<Partial<Record<TabId, HTMLButtonElement | null>>>(
-    {},
-  );
-  const ids: TabId[] = [
-    "details",
-    "images",
-    "contact",
-    "pricing",
-    "amenities",
-    "team",
-    "availability",
-    "reviews",
-  ];
+  const ids = vendorProfileSections;
   const handlers = useMemo(
     () =>
       Object.fromEntries(
-        [
-          "details",
-          "images",
-          "contact",
-          "pricing",
-          "amenities",
-          "team",
-          "availability",
-          "reviews",
-        ].map((key) => {
+        ids.map((key) => {
           const id = key as TabId;
           return [
             id,
@@ -195,46 +175,11 @@ export default function VendorProfileTabs({
         TabId,
         { saved: () => void; pending: (value: boolean) => void }
       >,
-    [],
+    [ids],
   );
 
-  function chooseTab(id: TabId, focus = false) {
-    setActiveTab(id);
-    setVisited((current) =>
-      current.includes(id) ? current : [...current, id],
-    );
-    window.history.replaceState(window.history.state, "", `#${id}`);
-    if (focus) tabButtons.current[id]?.focus();
-  }
-
-  useEffect(() => {
-    const applyHash = () => {
-      const hash = window.location.hash.slice(1) as TabId;
-      if (
-        [
-          "details",
-          "images",
-          "contact",
-          "pricing",
-          "amenities",
-          "team",
-          "availability",
-          "reviews",
-        ].includes(hash)
-      ) {
-        setActiveTab(hash);
-        setVisited((current) =>
-          current.includes(hash) ? current : [...current, hash],
-        );
-      }
-    };
-    const frame = requestAnimationFrame(applyHash);
-    window.addEventListener("hashchange", applyHash);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("hashchange", applyHash);
-    };
-  }, []);
+  useEffect(() => { setDirtySections(dirty); }, [dirty, setDirtySections]);
+  useEffect(() => () => setDirtySections({}), [setDirtySections]);
 
   const hasDirty = Object.values(dirty).some(Boolean);
   useEffect(() => {
@@ -264,6 +209,7 @@ export default function VendorProfileTabs({
           : null;
       if (
         !(link instanceof HTMLAnchorElement) ||
+        link.hasAttribute('data-studio-section') ||
         link.target === "_blank" ||
         link.hasAttribute("download")
       )
@@ -292,19 +238,6 @@ export default function VendorProfileTabs({
     setDirty((current) => (current[id] ? current : { ...current, [id]: true }));
   }
 
-  function onTabKey(event: KeyboardEvent<HTMLButtonElement>, index: number) {
-    let next = index;
-    if (event.key === "ArrowDown" || event.key === "ArrowRight")
-      next = (index + 1) % ids.length;
-    else if (event.key === "ArrowUp" || event.key === "ArrowLeft")
-      next = (index + ids.length - 1) % ids.length;
-    else if (event.key === "Home") next = 0;
-    else if (event.key === "End") next = ids.length - 1;
-    else return;
-    event.preventDefault();
-    chooseTab(ids[next], true);
-  }
-
   const essentials = getProfileEssentials({
     name: profileInitial.business_name,
     description: profileInitial.bio_en || profileInitial.bio_es,
@@ -316,12 +249,11 @@ export default function VendorProfileTabs({
         pricingInitial.items.some((item) => item.price || item.contactForPrice),
     ),
   });
-  const completed = essentials.filter((item) => item.complete).length;
-  const nextSection = essentials.find((item) => !item.complete)?.id as
-    | TabId
-    | undefined;
   const help: Record<TabId, string> = es
     ? {
+        'starting-price': 'Define un precio inicial, si quieres mostrarlo en tu perfil.',
+        categories: 'Elige las categorías que describen tu negocio. Los campos y paquetes se adaptan a tus servicios.',
+        location: 'Ubica tu negocio y define la zona en la que trabajas.',
         details:
           "Presenta tu negocio con tus propias palabras. Cuenta qué hace especial trabajar contigo.",
         images:
@@ -339,6 +271,9 @@ export default function VendorProfileTabs({
           "Conecta tus reseñas y aporta confianza a las parejas que están comparando opciones.",
       }
     : {
+        'starting-price': 'Set a starting price if you would like to show one on your profile.',
+        categories: 'Choose the categories that describe your business. Fields and packages adapt to your services.',
+        location: 'Locate your business and define the area you serve.',
         details:
           "Introduce your business in your own words. Tell couples what makes working with you special.",
         images:
@@ -355,9 +290,26 @@ export default function VendorProfileTabs({
         reviews:
           "Connect your reviews and help couples feel confident about their choice.",
       };
-  const sectionLabel = (id: TabId) => t(`vendorDashboard.profileTabs.${id}`);
+  const sectionLabel = (id: TabId) => {
+    switch (id) {
+      case 'details': return studioLabels.details;
+      case 'images': return studioLabels.images;
+      case 'starting-price': return studioLabels.startingPrice;
+      case 'categories': return studioLabels.categories;
+      case 'location': return studioLabels.location;
+      case 'contact': return studioLabels.contactDetails;
+      case 'pricing': return studioLabels.pricing;
+      case 'amenities': return studioLabels.amenities;
+      default: return t(`vendorDashboard.profileTabs.${id}`);
+    }
+  };
+  const group = vendorBusinessGroup(activeTab);
+  const relatedSections: TabId[] = group === 'services' ? ['pricing','starting-price','amenities','categories'] : group === 'contact' ? ['contact','location'] : [];
   const renderForm = (id: TabId) => {
     switch (id) {
+      case 'starting-price': return <StartingPriceForm price={contactInitial.starting_price} currency={contactInitial.starting_price_currency}/>;
+      case 'categories': return <CategoriesForm allCats={allCategories} selected={categoryKeys}/>;
+      case 'location': return <LocationSection initial={locationInitial}/>;
       case "details":
         return <ProfileForm initial={profileInitial} />;
       case "contact":
@@ -396,35 +348,20 @@ export default function VendorProfileTabs({
   };
 
   return (
-    <section className="wm-profile-workspace">
+    <main className="wm-profile-workspace">
       <header className="wm-profile-workspace__header">
         <div>
           <p className="wm-profile-eyebrow">
-            {es ? "TU PERFIL DE PROVEEDOR" : "YOUR VENDOR PROFILE"}
+            {studioLabels.business} / {sectionLabel(activeTab)}
           </p>
           <h1>
-            {vendorName ||
-              (es ? "Tu negocio, a tu manera" : "Your business, your way")}
+            {activeTab === 'details' ? (es ? 'Cuenta tu historia.' : 'Tell your story.') : group === 'services' ? studioLabels.services : group === 'contact' ? studioLabels.contact : activeTab === 'availability' ? studioLabels.calendar : sectionLabel(activeTab)}
           </h1>
           <p>
-            {es
-              ? "Un espacio para mostrar lo que haces y conectar con las parejas adecuadas."
-              : "A place to show what you do and connect with the right couples."}
+            {vendorName}
           </p>
         </div>
         <div className="wm-profile-workspace__actions">
-          <span
-            className={`wm-profile-status ${isPublished ? "is-published" : ""}`}
-          >
-            <span aria-hidden="true">●</span>{" "}
-            {isPublished
-              ? es
-                ? "Publicado"
-                : "Published"
-              : es
-                ? "Borrador privado"
-                : "Private draft"}
-          </span>
           {isPublished ? (
             <Link
               href={`/vendors/${profileInitial.slug}`}
@@ -435,119 +372,23 @@ export default function VendorProfileTabs({
               {es ? "Ver perfil público ↗︎" : "View public profile ↗︎"}
             </Link>
           ) : (
-            <Link href="/vendor/publish" className="btn btn-outline-dark">
-              {es ? "Revisar publicación ↗︎" : "Review publishing ↗︎"}
+            <Link href="/vendor/preview" target="_blank" rel="noopener noreferrer" className="btn btn-outline-dark">
+              {studioLabels.privatePreview} ↗
             </Link>
           )}
         </div>
       </header>
-      <div className="wm-profile-essentials">
-        <div className="wm-profile-essentials__intro">
-          <div className="wm-profile-essentials__number">
-            {completed}
-            <span>/4</span>
-          </div>
-          <div>
-            <h2>
-              {completed === 4
-                ? es
-                  ? "Los básicos están listos"
-                  : "Your essentials are in place"
-                : es
-                  ? "Empieza por lo esencial"
-                  : "Start with the essentials"}
-            </h2>
-            <p>
-              {es
-                ? "Según la información guardada. Añade más detalles a tu ritmo."
-                : "Based on saved information. Add more details at your own pace."}
-            </p>
-          </div>
-        </div>
-        <div className="wm-profile-essentials__steps">
-          {essentials.map((step) => (
-            <button
-              key={step.id}
-              type="button"
-              onClick={() => chooseTab(step.id as TabId)}
-              className={step.complete ? "is-complete" : ""}
-            >
-              <span aria-hidden="true">{step.complete ? "✓" : "+"}</span>
-              {sectionLabel(step.id as TabId)}
-            </button>
-          ))}
-        </div>
-        {nextSection ? (
-          <button
-            type="button"
-            className="wm-profile-next"
-            onClick={() => chooseTab(nextSection)}
-          >
-            {es ? "Siguiente" : "Up next"}: {sectionLabel(nextSection)}{" "}
-            <span aria-hidden="true">→</span>
-          </button>
-        ) : null}
-      </div>
-      <div className="wm-profile-workspace__body">
-        <div className="wm-profile-mobile-section">
-          <label htmlFor="profile-section">{es ? 'Sección del perfil' : 'Profile section'}</label>
-          <select className="form-select" id="profile-section" value={activeTab} onChange={event => chooseTab(event.target.value as TabId)}>
-            {ids.map(id => <option key={id} value={id}>{sectionLabel(id)}{dirty[id] ? ' •' : ''}</option>)}
-          </select>
-        </div>
-        <aside className="wm-profile-sidebar">
-          <div
-            role="tablist"
-            aria-label={es ? "Secciones de tu perfil" : "Profile sections"}
-          >
-            {ids.map((id, index) => (
-              <button
-                key={id}
-                type="button"
-                role="tab"
-                id={`profile-trigger-${id}`}
-                aria-controls={`profile-panel-${id}`}
-                aria-selected={activeTab === id}
-                tabIndex={activeTab === id ? 0 : -1}
-                ref={(node) => {
-                  tabButtons.current[id] = node;
-                }}
-                onClick={() => chooseTab(id)}
-                onKeyDown={(event) => onTabKey(event, index)}
-                className={`wm-profile-section-link ${activeTab === id ? "is-active" : ""}`}
-              >
-                <span
-                  className="wm-profile-section-link__index"
-                  aria-hidden="true"
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span>{sectionLabel(id)}</span>
-                {dirty[id] ? (
-                  <span
-                    className="wm-profile-dirty-dot"
-                    aria-label={es ? "Cambios sin guardar" : "Unsaved changes"}
-                  />
-                ) : null}
-              </button>
-            ))}
-          </div>
-          <p className="wm-profile-sidebar__note">
-            {es
-              ? "Puedes cambiar de sección sin perder lo que estás escribiendo. Guarda antes de salir."
-              : "Switch sections without losing what you’re writing. Save before leaving."}
-          </p>
-          <Link href="/vendor/categories">
-            {es ? "Editar mis servicios →" : "Edit my services →"}
-          </Link>
-        </aside>
+      {relatedSections.length > 0 && <nav className="wm-studio-subsections" aria-label={group === 'services' ? studioLabels.services : studioLabels.contact}>
+        {relatedSections.map(id => <button key={id} type="button" aria-pressed={activeTab === id} onClick={() => chooseTab(id)}>{sectionLabel(id)}{dirty[id] && <span className="wm-studio-dirty" aria-label={studioLabels.changes}/>}</button>)}
+      </nav>}
+      <div className="wm-studio-editor-grid">
         <div className="wm-profile-panels">
           {ids.map((id) => (
             <div
               key={id}
-              role="tabpanel"
+              role="region"
               id={`profile-panel-${id}`}
-              aria-labelledby={`profile-trigger-${id}`}
+              aria-labelledby={`profile-heading-${id}`}
               hidden={activeTab !== id}
               onInputCapture={(event) => {
                 if (
@@ -584,7 +425,7 @@ export default function VendorProfileTabs({
                     {String(ids.indexOf(id) + 1).padStart(2, "0")} /{" "}
                     {String(ids.length).padStart(2, "0")}
                   </p>
-                  <h2>{sectionLabel(id)}</h2>
+                  <h2 id={`profile-heading-${id}`}>{sectionLabel(id)}</h2>
                   <p>{help[id]}</p>
                 </div>
                 {id === "images" ? (
@@ -596,7 +437,7 @@ export default function VendorProfileTabs({
                 ) : null}
               </div>
               <ProfileSectionContext.Provider
-                value={{ ...handlers[id], dirty: Boolean(dirty[id]) }}
+                value={{ ...handlers[id], dirty: Boolean(dirty[id]), changed: () => markDirty(id) }}
               >
                 <fieldset
                   className="wm-profile-fieldset"
@@ -608,6 +449,7 @@ export default function VendorProfileTabs({
             </div>
           ))}
         </div>
+        <ProfileEssentials items={essentials}/>
       </div>
       <dialog
         ref={leaveDialog}
@@ -646,6 +488,6 @@ export default function VendorProfileTabs({
           </button>
         </div>
       </dialog>
-    </section>
+    </main>
   );
 }

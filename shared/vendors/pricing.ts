@@ -13,6 +13,13 @@ export function profilePriceToCents(value: string): number | null {
   return cents;
 }
 
+export function profileStartingPrice(price: string, currency: string, existingCurrency = 'USD') {
+  const cents = profilePriceToCents(price.trim());
+  const code = currency.trim().toUpperCase();
+  if (code && !/^[A-Z]{3}$/.test(code)) throw new Error('Use a three-letter currency code, such as USD or CRC.');
+  return {starting_price_cents:cents, starting_price_currency:code || cents !== null ? code || existingCurrency || 'USD' : null};
+}
+
 export function prepareProfilePricing(input: unknown, defaultCurrency: string) {
   if (!Array.isArray(input) || input.length > 100)
     throw new Error("Add up to 100 pricing packages.");

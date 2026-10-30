@@ -19,6 +19,7 @@ import "../styles/boutique-directory.scss";
 import "../styles/boutique-visit.scss";
 import "../styles/auth-editorial.scss";
 import "../styles/profile-editorial.scss";
+import "../styles/vendor-studio.scss";
 import NavBarContainer from "@/components/NavBarContainer";
 import AuthStateSync from "@/components/AuthStateSync";
 import PwaServiceWorkerRegistration from "@/components/PwaServiceWorkerRegistration";
@@ -85,6 +86,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     account = await loadHeaderAccount({
       getUser: () => supabase.auth.getUser(),
       isVendor: (userId, signal) => supabase.rpc("is_vendor", { _uid: userId }).abortSignal(signal),
+      isUser: (userId, signal) => supabase.rpc('is_user', {_uid:userId}).abortSignal(signal),
     });
     const user = account.status === "authenticated" ? account.user : null;
 

@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-10-30T15:58:27.968Z",
+  "fixture": "Fictional vendor; local authentication and write requests are rejected",
+  "checks": {
+    "draftRetained": true,
+    "leaveGuard": true,
+    "rejectedSaveRetainsText": true,
+    "startingPriceRetained": true,
+    "categoriesTracked": true,
+    "englishHeading": true,
+    "phone": {
+      "client": 305,
+      "fieldFont": "16px",
+      "panel": 281,
+      "saveButtonHeight": 48,
+      "scroll": 305,
+      "selectVisible": 46,
+      "sidebar": 305,
+      "viewport": 320
+    },
+    "overviewWorks": true
+  }
+}

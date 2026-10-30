@@ -1,6 +1,12 @@
-const fs=require('node:fs'),path=require('node:path'),http=require('node:http');
-const React=require('react'),{renderToStaticMarkup}=require('react-dom/server');
-const HeaderIcon=require('../../dist-tests/components/HeaderIcon').default;
+import fs from 'node:fs';
+import path from 'node:path';
+import http from 'node:http';
+import {URL} from 'node:url';
+import console from 'node:console';
+import React from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import HeaderIconModule from '../../dist-tests/components/HeaderIcon.js';
+const HeaderIcon = HeaderIconModule.default;
 const icon=name=>renderToStaticMarkup(React.createElement(HeaderIcon,{name}));
 const button=(label,primary=false)=>`<button class="button ${primary?'primary':''}">${label}</button>`;
 const field=(label,value,extra='')=>`<label class="field"><span>${label}</span><input value="${value}" ${extra}></label>`;

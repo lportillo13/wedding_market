@@ -1,6 +1,9 @@
 "use client";
 
-import { useMemo, useState, FormEvent } from "react";
+import { useContext, useMemo, useState, FormEvent } from "react";
+import {useRouter} from 'next/navigation';
+import ProfileSaveBar from '../profile/ProfileSaveBar';
+import {ProfileSectionContext} from '../profile/ProfileEditorContext';
 import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
 import { saveCategories } from "../_actions";
 
@@ -128,9 +131,12 @@ function assignFamily(option: CategoryOption) {
 }
 
 export default function CategoriesForm({ allCats, selected }: { allCats: Cat[]; selected: string[] }) {
+  const section = useContext(ProfileSectionContext);
+  const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const feedback = useMemo(() => ({ok:Boolean(msg) && !err, message:err ?? msg ?? ''}), [msg,err]);
   const t = useTranslation();
   const { language } = useLanguage();
   const [selectedKeys, setSelectedKeys] = useState<string[]>(selected);
@@ -174,10 +180,12 @@ export default function CategoriesForm({ allCats, selected }: { allCats: Cat[]; 
   const visibleItems = activeFamilyId === "all" ? families.flatMap((family) => family.items) : activeFamily?.items ?? [];
 
   function toggleCategory(key: string) {
+    section?.changed?.();
     setSelectedKeys((current) => (current.includes(key) ? current.filter((item) => item !== key) : [...current, key]));
   }
 
   function toggleFamily(family: CategoryFamily) {
+    section?.changed?.();
     const familyKeys = family.items.map((item) => item.key);
     const shouldClear = familyKeys.every((key) => selectedSet.has(key));
 
@@ -203,6 +211,7 @@ export default function CategoriesForm({ allCats, selected }: { allCats: Cat[]; 
       const fd = new FormData(e.currentTarget);
       await saveCategories(fd);
       setMsg(t("vendorDashboard.categories.success"));
+      router.refresh();
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : String(e);
       setErr(message);
@@ -212,7 +221,7 @@ export default function CategoriesForm({ allCats, selected }: { allCats: Cat[]; 
   }
 
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} data-profile-save aria-busy={busy}>
       {selectedKeys.map((key) => (
         <input key={key} type="hidden" name="categories" value={key} />
       ))}
@@ -312,11 +321,7 @@ export default function CategoriesForm({ allCats, selected }: { allCats: Cat[]; 
           </section>
         </div>
       </div>
-      <button className="btn btn-primary" disabled={busy}>
-        {busy ? t("vendorDashboard.categories.saving") : t("vendorDashboard.categories.save")}
-      </button>
-      {msg && <div className="alert alert-success mt-3">{msg}</div>}
-      {err && <div className="alert alert-danger mt-3">{err}</div>}
+      <ProfileSaveBar state={feedback} pending={busy} label={t('vendorDashboard.categories.save')}/>
     </form>
   );
 }

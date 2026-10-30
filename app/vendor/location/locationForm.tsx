@@ -1,6 +1,9 @@
 "use client";
 
-import { useActionState, useEffect, useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
+import {useProfileAction} from '../profile/useProfileAction';
+import ProfileSaveBar from '../profile/ProfileSaveBar';
+import {ProfileSectionContext} from '../profile/ProfileEditorContext';
 import { saveLocation, type SaveLocState } from "./actions";
 import MapPicker from "./MapPicker";
 import { useTranslation } from "@/contexts/LanguageContext";
@@ -14,17 +17,18 @@ type Initial = {
 const initState: SaveLocState = { ok: false, message: "" };
 
 export default function LocationForm({ initial }: { initial: Initial }) {
-  const [state, formAction, pending] = useActionState(saveLocation, initState);
+  const [state, formAction, pending] = useProfileAction(saveLocation, initState);
+  const section = useContext(ProfileSectionContext);
   const [form, setForm] = useState<Initial>(initial);
   const t = useTranslation();
   const countryOptions = useMemo(() => buildCountryOptions(form.country), [form.country]);
 
-  useEffect(() => { setForm(initial); }, [initial]);
 
   function updateFromMap(v: {
     lat: number | null; lng: number | null;
     address?: string; city?: string; state?: string; country?: string;
   }) {
+    section?.changed?.();
     setForm(prev => ({
       ...prev,
       lat: v.lat ?? prev.lat,
@@ -44,7 +48,7 @@ export default function LocationForm({ initial }: { initial: Initial }) {
   }
 
   return (
-    <form action={formAction} suppressHydrationWarning>
+    <form action={formAction} data-profile-save suppressHydrationWarning>
       <div className="mb-3">
         <MapPicker
           apiKey={apiKey}
@@ -122,15 +126,7 @@ export default function LocationForm({ initial }: { initial: Initial }) {
       <input type="hidden" name="country" value={form.country} />
       <input type="hidden" name="address" value={form.address} />
 
-      {state.message && (
-        <div className={`alert ${state.ok ? "alert-success" : "alert-danger"} mt-2`} role="alert">
-          {state.message}
-        </div>
-      )}
-
-      <button className="btn btn-primary" disabled={pending}>
-        {pending ? t("vendorDashboard.location.form.saving") : t("vendorDashboard.location.form.save")}
-      </button>
+      <ProfileSaveBar state={state} pending={pending} label={t('vendorDashboard.location.form.save')}/>
     </form>
   );
 }

@@ -10,5 +10,5 @@ export default function AuthMenu({ account, shortlistCount = 0, notificationCoun
 }) {
   if (account.status === "unavailable") return <HeaderAccountRetry compact />;
   if (account.status === "guest") return <GuestAuthActions />;
-  return <AuthDropdown user={account.user} isVendor={account.isVendor} shortlistCount={shortlistCount} notificationCount={notificationCount} onNotificationCountChange={onNotificationCountChange} />;
+  return <AuthDropdown user={account.user} isVendor={account.isVendor} isClient={account.isUser ?? !account.isVendor} shortlistCount={shortlistCount} notificationCount={notificationCount} onNotificationCountChange={onNotificationCountChange} />;
 }

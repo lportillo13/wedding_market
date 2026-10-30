@@ -332,38 +332,6 @@ export default function ContactForm({ initial }: ContactFormProps) {
             />
           </div>
           <div className="col-12 col-md-4">
-            <label className="form-label" htmlFor="contact-starting-price">
-              {t("vendorDashboard.profileContact.startingPriceLabel")}
-            </label>
-            <input
-              id="contact-starting-price"
-              inputMode="decimal"
-              name="starting_price"
-              className="form-control"
-              value={form.starting_price}
-              onChange={onChange}
-              placeholder={t(
-                "vendorDashboard.profileContact.currencyPlaceholder",
-              )}
-            />
-            <div className="form-text">
-              {t("vendorDashboard.profileContact.startingPriceHelp")}
-            </div>
-          </div>
-          <div className="col-12 col-md-4">
-            <label className="form-label" htmlFor="contact-starting-currency">
-              {t("vendorDashboard.profileContact.startingCurrencyLabel")}
-            </label>
-            <input
-              id="contact-starting-currency"
-              name="starting_price_currency"
-              className="form-control"
-              value={form.starting_price_currency}
-              onChange={onChange}
-              placeholder="USD"
-            />
-          </div>
-          <div className="col-12 col-md-4">
             <label className="form-label" htmlFor="contact-years">
               {t("vendorDashboard.profileContact.yearsInBusinessLabel")}
             </label>

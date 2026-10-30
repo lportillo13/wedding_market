@@ -3,10 +3,11 @@
 import { useProfileAction } from "./useProfileAction";
 import ProfileSaveBar from "./ProfileSaveBar";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { SaveState } from "./actions";
 import { saveProfile, translateProfileText } from "./actions";
-import { useTranslation } from "@/contexts/LanguageContext";
+import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
+import {vendorStudioCopy} from "../workspace-navigation";
 
 type FormShape = {
   slug: string;
@@ -27,6 +28,14 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
   const [bioTranslationError, setBioTranslationError] = useState<string | null>(null);
   const [extraTranslationError, setExtraTranslationError] = useState<string | null>(null);
   const t = useTranslation();
+  const {language} = useLanguage();
+  const labels = vendorStudioCopy[language];
+  const formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    if (state.ok || !state.fieldErrors || !Object.keys(state.fieldErrors).length) return;
+    const frame = requestAnimationFrame(() => formRef.current?.querySelector<HTMLInputElement>('.is-invalid')?.focus());
+    return () => cancelAnimationFrame(frame);
+  }, [state]);
 
   // If the server action changed the slug, reflect it
   useEffect(() => {
@@ -113,128 +122,30 @@ export default function ProfileForm({ initial }: { initial: FormShape }) {
     }
   }
 
-  return (
-    <form action={formAction} data-profile-save suppressHydrationWarning>
-      <div className="mb-3">
-        <label className="form-label" htmlFor="profile-business-name">
-          {t("vendorDashboard.profileForm.businessNameLabel")}
-        </label>
-        <input
-          id="profile-business-name"
-          name="business_name"
-          className={`form-control ${state.fieldErrors?.business_name ? "is-invalid" : ""}`}
-          value={form.business_name}
-          onChange={onChange}
-          required
-        />
-        {state.fieldErrors?.business_name && (
-          <div className="invalid-feedback">{state.fieldErrors.business_name}</div>
-        )}
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label" htmlFor="profile-slug">
-          {t("vendorDashboard.profileForm.slugLabel")}
-        </label>
-        <input
-          id="profile-slug"
-          name="slug"
-          className={`form-control ${state.fieldErrors?.slug ? "is-invalid" : ""}`}
-          value={form.slug}
-          onChange={onChange}
-          placeholder={t("vendorDashboard.profileForm.slugPlaceholder")}
-        />
-        {state.fieldErrors?.slug && <div className="invalid-feedback">{state.fieldErrors.slug}</div>}
-        <div className="form-text">{t("vendorDashboard.profileForm.slugHelp")}</div>
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label" htmlFor="profile-bio-en">
-          {t("vendorDashboard.profileForm.bioEnLabel")}
-        </label>
-        <textarea
-          id="profile-bio-en"
-          name="bio_en"
-          className="form-control"
-          rows={4}
-          value={form.bio_en}
-          onChange={onChange}
-        />
-      </div>
-
-      <div className="mb-3">
-        <div className="d-flex align-items-start justify-content-between gap-2">
-          <label className="form-label" htmlFor="profile-bio-es">
-            {t("vendorDashboard.profileForm.bioEsLabel")}
-          </label>
-          <button
-            type="button"
-            className="btn btn-outline-secondary btn-sm"
-            data-profile-change onClick={handleTranslateBio}
-            disabled={isBioTranslating || !form.bio_en.trim()}
-          >
-            {isBioTranslating
-              ? t("vendorDashboard.profileForm.translating")
-              : t("vendorDashboard.profileForm.translateFromEnglish")}
-          </button>
-        </div>
-        <textarea
-          id="profile-bio-es"
-          name="bio_es"
-          className="form-control"
-          rows={4}
-          value={form.bio_es}
-          onChange={onChange}
-        />
-        {bioTranslationError ? (
-          <div className="form-text text-danger">{bioTranslationError}</div>
-        ) : null}
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label" htmlFor="profile-extra-en">
-          {t("vendorDashboard.profileForm.extraInfoEnLabel")}
-        </label>
-        <textarea
-          id="profile-extra-en"
-          name="extra_info_en"
-          className="form-control"
-          rows={4}
-          value={form.extra_info_en}
-          onChange={onChange}
-        />
-      </div>
-
-      <div className="mb-3">
-        <div className="d-flex align-items-start justify-content-between gap-2">
-          <label className="form-label" htmlFor="profile-extra-es">
-            {t("vendorDashboard.profileForm.extraInfoEsLabel")}
-          </label>
-          <button
-            type="button"
-            className="btn btn-outline-secondary btn-sm"
-            data-profile-change onClick={handleTranslateExtraInfo}
-            disabled={isExtraTranslating || !form.extra_info_en.trim()}
-          >
-            {isExtraTranslating
-              ? t("vendorDashboard.profileForm.translating")
-              : t("vendorDashboard.profileForm.translateFromEnglish")}
-          </button>
-        </div>
-        <textarea
-          id="profile-extra-es"
-          name="extra_info_es"
-          className="form-control"
-          rows={4}
-          value={form.extra_info_es}
-          onChange={onChange}
-        />
-        {extraTranslationError ? (
-          <div className="form-text text-danger">{extraTranslationError}</div>
-        ) : null}
-      </div>
-
-      <ProfileSaveBar state={state} pending={isPending} label={t("vendorDashboard.profileForm.save")} />
-    </form>
-  );
+  const description = (locale: 'en' | 'es') => <div className="mb-3">
+    <div className="d-flex align-items-start justify-content-between gap-2">
+      <label className="form-label" htmlFor={`profile-bio-${locale}`}>{locale === 'en' ? t('vendorDashboard.profileForm.bioEnLabel') : t('vendorDashboard.profileForm.bioEsLabel')}</label>
+      {locale === 'es' && <button type="button" className="btn btn-outline-secondary btn-sm" data-profile-change onClick={handleTranslateBio} disabled={isBioTranslating || !form.bio_en.trim()}>{isBioTranslating ? t('vendorDashboard.profileForm.translating') : t('vendorDashboard.profileForm.translateFromEnglish')}</button>}
+    </div>
+    <textarea id={`profile-bio-${locale}`} name={`bio_${locale}`} className="form-control" rows={5} value={locale === 'en' ? form.bio_en : form.bio_es} onChange={onChange}/>
+    {locale === 'es' && bioTranslationError && <div className="form-text text-danger">{bioTranslationError}</div>}
+  </div>;
+  const extra = (locale: 'en' | 'es') => <div className="mb-3">
+    <div className="d-flex align-items-start justify-content-between gap-2">
+      <label className="form-label" htmlFor={`profile-extra-${locale}`}>{locale === 'en' ? t('vendorDashboard.profileForm.extraInfoEnLabel') : t('vendorDashboard.profileForm.extraInfoEsLabel')}</label>
+      {locale === 'es' && <button type="button" className="btn btn-outline-secondary btn-sm" data-profile-change onClick={handleTranslateExtraInfo} disabled={isExtraTranslating || !form.extra_info_en.trim()}>{isExtraTranslating ? t('vendorDashboard.profileForm.translating') : t('vendorDashboard.profileForm.translateFromEnglish')}</button>}
+    </div>
+    <textarea id={`profile-extra-${locale}`} name={`extra_info_${locale}`} className="form-control" rows={4} value={locale === 'en' ? form.extra_info_en : form.extra_info_es} onChange={onChange}/>
+    {locale === 'es' && extraTranslationError && <div className="form-text text-danger">{extraTranslationError}</div>}
+  </div>;
+  return <form ref={formRef} action={formAction} data-profile-save suppressHydrationWarning>
+    <div className="mb-4"><label className="form-label" htmlFor="profile-business-name">{t('vendorDashboard.profileForm.businessNameLabel')}</label><input id="profile-business-name" name="business_name" className={`form-control ${state.fieldErrors?.business_name ? 'is-invalid' : ''}`} value={form.business_name} onChange={onChange} required/>{state.fieldErrors?.business_name && <div className="invalid-feedback">{state.fieldErrors.business_name}</div>}</div>
+    {description(language)}
+    <details className="wm-studio-form-details"><summary>{labels.translation}</summary>{description(language === 'en' ? 'es' : 'en')}</details>
+    <details className="wm-studio-form-details" open={Boolean(state.fieldErrors?.slug) || undefined}><summary>{labels.morePresentation}</summary>
+      <div className="mb-3"><label className="form-label" htmlFor="profile-slug">{t('vendorDashboard.profileForm.slugLabel')}</label><input id="profile-slug" name="slug" className={`form-control ${state.fieldErrors?.slug ? 'is-invalid' : ''}`} value={form.slug} onChange={onChange} placeholder={t('vendorDashboard.profileForm.slugPlaceholder')}/>{state.fieldErrors?.slug && <div className="invalid-feedback">{state.fieldErrors.slug}</div>}<div className="form-text">{t('vendorDashboard.profileForm.slugHelp')}</div></div>
+      {extra(language)}{extra(language === 'en' ? 'es' : 'en')}
+    </details>
+    <ProfileSaveBar state={state} pending={isPending} label={t('vendorDashboard.profileForm.save')}/>
+  </form>;
 }

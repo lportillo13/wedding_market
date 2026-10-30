@@ -22,6 +22,7 @@ type NavBarProps = {
   authMenu?: ReactNode;
   isAuthenticated?: boolean;
   isVendor?: boolean;
+  isClient?: boolean;
   shortlistCount?: number;
   notificationCount?: number;
   vendorCategories: HeaderVendorCategory[];
@@ -32,6 +33,7 @@ export default function NavBar({
   authMenu,
   isAuthenticated = false,
   isVendor = false,
+  isClient = !isVendor,
   shortlistCount = 0,
   notificationCount = 0,
   vendorCategories,
@@ -60,7 +62,7 @@ export default function NavBar({
     typeof user?.user_metadata?.full_name === "string"
       ? user.user_metadata.full_name
       : dictionary.auth.account;
-  const accountLinks = getHeaderAccountLinks(isVendor);
+  const accountLinks = getHeaderAccountLinks(isVendor, isClient);
 
   useEffect(() => {
     if (!isCoverPage) return;
@@ -178,7 +180,7 @@ export default function NavBar({
               <HeaderIcon name="arrow" width="16" height="16" />
             </Link>
           ) : null}
-          {isAuthenticated ? (
+          {isAuthenticated && (isVendor || isClient) ? (
             <Link
               href={isVendor ? "/vendor/inbox" : "/account/inbox"}
               className="wm-site-header__icon"
@@ -193,7 +195,7 @@ export default function NavBar({
           </div>
         </div>
         <div className="wm-site-header__mobile-actions">
-          {isAuthenticated ? <Link
+          {isAuthenticated && (isVendor || isClient) ? <Link
             href={isVendor ? '/vendor/inbox' : '/account/inbox'}
             className="wm-site-header__icon"
             aria-label={dictionary.inbox.title}
@@ -370,7 +372,7 @@ export default function NavBar({
                     <div>
                       <strong>{name}</strong>
                       <span>
-                        {isVendor ? labels.vendorSpace : labels.myWedding}
+                        {isVendor ? labels.vendorSpace : isClient ? labels.myWedding : t('auth.account')}
                       </span>
                     </div>
                     <HeaderIcon name="arrow" />
@@ -431,7 +433,7 @@ export default function NavBar({
           <div className="wm-mobile-navigation__footer">
             <Link
               href={
-                accountUnavailable
+                accountUnavailable || (isAuthenticated && !isClient && !isVendor)
                   ? "/vendors"
                   : isVendor
                     ? "/vendor/inbox"
@@ -440,7 +442,7 @@ export default function NavBar({
               className="wm-site-header__cta"
               onClick={close}
             >
-              {accountUnavailable
+              {accountUnavailable || (isAuthenticated && !isClient && !isVendor)
                 ? dictionary.nav.vendors
                 : isVendor
                   ? dictionary.auth.vendorRfqs

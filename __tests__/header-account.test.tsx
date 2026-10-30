@@ -233,3 +233,21 @@ test("unavailable accounts render a translated retry action instead of a loading
     );
   }
 });
+
+test('non-vendor accounts require explicit couple access before showing couple-only menu actions', async () => {
+  for (const language of ['en','es'] as const) {
+    const html = await render({status:'authenticated',user,isVendor:false,isUser:false},language);
+    assert.match(html,/href="\/account\/profile"/);
+    assert.match(html,/href="\/account\/notifications"/);
+    assert.match(html,/href="\/shortlist"/);
+    assert.doesNotMatch(html,/href="\/account\/inbox"|href="\/rfq\/new"/);
+  }
+});
+
+test('both header capabilities are verified, and a failed couple lookup never becomes a couple menu', async () => {
+  const account = await loadHeaderAccount({getUser:signedIn,isVendor:async()=>({data:false,error:null}),isUser:async()=>({data:false,error:null})});
+  assert.equal(account.status,'authenticated');
+  if(account.status==='authenticated') {assert.equal(account.isUser,false);assert.equal(account.isVendor,false);}
+  const failed = await loadHeaderAccount({getUser:signedIn,isVendor:async()=>({data:false,error:null}),isUser:async()=>({data:null,error:new Error('Offline')})});
+  assert.deepEqual(failed,{status:'unavailable'});
+});

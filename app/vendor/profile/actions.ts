@@ -5,6 +5,7 @@ import { saveVendorHeroPresentation } from "@/features/vendors/server/hero";
 import {
   prepareProfilePricing,
   profilePriceToCents,
+  profileStartingPrice,
 } from "@/shared/vendors/pricing";
 import { parseCalendarDate } from "@/shared/calendar/date";
 import { revalidatePath } from "next/cache";
@@ -12,6 +13,7 @@ import type { VendorImage } from "@/types/vendor";
 import { deleteFromR2, getOwnedR2ObjectKey } from "@/lib/r2";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { translateTextWithAI } from "@/lib/ai/translate";
+import {saveVendorStartingPrice} from '@/features/vendors/server/starting-price';
 
 // tiny helper to keep slugs URL-safe
 function slugify(input: string) {
@@ -343,21 +345,12 @@ export async function saveContact(
   const languagesInput = String(formData.get("languages") ?? "");
   const teamSizeRange = String(formData.get("team_size_range") ?? "").trim();
 
-  let startingPriceCents: number | null;
+  let startingPriceValues: ReturnType<typeof profileStartingPrice> | undefined;
   try {
-    startingPriceCents = profilePriceToCents(startingPriceInput);
+    if (formData.has('starting_price')) startingPriceValues = profileStartingPrice(startingPriceInput, startingCurrencyInput, vendor.starting_price_currency ?? 'USD');
   } catch (error) {
-    return {
-      ok: false,
-      message:
-        error instanceof Error ? error.message : "Invalid starting price.",
-    };
+    return {ok:false,message:error instanceof Error ? error.message : 'Invalid starting price.'};
   }
-  if (startingCurrencyInput && !/^[A-Z]{3}$/.test(startingCurrencyInput))
-    return {
-      ok: false,
-      message: "Use a three-letter currency code, such as USD or CRC.",
-    };
   const yearsInBusiness = parseInteger(yearsInBusinessInput);
   const eventTypes = parseCsv(eventTypesInput);
   const languages = parseCsv(languagesInput);
@@ -367,19 +360,12 @@ export async function saveContact(
     website_url: website || null,
     map_url: mapUrl || null,
     address_label: addressLabel || null,
-    starting_price_cents: startingPriceCents,
     event_types: eventTypes,
     years_in_business: yearsInBusiness,
     languages,
     team_size_range: teamSizeRange || null,
+    ...startingPriceValues,
   };
-
-  if (startingCurrencyInput || startingPriceCents !== null) {
-    updatePayload.starting_price_currency =
-      startingCurrencyInput || vendor.starting_price_currency || "USD";
-  } else {
-    updatePayload.starting_price_currency = null;
-  }
 
   const { error: updateError } = await supabase
     .from("vendors")
@@ -396,6 +382,14 @@ export async function saveContact(
   revalidatePath("/vendors");
 
   return { ok: true, message: "Contact details saved." };
+}
+
+export async function saveStartingPrice(_previous: FormMessageState, form:FormData):Promise<FormMessageState> {
+  const {supabase,vendor,error} = await requireAuthVendor();
+  if (error || !vendor) return {ok:false,message:error ?? 'Vendor access required.'};
+  const result = await saveVendorStartingPrice(vendor,{price:String(form.get('starting_price') ?? ''),currency:String(form.get('starting_price_currency') ?? '')},(id,values)=>supabase.from('vendors').update(values).eq('id',id));
+  if (result.ok) {revalidatePath('/vendor/profile');revalidatePath(`/vendors/${vendor.slug}`);invalidatePublicVendorCache();revalidatePath('/vendors');}
+  return result;
 }
 
 export async function removeLogoImage(

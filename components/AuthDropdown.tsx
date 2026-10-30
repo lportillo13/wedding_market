@@ -18,12 +18,13 @@ import {ACCOUNT_NOTIFICATION_TYPES, VENDOR_NOTIFICATION_TYPES} from '@/shared/no
 type AuthDropdownProps = {
   user: HeaderUser;
   isVendor: boolean;
+  isClient?: boolean;
   shortlistCount?: number;
   notificationCount?: number;
   onNotificationCountChange?: (count: number) => void;
 };
 
-export default function AuthDropdown({ user, isVendor, shortlistCount = 0, notificationCount = 0, onNotificationCountChange }: AuthDropdownProps) {
+export default function AuthDropdown({ user, isVendor, isClient = !isVendor, shortlistCount = 0, notificationCount = 0, onNotificationCountChange }: AuthDropdownProps) {
   const [open, setOpen] = useState(false);
   const [vendorLogoUrl, setVendorLogoUrl] = useState<string | null>(null);
   const [vendorBusinessName, setVendorBusinessName] = useState<string | null>(
@@ -171,7 +172,7 @@ export default function AuthDropdown({ user, isVendor, shortlistCount = 0, notif
         className={`dropdown-menu dropdown-menu-end${open ? " show" : ""}`}
       >
         <AccountMenuContent displayName={displayName} avatar={<UserAvatar image={vendorAvatarImage || avatarImage} name={displayName} size={32} />}
-          isVendor={isVendor} shortlistCount={shortlistCount}
+          isVendor={isVendor} isClient={isClient} shortlistCount={shortlistCount}
           notifications={<NotificationLink userId={user.id} href={isVendor ? '/vendor/notifications' : '/account/notifications'} types={isVendor ? [...VENDOR_NOTIFICATION_TYPES] : [...ACCOUNT_NOTIFICATION_TYPES]} variant="menu" onUnreadCountChange={onNotificationCountChange} />}
           onSignedOut={() => setOpen(false)} />
       </ul>
@@ -179,8 +180,8 @@ export default function AuthDropdown({ user, isVendor, shortlistCount = 0, notif
   );
 }
 
-export function AccountMenuContent({displayName, avatar, isVendor, shortlistCount = 0, notifications, onSignedOut}: {
-  displayName: string; avatar: ReactNode; isVendor: boolean; shortlistCount?: number; notifications: ReactNode; onSignedOut?: () => void;
+export function AccountMenuContent({displayName, avatar, isVendor, isClient = !isVendor, shortlistCount = 0, notifications, onSignedOut}: {
+  displayName: string; avatar: ReactNode; isVendor: boolean; isClient?: boolean; shortlistCount?: number; notifications: ReactNode; onSignedOut?: () => void;
 }) {
   const t = useTranslation();
   const link = (href: string, label: string, icon: 'user' | 'heart' | 'grid', count = 0) => <li><Link className="dropdown-item wm-account-menu__item" href={href}>
@@ -192,7 +193,7 @@ export function AccountMenuContent({displayName, avatar, isVendor, shortlistCoun
     {link(isVendor ? '/vendor/profile' : '/account/profile', t('auth.profile'), 'user')}
     {isVendor ? link('/account/profile', t('auth.personalProfile'), 'user') : link('/shortlist', t('nav.shortlist'), 'heart', shortlistCount)}
     <li>{notifications}</li>
-    {!isVendor && <li className="wm-account-menu__section"><Link className="dropdown-item wm-account-menu__item" href="/rfq/new"><HeaderIcon name="calendar" /><span>{t('nav.requestQuotes')}</span><HeaderIcon name="arrow" /></Link></li>}
+    {!isVendor && isClient && <li className="wm-account-menu__section"><Link className="dropdown-item wm-account-menu__item" href="/rfq/new"><HeaderIcon name="calendar" /><span>{t('nav.requestQuotes')}</span><HeaderIcon name="arrow" /></Link></li>}
     <li className="wm-account-menu__section"><HeaderSignOutButton className="dropdown-item wm-account-menu__item" icon={<HeaderIcon name="logout" />} onSignedOut={onSignedOut} /></li>
   </>;
 }

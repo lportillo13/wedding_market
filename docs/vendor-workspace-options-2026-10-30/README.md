@@ -2,7 +2,9 @@
 
 The owner requested three options to make the vendor backend easier to navigate
 and control. These proposals address the vendor's own workspace, not the private
-platform-moderation console. No vendor redesign has been selected or deployed.
+platform-moderation console. The owner selected **A — Business studio**. Its
+implementation and release evidence are recorded in the
+[vendor studio handoff](../vendor-studio-2026-10-30/README.md).
 
 The current workspace has six top-level tabs, a separate boutique link, eight
 profile sections, a profile-completion strip and section-specific save controls.
@@ -46,10 +48,10 @@ fully wired replacement applications. Desktop layouts were inspected at
 1280×720 for readable grouping and non-overlapping save/publication controls.
 The mobile behavior is part of the proposed design, not a released native change.
 
-The [prototype source](prototype.cjs) runs from the repository root after
+The [prototype source](prototype.mjs) runs from the repository root after
 `npm run test:build`, using the existing shared HeaderIcon component and public
 fonts/images. It serves `/A`, `/B`, `/C` locally on port 3246. No external account,
 customer record, publication or upload is used. The temporary preview server is
 stopped after delivery. The separate dropdown correction is already deployed;
 its [release evidence](../dropdown-fix-2026-10-30/README.md) is independent of this
-pending design choice.
+selected vendor workspace design.
