@@ -1277,6 +1277,8 @@ const common = {
       "privacyNote": "Your password stays private. We’ll send a confirmation link to your email.",
       "verifyTitle": "A little note in your inbox.",
       "verifyBody": "Open the confirmation email to verify your account. Check your spam folder if you don’t see it.",
+      "confirmationHelp": "Already confirmed your email? Sign in above. If you cannot access your account,",
+      "recoverAccess": "reset your password.",
       "vendorVerifyBody": "Verify your email first. Then return to add your business details and photos.",
       "verifyNext": "Continue to business setup",
       "resend": "Need another confirmation link?",

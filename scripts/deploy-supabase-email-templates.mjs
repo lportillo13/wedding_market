@@ -1,19 +1,12 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { authEmailDefinitions } from './lib/auth-email-templates.mjs';
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const projectDirectory = path.resolve(scriptDirectory, "..");
 const templatesDirectory = path.join(projectDirectory, "supabase", "templates");
 
-const templateDefinitions = [
-  ["confirmation", "Confirm your email | The Wedding Market", "confirmation.html"],
-  ["recovery", "Reset your password | The Wedding Market", "recovery.html"],
-  ["invite", "You are invited | The Wedding Market", "invite.html"],
-  ["magic_link", "Your secure sign-in link | The Wedding Market", "magic-link.html"],
-  ["email_change", "Confirm your new email | The Wedding Market", "email-change.html"],
-  ["reauthentication", "Your verification code | The Wedding Market", "reauthentication.html"],
-];
 
 function getProjectRef() {
   const explicit = process.env.SUPABASE_PROJECT_REF?.trim();
@@ -43,10 +36,10 @@ function getProjectRef() {
 
 async function buildPayload() {
   const entries = await Promise.all(
-    templateDefinitions.map(async ([type, subject, fileName]) => {
+    authEmailDefinitions.map(async ({type, subject, file: fileName}) => {
       const content = await readFile(path.join(templatesDirectory, fileName), "utf8");
       return [
-        [`mailer_subjects_${type}`, subject],
+        [`mailer_subjects_${type}`, `${subject} | Wedding Market`],
         [`mailer_templates_${type}_content`, content],
       ];
     })
@@ -64,23 +57,26 @@ async function main() {
   }
 
   const projectRef = getProjectRef();
-  const response = await fetch(`https://api.supabase.com/v1/projects/${projectRef}/config/auth`, {
+  if (!/^[a-z0-9]{20}$/.test(projectRef)) throw new Error('Invalid Supabase project reference.');
+  const payload = await buildPayload();
+  const endpoint = `https://api.supabase.com/v1/projects/${projectRef}/config/auth`;
+  const headers = {Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json'};
+  const response = await fetch(endpoint, {
     method: "PATCH",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(await buildPayload()),
+    headers,
+    body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(30000),
   });
 
   if (!response.ok) {
-    const responseText = await response.text();
-    throw new Error(
-      `Supabase rejected the email template update (${response.status}): ${responseText.slice(0, 500)}`
-    );
+    throw new Error(`Supabase rejected the email template update (${response.status}); provider response suppressed.`);
   }
 
-  console.log(`Deployed ${templateDefinitions.length} branded Auth email templates to ${projectRef}.`);
+  const verification = await fetch(endpoint, {headers, signal:AbortSignal.timeout(30000)});
+  if (!verification.ok) throw new Error(`Template readback failed (${verification.status}).`);
+  const actual = await verification.json();
+  if (!Object.entries(payload).every(([key,value]) => actual[key] === value)) throw new Error('Hosted template readback differs; publication is not verified.');
+  console.log(`Published and read back ${authEmailDefinitions.length} Editorial A Auth/security email templates. Notification enablement and SMTP credentials unchanged.`);
 }
 
 main().catch((error) => {

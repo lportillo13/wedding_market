@@ -1,18 +1,36 @@
 <!doctype html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="{{ if eq .Data.language "es" }}es{{ else }}en{{ end }}" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="x-apple-disable-message-reformatting"><meta name="color-scheme" content="light">
-  <title>Your verification code</title>
-  <style>@media(max-width:620px){.page{padding:16px 8px!important}.header,.content,.footer{padding-left:22px!important;padding-right:22px!important}.title{font-size:32px!important;line-height:38px!important}.code{font-size:34px!important;letter-spacing:7px!important}}</style>
+  <title>{{ if eq .Data.language "es" }}Una breve verificaci&oacute;n de seguridad.{{ else }}One quick security check.{{ end }} | Wedding Market</title>
+  <!--[if mso]><style>body,table,td,a{font-family:Arial,Helvetica,sans-serif}</style><![endif]-->
+  <style>
+    html,body{margin:0!important;padding:0!important;width:100%!important}
+    table,td{border-collapse:collapse}img{border:0;outline:none;text-decoration:none}
+    a{color:#332d27}.wm-title{font-family:Georgia,'Times New Roman',serif!important}
+    @media(max-width:620px){.wm-page{padding:18px 10px!important}.wm-header{padding:26px 24px!important}.wm-content{padding:32px 24px!important}.wm-footer{padding:24px!important}.wm-title{font-size:34px!important;line-height:40px!important}.wm-button{display:block!important;text-align:center!important}.wm-wordmark{font-size:17px!important;letter-spacing:1px!important}}
+  </style>
 </head>
-<body style="margin:0;padding:0;background:#f5f5f3;color:#09090f;font-family:Arial,Helvetica,sans-serif;">
-  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">{{ if eq .Data.language "es" }}Tu c&oacute;digo de verificaci&oacute;n seguro.{{ else }}Your secure verification code.{{ end }}</div>
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#f5f5f3"><tr><td class="page" align="center" style="padding:40px 16px;">
-    <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:600px;background:#ffffff;border:1px solid #e2dfd8;border-radius:24px;overflow:hidden;box-shadow:0 18px 48px rgba(9,9,15,.08);">
-      <tr><td height="5" bgcolor="#b8922a" style="height:5px;font-size:0;line-height:0;">&nbsp;</td></tr>
-      <tr><td class="header" bgcolor="#f1f1ee" style="padding:28px 36px 36px;background:#f1f1ee;border-bottom:1px solid #e2dfd8;color:#242429;"><table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr><td><img src="{{ .SiteURL }}/icon-192.png" width="46" height="46" alt="" style="display:block;border:0;border-radius:12px;"></td><td style="padding-left:13px;"><div style="font-size:9px;line-height:11px;font-weight:700;letter-spacing:3px;color:#8a6a20;">THE</div><div style="font-family:Georgia,'Times New Roman',serif;font-size:18px;line-height:22px;color:#242429;">WEDDING MARKET</div></td></tr></table><div style="margin-top:36px;font-size:10px;line-height:14px;font-weight:700;letter-spacing:2.2px;color:#8a6a20;">{{ if eq .Data.language "es" }}VERIFICACI&Oacute;N DE IDENTIDAD{{ else }}IDENTITY VERIFICATION{{ end }}</div><h1 class="title" style="margin:11px 0 0;font-family:Georgia,'Times New Roman',serif;font-size:40px;line-height:47px;font-weight:400;color:#242429;">{{ if eq .Data.language "es" }}Tu c&oacute;digo seguro{{ else }}Your secure code{{ end }}</h1></td></tr>
-      <tr><td class="content" style="padding:36px 36px 42px;"><p style="margin:0 0 22px;font-size:17px;line-height:29px;color:#3d3d43;">{{ if eq .Data.language "es" }}Introduce este c&oacute;digo para verificar tu identidad. Vence pronto y solo puede utilizarse una vez.{{ else }}Enter this code to verify your identity. It expires soon and can only be used once.{{ end }}</p><div class="code" style="padding:20px 16px;background:#faf8f3;border:1px solid #e7dfc9;border-radius:12px;text-align:center;font-family:Georgia,'Times New Roman',serif;font-size:38px;line-height:46px;font-weight:700;letter-spacing:9px;color:#09090f;">{{ .Token }}</div></td></tr>
-      <tr><td class="footer" bgcolor="#f5f5f3" style="padding:24px 36px;border-top:1px solid #e2dfd8;font-size:11px;line-height:18px;color:#727277;">{{ if eq .Data.language "es" }}Nunca compartas este c&oacute;digo. Si no lo solicitaste, revisa la seguridad de tu cuenta.{{ else }}Never share this code. If you did not request it, review your account security.{{ end }}<br><a href="{{ .SiteURL }}" style="color:#09090f;font-weight:700;text-decoration:none;">thewedmarket.com</a></td></tr>
+<body style="margin:0;padding:0;background:#f2ede6;color:#332d27;font-family:Arial,Helvetica,sans-serif;word-spacing:normal;">
+  <div style="display:none;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;">{{ if eq .Data.language "es" }}Una breve verificaci&oacute;n de seguridad.{{ else }}One quick security check.{{ end }}&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;</div>
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#f2ede6"><tr><td class="wm-page" align="center" style="padding:40px 16px;">
+    <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" bgcolor="#faf8f4" style="width:100%;max-width:600px;background:#faf8f4;border:1px solid #ded5c8;">
+      <tr><td class="wm-header" style="padding:30px 40px;border-bottom:1px solid #ded5c8;">
+        <table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr>
+          <td width="42"><a href="{{ .SiteURL }}" style="text-decoration:none;"><img src="{{ .SiteURL }}/icon-192.png" width="42" height="42" alt="" style="display:block;width:42px;height:42px;border-radius:4px;"></a></td>
+          <td style="padding-left:14px;"><a class="wm-wordmark" href="{{ .SiteURL }}" style="font-family:Georgia,'Times New Roman',serif;font-size:19px;line-height:25px;font-weight:400;letter-spacing:1.4px;text-decoration:none;color:#332d27;">WEDDING MARKET</a></td>
+        </tr></table>
+      </td></tr>
+      <tr><td class="wm-content" style="padding:40px;">
+        <p style="margin:0 0 16px;font-size:10px;line-height:16px;letter-spacing:2px;color:#796b5f;">{{ if eq .Data.language "es" }}TU CUENTA{{ else }}YOUR ACCOUNT{{ end }}</p>
+        <h1 class="wm-title" style="margin:0 0 24px;font-family:Georgia,'Times New Roman',serif;font-size:40px;line-height:47px;letter-spacing:-.6px;font-weight:400;color:#332d27;">{{ if eq .Data.language "es" }}Una breve verificaci&oacute;n de seguridad.{{ else }}One quick security check.{{ end }}</h1>
+        <div style="font-size:16px;line-height:27px;color:#62564b;"><p style="margin:0;">{{ if eq .Data.language "es" }}Introduce este c&oacute;digo para confirmar tu identidad. Vence y solo puede utilizarse una vez.{{ else }}Enter this code to confirm your identity. It expires and can only be used once.{{ end }}</p><p style="margin:24px 0 0;padding:20px 12px;background:#f2ede6;border:1px solid #ded5c8;border-radius:4px;text-align:center;font-family:Georgia,'Times New Roman',serif;font-size:32px;line-height:42px;letter-spacing:5px;color:#332d27;">{{ .Token }}</p></div>
+
+      </td></tr>
+      <tr><td class="wm-footer" style="padding:26px 40px;border-top:1px solid #ded5c8;font-size:11px;line-height:19px;color:#796b5f;">
+        <p style="margin:0 0 16px;">{{ if eq .Data.language "es" }}Nunca compartas este c&oacute;digo. Si no lo solicitaste, revisa la seguridad de tu cuenta.{{ else }}Never share this code. If you did not request it, review your account security.{{ end }}</p>
+        <p style="margin:0;"><a href="{{ .SiteURL }}" style="color:#332d27;text-decoration:none;">thewedmarket.com</a>&nbsp;&nbsp;&middot;&nbsp;&nbsp;<a href="{{ .SiteURL }}/privacy" style="color:#796b5f;">{{ if eq .Data.language "es" }}Privacidad{{ else }}Privacy{{ end }}</a>&nbsp;&nbsp;&middot;&nbsp;&nbsp;<a href="mailto:hello@thewedmarket.com" style="color:#796b5f;">{{ if eq .Data.language "es" }}Soporte{{ else }}Support{{ end }}</a></p>
+      </td></tr>
     </table>
   </td></tr></table>
 </body>

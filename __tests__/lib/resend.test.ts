@@ -20,9 +20,10 @@ test("escapes untrusted values in transactional email HTML", () => {
   assert.doesNotMatch(html, /<script>bad/);
   assert.match(html, /Vendor &lt;b&gt;name&lt;\/b&gt;/);
   assert.match(html, /x=1&amp;y=2/);
-  assert.match(html, /THE/);
   assert.match(html, /WEDDING MARKET/);
-  assert.match(html, /#b8922a/);
+  assert.match(html, /#faf8f4/);
+  assert.match(html, /#332d27/);
+  assert.doesNotMatch(html, /#b8922a|>THE<|The Wedding Market/);
   assert.match(html, /MESSAGE PREVIEW/);
   assert.match(html, /thewedmarket\.com\/privacy/);
 });

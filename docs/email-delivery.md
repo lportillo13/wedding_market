@@ -4,6 +4,7 @@ Wedding Market uses Resend for every server-delivered email:
 
 - Supabase Auth uses Resend SMTP for confirmations, password resets, magic links, and email changes.
 - The Wedding Market server uses the Resend API for quote, request, acceptance, and conversation notifications.
+- Account-deletion receipts use the same shared Editorial A email frame.
 - The footer newsletter form adds opted-in contacts to Resend. Broadcasts and unsubscribe management stay in Resend.
 
 Mobile and browser clients never receive a Resend secret.
@@ -74,8 +75,10 @@ export SUPABASE_PROJECT_REF="<project-ref>"
 npm run email:deploy-auth
 ```
 
-The command updates confirmation, password recovery, invite, magic-link, email
-change, and reauthentication templates through the Supabase Management API. The
+The command updates all 13 authentication/security templates through the Supabase
+Management API and verifies their contents with a readback. This includes confirmation,
+password recovery, invite, magic link, email change, reauthentication and the seven
+security notifications. It preserves SMTP credentials and notification enablement. The
 access token is only needed for this deployment command and must not be added to
 the application runtime environment.
 
@@ -87,11 +90,9 @@ npx supabase stop
 npx supabase start
 ```
 
-After updating `/var/www/wedding-market/deploy/.env`, deploy the `dev` branch:
-
-```bash
-/home/deploy/deploy-wm.sh --force
-```
+Deploy application changes through the installed fixed release gateway described in
+[`deploy/remediation/README.md`](../deploy/remediation/README.md). Do not use the
+historical in-place deploy command or replace the production environment.
 
 Verify these flows with separate client and vendor accounts:
 
@@ -103,3 +104,19 @@ Verify these flows with separate client and vendor accounts:
 6. The footer newsletter form creates an opted-in Resend contact.
 
 Application email results are reflected in the existing `notifications.email_status` and `notifications.email_sent_at` columns. No new database migration is required.
+
+## Shared Editorial A design
+
+`shared/email/template.ts` owns the email-safe ivory/brown table layout, serif headings,
+WM identity, responsive controls and support/privacy footer. `lib/resend.ts` escapes
+application text and action URLs before rendering it. All application senders use it.
+
+Auth HTML is generated from `scripts/lib/auth-email-templates.mjs` using that same
+frame. Use Node 24 and `npm run email:generate` after changing the frame or copy;
+`node scripts/generate-email-templates.mjs --check` detects stale generated files.
+Never paste real authentication links or credentials into previews. Publish hosted
+Auth templates separately after reviewing them; committing or deploying the website
+alone does not publish these templates.
+
+The newsletter form only manages contact opt-in; it sends no automated email. Future
+Resend broadcasts must use the same design and Resend's unsubscribe handling.

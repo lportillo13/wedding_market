@@ -36,6 +36,7 @@ export default function CheckEmailClient({ vendor, initialLanguage }: { vendor: 
       <div className="wm-auth-journey__mail" aria-hidden="true"><svg width="64" height="48" viewBox="0 0 64 48" fill="none"><rect x="1" y="1" width="62" height="46" rx="2" stroke="currentColor"/><path d="m2 2 30 25L62 2M2 46l20-19m40 19L42 27" stroke="currentColor"/></svg></div>
       <p className="wm-auth-journey__note">{vendor ? copy.vendorVerifyBody : copy.coupleVerifyBody}</p>
       <Link className="wm-auth-btn" href={vendor ? '/login?next=%2Fsignup%2Fvendor' : '/login'}>{vendor ? copy.verifyNext : dictionary.login.editorial.submit}</Link>
+      <p className="wm-auth-journey__note">{copy.confirmationHelp} <Link href={vendor ? '/forgot-password?next=%2Fsignup%2Fvendor' : '/forgot-password'}>{copy.recoverAccess}</Link></p>
       <details className="wm-auth-journey__resend"><summary>{copy.resend}</summary>
         <form onSubmit={resend} aria-busy={pending}>
           <label className="form-label" htmlFor="confirmation-email">{dictionary.login.emailLabel}</label>

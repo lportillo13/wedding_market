@@ -230,27 +230,27 @@ otp_expiry = 3600
 # Hosted projects use the matching files in supabase/templates through the
 # Authentication > Email Templates page or the Supabase Management API.
 [auth.email.template.invite]
-subject = "You are invited | The Wedding Market"
+subject = "You are invited | Wedding Market"
 content_path = "./supabase/templates/invite.html"
 
 [auth.email.template.confirmation]
-subject = "Confirm your email | The Wedding Market"
+subject = "Confirm your email | Wedding Market"
 content_path = "./supabase/templates/confirmation.html"
 
 [auth.email.template.recovery]
-subject = "Reset your password | The Wedding Market"
+subject = "Reset your password | Wedding Market"
 content_path = "./supabase/templates/recovery.html"
 
 [auth.email.template.magic_link]
-subject = "Your secure sign-in link | The Wedding Market"
+subject = "Your secure sign-in link | Wedding Market"
 content_path = "./supabase/templates/magic-link.html"
 
 [auth.email.template.email_change]
-subject = "Confirm your new email | The Wedding Market"
+subject = "Confirm your new email | Wedding Market"
 content_path = "./supabase/templates/email-change.html"
 
 [auth.email.template.reauthentication]
-subject = "Your verification code | The Wedding Market"
+subject = "Your verification code | Wedding Market"
 content_path = "./supabase/templates/reauthentication.html"
 
 # Uncomment to customize notification email template

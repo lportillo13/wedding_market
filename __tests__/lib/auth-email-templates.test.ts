@@ -10,15 +10,24 @@ const templates = [
   ["magic-link.html", ".ConfirmationURL"],
   ["email-change.html", ".ConfirmationURL"],
   ["reauthentication.html", ".Token"],
+  ["password-changed.html", ".SiteURL"],
+  ["email-changed.html", ".SiteURL"],
+  ["phone-changed.html", ".SiteURL"],
+  ["identity-linked.html", ".SiteURL"],
+  ["identity-unlinked.html", ".SiteURL"],
+  ["mfa-factor-enrolled.html", ".SiteURL"],
+  ["mfa-factor-unenrolled.html", ".SiteURL"],
 ] as const;
 
 test("all Supabase Auth emails use the branded responsive template", () => {
   for (const [fileName, requiredVariable] of templates) {
     const html = readFileSync(path.join(process.cwd(), "supabase", "templates", fileName), "utf8");
 
-    assert.match(html, /THE/);
     assert.match(html, /WEDDING MARKET/);
-    assert.match(html, /#b8922a/);
+    assert.match(html, /#faf8f4/);
+    assert.match(html, /#332d27/);
+    assert.doesNotMatch(html, /#b8922a|>THE<|The Wedding Market/);
+    assert.match(html, /mailto:hello@thewedmarket\.com/);
     assert.match(html, /@media\(max-width:620px\)/);
     assert.match(html, /\.Data\.language/);
     assert.ok(html.includes(`{{ ${requiredVariable} }}`), `${fileName} must include {{ ${requiredVariable} }}`);

@@ -3,6 +3,7 @@ import {drainOwnedR2Prefix} from '@/lib/r2';
 import {sendTransactionalEmail} from '@/lib/resend';
 import {invalidatePublicVendorCache} from '@/features/vendors/server/cache';
 import {processDeletion,type DeletionJob} from './deletion-workflow';
+import {buildDeletionEmail} from './deletion-email';
 
 export async function processRequestedDeletion(id:string,actorId:string,finalReview:boolean) {
   const client=createSupabaseAdminClient();
@@ -36,8 +37,7 @@ export async function processRequestedDeletion(id:string,actorId:string,finalRev
     },
     confirmByEmail:async(job)=>{
       if (!job.contact_email) return false;
-      const text=job.language==='es'?'Tu cuenta Wedding Market y sus datos asociados se han eliminado del servicio activo. Las copias de respaldo aisladas siguen su ciclo de conservación según la Política de Privacidad. Los contratos independientes con proveedores no se cancelan.':'Your Wedding Market account and its associated data have been deleted from the active service. Isolated backups follow their retention lifecycle as described in the Privacy Policy. Separate vendor contracts are not cancelled.';
-      const result=await sendTransactionalEmail({to:job.contact_email,subject:job.language==='es'?'Wedding Market: cuenta eliminada':'Wedding Market: account deleted',text,html:`<p>${text}</p><p>${job.id}</p>`,idempotencyKey:`account-deletion-${job.id}`,category:'account-deletion'});
+      const result=await sendTransactionalEmail(buildDeletionEmail({...job, contact_email:job.contact_email}));
       return result.status==='sent';
     },
     finish:async(requestId)=>{

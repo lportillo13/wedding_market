@@ -78,7 +78,7 @@ export function buildNotificationEmail(input: NotificationEmailInput, recipientE
   const messagePreview = stringField(record, "messagePreview")?.replace(/\s+/g, " ").trim().slice(0, 320);
   const detail = input.type === "thread_reply" ? messagePreview : null;
   const presentation = getNotificationEmailPresentation(input.type, input.language);
-  const subject = `${input.title} | The Wedding Market`;
+  const subject = `${input.title} | Wedding Market`;
   const textParts = [input.title, input.body];
 
   if (detail) {
