@@ -44,8 +44,10 @@ are saved. An attempted change to the native App ID was rejected before saving
 because it would invalidate provisioning profiles; it was cancelled and replaced
 with the isolated web primary. No native profiles were invalidated.
 
-The owner must download the new Sign in with Apple `.p8` key once and preserve it
-securely. The download screen is retained in the browser. A generated OAuth client
+Apple marks the approved key `96W353D7Z6` as downloaded. Its expected filename is
+`AuthKey_96W353D7Z6.p8`; the local location is awaiting the owner. It was not found
+in the standard Downloads/Desktop or OneDrive equivalents checked. Preserve it
+securely; Apple's one-time download cannot be repeated. A generated OAuth client
 secret is also needed for web authentication. The owner must handle new
 credentials securely and enter the Services ID/client secret directly in the
 [Apple provider](https://supabase.com/dashboard/project/aousexbvujjnvbudpsmz/auth/providers?provider=Apple).

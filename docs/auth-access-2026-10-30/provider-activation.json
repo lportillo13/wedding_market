@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-10-30T17:31:27Z",
+  "publicProviderFlags": {"google": true, "apple": false},
+  "google": {
+    "enabled": true,
+    "audience": "In production",
+    "skipNonceChecks": false,
+    "allowUsersWithoutEmail": false,
+    "readOnlyAuthorizationHandoffPassed": true,
+    "realIdentitySignInTested": false
+  },
+  "apple": {
+    "servicesId": "com.theweddingmarket.web",
+    "primaryAppId": "com.theweddingmarket.webauth",
+    "keyId": "96W353D7Z6",
+    "keyDownloadState": "Apple marks downloaded; local path awaited from owner",
+    "clientSecretGenerated": false,
+    "enabled": false,
+    "relaySourcesRegistered": ["mail.thewedmarket.com", "send.mail.thewedmarket.com"],
+    "senderDkimPublicKeyValidated": true,
+    "bounceSpfPresent": true,
+    "dnsChanged": false,
+    "nativeProfilesInvalidated": false,
+    "realRelayDeliveryTested": false
+  },
+  "note": "Public settings and observed provider controls only. No credential values, keys, tokens, raw callbacks, customer writes or real message delivery are recorded."
+}

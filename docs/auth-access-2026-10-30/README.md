@@ -38,6 +38,10 @@ Native source/publication remains held.
   Late refresh results cannot write after the six-second deadline. Guests,
   static assets and bearer API requests do not trigger proxy refresh calls.
   Existing verified-user, account restriction, RLS and moderation/MFA checks stay.
+- Website visits on `www.thewedmarket.com` redirect to the configured canonical
+  origin before session refresh, retaining path/query without trusting a caller's
+  Host as the destination. This keeps PKCE and persistent cookies on one host.
+  Previously www-only sessions may need to sign in once on the canonical host.
 
 ## Email publication
 
@@ -69,7 +73,8 @@ that would invalidate the existing native provisioning profiles. That change was
 cancelled. A separate primary App ID, `com.theweddingmarket.webauth`, was created
 and used instead; the existing native App ID/profiles and DW remain unchanged.
 The explicitly approved Sign in with Apple key is created and scoped only to this
-web primary. Its one-time private-key download is awaiting the owner. A local
+web primary. Apple marks the one-time key download complete; its local file path
+is awaiting the owner before a client secret can be generated. A local
 ES256 client-secret generator has two passing signature/validation tests and
 writes only an ignored local credential file, never the token in logs.
 
@@ -87,12 +92,13 @@ foreign redirect origin was added.
 
 ## Validation
 
-- 156 web tests, 49 isolated database regressions and two local Apple-secret
+- 157 web tests, 49 isolated database regressions and two local Apple-secret
   generator signature/validation tests pass. New cases cover
   account intent/return paths, role/ownership, verified setup validation, provider
   flags, code syntax, cookie chunks/removals, cache headers and refresh deadlines.
 - Architecture (486 modules), TypeScript, lint and final production build pass.
-- All 46 [local HTTP checks](local-http-checks.json) pass.
+- All 48 [local HTTP checks](local-http-checks.json) pass, including explicit www
+  login/callback redirects with retained return parameters and no cookie writes.
 - [Interactive local checks](local-interaction-checks.json) use only a fictional
   identity and isolated local authentication transport. Social handoffs stay
   local, code send/invalid/valid verification works, setup has no password,
@@ -110,17 +116,21 @@ foreign redirect origin was added.
 
 ## Verified website release
 
-Live application: **43c1c2456e2d6168c1fe4f82006b906827d24b7e**, through the fixed
+Live application: **76bc5eb844aeb4283815bbd8b5cc85a817a29762**, through the fixed
 gateway. The [successful receipt](deployment-success.json) confirms the exact
-target and preserves rollback at `/var/www/wedding-market.before-20261030-164651`.
-The verified base was `253d6350c070526c3c4fe559f6a1087fd0abfad0`.
-All 46 [public HTTP checks](public-checks.json) pass. The
+target and preserves rollback at `/var/www/wedding-market.before-20261030-173123`.
+The verified base was `e6067d18d0ec62527a9edc3a558e2975ac09ee5d`; the
+[initial auth receipt](deployment-initial.json) and
+[vendor-name/review receipt](deployment-vendor-details.json) retain earlier releases.
+All 48 [public HTTP checks](public-checks.json) pass, including www redirects. The
 [live owner-browser checks](live-browser-checks.json) confirm the session stays
-signed in, an explicit personal-profile return stays personal, and default vendor
+signed in across the www redirect, an explicit personal-profile return stays personal, and default vendor
 login returns to the vendor workspace. No owner form was submitted.
 
 [Google provider handoff](google-provider-check.json) verifies the configured
 redirect without granting Google consent or linking a real identity.
 [Mail DNS readiness](apple-mail-dns-check.json) retains only public validation
 metadata, never key values. Provider dashboards are configured independently of
-the application release. The native release remains held.
+the application release. [Activation status](provider-activation.json) records
+Google enabled/in production, the retained email/nonce requirements, registered
+Apple relay sources and the remaining local-key-file handoff. The native release remains held.

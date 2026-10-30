@@ -1,10 +1,16 @@
 {
-  "checkedAt": "2026-10-30T17:03:57.799Z",
-  "releaseCommit": "43c1c2456e2d6168c1fe4f82006b906827d24b7e",
+  "checkedAt": "2026-10-30T17:34:37.271Z",
+  "releaseCommit": "76bc5eb844aeb4283815bbd8b5cc85a817a29762",
   "checks": {
     "session": {
       "path": "/vendor/profile",
       "signedIn": true
+    },
+    "wwwEntry": {
+      "entry": "https://www.thewedmarket.com/account/profile",
+      "destination": "https://thewedmarket.com/account/profile",
+      "signedIn": true,
+      "heading": "Tu cuenta, a tu manera."
     },
     "explicitPersonal": {
       "heading": "Tu cuenta, a tu manera.",

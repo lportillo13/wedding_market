@@ -1,7 +1,21 @@
 {
-  "checkedAt": "2026-10-30T16:31:42.878Z",
+  "checkedAt": "2026-10-30T17:31:00.181Z",
   "base": "http://127.0.0.1:3240",
   "checks": [
+    {
+      "path": "/login?next=%2Fvendor%2Finbox",
+      "host": "www.thewedmarket.com",
+      "language": "en",
+      "status": 308,
+      "passed": true
+    },
+    {
+      "path": "/auth/callback?next=%2Faccount%2Fprofile",
+      "host": "www.thewedmarket.com",
+      "language": "en",
+      "status": 308,
+      "passed": true
+    },
     {
       "path": "/api/auth/providers",
       "language": "en",
