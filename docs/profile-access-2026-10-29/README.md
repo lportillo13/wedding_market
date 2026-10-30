@@ -19,9 +19,23 @@ login uses the existing allowlisted callback URL, without an additional query fl
 
 Validation: architecture, TypeScript, lint and production build pass; all **128
 application tests** and **33 isolated PostgreSQL authorization/transaction tests**
-pass. The Next.js generated route types were regenerated after moving the page.
+pass. All **31 local HTTP checks** pass, including guest personal-profile
+authentication and callback return paths. The Next.js generated route types were
+regenerated after moving the page.
 The sandbox denied writes to an existing build directory; the authorized build
 outside the sandbox completed successfully. No production database writes or
 customer profile edits were performed for validation.
 
-Deployment and authenticated live verification are recorded after release.
+Application **5ada784ab46122cc508ef7defd15ced480719db9** is verified live through
+the fixed gateway's exact [successful receipt](deployment-success.json). Rollback
+is `/var/www/wedding-market.before-20261030-035821`. All **31 public HTTP checks**
+pass in [the report](public-checks.json), alongside [local checks](local-http-checks.json)
+and [validation](validation.json).
+
+The owner's existing signed-in ChatGPT browser session now opens
+`/account/profile` and displays the personal form. The new **Perfil personal**
+menu link was followed successfully from the vendor editor. `/vendor/profile`
+still displays the existing business editor. Personal navigation omits the couple
+inbox/review links for this administrator account. No real form was saved, no
+credential was entered and no email was sent. The profile tab remains open for
+the owner. Account screenshots stay in ignored local cache, outside this handoff.

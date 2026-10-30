@@ -1,0 +1,13 @@
+{
+  "applicationCommit": "5ada784ab46122cc508ef7defd15ced480719db9",
+  "architecture": "passed",
+  "typecheck": "passed",
+  "lint": "passed",
+  "productionBuild": "passed",
+  "applicationTests": {"passed": 128, "failed": 0},
+  "isolatedDatabaseSecurityTests": {"passed": 33, "failed": 0},
+  "localHttpChecks": {"passed": 31, "failed": 0},
+  "productionDataModified": false,
+  "databasePolicyChanges": false,
+  "nativeRelease": false
+}
