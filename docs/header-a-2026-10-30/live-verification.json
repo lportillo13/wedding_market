@@ -1,0 +1,58 @@
+{
+  "applicationCommit": "fad3e276f27292914cd0f332c48bdf3389b17c54",
+  "desktop": {
+    "avatar": {
+      "left": 1138.921875,
+      "right": 1198.5,
+      "width": 59.578125
+    },
+    "documentWidth": 1265,
+    "form": {
+      "left": 124.5,
+      "right": 1140.5,
+      "width": 1016
+    },
+    "menu": {
+      "left": 112.5,
+      "right": 1152.5,
+      "width": 1040
+    },
+    "photo": {
+      "left": 124.5,
+      "right": 1140.5,
+      "width": 1016
+    },
+    "scrollWidth": 1265,
+    "standaloneNotificationButton": false,
+    "topLinks": [
+      "/vendor/inbox"
+    ]
+  },
+  "phone320": {
+    "actions": {
+      "left": 159.09375,
+      "right": 293.90625,
+      "width": 134.8125
+    },
+    "documentWidth": 305,
+    "formWidth": 281,
+    "messageLink": "/vendor/inbox",
+    "photoWidth": 281,
+    "scrollWidth": 305,
+    "viewportWidth": 320
+  },
+  "keyboardEscapeCloses": true,
+  "keyboardFocusReturns": true,
+  "outsideClickCloses": true,
+  "mobileDrawerOpens": true,
+  "mobileInboxResolves": "/vendor/inbox",
+  "vendorMenuDestinations": [
+    "/vendor",
+    "/vendor/profile",
+    "/account/profile",
+    "/vendor/notifications"
+  ],
+  "profileFieldsSaved": false,
+  "messagesSent": false,
+  "languageChanged": false
+}

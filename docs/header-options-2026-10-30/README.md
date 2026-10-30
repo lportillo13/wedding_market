@@ -1,7 +1,7 @@
 # Signed-in header options
 
 The owner reported that the authenticated header was crowded and requested three
-visual alternatives. The owner subsequently selected **Option A** on October30.
+visual alternatives. The owner subsequently selected **Option A** on October 30.
 Its implementation and verified release are tracked in
 [the header A handoff](../header-a-2026-10-30/README.md). B/C remain alternatives.
 They use the existing supplied fonts, wordmark, warm palette and public sections.

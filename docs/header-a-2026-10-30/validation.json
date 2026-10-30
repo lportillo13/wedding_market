@@ -1,0 +1,17 @@
+{
+  "applicationCommit": "fad3e276f27292914cd0f332c48bdf3389b17c54",
+  "architecture": "passed",
+  "typecheck": "passed",
+  "lint": "passed",
+  "productionBuild": "passed",
+  "applicationTests": {"passed": 137, "failed": 0},
+  "publicChecks": {"passed": 32, "failed": 0},
+  "bilingualClientAndVendorMenuRenderChecks": true,
+  "liveVendorMenuAndMobileInboxVerified": true,
+  "escapeAndOutsideClickVerified": true,
+  "photoAndFormEdgesMatch": true,
+  "phone320FitsWithoutHorizontalOverflow": true,
+  "profileRedesignSelected": false,
+  "roleOrDatabasePolicyChanges": false,
+  "nativeRelease": false
+}
