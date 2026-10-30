@@ -224,7 +224,7 @@ export default function VendorsPageContent({
               <h2>{language === 'es' ? 'Cada gran boda empieza con una conexión.' : 'Every great wedding starts with a connection.'}</h2>
               <p>{labels.empty}</p>
               {!isExample && <p><Link href="/vendors?examples=1" className="wm-example-entry">{exampleLabels.title} <span aria-hidden="true">↗</span></Link></p>}
-              {(searchParams.q || searchParams.category) ? <Link href={resetHref} className="btn btn-outline-secondary">{language === 'es' ? 'Ver todos los servicios' : 'See all services'}</Link> : !isExample && <Link href="/signup/vendor" className="btn btn-outline-secondary">{language === 'es' ? '¿Ofreces servicios para bodas? Únete' : 'A wedding professional? Join us'}</Link>}
+              {(searchParams.q || searchParams.category) ? <Link href={resetHref} className="btn btn-outline-secondary">{language === 'es' ? 'Ver todos los servicios' : 'See all services'}</Link> : !isExample && <Link href="/for-vendors" className="btn btn-outline-secondary">{language === 'es' ? '¿Ofreces servicios para bodas? Conoce Wedding Market' : 'A wedding professional? Discover Wedding Market'}</Link>}
             </div>
           ) : (
             <div className="wm-vendor-grid">

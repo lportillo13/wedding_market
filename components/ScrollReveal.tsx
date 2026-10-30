@@ -9,13 +9,13 @@ function getRevealTargets(): HTMLElement[] {
   const targets = new Set<HTMLElement>();
 
   document.querySelectorAll<HTMLElement>(REVEAL_SELECTOR).forEach((element) => {
-    if (!element.closest(".wm-about-page")) {
+    if (!element.closest(".wm-about-page, .wm-vendor-landing")) {
       targets.add(element);
     }
   });
 
   document.querySelectorAll<HTMLElement>("main").forEach((main) => {
-    if (main.matches(".wm-about-page") || main.querySelector(":scope > section, :scope > article")) {
+    if (main.matches(".wm-about-page, .wm-vendor-landing") || main.querySelector(":scope > section, :scope > article")) {
       return;
     }
 

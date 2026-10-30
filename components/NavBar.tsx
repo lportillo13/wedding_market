@@ -43,7 +43,8 @@ export default function NavBar({
   const pathname = usePathname() ?? "/";
   const isVendorProfile = /^\/vendors\/[^/]+\/?$/.test(pathname);
   const isBoutiqueStore = isBoutiqueStorePath(pathname);
-  const isCoverPage = pathname === "/" || isVendorProfile || isBoutiqueStore;
+  const isMarketingCover = pathname === "/" || pathname === "/for-vendors";
+  const isCoverPage = isMarketingCover || isVendorProfile || isBoutiqueStore;
   const { language, dictionary } = useLanguage();
   const t = useTranslation();
   const labels = dictionary.header;
@@ -135,7 +136,7 @@ export default function NavBar({
   );
   return (
     <header
-      className={`wm-site-header${pathname === "/" ? " wm-site-header--home" : ""}${isVendorProfile ? " wm-site-header--vendor-profile" : ""}${isBoutiqueStore ? " wm-site-header--boutique" : ""}`}
+      className={`wm-site-header${isMarketingCover ? " wm-site-header--home" : ""}${isVendorProfile ? " wm-site-header--vendor-profile" : ""}${isBoutiqueStore ? " wm-site-header--boutique" : ""}`}
       data-scrolled={isCoverPage && hasScrolled ? "true" : undefined}
     >
       <BrowserThemeColor pathname={pathname} isCoverPage={isCoverPage} menuOpen={menuOpen}/>
@@ -420,7 +421,7 @@ export default function NavBar({
             </div>
             {!accountUnavailable && !isAuthenticated ? (
               <Link
-                href="/signup/vendor"
+                href="/for-vendors"
                 className="wm-mobile-navigation__vendor-join"
                 onClick={close}
               >

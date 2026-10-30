@@ -109,7 +109,7 @@ export default function SiteFooter({ vendorCategories }: SiteFooterProps) {
             ))}
           </FooterMenu>
           <FooterMenu key={`${pathname}-professionals`} title={es ? "Profesionales de bodas" : "Wedding professionals"} headingId="footer-professionals-title" className="wm-footer__professionals">
-            <Link href="/signup/vendor" className="wm-footer__vendor-link">{t("footer.vendorLinks.join")}<span aria-hidden="true">↗</span></Link>
+            <Link href="/for-vendors" className="wm-footer__vendor-link">{es ? "Descubre Wedding Market para tu negocio" : "Discover Wedding Market for your business"}<span aria-hidden="true">↗</span></Link>
             <Link href="/support" className="wm-footer__support">{es ? "¿Necesitas ayuda?" : "Need a hand?"}</Link>
             <a href={`mailto:${publisher.email}`} className="wm-footer__email">{publisher.email}</a>
           </FooterMenu>

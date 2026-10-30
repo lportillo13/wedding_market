@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { BROWSER_THEME } from "@/lib/browser-theme";
 
-const COVER_SELECTOR = ".wm-founders-hero, .wm-profile-editorial, .wm-boutique-hero:not(.wm-boutique-hero--empty)";
+const COVER_SELECTOR = ".wm-founders-hero, .wm-vendor-landing, .wm-profile-editorial, .wm-boutique-hero:not(.wm-boutique-hero--empty)";
 
 export default function BrowserThemeColor({ pathname, isCoverPage, menuOpen }: {
   pathname: string;
