@@ -17,6 +17,7 @@
   }
   .wm-account-profile {
     max-width: var(--wm-account-content-width);
+    > .wm-editorial-form { width: 100%; max-width: none; }
   }
   .wm-account-header__eyebrow {
     color: #74604f;

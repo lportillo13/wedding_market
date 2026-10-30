@@ -16,6 +16,7 @@ export type HeaderIconName =
   | "users"
   | "globe"
   | "rings"
+  | "logout"
   | "chevron";
 const paths: Record<HeaderIconName, string> = {
   search: "M21 21l-4.6-4.6M19 10.5a8.5 8.5 0 1 1-17 0 8.5 8.5 0 0 1 17 0Z",
@@ -34,6 +35,7 @@ const paths: Record<HeaderIconName, string> = {
   globe: "M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0ZM2 12h20M12 2a18 18 0 0 1 0 20 18 18 0 0 1 0-20Z",
   rings: "M15 14a7 7 0 1 1-14 0 7 7 0 0 1 14 0ZM23 14a7 7 0 1 1-14 0 7 7 0 0 1 14 0ZM7 3l1-2 1 2-1 2-1-2ZM15 3l1-2 1 2-1 2-1-2Z",
   chevron: "m8 10 4 4 4-4",
+  logout: "M9 4H4v16h5M11 12h10m-4-4 4 4-4 4",
   play: "M8 5v14l11-7Z",
   pause: "M6 4h4v16H6ZM14 4h4v16h-4Z",
 };

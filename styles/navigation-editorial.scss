@@ -1,5 +1,53 @@
 // A shared paper-and-ink finish for the existing navigation surfaces.
 // Keep navigation structure, dialog behavior and touch targets in _site-header.
+// Signed-in Option A: a visible inbox and compact account identity.
+.wm-site-header .wm-site-header__auth .wm-account-menu {
+  .wm-account-menu__trigger {
+    position: relative;
+    padding: 0 .35rem;
+    gap: .4rem;
+    border: 0;
+    background: transparent;
+    min-width: 52px;
+    &:hover { background: #79604b0b; }
+  }
+  .dropdown-menu {
+    width: 270px;
+    max-width: calc(100vw - 2rem);
+    padding: .5rem;
+    li + li { border-top: 0; }
+    .wm-account-menu__section { border-top: 1px solid var(--wm-nav-line); margin-top: .35rem; padding-top: .35rem; }
+  }
+  .wm-account-menu__identity {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .8rem .7rem 1rem;
+    margin-bottom: .35rem;
+    border-bottom: 1px solid var(--wm-nav-line);
+    > div:last-child { min-width: 0; }
+    strong { display: block; color: var(--wm-nav-ink); font: 300 1.4rem/1.15 var(--wm-font-display); overflow-wrap: anywhere; }
+    > div:last-child > span { display: block; color: var(--wm-nav-muted); font: 400 .7rem/1.4 var(--wm-font-body); margin-top: .2rem; }
+  }
+  .wm-account-menu__item {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    width: 100%;
+    min-height: 44px;
+    padding: .65rem .7rem;
+    border-radius: 4px;
+    font: 400 .8rem/1.4 var(--wm-font-body);
+    > svg { flex: 0 0 17px; width: 17px; height: 17px; color: var(--wm-nav-muted); }
+    > span:first-of-type { flex: 1; }
+    > svg:last-child:not(:first-child) { width: 14px; height: 14px; flex-basis: 14px; }
+  }
+  .wm-account-menu__count { background: #eee4d5; color: #674b35; border-radius: 1rem; min-width: 22px; padding: .1rem .35rem; font-size: .65rem; text-align: center; }
+}
+.wm-account-activity-dot { display: inline-block; width: 7px; height: 7px; flex: 0 0 7px; border-radius: 50%; background: #a9683f; }
+.wm-account-menu__trigger > .wm-account-activity-dot { position: absolute; top: 4px; right: 11px; box-shadow: 0 0 0 2px var(--wm-nav-surface, #fcfaf6); }
+.wm-site-header__menu-button:has(> .wm-account-activity-dot) { position: relative; }
+.wm-site-header__menu-button > .wm-account-activity-dot { position: absolute; top: 4px; right: 5px; }
 .wm-site-header {
   --wm-nav-paper: #f3efe7;
   --wm-nav-surface: #fcfaf6;

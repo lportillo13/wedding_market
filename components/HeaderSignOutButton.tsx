@@ -1,14 +1,16 @@
 "use client";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabaseBrowser } from "@/lib/supabase/client";
 export default function HeaderSignOutButton({
   className,
   onSignedOut,
+  icon,
 }: {
   className?: string;
   onSignedOut?: () => void;
+  icon?: ReactNode;
 }) {
   const router = useRouter();
   const { language, dictionary } = useLanguage();
@@ -40,11 +42,11 @@ export default function HeaderSignOutButton({
           }
         }}
       >
-        {pending
+        {icon}<span>{pending
           ? language === "es"
             ? "Cerrando sesión…"
             : "Signing out…"
-          : dictionary.auth.logOut}
+          : dictionary.auth.logOut}</span>
       </button>
       {error ? (
         <p className="wm-header-signout-error" role="alert">

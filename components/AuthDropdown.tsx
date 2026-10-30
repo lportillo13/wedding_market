@@ -10,13 +10,20 @@ import UserAvatar from "@/components/UserAvatar";
 import { useTranslation } from "@/contexts/LanguageContext";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import type { CloudinaryImage } from "@/types/images";
+import type {ReactNode} from 'react';
+import HeaderIcon from './HeaderIcon';
+import NotificationLink from './NotificationLink';
+import {ACCOUNT_NOTIFICATION_TYPES, VENDOR_NOTIFICATION_TYPES} from '@/shared/notifications/events';
 
 type AuthDropdownProps = {
   user: HeaderUser;
   isVendor: boolean;
+  shortlistCount?: number;
+  notificationCount?: number;
+  onNotificationCountChange?: (count: number) => void;
 };
 
-export default function AuthDropdown({ user, isVendor }: AuthDropdownProps) {
+export default function AuthDropdown({ user, isVendor, shortlistCount = 0, notificationCount = 0, onNotificationCountChange }: AuthDropdownProps) {
   const [open, setOpen] = useState(false);
   const [vendorLogoUrl, setVendorLogoUrl] = useState<string | null>(null);
   const [vendorBusinessName, setVendorBusinessName] = useState<string | null>(
@@ -26,7 +33,6 @@ export default function AuthDropdown({ user, isVendor }: AuthDropdownProps) {
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const menuId = useId();
   const pathname = usePathname();
-  const profileHref = isVendor ? "/vendor/profile" : "/account/profile";
   const t = useTranslation();
   const metadata = user.user_metadata as Record<string, unknown> | undefined;
   const metadataFullName = metadata?.full_name;
@@ -143,11 +149,12 @@ export default function AuthDropdown({ user, isVendor }: AuthDropdownProps) {
   }, [open]);
 
   return (
-    <div className="dropdown ms-auto" ref={menuRef}>
+    <div className="dropdown ms-auto wm-account-menu" ref={menuRef}>
       <button
         ref={triggerRef}
-        className="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2 wm-header-action"
+        className="btn btn-outline-secondary dropdown-toggle wm-header-action wm-account-menu__trigger"
         type="button"
+        aria-label={`${t('auth.account')}: ${displayName}${notificationCount > 0 ? `. ${notificationCount} ${t('nav.notificationsUnreadLabel')}` : ''}`}
         aria-expanded={open}
         aria-controls={menuId}
         onClick={() => setOpen((prev) => !prev)}
@@ -157,44 +164,35 @@ export default function AuthDropdown({ user, isVendor }: AuthDropdownProps) {
           name={displayName}
           size={32}
         />
-        <span className="text-truncate" style={{ maxWidth: 160 }}>
-          {displayName}
-        </span>
+        {notificationCount > 0 && <span className="wm-account-activity-dot" aria-hidden="true" />}
       </button>
       <ul
         id={menuId}
         className={`dropdown-menu dropdown-menu-end${open ? " show" : ""}`}
       >
-        <li>
-          <Link className="dropdown-item" href={profileHref}>
-            {t("auth.profile")}
-          </Link>
-        </li>
-        {isVendor && <li>
-          <Link className="dropdown-item" href="/account/profile">{t("auth.personalProfile")}</Link>
-        </li>}
-        <li>
-          <Link
-            className="dropdown-item"
-            href={isVendor ? "/vendor/notifications" : "/account/notifications"}
-          >
-            {t("auth.notifications")}
-          </Link>
-        </li>
-        {isVendor && (
-          <li>
-            <Link className="dropdown-item" href="/vendor/inbox">
-              {t("auth.vendorRfqs")}
-            </Link>
-          </li>
-        )}
-        <li>
-          <HeaderSignOutButton
-            className="dropdown-item"
-            onSignedOut={() => setOpen(false)}
-          />
-        </li>
+        <AccountMenuContent displayName={displayName} avatar={<UserAvatar image={vendorAvatarImage || avatarImage} name={displayName} size={32} />}
+          isVendor={isVendor} shortlistCount={shortlistCount}
+          notifications={<NotificationLink userId={user.id} href={isVendor ? '/vendor/notifications' : '/account/notifications'} types={isVendor ? [...VENDOR_NOTIFICATION_TYPES] : [...ACCOUNT_NOTIFICATION_TYPES]} variant="menu" onUnreadCountChange={onNotificationCountChange} />}
+          onSignedOut={() => setOpen(false)} />
       </ul>
     </div>
   );
+}
+
+export function AccountMenuContent({displayName, avatar, isVendor, shortlistCount = 0, notifications, onSignedOut}: {
+  displayName: string; avatar: ReactNode; isVendor: boolean; shortlistCount?: number; notifications: ReactNode; onSignedOut?: () => void;
+}) {
+  const t = useTranslation();
+  const link = (href: string, label: string, icon: 'user' | 'heart' | 'grid', count = 0) => <li><Link className="dropdown-item wm-account-menu__item" href={href}>
+    <HeaderIcon name={icon} /><span>{label}</span>{count > 0 && <span className="wm-account-menu__count">{count > 99 ? '99+' : count}</span>}
+  </Link></li>;
+  return <>
+    <li className="wm-account-menu__identity">{avatar}<div><strong>{displayName}</strong><span>{isVendor ? t('header.vendorSpace') : t('auth.account')}</span></div></li>
+    {isVendor && link('/vendor', t('footer.vendorLinks.dashboard'), 'grid')}
+    {link(isVendor ? '/vendor/profile' : '/account/profile', t('auth.profile'), 'user')}
+    {isVendor ? link('/account/profile', t('auth.personalProfile'), 'user') : link('/shortlist', t('nav.shortlist'), 'heart', shortlistCount)}
+    <li>{notifications}</li>
+    {!isVendor && <li className="wm-account-menu__section"><Link className="dropdown-item wm-account-menu__item" href="/rfq/new"><HeaderIcon name="calendar" /><span>{t('nav.requestQuotes')}</span><HeaderIcon name="arrow" /></Link></li>}
+    <li className="wm-account-menu__section"><HeaderSignOutButton className="dropdown-item wm-account-menu__item" icon={<HeaderIcon name="logout" />} onSignedOut={onSignedOut} /></li>
+  </>;
 }

@@ -5,7 +5,6 @@ import type { HeaderUser } from "@/lib/header-account";
 import Link from "next/link";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { getShortlistCount } from "@/lib/shortlist";
 import {
   getHeaderAccountLinks,
   isHeaderLinkCurrent,
@@ -23,7 +22,8 @@ type NavBarProps = {
   authMenu?: ReactNode;
   isAuthenticated?: boolean;
   isVendor?: boolean;
-  notificationLink?: ReactNode;
+  shortlistCount?: number;
+  notificationCount?: number;
   vendorCategories: HeaderVendorCategory[];
   user?: HeaderUser | null;
   accountUnavailable?: boolean;
@@ -32,7 +32,8 @@ export default function NavBar({
   authMenu,
   isAuthenticated = false,
   isVendor = false,
-  notificationLink,
+  shortlistCount = 0,
+  notificationCount = 0,
   vendorCategories,
   user,
   accountUnavailable = false,
@@ -44,7 +45,7 @@ export default function NavBar({
   const { language, dictionary } = useLanguage();
   const t = useTranslation();
   const labels = dictionary.header;
-  const [count, setCount] = useState(0);
+  const count = shortlistCount;
   const [menuOpen, setMenuOpen] = useState(false);
   const [allCategories, setAllCategories] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -78,15 +79,6 @@ export default function NavBar({
     };
   }, [pathname, isCoverPage]);
 
-  useEffect(() => {
-    const sync = () => setCount(getShortlistCount());
-    const frame = requestAnimationFrame(sync);
-    window.addEventListener("wm-shortlist-changed", sync);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("wm-shortlist-changed", sync);
-    };
-  }, []);
   useEffect(() => {
     const frame = requestAnimationFrame(close);
     return () => cancelAnimationFrame(frame);
@@ -180,7 +172,7 @@ export default function NavBar({
         </nav>
         <div className="wm-site-header__desktop-actions">
           <HeaderLanguageSwitch compact />
-          {!accountUnavailable && !isVendor ? (
+          {!accountUnavailable && !isAuthenticated && !isVendor ? (
             <Link href="/rfq/new" className="wm-site-header__cta">
               {dictionary.nav.requestQuotes}
               <HeaderIcon name="arrow" width="16" height="16" />
@@ -190,33 +182,10 @@ export default function NavBar({
             <Link
               href={isVendor ? "/vendor/inbox" : "/account/inbox"}
               className="wm-site-header__icon"
-              aria-label={
-                isVendor
-                  ? dictionary.auth.vendorRfqs
-                  : dictionary.nav.myRequests
-              }
-              title={
-                isVendor
-                  ? dictionary.auth.vendorRfqs
-                  : dictionary.nav.myRequests
-              }
+              aria-label={dictionary.inbox.title}
+              title={dictionary.inbox.title}
             >
               <HeaderIcon name="inbox" />
-            </Link>
-          ) : null}
-          {notificationLink}
-          {isAuthenticated && !isVendor ? (
-            <Link
-              href="/shortlist"
-              className="wm-site-header__icon"
-              aria-label={`${dictionary.nav.shortlist}${count ? ` (${count})` : ""}`}
-            >
-              <HeaderIcon name="heart" />
-              {count > 0 ? (
-                <span className="wm-site-header__count">
-                  {count > 99 ? "99+" : count}
-                </span>
-              ) : null}
             </Link>
           ) : null}
           <div className="wm-site-header__auth">
@@ -224,7 +193,11 @@ export default function NavBar({
           </div>
         </div>
         <div className="wm-site-header__mobile-actions">
-          <button
+          {isAuthenticated ? <Link
+            href={isVendor ? '/vendor/inbox' : '/account/inbox'}
+            className="wm-site-header__icon"
+            aria-label={dictionary.inbox.title}
+          ><HeaderIcon name="inbox" /></Link> : <button
             type="button"
             className="wm-site-header__icon"
             aria-label={labels.search}
@@ -233,11 +206,11 @@ export default function NavBar({
             onClick={(event) => open(event.currentTarget, true)}
           >
             <HeaderIcon name="search" />
-          </button>
+          </button>}
           <button
             type="button"
             className="wm-site-header__menu-button"
-            aria-label={labels.openMenu}
+            aria-label={`${labels.openMenu}${notificationCount > 0 ? `. ${notificationCount} ${dictionary.nav.notificationsUnreadLabel}` : ''}`}
             aria-controls={menuId}
             aria-haspopup="dialog"
             aria-expanded={menuOpen}
@@ -245,6 +218,8 @@ export default function NavBar({
           >
             <HeaderIcon name="menu" />
             <span>{labels.menu}</span>
+            {notificationCount > 0 && <span className="wm-account-activity-dot" aria-hidden="true" />}
+            {notificationCount > 0 && <span className="visually-hidden">{notificationCount} {dictionary.nav.notificationsUnreadLabel}</span>}
           </button>
         </div>
       </div>
@@ -415,6 +390,7 @@ export default function NavBar({
                       >
                         <HeaderIcon name={link.icon} />
                         <span>{t(link.label)}</span>
+                        {link.icon === 'bell' && notificationCount > 0 && <span className="wm-mobile-navigation__badge">{notificationCount > 99 ? '99+' : notificationCount}</span>}
                         <HeaderIcon name="arrow" width="16" height="16" />
                       </Link>
                     ))}

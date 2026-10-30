@@ -13,11 +13,14 @@ import {
 } from "@/shared/notifications/events";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
+import HeaderIcon from './HeaderIcon';
 
 type NotificationLinkProps = {
   userId: string;
   href: string;
   types: NotificationType[];
+  variant?: 'button' | 'menu';
+  onUnreadCountChange?: (count: number) => void;
 };
 
 type NotificationListItem = {
@@ -85,7 +88,7 @@ function getNotificationPreview(notification: NotificationListItem) {
   return trimLine(replyData?.messagePreview || notification.body) || notification.body || notification.title;
 }
 
-export default function NotificationLink({ userId, href, types }: NotificationLinkProps) {
+export default function NotificationLink({ userId, href, types, variant = 'button', onUnreadCountChange }: NotificationLinkProps) {
   const [count, setCount] = useState(0);
   const [items, setItems] = useState<NotificationListItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -120,7 +123,7 @@ export default function NotificationLink({ userId, href, types }: NotificationLi
           .in("type", selectedTypes)
           .is("deleted_at", null)
           .is("read_at", null),
-        supabaseBrowser
+        variant === 'menu' ? Promise.resolve({data: [], error: null}) : supabaseBrowser
           .from("notifications")
           .select("id, type, title, body, data, read_at, created_at")
           .eq("recipient_id", userId)
@@ -139,6 +142,7 @@ export default function NotificationLink({ userId, href, types }: NotificationLi
       }
 
       setCount(unreadCount ?? 0);
+      onUnreadCountChange?.(unreadCount ?? 0);
       setItems((data ?? []) as NotificationListItem[]);
       setIsLoading(false);
     };
@@ -184,7 +188,7 @@ export default function NotificationLink({ userId, href, types }: NotificationLi
       window.removeEventListener("focus", handleFocus);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [typeKey, userId]);
+  }, [typeKey, userId, variant, onUnreadCountChange]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -225,6 +229,11 @@ export default function NotificationLink({ userId, href, types }: NotificationLi
   };
 
   const badgeLabel = count > 99 ? "99+" : String(count);
+
+  if (variant === 'menu') return <Link href={href} className="dropdown-item wm-account-menu__item">
+    <HeaderIcon name="bell" /><span>{labels.notifications}</span>
+    {count > 0 && <span className="wm-account-menu__count">{badgeLabel}<span className="visually-hidden"> {labels.notificationsUnreadLabel}</span></span>}
+  </Link>;
 
   return (
     <div ref={dropdownRef} className="wm-notification-dropdown">

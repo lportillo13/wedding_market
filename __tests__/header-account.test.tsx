@@ -197,6 +197,31 @@ test("signed-in menus already contain the matching account links without browser
   }
 });
 
+test('Option A leaves only the inbox and compact account control in signed-in desktop actions', async () => {
+  for (const language of ['en', 'es'] as const) {
+    for (const isVendor of [false, true]) {
+      const html = await render({status: 'authenticated', user, isVendor}, language);
+      const actions = html.split('class="wm-site-header__desktop-actions"')[1].split('class="wm-site-header__mobile-actions"')[0];
+      const beforeAccount = actions.split('class="wm-site-header__auth"')[0];
+      assert.match(beforeAccount, new RegExp(`href="/${isVendor ? 'vendor' : 'account'}/inbox"`));
+      assert.doesNotMatch(beforeAccount, /href="\/(rfq\/new|shortlist|account\/notifications|vendor\/notifications)"|wm-notification-dropdown/);
+      assert.match(actions, /wm-account-menu__trigger/);
+      assert.match(actions, /wm-account-menu__identity/);
+      assert.match(actions, new RegExp(`href="/${isVendor ? 'vendor' : 'account'}/profile"`));
+      assert.match(actions, new RegExp(`href="/${isVendor ? 'vendor' : 'account'}/notifications"`));
+      if (isVendor) {
+        assert.match(actions, /href="\/account\/profile"/);
+        assert.doesNotMatch(actions, /href="\/(shortlist|rfq\/new)"/);
+      } else {
+        assert.match(actions, /href="\/shortlist"/);
+        assert.match(actions, /href="\/rfq\/new"/);
+      }
+      const mobile = html.split('class="wm-site-header__mobile-actions"')[1].split('</dialog>')[0];
+      assert.match(mobile, new RegExp(`href="/${isVendor ? 'vendor' : 'account'}/inbox"`));
+    }
+  }
+});
+
 test("unavailable accounts render a translated retry action instead of a loading or false sign-in state", async () => {
   for (const language of ["en", "es"] as const) {
     const html = await render({ status: "unavailable" }, language);
