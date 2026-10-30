@@ -9,10 +9,19 @@ import {coupleSignupIssue,type CoupleOnboardingData} from '../features/auth/doma
 import {completeCoupleProfile} from '../features/auth/server/complete-couple';
 import {loadAccessAccount} from '../features/auth/server/access-account';
 import {refreshBrowserSession} from '../lib/supabase/proxy';
+import {resolveVendorOwnerName} from '../features/auth/domain/vendor-onboarding';
 
 const incomplete:AccessProfile={role:'user',full_name:'Example',phone:null,country:null,wedding_theme:null,tentative_wedding_date:null};
 const input={full_name:'Example Couple',phone:'+1 202 555 0100',country:'United States',wedding_theme:'garden',tentative_wedding_date:'2027-04-12',guest_count:'',wedding_budget:'0',language:'es'};
 const complete:AccessProfile={...incomplete,...input,guest_count:null,wedding_budget:0};
+test('verified vendor signup asks for a missing Apple name and retains an existing verified profile name',()=>{
+  assert.equal(resolveVendorOwnerName(null,null),'');
+  assert.equal(resolveVendorOwnerName('  ',''),'');
+  assert.equal(resolveVendorOwnerName(null,' Existing name '),'Existing name');
+  assert.equal(resolveVendorOwnerName(' New name ','Existing name'),'New name');
+  assert.equal(resolveVendorOwnerName({role:'admin'},null),'');
+  assert.equal(resolveVendorOwnerName('x'.repeat(201),null),'');
+});
 test('community consent is deferred only on account-entry routes, not on posting/contact destinations',()=>{
   for(const path of ['/login','/signup','/signup/choose','/signup/vendor','/auth/continue','/forgot-password','/reset-password'])assert.equal(isAccountEntry(path),true);
   for(const path of ['/rfq/new','/vendor/profile','/account/inbox','/signup-extra','/vendors'])assert.equal(isAccountEntry(path),false);

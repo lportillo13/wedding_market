@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation';
-import { getRoles } from '@/lib/auth/roles';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import {loadAccessAccount} from '@/features/auth/server/access-account';
+import {accessContinuation} from '@/features/auth/domain/access';
+import {resolveVendorOwnerName} from '@/features/auth/domain/vendor-onboarding';
 import VendorSignupPageContent from './VendorSignupPageContent';
 
 type CategoryOption = {
@@ -9,17 +11,18 @@ type CategoryOption = {
 };
 
 export default async function VendorSignupPage() {
-  const { user, isVendor } = await getRoles();
+  const supabase = await createSupabaseServerClient();
+  const account=await loadAccessAccount(supabase);
+  if(account.status==='unavailable')redirect(accessContinuation('vendor','/signup/vendor'));
 
-  if (isVendor) {
+  if (account.status==='ready'&&account.isVendor) {
     redirect('/vendor');
   }
 
-  const supabase = await createSupabaseServerClient();
   const { data } = await supabase
     .from('categories')
     .select('key, label')
     .order('key', { ascending: true });
 
-  return <VendorSignupPageContent categories={(data ?? []) as CategoryOption[]} requiresAccount={!user} />;
+  return <VendorSignupPageContent categories={(data ?? []) as CategoryOption[]} requiresAccount={account.status!=='ready'} initialOwnerName={account.status==='ready'?resolveVendorOwnerName(null,account.profile.full_name):''}/>;
 }

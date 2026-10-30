@@ -92,9 +92,11 @@ function SummaryRow({ label, value, onEdit, editLabel }: { label: string; value:
 export default function VendorSignUpForm({
   categories,
   requiresAccount,
+  initialOwnerName='',
 }: {
   categories: CategoryOption[];
   requiresAccount: boolean;
+  initialOwnerName?:string;
 }) {
   const [uploadFiles, setUploadFiles] = useState<{ logo: File | null; hero: File | null }>({ logo: null, hero: null });
   const [state, action, pending] = useActionState(async (previous: VendorSignUpState, data: FormData): Promise<VendorSignUpState> => {
@@ -129,7 +131,7 @@ export default function VendorSignUpForm({
   const heroInputRef = useRef<HTMLInputElement | null>(null);
   const logoInputRef = useRef<HTMLInputElement | null>(null);
   const [form, setForm] = useState<FormShape>({
-    owner_name: '',
+    owner_name: initialOwnerName,
     email: '',
     password: '',
     business_name: '',
@@ -438,6 +440,8 @@ export default function VendorSignUpForm({
       </section>
       <section hidden={activeStep !== 'brand'} data-step="brand" className="wm-onboarding-panel">
         <div className="row g-4">
+          {!requiresAccount&&!initialOwnerName&&<div className="col-12"><label className="form-label" htmlFor="vendor-owner-name">{labels.fields.ownerNameLabel} <span aria-hidden="true">*</span></label><input id="vendor-owner-name" className="form-control" name="owner_name" autoComplete="name" required maxLength={200} value={form.owner_name} onChange={event=>updateField('owner_name',event.target.value)}/></div>}
+          {!requiresAccount&&Boolean(initialOwnerName)&&<input type="hidden" name="owner_name" value={form.owner_name}/>}
           <div className="col-12">
             <label className="form-label" htmlFor="vendor-business-name">
               {labels.businessNameLabel} <span aria-hidden="true">*</span>
@@ -837,6 +841,7 @@ export default function VendorSignUpForm({
           {uploadPreviews.hero && <Image src={uploadPreviews.hero.url} alt={labels.fields.heroPreviewAlt} width={600} height={300} unoptimized />}
         </div>
         <dl className="wm-onboarding-summary">
+          {!requiresAccount&&!initialOwnerName&&<SummaryRow label={labels.fields.ownerNameLabel} value={form.owner_name} onEdit={()=>changeStep(steps.findIndex(item=>item.id==='brand'))} editLabel={dictionary.signup.journey.edit}/>}
           <SummaryRow label={labels.summary.businessLabel} value={form.business_name || labels.summary.pending} onEdit={() => changeStep(steps.findIndex(item => item.id === 'brand'))} editLabel={dictionary.signup.journey.edit} />
           <SummaryRow label={labels.summary.logoLabel} value={selectedLogo} onEdit={() => changeStep(steps.findIndex(item => item.id === 'media'))} editLabel={dictionary.signup.journey.edit} />
           <SummaryRow label={labels.summary.heroLabel} value={selectedHero} onEdit={() => changeStep(steps.findIndex(item => item.id === 'media'))} editLabel={dictionary.signup.journey.edit} />
@@ -899,11 +904,11 @@ export default function VendorSignUpForm({
         </button>
 
         {step < steps.length - 1 ? (
-          <button type="button" className="btn btn-primary" disabled={pending} onClick={goNext}>
+          <button key="continue" type="button" className="btn btn-primary" disabled={pending} onClick={event=>{event.preventDefault();goNext();}}>
             {labels.actions.next}
           </button>
         ) : (
-          <button type="submit" className="btn btn-primary" disabled={pending}>
+          <button key="submit" type="submit" className="btn btn-primary" disabled={pending}>
             {pending ? labels.submitting : labels.submit}
           </button>
         )}

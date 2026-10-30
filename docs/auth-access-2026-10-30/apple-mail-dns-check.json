@@ -1,0 +1,31 @@
+{
+  "checkedAt": "2026-10-30T17:07:21.117Z",
+  "records": [
+    {
+      "name": "mail.thewedmarket.com",
+      "status": 0,
+      "spf": false,
+      "dkim": false
+    },
+    {
+      "name": "send.mail.thewedmarket.com",
+      "status": 0,
+      "spf": true,
+      "dkim": false
+    },
+    {
+      "name": "resend._domainkey.mail.thewedmarket.com",
+      "status": 0,
+      "spf": false,
+      "dkim": true
+    }
+  ],
+  "note": "Public DNS only; no records changed and no key values retained.",
+  "readiness": {
+    "fromDomain": "mail.thewedmarket.com",
+    "dkimPublicKeyValid": true,
+    "dkimBits": 1024,
+    "bounceDomain": "send.mail.thewedmarket.com",
+    "bounceSpfPresent": true
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-30T17:03:57.799Z",
+  "releaseCommit": "43c1c2456e2d6168c1fe4f82006b906827d24b7e",
+  "checks": {
+    "session": {
+      "path": "/vendor/profile",
+      "signedIn": true
+    },
+    "explicitPersonal": {
+      "heading": "Tu cuenta, a tu manera.",
+      "path": "/account/profile"
+    },
+    "defaultVendor": {
+      "heading": "Cuenta tu historia.",
+      "path": "/vendor/profile"
+    },
+    "noCustomerWrites": true
+  }
+}

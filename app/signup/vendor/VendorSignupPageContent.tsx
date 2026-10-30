@@ -12,13 +12,15 @@ type CategoryOption = {
 export default function VendorSignupPageContent({
   categories,
   requiresAccount,
+  initialOwnerName='',
 }: {
   categories: CategoryOption[];
   requiresAccount: boolean;
+  initialOwnerName?:string;
 }) {
   return (
     <EditorialAuthLayout onboarding vendor>
-      {requiresAccount ? <VendorAccountForm /> : <VendorSignUpForm categories={categories} requiresAccount={false} />}
+      {requiresAccount ? <VendorAccountForm /> : <VendorSignUpForm categories={categories} requiresAccount={false} initialOwnerName={initialOwnerName}/>}
     </EditorialAuthLayout>
   );
 }

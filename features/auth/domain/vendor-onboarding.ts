@@ -1,5 +1,10 @@
 import { z } from 'zod';
 
+export function resolveVendorOwnerName(submitted:unknown,stored:unknown) {
+  for(const value of [submitted,stored])if(typeof value==='string'&&value.trim()&&value.trim().length<=200)return value.trim();
+  return '';
+}
+
 export const vendorSignupSchema = z.object({
   owner_name: z.string().trim().max(200, 'Name is too long.').nullish(),
   email: z.string().trim().email('Enter a valid email address.').nullish(),
