@@ -1,4 +1,8 @@
 import Link from "next/link";
+import {redirect} from 'next/navigation';
+import {getRoles} from '@/lib/auth/roles';
+import {loadInboxAccess} from '@/features/accounts/server/inbox-access';
+import AccountLayoutHeader from '@/app/account/AccountLayoutHeader';
 import { AppointmentInboxLink } from '@/features/boutiques/client/AppointmentInbox';
 import InboxPageView from "@/components/inbox/InboxPageView";
 import { buildAutocompleteSuggestions } from "@/lib/search/autocomplete";
@@ -8,37 +12,30 @@ import {
   presentInboxConversation,
   type InboxFilters,
 } from "@/lib/inbox-presentation";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
   closeAccountInboxThreads,
   markAccountInboxThreadRead,
   restoreAccountInboxThreads,
-} from "./actions";
+} from "@/app/account/inbox/actions";
 
 export default async function AccountInboxPage({
   searchParams,
 }: {
   searchParams?: Promise<InboxFilters>;
 }) {
+  const access = await loadInboxAccess(getRoles);
+  if (access.status === 'guest') redirect('/login?next=%2Faccount%2Finbox');
+  if (access.status === 'vendor') redirect('/vendor/inbox');
   const { dictionary, language } = await getRequestI18n();
+  if (access.status === 'unavailable') return <div className="wm-account-workspace">
+    <AccountLayoutHeader clientWorkspace={false} />
+    <main className="container py-4"><h1>{dictionary.inbox.title}</h1>
+      <p role="alert">{dictionary.login.feedback.unavailable}</p>
+      <Link href="/account/profile">{dictionary.auth.personalProfile}</Link>
+    </main>
+  </div>;
   const filters = searchParams ? await searchParams : {};
-  const supabase = await createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user)
-    return (
-      <main className="container py-4">
-        <h1>{dictionary.inbox.title}</h1>
-        <p>{dictionary.account.profile.loginRequired}</p>
-        <Link
-          className="btn btn-primary"
-          href={`/login?next=${encodeURIComponent("/account/inbox")}`}
-        >
-          {dictionary.nav.logIn}
-        </Link>
-      </main>
-    );
+  const {user} = access;
 
   const page = Math.max(
     1,
@@ -61,7 +58,8 @@ export default async function AccountInboxPage({
     ]),
   );
   return (
-    <><div className="container"><AppointmentInboxLink /></div>
+    <div className="wm-account-workspace"><AccountLayoutHeader />
+    <div className="container"><AppointmentInboxLink /></div>
     <InboxPageView
       scope="client"
       language={language}
@@ -75,6 +73,6 @@ export default async function AccountInboxPage({
       markThreadRead={markAccountInboxThreadRead}
       deleteThreads={closeAccountInboxThreads}
       restoreThreads={restoreAccountInboxThreads}
-    /></>
+    /></div>
   );
 }

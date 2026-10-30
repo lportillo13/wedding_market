@@ -1,0 +1,20 @@
+{
+  "documentWidth": 1265,
+  "menu": {
+    "left": 112.5,
+    "right": 1152.5,
+    "width": 1040
+  },
+  "profile": {
+    "left": 112.5,
+    "right": 1152.5,
+    "width": 1040
+  },
+  "scrollWidth": 1265,
+  "phone": {
+    "documentWidth": 1265,
+    "menuWidth": 1040,
+    "profileWidth": 1040,
+    "scrollWidth": 1265
+  }
+}
