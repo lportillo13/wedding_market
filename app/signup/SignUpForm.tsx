@@ -7,7 +7,7 @@ import PasswordInput from '@/components/PasswordInput';
 import JourneyProgress from '@/components/auth/JourneyProgress';
 import { buildCountryOptions } from '@/lib/countries';
 import { authFeedbackKey } from '@/lib/auth-feedback';
-import { coupleSignupIssue, coupleSignupPayload, type CoupleOnboardingData } from '@/features/auth/domain/couple-onboarding';
+import { coupleOnboardingStartStep,coupleSignupIssue, coupleSignupPayload, type CoupleOnboardingData } from '@/features/auth/domain/couple-onboarding';
 import { signUp,completeCoupleSignup, type SignUpState } from './actions';
 import AuthenticationMethods from '@/components/auth/AuthenticationMethods';
 import {accessCopy,verifiedSetupCopy} from '@/features/auth/presentation/access-copy';
@@ -58,7 +58,6 @@ export default function SignUpForm({ closeHref = '/login',verifiedAccount,nextPa
   const verifiedCopy = verifiedSetupCopy[language];
   const submitLabel = verifiedAccount ? verifiedCopy.submit : labels.submit;
   const submittingLabel = verifiedAccount ? verifiedCopy.submitting : labels.submitting;
-  const [step, setStep] = useState(0);
   const [localError, setLocalError] = useState<string | null>(null);
   const [checkingEmail, setCheckingEmail] = useState(false);
   const [accessBusy,setAccessBusy]=useState(false);
@@ -69,6 +68,7 @@ export default function SignUpForm({ closeHref = '/login',verifiedAccount,nextPa
     wedding_theme: '', tentative_wedding_date: '', guest_count: '', wedding_budget: '',
     ...verifiedAccount,
   });
+  const [step,setStep]=useState(()=>coupleOnboardingStartStep(form,Boolean(verifiedAccount)));
   const [month, setMonth] = useState(() => new Date(new Date().getFullYear(), new Date().getMonth(), 1));
   const formRef = useRef<HTMLFormElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);

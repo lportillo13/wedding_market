@@ -5,7 +5,7 @@ import {createServerClient} from '@supabase/ssr';
 import {NextRequest} from 'next/server';
 import {accessCallback,accessContinuation,accessDestination,accessRequest,accessReturnPath,isAccountEntry,publicProviders,validEmailCode,type AccessProfile} from '../features/auth/domain/access';
 import {coupleProfileSchema} from '../features/auth/domain/couple-profile';
-import {coupleSignupIssue,type CoupleOnboardingData} from '../features/auth/domain/couple-onboarding';
+import {coupleOnboardingStartStep,coupleSignupIssue,type CoupleOnboardingData} from '../features/auth/domain/couple-onboarding';
 import {completeCoupleProfile} from '../features/auth/server/complete-couple';
 import {loadAccessAccount} from '../features/auth/server/access-account';
 import {refreshBrowserSession} from '../lib/supabase/proxy';
@@ -37,7 +37,30 @@ test('verified social/code accounts reuse role-appropriate workspaces and explic
   assert.equal(accessDestination(incomplete,false,'vendor','/signup/vendor'),'/signup/vendor');
   const couple=new URL(accessDestination(incomplete,false,'couple','/rfq/new'),'https://example.invalid');
   assert.equal(couple.pathname,'/signup');assert.equal(couple.searchParams.get('complete'),'1');assert.equal(couple.searchParams.get('next'),'/rfq/new');
-  assert.equal(new URL(accessDestination(incomplete,false,'login','/account/profile'),'https://example.invalid').pathname,'/signup/choose');
+  assert.equal(new URL(accessDestination(incomplete,false,'login','/account/profile'),'https://example.invalid').pathname,'/signup');
+});
+
+test('new identities enter wedding onboarding directly while vendor entry and explicit return paths remain intact',()=>{
+  const couple=new URL(accessDestination(incomplete,false,'login','/account/inbox'),'https://example.invalid');
+  assert.equal(couple.pathname,'/signup');assert.equal(couple.searchParams.get('complete'),'1');assert.equal(couple.searchParams.get('next'),'/account/inbox');
+  for(const next of ['/signup/vendor','/vendor','/vendor/inbox','/vendor/profile?section=contact']){
+    assert.equal(accessDestination(incomplete,false,'login',next),'/signup/vendor');
+    assert.equal(accessDestination(complete,true,'login',next),next==='/signup/vendor'?'/vendor/profile':next);
+  }
+  assert.equal(new URL(accessDestination(incomplete,false,'login','/vendors/example'),'https://example.invalid').pathname,'/signup');
+  assert.equal(accessDestination(complete,false,'login','/vendors/example'),'/vendors/example');
+  assert.equal(accessDestination(complete,false,'login','/signup-extra'),'/signup-extra');
+});
+
+test('verified wedding onboarding starts at the first missing required detail without asking known identity fields again',()=>{
+  const form:CoupleOnboardingData={...input,email:'example@example.invalid',password:'',guest_count:'',wedding_budget:''};
+  assert.equal(coupleOnboardingStartStep(form),0);
+  assert.equal(coupleOnboardingStartStep({...form,full_name:''},true),0);
+  assert.equal(coupleOnboardingStartStep({...form,phone:''},true),1);
+  assert.equal(coupleOnboardingStartStep({...form,country:''},true),1);
+  assert.equal(coupleOnboardingStartStep({...form,wedding_theme:''},true),2);
+  assert.equal(coupleOnboardingStartStep({...form,tentative_wedding_date:''},true),3);
+  assert.equal(coupleOnboardingStartStep(form,true),4);
 });
 test('OAuth cancellation/retry retains account intent and local return paths without redirect loops',()=>{
   const callback=new URL(accessCallback('vendor','/vendor/inbox'),'https://example.invalid');

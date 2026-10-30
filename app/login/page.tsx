@@ -2,8 +2,8 @@
 import { redirect } from "next/navigation";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import LoginClient from "./LoginClient";
-import { safeAuthNextPath } from "@/lib/auth-redirect";
-import {accessContinuation,accessRequest} from '@/features/auth/domain/access';
+import {accessContinuation,accessDestination,accessRequest} from '@/features/auth/domain/access';
+import {loadAccessAccount} from '@/features/auth/server/access-account';
 
 export default async function Page({
   searchParams,
@@ -12,21 +12,11 @@ export default async function Page({
 }) {
   const sp = await searchParams;
   const supabase = await getSupabaseServer();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   const access=accessRequest(sp.next,sp.intent);
-  let nextPath = safeAuthNextPath(sp.next ?? null, "/account/profile");
-  if(nextPath.startsWith('/auth/continue?'))nextPath=accessContinuation(access.intent,access.next,access.defaultWorkspace);
+  const defaultWorkspace=!sp.next||Boolean(access.defaultWorkspace);
+  const account=await loadAccessAccount(supabase);
+  if(account.status==='ready')redirect(accessDestination(account.profile,account.isVendor,access.intent,access.next,defaultWorkspace));
+  if(account.status==='unavailable')redirect(accessContinuation(access.intent,access.next,defaultWorkspace));
 
-  if (user && !sp?.next) {
-    const { data: isVendor } = await supabase.rpc("is_vendor", { _uid: user.id });
-    nextPath = isVendor ? "/vendor/profile" : "/account/profile";
-  }
-
-  // If already logged in, go straight to target
-  if (user) redirect(nextPath);
-
-  return <LoginClient intent={access.intent} nextPath={access.next} defaultWorkspace={!sp.next||access.defaultWorkspace} passwordUpdated={sp.password_updated === "1"} callbackError={sp.error === "auth_callback"} />;
+  return <LoginClient intent={access.intent} nextPath={access.next} defaultWorkspace={defaultWorkspace} passwordUpdated={sp.password_updated === "1"} callbackError={sp.error === "auth_callback"} />;
 }

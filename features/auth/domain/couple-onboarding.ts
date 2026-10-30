@@ -33,3 +33,10 @@ export function coupleSignupIssue(form: CoupleOnboardingData, step: number, veri
   }
   return null;
 }
+
+/** Verified identities start with missing planning details, retaining every required check. */
+export function coupleOnboardingStartStep(form:CoupleOnboardingData,verifiedEmail=false) {
+  if(!verifiedEmail)return 0;
+  for(let step=0;step<4;step++)if(coupleSignupIssue(form,step,true))return step;
+  return 4;
+}

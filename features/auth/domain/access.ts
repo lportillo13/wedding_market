@@ -28,13 +28,15 @@ export function coupleSetupComplete(profile:AccessProfile) {
 }
 export function accessDestination(profile:AccessProfile,isVendor:boolean,intent:AccessIntent,nextInput:string,defaultWorkspace=false) {
   const next=accessReturnPath(nextInput);
-  const signup=new URL(next,'https://auth.invalid').pathname.startsWith('/signup');
+  const pathname=new URL(next,'https://auth.invalid').pathname;
+  const signup=pathname==='/signup'||pathname.startsWith('/signup/');
   if(isVendor)return signup||intent!=='login'||(defaultWorkspace&&next==='/account/profile')?'/vendor/profile':next;
   if(profile.role!=='user')return signup?'/account/profile':next;
-  if(intent==='vendor')return '/signup/vendor';
+  const vendorEntry=pathname==='/signup/vendor'||pathname.startsWith('/signup/vendor/')||pathname==='/vendor'||pathname.startsWith('/vendor/');
+  if(intent==='vendor'||(intent==='login'&&vendorEntry))return '/signup/vendor';
   if(coupleSetupComplete(profile))return signup?'/account/profile':next;
   const query=new URLSearchParams({next:signup?'/account/profile':next});
-  return intent==='couple'?'/signup?complete=1&'+query:'/signup/choose?'+query;
+  return '/signup?complete=1&'+query;
 }
 export function emailCodeAddress(value:string) {return value.trim().toLowerCase();}
 export function validEmailCode(value:string) {return /^\d{6,10}$/.test(value.replace(/\s/g,''));}

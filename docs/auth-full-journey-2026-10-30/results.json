@@ -1,5 +1,5 @@
 {
-  "productionApplication": "76bc5eb844aeb4283815bbd8b5cc85a817a29762",
+  "productionApplication": "cdcf970505dad696e5fd764be876e3b3030712e2",
   "rootProxyRepair": {
     "confirmedCallbackHeaderOverflow": 1,
     "headerBuffer": "32k",
@@ -11,7 +11,7 @@
     "ownerApplied": true
   },
   "regressions": {
-    "web": 157,
+    "web": 159,
     "database": 49,
     "repair": 6
   },
@@ -40,7 +40,8 @@
     "Google new signup requires unused Google identity",
     "email vendor signup",
     "email returning sign-in",
-    "verified completion review copy fix/deploy"
+    "new social wedding-routing deployment",
+    "Google brand ownership and verification"
   ],
   "secretsInEvidence": false,
   "checkedAt": "2026-10-30 18:35:18 UTC",
@@ -50,6 +51,16 @@
     "spanish": true,
     "languageChangeRetainsDraft": true,
     "productionBuildPassed": true,
-    "sourceCopyFixDeployed": false
+    "sourceCopyFixDeployed": true
+  },
+  "newCoupleRouting": {
+    "directWeddingOnboarding": true,
+    "firstMissingRequiredStep": true,
+    "knownIdentityRetained": true,
+    "explicitInboxReturnRetained": true,
+    "vendorBusinessSetupRetained": true,
+    "englishAndSpanish": true,
+    "isolatedProfileWrites": 0,
+    "deployed": false
   }
 }

@@ -16,6 +16,25 @@ async function png(path,size,background,color,fraction,compact=false) {
   const raster=sharp(frame(size,background,color,fraction,compact));
   await fs.writeFile(path,await (background?raster.removeAlpha():raster).png().toBuffer());
 }
+
+async function googleAuthLogo() {
+  const approvedWordmark=await fs.readFile('public/brand/wm-logo.svg');
+  const titleCrop=await sharp(approvedWordmark).extract({left:340,top:0,width:720,height:300}).png().toBuffer();
+  const title=await sharp(titleCrop).trim().resize({width:440,height:150,fit:'inside'}).png().toBuffer({resolveWithObject:true});
+  const symbol=await sharp(Buffer.from(mark)).resize({width:270}).png().toBuffer();
+  await sharp({create:{width:512,height:512,channels:4,background:ivory}}).composite([
+    {input:symbol,left:121,top:35},
+    {input:title.data,left:Math.round((512-title.info.width)/2),top:468-title.info.height},
+  ]).removeAlpha().png().toFile('public/brand/google-auth-logo.png');
+}
+
+if(process.argv.includes('--google-auth-only')) {
+  await googleAuthLogo();
+  console.log('Generated the Google authentication lockup from the approved WM SVG masters.');
+  process.exit(0);
+}
+
+await googleAuthLogo();
 await fs.mkdir('mobile/assets/brand',{recursive:true});
 await png('mobile/assets/brand/app-icon.png',1024,cocoa,ivory,.88);
 await png('mobile/assets/brand/adaptive-foreground.png',1080,null,ivory,.65);

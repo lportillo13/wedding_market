@@ -38,7 +38,7 @@ unless recent matching callback header-overflow errors are confirmed.
   contact country, style, calendar navigation, optional-field skipping and review
   edits worked. The profile remained unchanged until explicit final submission;
   the saved profile retained a real zero budget and omitted guest estimate.
-- All 157 application and 49 isolated database regressions pass.
+- All 159 application and 49 isolated database regressions pass.
 
 The QA profile is named `WM QA Email Couple 20261030`. Its reserved example
 phone and fictional wedding data belong only to that private test account. No
@@ -51,7 +51,39 @@ The verified couple review still referred to a password and another confirmation
 email. The EN/ES correction uses verified-email instructions and a Save and
 continue action. Architecture, types, lint and production build pass; the isolated
 browser verified both languages and draft retention when switching language.
-Application deployment of this copy correction is pending.
+The copy correction is deployed in `cdcf970505dad696e5fd764be876e3b3030712e2`,
+with 48 public checks passing and rollback
+`/var/www/wedding-market.before-20261030-184317`.
+
+## New social accounts: wedding onboarding
+
+The owner clarified that new Google and Apple couple accounts must enter the
+wedding-details form directly. Incomplete couple accounts now go to verified
+couple setup from both authentication continuation and an already signed-in
+login visit. Setup starts at the first missing required detail: known name/email
+are retained, missing names are requested, then contact, wedding style and date.
+Guest count and budget remain optional. Existing completed accounts retain
+explicit destinations, and vendor signup/private vendor entry retains business
+onboarding. The explicit account-choice route remains compatible.
+
+Architecture/types/lint/build and all 159 tests pass. The isolated browser
+verified an incomplete account's inbox return being preserved, missing-name
+entry, contact-first entry when the name is known, contact-to-wedding-style
+progression in EN/ES, and vendor login entering business setup. No local fixture
+profile writes, messages or external provider calls were made. Deployment of
+this routing correction is being prepared.
+
+## Google account-chooser branding
+
+Google production audience is enabled, but branding verification separately
+reported unverified ownership of the homepage and an insufficiently distinctive
+logo. The approved WM SVG masters now generate a square Google-specific full
+wordmark lockup via `node scripts/generate-brand-assets.mjs --google-auth-only`.
+This flag leaves native/store assets unchanged. Google rejected the previous
+monogram-only logo; replacement upload reached its preview, but that browser
+page subsequently crashed before save could be confirmed. Homepage ownership,
+branding verification/publication and a branded chooser are not yet confirmed.
+No paid Supabase custom-domain upgrade was purchased.
 
 ## Remaining live cases
 
