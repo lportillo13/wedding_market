@@ -7,7 +7,7 @@ export const en = {
     favorites: "Favorites",
     inbox: "Inbox",
     profile: "Profile",
-    vendor: "Vendor",
+    vendor: "My business",
     admin: "Admin",
     language: "Language",
     english: "English",

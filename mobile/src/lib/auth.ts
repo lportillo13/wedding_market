@@ -18,6 +18,9 @@ export type AuthProfile = {
   guestCount: number | null;
   weddingBudget: number | null;
   weddingTheme: string | null;
+  country?: string | null;
+  hasVendor?: boolean;
+  emailVerified?: boolean;
 };
 
 export type AuthState = {
@@ -180,19 +183,21 @@ export async function loadAuthState(): Promise<AuthState> {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role, full_name, language, phone, tentative_wedding_date, guest_count, wedding_budget, wedding_theme, community_terms_version")
+    .select("role, full_name, language, phone, country, tentative_wedding_date, guest_count, wedding_budget, wedding_theme, community_terms_version")
     .eq("id", user.id)
     .maybeSingle();
 
   const role = normalizeRole(profile?.role);
   let vendorLogoUrl: string | null = null;
+  let hasVendor = false;
   if (role === "vendor" || role === "admin") {
     const { data: vendor } = await supabase
       .from("vendors")
-      .select("logo_url")
+      .select("id, logo_url")
       .eq("owner_id", user.id)
       .maybeSingle();
     vendorLogoUrl = typeof vendor?.logo_url === "string" && vendor.logo_url.trim() ? vendor.logo_url : null;
+    hasVendor = Boolean(vendor);
   }
 
   return {
@@ -201,6 +206,9 @@ export async function loadAuthState(): Promise<AuthState> {
       userId: user.id,
       communityTermsVersion: typeof profile?.community_terms_version === "string" ? profile.community_terms_version : null,
       role,
+      hasVendor,
+      emailVerified: Boolean(user.email_confirmed_at),
+      country: optionalMetadataText(profile?.country),
       fullName: typeof profile?.full_name === "string" ? profile.full_name : null,
       language: profile?.language === "es" ? "es" : "en",
       avatarUrl: avatarUrlFromMetadata(user.user_metadata),
@@ -400,6 +408,27 @@ export async function restoreMobileAuthState() {
 }
 
 export async function createSessionFromMobileAuthUrl(url: string): Promise<MobileAuthUrlResult | null> {
+  // Android linking and the browser result may deliver the same one-use PKCE code.
+  // Share only the active exchange; do not persist callback URLs or sessions here.
+  if (activeCallback?.url === url) return activeCallback.promise;
+  const callback=parseMobileAuthCallback(url);
+  if(callback?.code&&recentCallback?.code===callback.code&&recentCallback.expires>Date.now()){
+    const state=await loadAuthState();
+    if(state.user?.id===recentCallback.userId)return {state,event:recentCallback.event};
+  }
+  const promise = exchangeMobileAuthUrl(url);
+  activeCallback = { url, promise };
+  try {
+    const result=await promise;
+    if(callback?.code&&result?.state.user)recentCallback={code:callback.code,userId:result.state.user.id,event:result.event,expires:Date.now()+30000};
+    return result;
+  }
+  finally { if (activeCallback?.promise === promise) activeCallback = null; }
+}
+let activeCallback: { url: string; promise: Promise<MobileAuthUrlResult | null> } | null = null;
+let recentCallback:{code:string;userId:string;event:MobileAuthUrlResult['event'];expires:number}|null=null;
+
+async function exchangeMobileAuthUrl(url: string): Promise<MobileAuthUrlResult | null> {
   if (!supabase) {
     throw new Error("Supabase is not configured. Check mobile/.env.");
   }
@@ -408,10 +437,12 @@ export async function createSessionFromMobileAuthUrl(url: string): Promise<Mobil
   if (!callback) return null;
 
   let user: User | null = null;
+  let recovery=callback.type==='recovery';
   if (callback.code) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(callback.code);
     if (error) throw new Error(error.message);
     user = data.user;
+    recovery ||= (data as typeof data & {redirectType?:string}).redirectType === 'recovery';
   } else if (callback.accessToken && callback.refreshToken) {
     const { data, error } = await supabase.auth.setSession({
       access_token: callback.accessToken,
@@ -423,7 +454,7 @@ export async function createSessionFromMobileAuthUrl(url: string): Promise<Mobil
     throw new Error("The confirmation link did not include a valid account session.");
   }
 
-  if (callback.type === "recovery") {
+  if (recovery) {
     return {
       state: await loadAuthState(),
       event: "password_recovery",
@@ -551,6 +582,7 @@ export async function signUpWithEmail(input: MobileSignUpInput): Promise<MobileS
 }
 
 export async function signOut() {
+  recentCallback=null;
   if (!supabase) {
     return;
   }

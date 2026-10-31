@@ -1,4 +1,7 @@
 import { confirmAccountDeletion } from "./deletion";
+import * as ImagePicker from 'expo-image-picker';
+import {countryOptions} from '../../content/countries';
+import {uploadVendorMedia} from '../../lib/vendorProfile';
 import { type ClientProfileForm } from "../../application/types";
 import { themeOptions } from "../../content/catalog";
 import { copy } from "../../i18n/copy";
@@ -6,23 +9,25 @@ import { loadAuthState, type AuthProfile } from "../../lib/auth";
 import { supabase } from "../../lib/supabase";
 import { styles } from "../../theme/styles";
 import { colors } from "../../theme/tokens";
-import { FieldLabel, NativeSelect } from "../../ui/forms";
+import { FieldLabel, NativeSelect, SearchableCountryDropdown } from "../../ui/forms";
 import { QuoteDateCalendar } from '../../ui/calendars';
 import { openPublicWebPath } from "../../ui/links";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export function AccountProfileScreen({
   userEmail,
   language,
   onProfileUpdated,
   onLanguageUpdated,
+  canPlan=true,
 }: {
   userEmail: string | null;
   language: "en" | "es";
   onProfileUpdated: (profile: AuthProfile | null) => void;
   onLanguageUpdated: (language: "en" | "es") => void;
+  canPlan?:boolean;
 }) {
   const [form, setForm] = useState<ClientProfileForm>({
     full_name: "",
@@ -37,6 +42,9 @@ export function AccountProfileScreen({
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [avatar,setAvatar]=useState<string|null>(null);
+  const [selectedPhoto,setSelectedPhoto]=useState<ImagePicker.ImagePickerAsset|null>(null);
+  const [uploading,setUploading]=useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -54,6 +62,8 @@ export function AccountProfileScreen({
           if (isMounted) setMessage("Sign in to manage your profile.");
           return;
         }
+        const state=await loadAuthState();
+        if(isMounted)setAvatar(state.profile?.avatarUrl??null);
 
         const { data, error } = await supabase!
           .from("profiles")
@@ -115,10 +125,10 @@ export function AccountProfileScreen({
       const guestCount = form.guest_count.trim() ? Number(form.guest_count) : null;
       const budget = form.wedding_budget.trim() ? Number(form.wedding_budget) : null;
 
-      if (guestCount !== null && (!Number.isFinite(guestCount) || guestCount < 1)) {
+      if (canPlan && guestCount !== null && (!Number.isInteger(guestCount) || guestCount < 1 || guestCount > 100000)) {
         throw new Error("Guest count must be a positive number.");
       }
-      if (budget !== null && (!Number.isFinite(budget) || budget < 0)) {
+      if (canPlan && budget !== null && (!Number.isFinite(budget) || budget < 0 || budget > 1000000000)) {
         throw new Error("Budget must be zero or greater.");
       }
 
@@ -129,10 +139,7 @@ export function AccountProfileScreen({
           phone: form.phone.trim() || null,
           country: form.country.trim() || null,
           language: form.language,
-          tentative_wedding_date: form.tentative_wedding_date || null,
-          guest_count: guestCount,
-          wedding_budget: budget,
-          wedding_theme: form.wedding_theme || null,
+          ...(canPlan?{tentative_wedding_date:form.tentative_wedding_date||null,guest_count:guestCount,wedding_budget:budget,wedding_theme:form.wedding_theme||null}:{}),
         })
         .eq("id", user.id);
 
@@ -166,7 +173,7 @@ export function AccountProfileScreen({
     <View>
       <View style={styles.profileHero}>
         <View style={styles.profileAvatar}>
-          <Ionicons name="person" size={30} color={colors.paper} />
+          {selectedPhoto||avatar?<Image source={{uri:selectedPhoto?.uri??avatar!}} style={{width:56,height:56,borderRadius:28}}/>:<Ionicons name="person" size={30} color={colors.paper} />}
         </View>
         <View style={{ flex: 1 }}>
           <Text style={styles.kicker}>{copy[form.language].accountProfile}</Text>
@@ -175,6 +182,10 @@ export function AccountProfileScreen({
             {copy[form.language].currentLanguage}: {form.language === "es" ? copy[form.language].spanish : copy[form.language].english}
           </Text>
         </View>
+      </View>
+      <View style={styles.formSection}>
+        <TouchableOpacity disabled={uploading} style={styles.secondaryButton} onPress={()=>void (async()=>{const result=await ImagePicker.launchImageLibraryAsync({mediaTypes:['images'],allowsEditing:true,aspect:[1,1],quality:.88});if(!result.canceled)setSelectedPhoto(result.assets[0]);})().catch(()=>setMessage(copy[language].saveFailed))}><Text style={styles.secondaryButtonText}>{language==='es'?'Elegir foto':'Choose photo'}</Text></TouchableOpacity>
+        {selectedPhoto?<TouchableOpacity disabled={uploading} style={styles.primaryButton} onPress={()=>void (async()=>{setUploading(true);setMessage('');try{await uploadVendorMedia('client-avatar',{uri:selectedPhoto.uri,name:selectedPhoto.fileName??'profile.jpg',type:selectedPhoto.mimeType??'image/jpeg'});const state=await loadAuthState();setAvatar(state.profile?.avatarUrl??null);onProfileUpdated(state.profile);setSelectedPhoto(null);}catch(error){setMessage(error instanceof Error?error.message:copy[language].saveFailed);}finally{setUploading(false);}})()}><Text style={styles.primaryButtonText}>{uploading?copy[language].saving:language==='es'?'Subir foto':'Upload photo'}</Text></TouchableOpacity>:null}
       </View>
 
       {message ? (
@@ -186,7 +197,7 @@ export function AccountProfileScreen({
       ) : null}
 
       <View style={styles.formSection}>
-        <Text style={styles.sectionTitle}>{copy[form.language].contact}</Text>
+        <Text style={styles.sectionTitle}>01 · {copy[form.language].contact}</Text>
         <FieldLabel text={form.language === "en" ? "Full name" : "Nombre completo"} />
         <TextInput
           autoComplete="name"
@@ -209,14 +220,7 @@ export function AccountProfileScreen({
         <FieldLabel text={copy[form.language].email} />
         <TextInput editable={false} style={[styles.input, styles.inputDisabled]} value={userEmail ?? ""} />
 
-        <FieldLabel text={copy[form.language].country} />
-        <TextInput
-          autoComplete="country"
-          onChangeText={(value) => updateField("country", value)}
-          placeholder={copy[form.language].country}
-          style={styles.input}
-          value={form.country}
-        />
+        <SearchableCountryDropdown language={form.language} label={copy[form.language].contactCountry} value={form.country} options={countryOptions(form.language)} onChange={value=>updateField('country',value)}/>
 
         <NativeSelect
           label={copy[form.language].preferredLanguage}
@@ -230,12 +234,12 @@ export function AccountProfileScreen({
         />
       </View>
 
-      <View style={styles.formSection}>
-        <Text style={styles.sectionTitle}>{copy[form.language].weddingPreferences}</Text>
+      {canPlan?<View style={styles.formSection}>
+        <Text style={styles.sectionTitle}>02 · {copy[form.language].weddingPreferences}</Text>
         <FieldLabel text={form.language === "en" ? "Tentative wedding date" : "Fecha tentativa de boda"} />
         <QuoteDateCalendar language={form.language} value={form.tentative_wedding_date} onChange={(value) => updateField('tentative_wedding_date', value)} />
 
-        <FieldLabel text={form.language === "en" ? "Guest count" : "Cantidad de invitados"} />
+        <FieldLabel text={copy[form.language].guestCountOptional} />
         <TextInput
           keyboardType="number-pad"
           onChangeText={(value) => updateField("guest_count", value)}
@@ -244,7 +248,7 @@ export function AccountProfileScreen({
           value={form.guest_count}
         />
 
-        <FieldLabel text={form.language === "en" ? "Wedding budget" : "Presupuesto de boda"} />
+        <FieldLabel text={copy[form.language].weddingBudgetOptional} />
         <TextInput
           keyboardType="decimal-pad"
           onChangeText={(value) => updateField("wedding_budget", value)}
@@ -261,6 +265,8 @@ export function AccountProfileScreen({
           onChange={(value) => updateField("wedding_theme", value)}
         />
 
+      </View>:null}
+      <View style={styles.formSection}>
         <TouchableOpacity
           disabled={isSaving}
           onPress={handleSave}

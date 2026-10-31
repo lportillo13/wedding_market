@@ -2,6 +2,7 @@ import { prepareProfilePricing, profilePriceToCents } from "../../../shared/vend
 import { mobileConfig } from "./config";
 import { requestJson } from "./http";
 import { supabase } from "./supabase";
+import {prepareVendorHeroPresentation} from '../../../shared/vendors/hero';
 
 export type VendorEditorTab =
   | "details"
@@ -191,6 +192,17 @@ export async function saveVendorDetails(vendorId: string, values: Record<string,
   if (error) throw new Error(error.message);
 }
 
+export async function saveVendorCover(vendorId:string,input:Parameters<typeof prepareVendorHeroPresentation>[0]){
+  const db=client();
+  const {data,error}=await db.from('vendors').select('extra_info, gallery_images').eq('id',vendorId).single();
+  if(error)throw error;
+  const prepared=prepareVendorHeroPresentation(input,Array.isArray(data.gallery_images)?data.gallery_images:[]);
+  if(!prepared.ok)throw Error('Choose a valid saved video or an HTTPS YouTube, Vimeo, MP4 or WebM link.');
+  const extra=data.extra_info&&typeof data.extra_info==='object'&&!Array.isArray(data.extra_info)?data.extra_info:{};
+  const result=await db.from('vendors').update({extra_info:{...extra,hero_presentation:prepared.value}}).eq('id',vendorId);
+  if(result.error)throw result.error;
+}
+
 export async function saveVendorContact(vendorId: string, values: Record<string, string>) {
   const db = client();
   const { error } = await db
@@ -200,8 +212,6 @@ export async function saveVendorContact(vendorId: string, values: Record<string,
       website_url: values.website_url.trim() || null,
       map_url: values.map_url.trim() || null,
       address_label: values.address_label.trim() || null,
-      starting_price_cents: profilePriceToCents(values.starting_price),
-      starting_price_currency: values.starting_price_currency.trim().toUpperCase() || "USD",
       event_types: csvToArray(values.event_types),
       years_in_business: toInteger(values.years_in_business),
       languages: csvToArray(values.languages),
@@ -227,6 +237,15 @@ export async function saveVendorPricing(vendorId: string, values: Record<string,
     },
   });
   if (error) throw new Error(error.message);
+}
+
+export async function saveVendorStartingPrice(vendorId: string, values: Record<string, string>) {
+  const currency = values.starting_price_currency.trim().toUpperCase() || 'USD';
+  if (!['USD','CRC'].includes(currency)) throw Error('Choose USD or CRC.');
+  const {error}=await client().from('vendors').update({
+    starting_price_cents:profilePriceToCents(values.starting_price),starting_price_currency:currency,
+  }).eq('id',vendorId);
+  if(error)throw new Error(error.message);
 }
 
 export async function saveVendorAmenities(vendorId: string, selectedKeys: string[], values: Record<string, string>) {

@@ -529,6 +529,7 @@ export const vendorProfileStyles = StyleSheet.create({
         width: 40,
     },
     detailHeroCopy: {
+        alignItems: 'center',
         bottom: 36,
         left: 0,
         padding: 22,
@@ -541,9 +542,9 @@ export const vendorProfileStyles = StyleSheet.create({
     },
     detailSheet: {
         backgroundColor: colors.paper,
-        borderTopLeftRadius: 34,
-        borderTopRightRadius: 34,
-        marginTop: -32,
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
+        marginTop: 0,
         paddingHorizontal: 18,
         paddingTop: 16,
     },

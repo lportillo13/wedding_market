@@ -4,6 +4,7 @@ import { copy } from "../../../i18n/copy";
 import { fetchVendors, type VendorListItem } from "../../../lib/api";
 import { mergeUniqueById } from "../../../lib/search";
 import { externalMapUrl } from "../../../lib/urls";
+import {openPublicWebPath} from '../../../ui/links';
 import { styles } from "../../../theme/styles";
 import { colors } from "../../../theme/tokens";
 import { hasVendorCoordinates, vendorLocationLabel } from "../../../ui/format";
@@ -373,6 +374,7 @@ export function VendorSearchScreen({
         <View style={styles.panel}>
           <Text style={styles.title}>{labels.noVendorsFound}</Text>
           <Text style={styles.body}>{labels.noVendorsHint}</Text>
+           <TouchableOpacity style={styles.secondaryButton} onPress={()=>void openPublicWebPath('/for-vendors?lang='+language)}><Text style={styles.secondaryButtonText}>{language==='es'?'¿Eres profesional de bodas?':'Are you a wedding professional?'} →</Text></TouchableOpacity>
         </View>
       ) : (
         <View style={styles.vendorList}>

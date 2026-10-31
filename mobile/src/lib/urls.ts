@@ -1,6 +1,6 @@
 import { mobileConfig } from "./config";
 
-const PRODUCTION_WEB_URL = "https://theweddingmarket.com";
+const PRODUCTION_WEB_URL = "https://thewedmarket.com";
 
 export function normalizeBaseUrl(value: string | null | undefined, fallback = PRODUCTION_WEB_URL) {
   const normalized = value?.trim().replace(/\/+$/, "");

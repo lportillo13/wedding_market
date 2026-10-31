@@ -6,6 +6,16 @@ The Wedding Market connects couples planning weddings in Costa Rica with wedding
 
 ## Current verified deployment state
 
+Android synchronization requested October 31, 2026: the owner asked to ensure
+the website changes are also in the app and update Android in Google Play. This
+supersedes the earlier native release hold for Android; Apple is outside this
+request. The owner separately confirmed: "I have app-embedding licenses for
+these fonts" for GT Super, Acumin Pro and Lucia BT. Keep their approved styling
+and original file provenance; no font purchase was made. The 1.1.0 (11) candidate
+and website/app parity audit are being validated in
+[the Android synchronization handoff](android-sync-2026-10-31/README.md). Source
+preparation is not a store upload or publication; exact receipts follow there.
+
 Latest vendor-page decision (October 30, 2026): the owner clarified that the
 platform will not be free and requested removal of free-pricing promises from
 the vendor page, removal of its animation pause button, and the same scroll

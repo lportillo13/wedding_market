@@ -1,11 +1,12 @@
-import { restoreMobileAuthState } from '../src/lib/auth';
+import { restoreMobileAuthState,createSessionFromMobileAuthUrl } from '../src/lib/auth';
 import { COMMUNITY_TERMS_VERSION } from '../../shared/safety/copy';
 
 const mockGetUser = jest.fn();
 const mockUpdateUser = jest.fn();
 const mockFrom = jest.fn();
+const mockExchange=jest.fn();
 jest.mock('../src/lib/supabase', () => ({ supabase: {
-  auth: { getUser: () => mockGetUser(), updateUser: (data: unknown) => mockUpdateUser(data) },
+  auth: { getUser: () => mockGetUser(), updateUser: (data: unknown) => mockUpdateUser(data),exchangeCodeForSession:(code:string)=>mockExchange(code) },
   from: (table: string) => mockFrom(table),
 } }));
 
@@ -130,4 +131,22 @@ test('couple signup still provisions planning data without creating a vendor', a
   expect(result.profile).toMatchObject({ role: 'client', userId: user.id });
   expect(state.vendorWrites).toBe(0);
   expect(user.user_metadata.wedding_market_signup).toBeNull();
+});
+
+test('PKCE recovery is identified from the verifier metadata even without a recovery URL parameter',async()=>{
+  const {user,state}=fixture('client');user.user_metadata.wedding_market_signup=null;
+  mockExchange.mockResolvedValue({data:{user,redirectType:'recovery'},error:null});
+  const result=await createSessionFromMobileAuthUrl('theweddingmarket://auth/callback?code=recovery-fixture');
+  expect(result?.event).toBe('password_recovery');expect(state.profileWrites).toBe(0);
+});
+
+test('simultaneous browser and Android link callbacks exchange a one-use code once',async()=>{
+  const {user}=fixture('client');user.user_metadata.wedding_market_signup=null;
+  let finish!:(value:unknown)=>void;mockExchange.mockReturnValue(new Promise(resolve=>{finish=resolve;}));
+  const first=createSessionFromMobileAuthUrl('theweddingmarket://auth/callback?code=social-fixture');
+  const second=createSessionFromMobileAuthUrl('theweddingmarket://auth/callback?code=social-fixture');
+  finish({data:{user,redirectType:null},error:null});
+  expect(await first).toEqual(await second);expect(mockExchange).toHaveBeenCalledTimes(1);
+  await createSessionFromMobileAuthUrl('theweddingmarket://auth/callback?code=social-fixture');
+  expect(mockExchange).toHaveBeenCalledTimes(1);
 });

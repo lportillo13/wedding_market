@@ -10,9 +10,10 @@ import { AvailabilityPreview } from "../../../ui/calendars";
 import { formatCategory, formatMoney } from "../../../ui/format";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Image, Linking, Modal, ScrollView, Share, Text, TouchableOpacity, View, type LayoutChangeEvent } from "react-native";
+import { ActivityIndicator, Image, Linking, Modal, ScrollView, Share, Text, TouchableOpacity, View, useWindowDimensions, type LayoutChangeEvent } from "react-native";
 import { ExampleVendorNotice } from "../components/ExampleVendorNotice";
 import { exampleVendorCopy } from "../../../../../shared/vendors/examples";
+import {CoverVideo} from '../components/CoverVideo';
 
 export function InfoMetric({
   icon,
@@ -79,6 +80,11 @@ export function VendorDetailScreen({
   onToggleSaved,
   disableSectionScroll = false,
   showBack = true,
+  privatePreview=false,
+  coverVisible=true,
+  canViewPricing=false,
+  floatingQuote=false,
+  onInquiryPosition,
 }: {
   slug: string;
   initialVendor: VendorListItem | null;
@@ -90,26 +96,35 @@ export function VendorDetailScreen({
   onToggleSaved: (vendor: VendorListItem) => void;
   disableSectionScroll?: boolean;
   showBack?: boolean;
+  privatePreview?:boolean;
+  coverVisible?:boolean;
+  canViewPricing?:boolean;
+  floatingQuote?:boolean;
+  onInquiryPosition?:(y:number)=>void;
 }) {
   const labels = copy[language];
+  const {height}=useWindowDimensions();
   const [loadedVendor, setLoadedVendor] = useState<{ slug: string; vendor: VendorDetail } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [activeGalleryImage, setActiveGalleryImage] = useState<string | null>(null);
   const sectionPositions = useRef<Record<string, number>>({});
+  const sheetOffset=useRef(0);
+  function notifyInquiry(){const y=sectionPositions.current.contact;if(typeof y==='number')onInquiryPosition?.(sheetOffset.current+y);}
   const initialDetailVendor = initialVendor?.slug === slug ? (initialVendor as VendorDetail) : null;
   const vendor = loadedVendor?.slug === slug ? loadedVendor.vendor : initialDetailVendor;
 
   function registerSection(key: string) {
     return (event: LayoutChangeEvent) => {
       sectionPositions.current[key] = event.nativeEvent.layout.y;
+      if(key==='contact')notifyInquiry();
     };
   }
 
   function handleSectionPress(key: string) {
     if (disableSectionScroll) return;
     const y = sectionPositions.current[key];
-    if (typeof y === "number") onScrollToSection(Math.max(y - 8, 0));
+    if (typeof y === "number") onScrollToSection(Math.max(sheetOffset.current+y - 8, 0));
   }
 
   async function handleShare() {
@@ -130,6 +145,7 @@ export function VendorDetailScreen({
   }
 
   useEffect(() => {
+    if(privatePreview){setIsLoading(false);return;}
     let isMounted = true;
 
     async function loadVendorDetail() {
@@ -151,7 +167,7 @@ export function VendorDetailScreen({
     return () => {
       isMounted = false;
     };
-  }, [slug, language]);
+  }, [slug, language, privatePreview]);
 
   if (isLoading && !vendor) {
     return (
@@ -205,7 +221,7 @@ export function VendorDetailScreen({
         </TouchableOpacity>
       ) : null}
 
-      <View style={styles.detailHero}>
+      <View style={[styles.detailHero,{minHeight:Math.max(480,height-125)}]}>
         {heroUrl ? (
           <Image source={{ uri: heroUrl }} style={styles.detailHeroImage} />
         ) : (
@@ -213,28 +229,29 @@ export function VendorDetailScreen({
             <Text style={styles.vendorImageFallbackText}>{vendor.business_name.slice(0, 2).toUpperCase()}</Text>
           </View>
         )}
-        <View style={styles.detailHeroShade} />
+        {vendor.hero_video?.provider==='file'?<CoverVideo key={vendor.hero_video.url} url={vendor.hero_video.url} visible={coverVisible&&!activeGalleryImage} language={language}/>:null}
+        <View pointerEvents="none" style={styles.detailHeroShade} />
         <View style={styles.detailHeroActions}>
           {vendor.hero_video && <TouchableOpacity accessibilityRole="button" accessibilityLabel={language === 'es' ? 'Ver video de portada' : 'Watch cover video'} onPress={() => void Linking.openURL(vendor.hero_video!.url).catch(() => undefined)} style={styles.detailIconButton}>
             <Ionicons name="play" size={20} color={colors.ink} />
           </TouchableOpacity>}
-          {!vendor.is_example && <TouchableOpacity onPress={() => onToggleSaved(vendor)} style={styles.detailIconButton}>
+          {!privatePreview && !vendor.is_example && <TouchableOpacity onPress={() => onToggleSaved(vendor)} style={styles.detailIconButton}>
             <Ionicons name={isSaved ? "heart" : "heart-outline"} size={20} color={isSaved ? "#B42318" : colors.ink} />
           </TouchableOpacity>}
-          <TouchableOpacity onPress={() => void handleShare()} style={styles.detailIconButton}>
+          {!privatePreview && <TouchableOpacity onPress={() => void handleShare()} style={styles.detailIconButton}>
             <Ionicons name="share-outline" size={20} color={colors.ink} />
-          </TouchableOpacity>
+          </TouchableOpacity>}
         </View>
         <View style={styles.detailHeroCopy}>
           <Text style={styles.heroBadge}>{vendor.is_example ? exampleVendorCopy[language].badge : labels.vendorProfile}</Text>
-          <Text style={styles.detailTitle}>{vendor.business_name}</Text>
           {categoriesText ? <Text style={styles.detailCategories}>{categoriesText}</Text> : null}
+          <Text style={styles.detailTitle}>{vendor.business_name}</Text>
         </View>
       </View>
 
-      <View style={styles.detailSheet}>
-      {vendor.is_example ? <ExampleVendorNotice language={language} /> : <ContentSafety key={vendor.id} kind="vendor" targetId={vendor.id} language={language} />}
-      {!vendor.is_example && <View style={styles.detailActionBar}>
+      <View style={styles.detailSheet} onLayout={event=>{sheetOffset.current=event.nativeEvent.layout.y;notifyInquiry();}}>
+      {privatePreview ? <Text style={styles.body}>{language==='es'?'Vista previa privada · Datos guardados':'Private preview · Saved details'}</Text> : vendor.is_example ? <ExampleVendorNotice language={language} /> : <ContentSafety key={vendor.id} kind="vendor" targetId={vendor.id} language={language} />}
+      {!floatingQuote && !privatePreview && !vendor.is_example && <View style={styles.detailActionBar}>
         <TouchableOpacity onPress={() => onRequestQuote(vendor)} style={styles.detailQuoteButton}>
           <Ionicons name="send-outline" size={17} color="#FFFFFF" />
           <Text style={styles.detailQuoteText}>{labels.requestQuote}</Text>
@@ -263,7 +280,7 @@ export function VendorDetailScreen({
         <InfoMetric
           icon="cash-outline"
           label={labels.startingPrice}
-          value={formatMoney(vendor.starting_price_cents, vendor.starting_price_currency ?? "USD", language)}
+          value={canViewPricing||privatePreview||vendor.is_example?formatMoney(vendor.starting_price_cents, vendor.starting_price_currency ?? "USD", language):language==='es'?'Inicia sesión':'Sign in'}
         />
         <InfoMetric
           icon="location-outline"
@@ -340,7 +357,7 @@ export function VendorDetailScreen({
       </DetailSection>
 
       <DetailSection icon="cash-outline" eyebrow={labels.pricing} title={labels.pricingTitle} onLayout={registerSection("pricing")}>
-        <View style={styles.pricingRows}>
+        {canViewPricing||privatePreview||vendor.is_example?<View style={styles.pricingRows}>
           <View style={styles.pricingRow}>
             <Text style={styles.pricingLabel}>{labels.startingAt}</Text>
             <Text style={styles.pricingValue}>
@@ -372,7 +389,7 @@ export function VendorDetailScreen({
               </Text>
             </View>
           ))}
-        </View>
+        </View>:<TouchableOpacity style={styles.secondaryButton} onPress={()=>onRequestQuote(vendor)}><Text style={styles.secondaryButtonText}>{language==='es'?'Inicia sesión para ver precios':'Sign in to view pricing'}</Text></TouchableOpacity>}
       </DetailSection>
 
       <DetailSection icon="checkmark-circle-outline" eyebrow={labels.services} title={labels.servicesTitle} onLayout={registerSection("amenities")}>
@@ -497,7 +514,7 @@ export function VendorDetailScreen({
             </View>
           ) : null}
         </View>
-        {vendor.is_example ? <Text style={styles.detailBody}>{exampleVendorCopy[language].disabled}</Text> : <TouchableOpacity onPress={() => onRequestQuote(vendor)} style={styles.detailQuoteButton}>
+        {privatePreview ? null : vendor.is_example ? <Text style={styles.detailBody}>{exampleVendorCopy[language].disabled}</Text> : <TouchableOpacity onPress={() => onRequestQuote(vendor)} style={styles.detailQuoteButton}>
           <Ionicons name="send-outline" size={17} color="#FFFFFF" />
           <Text style={styles.detailQuoteText}>{labels.requestQuote}</Text>
         </TouchableOpacity>}

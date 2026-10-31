@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-31T04:26:20.034Z",
+  "passed": true,
+  "results": [
+    {
+      "platform": "android",
+      "passed": true,
+      "seconds": 22,
+      "productionEndpointsVerified": true
+    },
+    {
+      "platform": "ios",
+      "passed": true,
+      "seconds": 10,
+      "productionEndpointsVerified": true
+    }
+  ]
+}

@@ -22,9 +22,10 @@ import { supabase } from "../lib/supabase";
 import { styles } from "../theme/styles";
 import { colors } from "../theme/tokens";
 import { ProtectedScreen } from "../ui/ProtectedScreen";
+import {openPublicWebPath} from '../ui/links';
 import { type TabKey } from "./types";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Image, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { Image, Linking, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 
 export function ScreenContent({
   tab,
@@ -95,6 +96,7 @@ export function ScreenContent({
                 <Text style={styles.heroSecondaryButtonText}>{labels.shortlist}</Text>
               </TouchableOpacity>
             </View>
+            <TouchableOpacity accessibilityRole="link" onPress={()=>void Linking.openURL('https://www.youtube.com/watch?v=JgzkqjnsIvM')}><Text style={[styles.heroText,{textDecorationLine:'underline'}]}>{language==='es'?'Ver la película':'Watch the film'} ↗</Text></TouchableOpacity>
           </View>
         </View>
 
@@ -179,6 +181,15 @@ export function ScreenContent({
               <Text style={[styles.primaryButtonText, styles.ctaButtonText]}>{labels.browseVendors}</Text>
             </TouchableOpacity>
           </View>
+          <View style={styles.sectionBlock}>
+            <Text style={styles.sectionTitle}>{language==='es'?'Más de Wedding Market':'More from Wedding Market'}</Text>
+            {[
+              ['/for-vendors',language==='es'?'Para profesionales de bodas':'For wedding professionals'],
+              ['/blog',language==='es'?'La revista':'The magazine'],
+              ['/about',language==='es'?'Sobre Wedding Market':'About Wedding Market'],
+              ['/support',language==='es'?'Ayuda y soporte':'Help and support'],
+            ].map(([path,title])=><TouchableOpacity key={path} style={styles.secondaryButton} accessibilityRole="link" onPress={()=>void openPublicWebPath(path+'?lang='+language)}><Text style={styles.secondaryButtonText}>{title} ↗</Text></TouchableOpacity>)}
+          </View>
         </View>
       </View>
     );
@@ -205,12 +216,14 @@ export function ScreenContent({
 
     if (role === "vendor" || role === "admin") {
       return (
+        <View><VendorWorkspaceScreen language={language}/>
+        <View style={{gap:12,marginVertical:18}}><BoutiqueButton title={boutiqueLabels.management} secondary onPress={()=>setBoutiqueMode('manage')}/><BoutiqueButton title={boutiqueLabels.appointments} secondary onPress={()=>setBoutiqueMode('appointments')}/></View>
         <VendorPublicProfileScreen
           savedVendorIds={savedVendorIds}
           language={language}
           onRequestQuote={onRequestQuote}
           onToggleSaved={onToggleSaved}
-        />
+        /></View>
       );
     }
 
@@ -238,14 +251,13 @@ export function ScreenContent({
     return (
       <View>
       <NotificationSettings notifications={notifications} />
-      {role==='vendor'?<View style={{gap:12,marginVertical:18}}><BoutiqueButton title={boutiqueLabels.management} secondary onPress={()=>setBoutiqueMode('manage')}/><BoutiqueButton title={boutiqueLabels.appointments} secondary onPress={()=>setBoutiqueMode('appointments')}/></View>:null}
-      {role==='vendor'?<VendorWorkspaceScreen language={language} />:
       <AccountProfileScreen
+        canPlan={role==='client'}
         userEmail={userEmail}
         language={language}
         onProfileUpdated={onProfileUpdated}
         onLanguageUpdated={onLanguageUpdated}
-      />}
+      />
       <FontLicenseNotice language={language} />
       </View>
     );

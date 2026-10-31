@@ -1,105 +1,40 @@
-import { copy } from "../../../i18n/copy";
-import { type VendorListItem } from "../../../lib/api";
-import { supabase } from "../../../lib/supabase";
-import { styles } from "../../../theme/styles";
-import { colors } from "../../../theme/tokens";
-import { VendorDetailScreen } from "./VendorDetailScreen";
-import { useEffect, useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
-
-export function VendorPublicProfileScreen({
-  savedVendorIds,
-  language,
-  onRequestQuote,
-  onToggleSaved,
-}: {
-  savedVendorIds: string[];
-  language: "en" | "es";
-  onRequestQuote: (vendor: VendorListItem) => void;
-  onToggleSaved: (vendor: VendorListItem) => void;
+import { useState } from 'react';
+import { Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { type VendorDetail, type VendorListItem } from '../../../lib/api';
+import { loadVendorEditorData } from '../../../lib/vendorProfile';
+import { savedVendorPreview } from '../preview';
+import { VendorDetailScreen } from './VendorDetailScreen';
+import { styles } from '../../../theme/styles';
+import { colors } from '../../../theme/tokens';
+export function VendorPublicProfileScreen(_props: {
+    savedVendorIds: string[];
+    language: 'en' | 'es';
+    onRequestQuote: (vendor: VendorListItem) => void;
+    onToggleSaved: (vendor: VendorListItem) => void;
 }) {
-  const labels = copy[language];
-  const [vendor, setVendor] = useState<VendorListItem | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    let isMounted = true;
-
-    async function loadOwnVendor() {
-      if (!supabase) return;
-      setIsLoading(true);
-      setMessage("");
-      try {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) throw new Error("Sign in required.");
-
-        const { data, error } = await supabase
-          .from("vendors")
-          .select("id, slug, business_name, bio, logo_url, thumbnail_image")
-          .eq("owner_id", user.id)
-          .maybeSingle<Record<string, unknown>>();
-        if (error) throw error;
-        if (!data?.slug) throw new Error("Vendor profile not found.");
-
-        if (isMounted) {
-          const bio = data.bio && typeof data.bio === "object" ? data.bio as Record<string, unknown> : {};
-          setVendor({
-            id: String(data.id),
-            slug: String(data.slug),
-            business_name: String(data.business_name ?? "Vendor"),
-            bio_en: String(bio.en ?? ""),
-            bio_es: typeof bio.es === "string" ? bio.es : null,
-            logo_url: typeof data.logo_url === "string" ? data.logo_url : null,
-            thumbnail_image: data.thumbnail_image as VendorListItem["thumbnail_image"],
-          });
-        }
-      } catch (error) {
-        if (isMounted) setMessage(error instanceof Error ? error.message : "Unable to load vendor profile.");
-      } finally {
-        if (isMounted) setIsLoading(false);
-      }
+    const { language } = _props;
+    const [vendor, setVendor] = useState<VendorDetail | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState('');
+    const [coverVisible, setCoverVisible] = useState(true);
+    async function open() { if (busy)
+        return; setBusy(true); setError(''); try {
+        const data = await loadVendorEditorData();
+        if (!data)
+            throw Error(language === 'es' ? 'No hay un negocio guardado.' : 'No saved business is available.');
+        setVendor(savedVendorPreview(data, language));
     }
-
-    void loadOwnVendor();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
-  if (isLoading) {
-    return (
-      <View style={styles.searchState}>
-        <ActivityIndicator color={colors.ink} />
-        <Text style={styles.loadingText}>{labels.loadingPublicVendorPage}</Text>
-      </View>
-    );
-  }
-
-  if (!vendor) {
-    return (
-      <View style={styles.panel}>
-        <Text style={styles.kicker}>{labels.vendorPage}</Text>
-        <Text style={styles.title}>{labels.publicVendorUnavailable}</Text>
-        {message ? <Text style={styles.errorText}>{message}</Text> : null}
-      </View>
-    );
-  }
-
-  return (
-    <VendorDetailScreen
-      slug={vendor.slug}
-      initialVendor={vendor}
-      isSaved={savedVendorIds.includes(vendor.id)}
-      language={language}
-      onBack={() => undefined}
-      onRequestQuote={onRequestQuote}
-      onScrollToSection={() => undefined}
-      onToggleSaved={onToggleSaved}
-      disableSectionScroll
-      showBack={false}
-    />
-  );
+    catch (e) {
+        setError(e instanceof Error ? e.message : 'Unable to load preview.');
+    }
+    finally {
+        setBusy(false);
+    } }
+    return <View style={styles.formSection}><Text style={styles.body}>{language === 'es' ? 'Vista privada de tus datos guardados. Guarda los cambios antes de abrirla.' : 'Private preview of your saved details. Save changes before opening it.'}</Text>
+    <TouchableOpacity disabled={busy} style={styles.secondaryButton} onPress={() => void open()}><Text style={styles.secondaryButtonText}>{language === 'es' ? 'Vista previa privada' : 'Private saved preview'}</Text></TouchableOpacity>
+    {error ? <Text style={styles.errorText}>{error}</Text> : null}
+    <Modal visible={Boolean(vendor)} animationType="slide" onRequestClose={() => setVendor(null)}><SafeAreaProvider><SafeAreaView style={{ flex: 1, backgroundColor: colors.paper }}>
+      <TouchableOpacity style={styles.secondaryButton} onPress={() => setVendor(null)}><Text style={styles.secondaryButtonText}>{language === 'es' ? 'Cerrar vista privada' : 'Close private preview'}</Text></TouchableOpacity>
+      <ScrollView scrollEventThrottle={100} onScroll={event => setCoverVisible(event.nativeEvent.contentOffset.y < 500)}>{vendor ? <VendorDetailScreen slug={vendor.slug} initialVendor={vendor} privatePreview coverVisible={coverVisible} language={language} isSaved={false} onBack={() => setVendor(null)} onRequestQuote={() => { }} onToggleSaved={() => { }} onScrollToSection={() => { }} disableSectionScroll showBack={false}/> : null}</ScrollView>
+    </SafeAreaView></SafeAreaProvider></Modal>
+  </View>;
 }

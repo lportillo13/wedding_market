@@ -1,0 +1,7 @@
+{
+  "checkedAt": "2026-10-31T04:29:25.326Z",
+  "passed": true,
+  "next": "16.3.8",
+  "productionBuild": true,
+  "note": "Completed outside the sandbox after Windows denied generated-directory creation; includes both new mobile APIs."
+}

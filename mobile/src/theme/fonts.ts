@@ -1,4 +1,4 @@
-// Original files supplied by the owner. This native evaluation remains unreleased.
+// Original files supplied by the owner; app-embedding licenses confirmed October 31, 2026.
 import GTSuperLight from "../../assets/fonts/GT-Super-Display-Light-Trial.otf";
 import GTSuperLightItalic from "../../assets/fonts/GT-Super-Display-Light-Italic-Trial.otf";
 import GTSuperRegular from "../../assets/fonts/GT-Super-Display-Regular-Trial.otf";

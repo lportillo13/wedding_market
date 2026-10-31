@@ -1,4 +1,7 @@
 import { SectionPicker } from "../../../ui/SectionPicker";
+import {CoverEditor} from '../components/CoverEditor';
+import {WorkspaceTools} from '../components/WorkspaceTools';
+import {workspaceCommand} from '../workspace-api';
 import * as ImagePicker from "expo-image-picker";
 import { profilePricingDrafts } from "../../../../../shared/vendors/pricing";
 import { vendorPricingLabels } from "../../../../../shared/vendors/pricing-labels";
@@ -6,7 +9,7 @@ import { getProfileEssentials } from "../../../../../shared/vendors/profile-prog
 import { getVendorPricingOrder, getVendorServiceProfile } from "../../../../../shared/vendors/service-profile";
 import { type IconName } from "../../../application/types";
 import { copy } from "../../../i18n/copy";
-import { loadVendorEditorData, localizedText, saveVendorAmenities, saveVendorAvailability, saveVendorContact, saveVendorDetails, saveVendorPricing, saveVendorReviews, saveVendorTeam, type VendorEditorData, type VendorEditorTab, uploadVendorMedia, uploadedAssetUrl } from "../../../lib/vendorProfile";
+import { loadVendorEditorData, localizedText, saveVendorAmenities, saveVendorAvailability, saveVendorContact, saveVendorDetails, saveVendorPricing, saveVendorStartingPrice, saveVendorReviews, saveVendorTeam, type VendorEditorData, type VendorEditorTab, uploadVendorMedia, uploadedAssetUrl } from "../../../lib/vendorProfile";
 import { styles } from "../../../theme/styles";
 import { colors } from "../../../theme/tokens";
 import { EditableAvailabilityCalendar } from "../../../ui/calendars";
@@ -43,6 +46,7 @@ export function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
 
   const [details, setDetails] = useState<Record<string, string>>({});
   const [contact, setContact] = useState<Record<string, string>>({});
+  const [startingPrice,setStartingPrice]=useState<Record<string,string>>({starting_price:'',starting_price_currency:'USD'});
   const [pricingMeta, setPricingMeta] = useState<Record<string, string>>({});
   const [pricingRows, setPricingRows] = useState<Record<string, string>[]>([]);
   const [customPackage, setCustomPackage] = useState("");
@@ -56,15 +60,17 @@ export function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
     setEditorLanguage(language);
   }, [language]);
 
-  async function refreshVendor(initial = false) {
+  async function refreshVendor(initial = false, invalidate=true) {
     if (initial) { setIsLoading(true); setMessage(""); }
     try {
+      if(!initial&&invalidate)await workspaceCommand({action:'invalidate'});
       const next = await loadVendorEditorData();
       setData(next);
       // Refresh saved metadata/media without overwriting any in-progress section.
       if (next && initial) hydrateVendorEditor(next);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Unable to load vendor profile.");
+      if(!initial)throw error;
     } finally {
       setIsLoading(false);
     }
@@ -86,8 +92,6 @@ export function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
       website_url: String(vendor.website_url ?? ""),
       map_url: String(vendor.map_url ?? ""),
       address_label: String(vendor.address_label ?? ""),
-      starting_price: typeof vendor.starting_price_cents === "number" ? String(vendor.starting_price_cents / 100) : "",
-      starting_price_currency: String(vendor.starting_price_currency ?? "USD"),
       event_types: Array.isArray(vendor.event_types) ? vendor.event_types.join(", ") : "",
       years_in_business: vendor.years_in_business ? String(vendor.years_in_business) : "",
       languages: Array.isArray(vendor.languages) ? vendor.languages.join(", ") : "",
@@ -98,6 +102,7 @@ export function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
       typical_currency: String(vendor.pricing_typical_spend_currency ?? vendor.starting_price_currency ?? "USD"),
       peak_seasons: Array.isArray(vendor.pricing_peak_seasons) ? vendor.pricing_peak_seasons.join(", ") : "",
     });
+    setStartingPrice({starting_price:vendor.starting_price_cents==null?'':String(vendor.starting_price_cents/100),starting_price_currency:vendor.starting_price_currency??'USD'});
     setPricingRows(profilePricingDrafts(next.pricing, vendor.pricing_typical_spend_currency ?? "USD").map((row) => ({
       item_key: row.itemKey, price: row.price, currency: row.currency,
       contact_for_price: row.contactForPrice ? "true" : "false", notes_en: row.notesEn, notes_es: row.notesEs,
@@ -312,6 +317,7 @@ export function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
         <Text style={styles.body}>{language === "es" ? "Puedes cambiar de sección sin perder tu borrador. Guarda antes de salir de este espacio." : "Switch sections without losing your draft. Save before leaving this workspace."}</Text>
         <View style={styles.detailChips}>{essentials.map((step) => <TouchableOpacity disabled={isSaving} key={step.id} style={styles.detailChip} onPress={() => setActiveTab(step.id)}><Text style={styles.detailChipText}>{step.complete ? "✓ " : "+ "}{copy[language][step.id]}</Text></TouchableOpacity>)}</View>
       </View>
+      <WorkspaceTools vendorId={String(vendor.id)} published={Boolean(vendor.is_published)} language={language} onSaved={()=>refreshVendor(false,false)}/>
       <SectionPicker value={activeTab} disabled={isSaving} onChange={setActiveTab}
         label={language === 'es' ? 'Sección del perfil' : 'Profile section'}
         closeLabel={language === 'es' ? 'Cerrar' : 'Close'}
@@ -342,8 +348,6 @@ export function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
             ["website_url", labels.website],
             ["map_url", labels.mapUrl],
             ["address_label", labels.address],
-            ["starting_price", labels.startingPrice],
-            ["starting_price_currency", labels.currency],
             ["event_types", labels.eventTypes],
             ["years_in_business", labels.yearsInBusiness],
             ["languages", labels.languages],
@@ -353,6 +357,13 @@ export function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
 
         {activeTab === "pricing" ? (
           <View style={styles.form}>
+            <View style={styles.editorSubCard}>
+              <Text style={styles.sectionTitle}>{labels.startingPrice}</Text>
+              <VendorFieldGroup values={startingPrice} setValues={setStartingPrice} fields={[["starting_price",labels.startingPrice],["starting_price_currency",labels.currency]]}/>
+              <TouchableOpacity disabled={isSaving} style={styles.secondaryButton} onPress={()=>void (async()=>{
+                setIsSaving(true);setMessage('');try{await saveVendorStartingPrice(String(vendor.id),startingPrice);await refreshVendor();setMessage(labels.saved);}catch(error){setMessage(error instanceof Error?error.message:labels.saveFailed);}finally{setIsSaving(false);}
+              })()}><Text style={styles.secondaryButtonText}>{language==='es'?'Guardar precio inicial':'Save starting price'}</Text></TouchableOpacity>
+            </View>
             <VendorFieldGroup values={pricingMeta} setValues={setPricingMeta} fields={[
               ["typical_spend", labels.typicalSpend],
               ["typical_currency", labels.currency],
@@ -457,6 +468,7 @@ export function VendorWorkspaceScreen({ language }: { language: "en" | "es" }) {
 
         {activeTab === "images" ? (
           <View style={styles.form}>
+            <CoverEditor vendor={vendor} language={language} onSaved={()=>refreshVendor()}/>
             <View style={styles.currentMediaGrid}>
               <CurrentMediaPreview
                 label={labels.logo}

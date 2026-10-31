@@ -1,6 +1,10 @@
 import { BrandWordmark } from "../ui/BrandWordmark";
 import { editorialFonts } from "../theme/fonts";
 import { CommunityConsent } from "../features/account/CommunityConsent";
+import { needsPlanning } from '../features/auth/access';
+import { PlanningSetup } from '../features/auth/PlanningSetup';
+import {VendorSetup} from '../features/auth/VendorSetup';
+import {getSetupIntent,setSetupIntent} from '../features/auth/setup-intent';
 import { COMMUNITY_TERMS_VERSION } from "../../../shared/safety/copy";
 import { confirmAccountDeletion } from "../features/account/deletion";
 import { PasswordRecoveryModal } from "../features/auth/AuthScreen";
@@ -12,6 +16,7 @@ import { createSessionFromMobileAuthUrl, restoreMobileAuthState, signOut, type A
 import { getMobileConfigErrors } from "../lib/config";
 import { getDeviceLanguage, loadLanguagePreference, saveLanguagePreference, type AppLanguage } from "../lib/languagePreference";
 import { useMessageNotifications } from "../features/notifications/native";
+import {useUnreadCount} from '../features/notifications/useUnreadCount';
 import type { NotificationThreadTarget } from "../../../shared/notifications/push";
 import { getShortlist, toggleShortlist } from "../lib/shortlist";
 import { supabase } from "../lib/supabase";
@@ -30,6 +35,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function App() {
   const [fontsLoaded] = useFonts(editorialFonts);
   const [isBooting, setIsBooting] = useState(true);
+  const [vendorSetup,setVendorSetup]=useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [profile, setProfile] = useState<AuthProfile | null>(null);
   const [language, setLanguage] = useState<AppLanguage>(getDeviceLanguage);
@@ -40,12 +46,17 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<TabKey>("home");
   const [selectedVendor, setSelectedVendor] = useState<VendorListItem | null>(null);
   const [quoteVendors, setQuoteVendors] = useState<VendorListItem[]>([]);
+  const pendingQuote=useRef<VendorListItem[]>([]);
   const [savedVendorIds, setSavedVendorIds] = useState<string[]>([]);
   const [searchCategory, setSearchCategory] = useState("");
   const contentScrollRef = useRef<ScrollView | null>(null);
+  const [coverVisible,setCoverVisible]=useState(true);
+  const inquiryPosition=useRef(Infinity);
+  const [inquiryVisible,setInquiryVisible]=useState(false);
   const isDetailOpen = Boolean(selectedVendor);
   const [notificationTarget,setNotificationTarget] = useState<NotificationThreadTarget|null>(null);
   const [inboxRevision,setInboxRevision] = useState(0);
+  const unreadCount=useUnreadCount(profile?.userId,role==='vendor'||(role==='admin'&&Boolean(profile?.hasVendor)),inboxRevision,activeTab);
   const receiveNotification = useCallback(()=>setInboxRevision(value=>value+1),[]);
   const openNotification = useCallback((target:NotificationThreadTarget)=>setNotificationTarget(target),[]);
   const notifications = useMessageNotifications({eligible:Boolean(userEmail)&&!isPasswordRecovery&&(role==='client'||role==='vendor'),language,role,onOpen:openNotification,onActivity:receiveNotification});
@@ -60,6 +71,8 @@ export default function App() {
   const isVendorPublicOpen = !isDetailOpen && visibleActiveTab === "vendor";
   const configErrors = getMobileConfigErrors();
   const applyAuthenticatedState = useCallback(async (state: AuthState) => {
+    const intent=await getSetupIntent();
+    setVendorSetup(Boolean(state.user&&state.profile?.role!=='admin'&&!state.profile?.hasVendor&&(intent==='vendor'||state.profile?.role==='vendor')));
     const nextLanguage = state.profile?.language ?? await loadLanguagePreference();
     setUserEmail(state.user?.email ?? null);
     setProfile(state.profile);
@@ -67,6 +80,7 @@ export default function App() {
     await saveLanguagePreference(nextLanguage);
     setActiveTab(roleTabs(state.profile?.role ?? (state.user ? "client" : "guest"))[0].key);
     setIsAccountMenuOpen(false);
+    if(state.profile?.role==='client'&&!needsPlanning(state.profile)&&pendingQuote.current.length){setQuoteVendors(pendingQuote.current);pendingQuote.current=[];}
     return nextLanguage;
   }, []);
 
@@ -103,7 +117,7 @@ export default function App() {
         }
 
         const nextLanguage = await applyAuthenticatedState(result.state);
-        if (showConfirmation) {
+        if (showConfirmation && /type=signup(?:&|$)/.test(url)) {
           const labels = copy[nextLanguage];
           Alert.alert(labels.emailConfirmedTitle, labels.emailConfirmedBody);
         }
@@ -170,6 +184,7 @@ export default function App() {
 
   useEffect(() => {
     if (selectedVendor) {
+      setCoverVisible(true);setInquiryVisible(false);inquiryPosition.current=Infinity;
       requestAnimationFrame(() => {
         contentScrollRef.current?.scrollTo({ y: 0, animated: false });
       });
@@ -221,7 +236,9 @@ export default function App() {
     );
   }
 
-  const handleSignedIn = (nextState: { userEmail: string; profile: AuthProfile | null }) => {
+  const handleSignedIn = async (nextState: { userEmail: string; profile: AuthProfile | null }) => {
+    const intent=await getSetupIntent();
+    setVendorSetup(Boolean(nextState.profile?.role!=='admin'&&!nextState.profile?.hasVendor&&(intent==='vendor'||nextState.profile?.role==='vendor')));
     const nextLanguage = nextState.profile?.language ?? language;
     setUserEmail(nextState.userEmail);
     setProfile(nextState.profile);
@@ -229,9 +246,11 @@ export default function App() {
     void saveLanguagePreference(nextLanguage);
     setActiveTab(roleTabs(nextState.profile?.role ?? "client")[0].key);
     setIsAccountMenuOpen(false);
+    if(nextState.profile?.role==='client'&&!needsPlanning(nextState.profile)&&pendingQuote.current.length){setQuoteVendors(pendingQuote.current);pendingQuote.current=[];}
   };
 
   const handleSignOut = async () => {
+    pendingQuote.current=[];
     await notifications.disconnect().catch(()=>{});
     try { await signOut(); }
     catch { Alert.alert(language==='es'?'No se pudo cerrar la sesión':'Unable to sign out',language==='es'?'Revisa tu conexión e inténtalo de nuevo.':'Check your connection and try again.');return; }
@@ -270,10 +289,12 @@ export default function App() {
     setIsAccountMenuOpen(false);
     if (!vendors.length) return;
     if (!userEmail) {
+      pendingQuote.current=vendors.slice(0,10);
       setSelectedVendor(null);
       setActiveTab("profile");
       return;
     }
+    if(role!=='client'){Alert.alert(language==='es'?'Cuenta de pareja requerida':'Couple account required',language==='es'?'Las solicitudes de cotización están disponibles en las cuentas de pareja.':'Quote requests are available to couple accounts.');return;}
     setQuoteVendors(vendors);
   };
 
@@ -294,6 +315,7 @@ export default function App() {
           <BrandWordmark light={isHomeOpen} />
         </View>
         <View style={styles.headerActions}>
+          {userEmail?<TouchableOpacity accessibilityRole="button" accessibilityLabel={copy[language].inbox+(unreadCount?' ('+unreadCount+')':'')} onPress={()=>{setSelectedVendor(null);setActiveTab('inbox');setIsAccountMenuOpen(false);}} style={styles.accountButton}><Ionicons name="chatbubbles-outline" size={20} color={colors.ink}/>{unreadCount>0?<View style={{position:'absolute',top:0,right:0,backgroundColor:colors.ink,borderRadius:10,minWidth:18,paddingHorizontal:3}}><Text style={{color:colors.paper,fontSize:11,textAlign:'center'}}>{unreadCount>99?'99+':unreadCount}</Text></View>:null}</TouchableOpacity>:null}
           <TouchableOpacity
             testID="account-menu-toggle"
             accessibilityLabel={userEmail ? copy[language].profile : copy[language].logIn}
@@ -399,18 +421,24 @@ export default function App() {
 
       <ScrollView
         ref={contentScrollRef}
+        scrollEventThrottle={100}
+        onScroll={event=>{setCoverVisible(event.nativeEvent.contentOffset.y<500);setInquiryVisible(event.nativeEvent.contentOffset.y+event.nativeEvent.layoutMeasurement.height>=inquiryPosition.current);}}
         contentContainerStyle={isDetailOpen || isVendorPublicOpen ? styles.detailContent : isHomeOpen ? styles.homeContent : styles.content}
         keyboardDismissMode={Platform.OS === "ios" ? "interactive" : "on-drag"}
         keyboardShouldPersistTaps="handled"
       >
-        {userEmail && profile && profile.communityTermsVersion !== COMMUNITY_TERMS_VERSION ? <CommunityConsent language={language} onAccepted={async()=>{
+        {userEmail && profile && !vendorSetup && !needsPlanning(profile) && profile.communityTermsVersion !== COMMUNITY_TERMS_VERSION ? <CommunityConsent language={language} onAccepted={async()=>{
           const state=await restoreMobileAuthState();
           if(!state.user||!state.profile)throw Error('Unable to finish account setup.');
           const refreshed=state.profile;
           setProfile(current=>current?.userId===refreshed.userId?{...refreshed,language:current.language}:current);
         }} /> : null}
-        {selectedVendor ? (
+        {userEmail && vendorSetup ? <VendorSetup key={profile?.userId} profile={profile} email={userEmail} language={language} onComplete={state=>{void applyAuthenticatedState(state);}} onCancel={()=>{setVendorSetup(false);void setSetupIntent(null);}}/> : userEmail && needsPlanning(profile) ? <PlanningSetup key={profile?.userId} profile={profile} email={userEmail} language={language} onComplete={state=>{void applyAuthenticatedState(state);}}/> : selectedVendor ? (
           <VendorDetailScreen
+            floatingQuote
+            onInquiryPosition={y=>{inquiryPosition.current=y;}}
+            canViewPricing={Boolean(userEmail)}
+            coverVisible={coverVisible&&!quoteVendors.length&&!isAccountMenuOpen}
             slug={selectedVendor.slug}
             initialVendor={selectedVendor}
             isSaved={savedVendorIds.includes(selectedVendor.id)}
@@ -460,6 +488,7 @@ export default function App() {
           />
         )}
       </ScrollView>
+      {selectedVendor&&!selectedVendor.is_example&&!coverVisible&&!inquiryVisible&&!quoteVendors.length&&!isAccountMenuOpen&&(!userEmail||role==='client')?<View style={{position:'absolute',bottom:18,left:18,right:18}}><TouchableOpacity style={styles.primaryButton} onPress={()=>openQuoteRequest(selectedVendor)}><Text style={styles.primaryButtonText}>{copy[language].requestQuote} →</Text></TouchableOpacity></View>:null}
 
       {!isDetailOpen ? <View style={styles.tabs}>
         {tabs.map((tab) => {
