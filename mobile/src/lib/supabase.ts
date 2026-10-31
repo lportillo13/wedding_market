@@ -1,4 +1,5 @@
 import "react-native-url-polyfill/auto";
+import '../features/auth/nativeCrypto';
 
 import { nativeSessionStorage } from "../features/auth/nativeSessionStorage";
 import { createClient } from "@supabase/supabase-js";

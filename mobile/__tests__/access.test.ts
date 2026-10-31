@@ -37,7 +37,7 @@ test('email verification rejects invalid and expired codes without restoring a s
     expect(mockRestore).not.toHaveBeenCalled();
 });
 test('social login uses the native callback and handles browser cancellation', async () => {
-    mockOAuth.mockResolvedValue({ data: { url: 'https://accounts.example.invalid' }, error: null });
+    mockOAuth.mockResolvedValue({ data: { url: 'https://accounts.example.invalid?code_challenge_method=s256' }, error: null });
     mockBrowser.mockResolvedValue({ type: 'cancel' });
     await expect(signInWithProvider('google')).resolves.toBeNull();
     expect(mockCallback).not.toHaveBeenCalled();
@@ -48,6 +48,11 @@ test('social login uses the native callback and handles browser cancellation', a
     expect(mockCallback).toHaveBeenCalledWith('theweddingmarket://auth/callback?code=fixture');
 });
 test('disabled providers fail closed without opening a browser', async () => { mockRequest.mockResolvedValue({ google: false, apple: false }); await expect(signInWithProvider('google')).rejects.toThrow('unavailable'); expect(mockOAuth).not.toHaveBeenCalled(); });
+test('native OAuth rejects a plain challenge before opening the provider',async()=>{
+    mockOAuth.mockResolvedValue({data:{url:'https://accounts.example.invalid?code_challenge_method=plain'},error:null});
+    await expect(signInWithProvider('google')).rejects.toThrow('Secure sign-in');
+    expect(mockBrowser).not.toHaveBeenCalled();
+});
 test('planning save requires a verified couple and preserves blank guests and zero budget', async () => {
     const user = { id: 'isolated', email_confirmed_at: '2026-10-31' };
     mockRestore.mockResolvedValue({ user, profile: { role: 'vendor' } });

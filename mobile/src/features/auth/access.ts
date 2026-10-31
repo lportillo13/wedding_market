@@ -67,6 +67,8 @@ export async function signInWithProvider(provider: 'google' | 'apple') {
         throw error;
     if (!data.url)
         throw Error('Unable to open sign in.');
+    if (new URL(data.url).searchParams.get('code_challenge_method')?.toLowerCase() !== 's256')
+        throw Error('Secure sign-in is temporarily unavailable. Please use an email code.');
     const result = await WebBrowser.openAuthSessionAsync(data.url, MOBILE_AUTH_CALLBACK_URL);
     // iOS ASWebAuthenticationSession returns the URL without a Linking event.
     if (result.type === 'success')
