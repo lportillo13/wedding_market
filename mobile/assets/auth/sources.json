@@ -1,0 +1,8 @@
+{
+  "google": {
+    "source": "components/auth/AuthenticationMethods.tsx",
+    "reference": "https://developers.google.com/identity/branding-guidelines",
+    "rendering": "Existing full-color vector rendered at 4x for an 18-point native icon; colors and proportions preserved",
+    "sha256": "a459e85c7e2dcf037db4f1a6d43efc94666a756d09e1e0456f4bd1d057b815fa"
+  }
+}
