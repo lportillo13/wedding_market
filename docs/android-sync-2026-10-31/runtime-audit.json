@@ -1,0 +1,24 @@
+{
+  "checkedAt": "2026-10-31T05:03:59.847Z",
+  "npmAudit": {
+    "info": 0,
+    "low": 5,
+    "moderate": 40,
+    "high": 2,
+    "critical": 0,
+    "total": 47
+  },
+  "highFindings": [
+    "@expo/cli",
+    "zod"
+  ],
+  "installedZodVersion": "3.25.76",
+  "expoCliRequiredZodRange": "^3.25.76",
+  "runtimeModules": 882,
+  "zodRuntimeModules": [],
+  "expoCliRuntimeLoader": [
+    "/node_modules/expo/node_modules/@expo/cli/build/metro-require/require.js"
+  ],
+  "scope": "The high advisory is in Zod validation used by build tooling. The APK has its Metro module loader but contains no Zod validator modules. This is not a clean tooling audit; no incompatible Zod major override was applied.",
+  "sourceCommit": "4620fccd85b35c11df16f4c2f8b642440c07f2b3"
+}

@@ -1,0 +1,61 @@
+{
+  "checkedAt": "2026-10-31T04:36:30.256Z",
+  "passed": true,
+  "scope": "public",
+  "checks": [
+    {
+      "name": "/api/health",
+      "passed": true
+    },
+    {
+      "name": "/",
+      "passed": true
+    },
+    {
+      "name": "/vendors",
+      "passed": true
+    },
+    {
+      "name": "/for-vendors?lang=es",
+      "passed": true
+    },
+    {
+      "name": "/boutiques",
+      "passed": true
+    },
+    {
+      "name": "/privacy",
+      "passed": true
+    },
+    {
+      "name": "/support",
+      "passed": true
+    },
+    {
+      "name": "Google and Apple enabled",
+      "passed": true
+    },
+    {
+      "name": "Workspace requires authentication",
+      "passed": true
+    },
+    {
+      "name": "Workspace is not publicly cached",
+      "passed": true
+    },
+    {
+      "name": "Signup check rejects malformed input",
+      "passed": true
+    },
+    {
+      "name": "Signup check is not cached",
+      "passed": true
+    },
+    {
+      "name": "Canonical host retains path and language",
+      "passed": true
+    }
+  ],
+  "customerAccountsChanged": false,
+  "credentialsOrSessionsRecorded": false
+}

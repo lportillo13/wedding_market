@@ -1,18 +1,19 @@
 {
-  "checkedAt": "2026-10-31T04:26:20.034Z",
+  "checkedAt": "2026-10-31T05:01:14.767Z",
   "passed": true,
   "results": [
     {
       "platform": "android",
       "passed": true,
-      "seconds": 22,
+      "seconds": 11,
       "productionEndpointsVerified": true
     },
     {
       "platform": "ios",
       "passed": true,
-      "seconds": 10,
+      "seconds": 11,
       "productionEndpointsVerified": true
     }
-  ]
+  ],
+  "sourceCommit": "4620fccd85b35c11df16f4c2f8b642440c07f2b3"
 }

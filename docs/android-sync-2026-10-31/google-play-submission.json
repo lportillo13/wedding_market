@@ -1,0 +1,34 @@
+{
+  "verifiedAt": "2026-10-31T05:11:39.455Z",
+  "applicationId": "com.theweddingmarket.app",
+  "version": "1.1.0",
+  "versionCode": 12,
+  "sourceCommit": "4620fccd85b35c11df16f4c2f8b642440c07f2b3",
+  "aabSha256": "1aeb70c8352c7d04fb12afa31f8b801a57aabe77d039e7cf2666673070e125a6",
+  "track": "production",
+  "releaseName": "1.1.0 (12) – Website and app updates",
+  "releaseNotesLanguages": [
+    "en-US",
+    "es-419"
+  ],
+  "rolloutPercent": 100,
+  "countryAvailability": "All existing targeted countries; no targeting change",
+  "managedPublishing": false,
+  "submissionActionCompleted": true,
+  "consoleHeading": "Changes in review",
+  "consoleReleaseRow": "1.1.0 (12) – Website and app updates · Start full rollout",
+  "googleQuickChecks": "Still running at readback; Google queues human review automatically when checks pass",
+  "googleApprovalPending": true,
+  "publishedVerified": false,
+  "previousPublishedVersion": "1.0.0 (10)",
+  "excludedDraftVersionCodes": [
+    11
+  ],
+  "supportedDeviceLoss": 0,
+  "previewWarnings": [
+    "Missing deobfuscation file; R8 minification is disabled and no mapping file was generated"
+  ],
+  "publishingOverviewUrl": "https://play.google.com/console/u/0/developers/7845168685505373862/app/4976084269957952454/publishing",
+  "verificationMethod": "Authenticated Play Console UI readback after Send changes for review",
+  "appleReleaseChanged": false
+}

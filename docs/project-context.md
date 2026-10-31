@@ -11,10 +11,23 @@ the website changes are also in the app and update Android in Google Play. This
 supersedes the earlier native release hold for Android; Apple is outside this
 request. The owner separately confirmed: "I have app-embedding licenses for
 these fonts" for GT Super, Acumin Pro and Lucia BT. Keep their approved styling
-and original file provenance; no font purchase was made. The 1.1.0 (12) candidate
-and website/app parity audit are being validated in
-[the Android synchronization handoff](android-sync-2026-10-31/README.md). Source
-preparation is not a store upload or publication; exact receipts follow there.
+and original file provenance; no font purchase was made. The website/app parity
+audit, validation and release receipts are in
+[the Android synchronization handoff](android-sync-2026-10-31/README.md).
+
+The supporting website APIs are now live at
+**873bb557838f0742f4c4a29ca335e64f7d955435**, with the exact successful fixed-gateway
+receipt, public checks and isolated reviewer API checks in that handoff. Rollback
+is `/var/www/wedding-market.before-20261031-043209`. The final native candidate is
+**1.1.0 (12)** from `4620fccd85b35c11df16f4c2f8b642440c07f2b3`; EAS's Android
+counter was verified as 12. Build 11 is excluded from the release selection.
+Google Play received the production submission and shows **Changes in review**
+for **1.1.0 (12)** with **Start full rollout**. Managed publishing remains off;
+all existing target countries are retained. Google's quick checks and approval
+are pending; public availability of build 12 is not yet verified. The installed
+release passed bilingual, account, vendor workspace, planning-review, session
+and provider-handoff checks on the isolated API 36 emulator. No real customer
+accounts or published sample vendors were used, and no couple draft was saved.
 
 Latest vendor-page decision (October 30, 2026): the owner clarified that the
 platform will not be free and requested removal of free-pricing promises from
@@ -26,7 +39,7 @@ automatic reduced-motion support. The owner subsequently supplied hero,
 serif first lines, Lucia script second lines and compact leading; apply that
 treatment to all three headlines. Other headings keep their existing typography.
 
-Current verified website: **4cbc0f9441be7962130199d0e9294e956f7577bb**.
+Previous website typography release: **4cbc0f9441be7962130199d0e9294e956f7577bb**.
 The hero, business-section and closing headlines now use GT Super first lines
 and Lucia script accents with the reference's compact leading. Free-pricing
 promises and the animation button are absent, and the homepage scroll mouse is

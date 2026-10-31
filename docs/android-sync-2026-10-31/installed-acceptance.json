@@ -1,0 +1,47 @@
+{
+  "passed": true,
+  "scope": "Bounded installed regression checks on the exact signed production bundle, plus isolated authenticated API checks; not exhaustive testing of every screen",
+  "sourceCommit": "4620fccd85b35c11df16f4c2f8b642440c07f2b3",
+  "version": "1.1.0",
+  "versionCode": 12,
+  "aabSha256": "1aeb70c8352c7d04fb12afa31f8b801a57aabe77d039e7cf2666673070e125a6",
+  "environment": "Existing isolated WM_Launch_API_36 emulator, emulator-5556, universal APK derived from the signed AAB",
+  "checks": [
+    "English and Spanish home, access and directory screens, actual public screenshots and persisted language after relaunch",
+    "Full-color Google branding, both provider buttons, password compatibility, email-code and couple/vendor role choices",
+    "Google and Apple system-browser handoff and cancellation return on final build 12; the app rejects any non-S256 PKCE challenge before opening a provider",
+    "Existing vendor session survives the upgrade; inbox and avatar controls occupy the same header row",
+    "Private vendor workspace, separate pricing/contact sections, independent starting-price button, personal contact profile and sign-out",
+    "Isolated couple password login, first missing setup step, retained contact country and required phone validation",
+    "Wedding-style selector, calendar date selection, blank optional estimates and final review before any save",
+    "Inbox access, couple session restoration after cold relaunch, discarded unsaved planning draft and sign-out"
+  ],
+  "completedMaestroFlows": [
+    "vendor-finish.yml",
+    "client-setup-draft.yml",
+    "client-finish.yml",
+    "provider-handoff.yml"
+  ],
+  "assertionsRecoveredAcrossFlows": [
+    "The guest run completed all EN/ES assertions and six captures, then its final home tap encountered an emulator transport interruption; later home/navigation checks passed",
+    "Vendor section and profile selectors were corrected after inspecting their visible positions",
+    "The couple fixture intentionally has incomplete planning details; the expected missing-step setup replaced an initial assumption that personal-profile editing would be available",
+    "The couple review save control was below the viewport; scrolling exposed it and the follow-up check passed without saving"
+  ],
+  "privateFixtureHandling": {
+    "existingIsolatedReviewerAccountsOnly": true,
+    "customerAccountsUsed": false,
+    "vendorRemainsUnpublished": true,
+    "planningDraftSaved": false,
+    "nativeUiContentWrites": false,
+    "signedOutAfterChecks": true,
+    "credentialsOrRawAuthLinksInHandoff": false
+  },
+  "limits": [
+    "No physical Android device was used",
+    "Provider handoff/cancellation was tested; no real Google or Apple identity was signed in through the emulator",
+    "The couple planning save was deliberately not invoked; validation/save rules have application regression coverage",
+    "The public directory is empty; no fictional vendors, outfits, bookings or conversations were published for screenshots",
+    "App Store publication and the existing Apple release were not changed"
+  ]
+}

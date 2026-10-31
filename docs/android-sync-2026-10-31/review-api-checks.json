@@ -1,0 +1,45 @@
+{
+  "checkedAt": "2026-10-31T04:36:57.930Z",
+  "passed": true,
+  "scope": "review-api",
+  "checks": [
+    {
+      "name": "vendor isolated login",
+      "passed": true
+    },
+    {
+      "name": "vendor registered email rejected at signup",
+      "passed": true
+    },
+    {
+      "name": "Vendor fixture remains unpublished",
+      "passed": true
+    },
+    {
+      "name": "Owned draft publication command and invalidation",
+      "passed": true
+    },
+    {
+      "name": "No fixture was published",
+      "passed": true
+    },
+    {
+      "name": "client isolated login",
+      "passed": true
+    },
+    {
+      "name": "client registered email rejected at signup",
+      "passed": true
+    },
+    {
+      "name": "Couple fixture has no business",
+      "passed": true
+    },
+    {
+      "name": "Couple cannot publish a supplied vendor ID",
+      "passed": true
+    }
+  ],
+  "customerAccountsChanged": false,
+  "credentialsOrSessionsRecorded": false
+}
