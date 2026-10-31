@@ -11,7 +11,7 @@ the website changes are also in the app and update Android in Google Play. This
 supersedes the earlier native release hold for Android; Apple is outside this
 request. The owner separately confirmed: "I have app-embedding licenses for
 these fonts" for GT Super, Acumin Pro and Lucia BT. Keep their approved styling
-and original file provenance; no font purchase was made. The 1.1.0 (11) candidate
+and original file provenance; no font purchase was made. The 1.1.0 (12) candidate
 and website/app parity audit are being validated in
 [the Android synchronization handoff](android-sync-2026-10-31/README.md). Source
 preparation is not a store upload or publication; exact receipts follow there.

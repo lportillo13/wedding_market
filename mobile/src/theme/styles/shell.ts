@@ -34,6 +34,8 @@ export const shellStyles = StyleSheet.create({
         flexDirection: "row",
         gap: 10,
         flex: 1,
+        minWidth: 0,
+        marginRight: 10,
     },
     logoMark: {
         alignItems: "center",
@@ -50,6 +52,9 @@ export const shellStyles = StyleSheet.create({
         textShadowRadius: 4,
     },
     headerActions: {
+        alignItems: "center",
+        flexDirection: "row",
+        gap: 8,
         position: "relative",
         zIndex: 30,
     },

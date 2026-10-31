@@ -8,7 +8,7 @@ binary and manual-release control remain outside this task.
 The comparison starts with published Android **1.0.0 (10)**, source
 `b61025e3ca2eb9ad86a933edb48f9e5b99095756`, and the website releases through
 `4cbc0f9441be7962130199d0e9294e956f7577bb` plus their current handoffs. The release
-candidate is **1.1.0 (11)**. Build, installed-app and store receipts below are
+candidate is **1.1.0 (12)**. Build, installed-app and store receipts below are
 recorded separately; a source change or successful export is not publication.
 
 | Website change | Android treatment |
